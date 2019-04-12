@@ -35,9 +35,9 @@ Building a `CommonJS Module` is as simple as creating a `main` field to your `pa
 
 To build a `ES Module` simply add a `module` field to your `package.json` pointing to the output file.
 
-## UMD and IIFE build
+## IIFE, AMD and UMD build
 
-For IIFE & UMD builds you will need to use the `bundlib` field in `package.json`, see the [configuration section](#configuration) for more info.
+For IIFE, AMD and UMD builds you will need to use the `bundlib` field in `package.json`, see the [configuration section](#configuration) for more info.
 
 ## Configuration
 
@@ -127,10 +127,9 @@ The following example will generate a UMD build in `my-lib.umd.js` file inside t
 * `UMD build`
 
 `type: string`
-`defaults to null`
 
 *optional amd id for UMD build*
-> *if not present the amd module will be defined with no id*
+> *if not present, AMD module will be defined with no id*
 
 #### extend
 
@@ -158,14 +157,21 @@ The following example will generate a UMD build in `my-lib.umd.js` file inside t
 `type: string`
 
 *the output path for IIFE build*
-> *if not present IIFE build will be skipped*
+> *if not present, IIFE build will be skipped*
+
+#### amd
+
+`type: string`
+
+*the output path for AMD build*
+> *if not present, AMD build will be skipped*
 
 #### umd
 
 `type: string`
 
 *the output path for UMD build*
-> *if not present UMD build will be skipped*
+> *if not present, UMD build will be skipped*
 
 ## CLI
 
@@ -185,7 +191,7 @@ Combine your options according to your needs.
 * [x] Creates a CommonJS Module based on the `main` field in `package.json`
 * [x] Creates an ES Modules based on the `module` field in `package.json`
 * [x] Exports types declarations based on the `typings` or `types` field in your `package.json`
-* [x] Creates UMD & IIFE builds using the `bundlib` filed in your `package.json`, see [configuration section](#configuration) for more info.
+* [x] Creates IIFE, AMD and UMD builds using the `bundlib` field in your `package.json`, see [configuration section](#configuration) for more info.
 * [x] Transforms async/await using [Babel](#) and [babel-plugin-transform-async-to-promises](#) for ES5 support
 * [x] Transforms using [Buble](#)
 
