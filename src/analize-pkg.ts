@@ -22,7 +22,7 @@ const analizePkg = async (cwd: string, pkg?: Pkg): Promise<BundlibPkg> => {
   let types: string | null = pkgTypes || typings || null;
   types = types && resolvePath(cwd, types);
 
-  let { input, sourcemap, esModule, interop, iife, umd, name, id, extend } = bundlib || {} as BundlibPkgOptions;
+  let { input, sourcemap, esModule, interop, iife, amd, umd, name, id, extend } = bundlib || {} as BundlibPkgOptions;
 
   input = resolvePath(cwd, input || "src/index.ts");
   sourcemap = sourcemap !== false;
@@ -30,11 +30,12 @@ const analizePkg = async (cwd: string, pkg?: Pkg): Promise<BundlibPkg> => {
   interop = !!interop;
 
   iife = iife || null;
+  amd = amd || null;
   umd = umd || null;
 
   name = name || "";
 
-  if ((iife || umd) && !name) {
+  if ((iife || amd || umd) && !name) {
     throw new Error("name option is required for IIFE and UMD builds");
   }
 
@@ -47,6 +48,7 @@ const analizePkg = async (cwd: string, pkg?: Pkg): Promise<BundlibPkg> => {
     esModule,
     interop,
     iife,
+    amd,
     umd,
     name,
     extend,
