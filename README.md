@@ -63,6 +63,31 @@ The following example will generate a UMD build in `my-lib.umd.js` file inside t
 
 ### Options
 
+#### input
+
+`used in:`
+* `CommonJS Module build`
+* `ES Module build`
+* `IIFE build`
+* `UMD build`
+
+`type: string`
+`defaults to "src/index.ts"`
+
+*the path to the input file*
+
+#### sourcemap
+`used in:`
+* `CommonJS Module build`
+* `ES Module build`
+* `IIFE build`
+* `UMD build`
+
+`type: boolean`
+`defaults to true`
+
+*whether to generate source maps*
+
 #### esModule
 
 `used in:`
@@ -73,7 +98,7 @@ The following example will generate a UMD build in `my-lib.umd.js` file inside t
 `type: boolean`
 `defaults to false`
 
-*set whether to add a* `esModule` *property to your build.*
+*whether to add a* `esModule` *property to your build.*
 
 #### interop
 
