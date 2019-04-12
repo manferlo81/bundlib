@@ -2,7 +2,7 @@
 
 A Zero-configuration, automatic javascript library bundler using [Typescript](#) and [Rollup.js](#)
 
-> :warning: Bundlib is still under active development
+> :warning: Bundlib is still under active development, if you find any issue/bug please open a new issue.
 
 ## A bit of history
 
