@@ -1,5 +1,5 @@
 import { resolve as resolvePath } from "path";
-import { ExternalOption, OutputOptions as RollupOutputOptions, Plugin, RollupOptions } from "rollup";
+import { Plugin, RollupOptions } from "rollup";
 
 import { BundlibPkg } from "./types";
 
@@ -10,7 +10,6 @@ import resolve from "rollup-plugin-node-resolve";
 import { terser } from "rollup-plugin-terser";
 import { createBrowserConfig, createModuleConfig } from "./create-config";
 import transpile from "./plugins/transpile";
-import { FilterablePlugins } from "./types";
 
 const pkgToConfigs = ({ cwd, pkg, external, types, options }: BundlibPkg, dev: boolean): RollupOptions[] => {
 
@@ -23,6 +22,7 @@ const pkgToConfigs = ({ cwd, pkg, external, types, options }: BundlibPkg, dev: b
     interop,
 
     iife,
+    amd,
     umd,
     name,
     id,
@@ -138,6 +138,28 @@ const pkgToConfigs = ({ cwd, pkg, external, types, options }: BundlibPkg, dev: b
       name,
       extend,
       globals,
+    );
+
+    configs.push(config);
+
+  }
+
+  if (amd) {
+
+    const umdOutputFile = resolvePath(cwd, amd);
+
+    const config = createBrowserConfig(
+      apiInput,
+      "amd",
+      umdOutputFile,
+      sourcemap,
+      esModule,
+      interop,
+      browserPlugins(),
+      name,
+      extend,
+      globals,
+      id,
     );
 
     configs.push(config);

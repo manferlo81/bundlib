@@ -9,6 +9,7 @@ export interface BundlibBuildOptions {
   interop: boolean;
 
   iife: string | null;
+  amd: string | null;
   umd: string | null;
   name: string;
   extend: boolean;

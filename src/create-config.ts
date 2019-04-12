@@ -75,7 +75,7 @@ export function createModuleConfig(
 
 export function createBrowserConfig(
   input: string,
-  format: Some<BuildFormat, "iife" | "umd">,
+  format: Some<BuildFormat, "iife" | "amd" | "umd">,
   file: string,
   sourcemap: boolean,
   esModule: boolean,
@@ -93,7 +93,7 @@ export function createBrowserConfig(
     globals,
   });
 
-  if (id && format === "umd") {
+  if (id && (format === "umd" || format === "amd")) {
     output.amd = {
       id,
     };

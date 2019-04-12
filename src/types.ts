@@ -15,7 +15,7 @@ export type ConfigExtra = Extra<
   "input" | "output" | "external" | "plugins"
 >;
 
-export type BuildFormat = Some<ModuleFormat, "cjs" | "es" | "iife" | "umd">;
+export type BuildFormat = Some<ModuleFormat, "cjs" | "es" | "iife" | "amd" | "umd">;
 
 export interface BundlibOptions {
   dev?: boolean;
