@@ -8,7 +8,8 @@
   "typings": "types",
   "scripts": {
     "dev": "ts-node src-bin -dw",
-    "build": "ts-node src-bin -d"
+    "build": "ts-node src-bin -d",
+    "prepublishOnly": "rm -rf .cache && rm -rf dist && rm -rf types && npm run build"
   },
   "keywords": [
     "library",
@@ -52,8 +53,7 @@
   "files": [
     "bin",
     "dist",
-    "types",
-    "src"
+    "types"
   ],
   "author": "Manuel Fernandez <manferlo81@gmail.com>",
   "repository": {
