@@ -47,7 +47,7 @@ Configuration is done throu the `"bundlib"` field in `package.json`.
 
 The following example will generate a **UMD** build in `my-lib.umd.js` file inside the `dist` folder, then you can use the library in the browser (for example) using the global `myLib` (`window.myLib`).
 
-```json
+```javascript
 // package.json
 {
   "version": "1.0.0",
