@@ -7,10 +7,13 @@
   "bin": "bin/bundlib-cli.js",
   "typings": "types",
   "scripts": {
-    "dev": "ts-node src-bin -dw",
-    "build": "ts-node src-bin -d",
+    "lint": "tslint src/**/*.ts",
+    "pretest": "npm run build",
     "test": "jest",
-    "prepublishOnly": "rm -rf .cache && rm -rf dist && rm -rf types && npm run build"
+    "dev": "ts-node src-bin -dw",
+    "build": "npm run lint && npm run clean && ts-node src-bin -d",
+    "clean": "rm -rf dist types coverage .cache",
+    "prepublishOnly": "npm test"
   },
   "keywords": [
     "library",
