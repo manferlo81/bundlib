@@ -8,7 +8,7 @@ executors:
     working_directory: ~/repo
 
 commands:
-  npm-publish:
+  npm_publish:
     steps:
 
       - run:
@@ -21,7 +21,7 @@ commands:
 
 jobs:
 
-  unit-test:
+  unit_test:
     executor: node
     steps:
 
@@ -57,7 +57,7 @@ jobs:
       - attach_workspace:
           at: ~/repo
 
-      - npm-publish
+      - npm_publish
 
 workflows:
   version: 2
@@ -65,7 +65,7 @@ workflows:
   workflow:
     jobs:
 
-      - unit-test:
+      - unit_test:
           filters:
             tags:
               only: /.*/
@@ -75,7 +75,7 @@ workflows:
       - publish:
           context: NPM
           requires:
-            - unit-test
+            - unit_test
           filters:
             tags:
               only: /^v\d+\.\d+\.\d+$/
