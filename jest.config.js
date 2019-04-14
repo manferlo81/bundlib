@@ -2,10 +2,13 @@ module.exports = {
 
   testEnvironment: "node",
 
-  collectCoverage: false,
+  collectCoverage: true,
+  collectCoverageFrom: [
+    "dist/**",
+  ],
   coverageDirectory: "coverage",
   coverageReporters: [
-    "json",
+    "lcov",
     "text",
   ],
 
