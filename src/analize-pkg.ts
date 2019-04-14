@@ -34,7 +34,22 @@ const analizePkg = async (cwd: string, pkg?: Pkg): Promise<BundlibPkg> => {
 
   }
 
-  let { input, sourcemap, esModule, interop, iife, amd, umd, name, id, extend } = bundlib || {} as BundlibPkgOptions;
+  const options2: BundlibPkgOptions = bundlib || {};
+
+  let {
+    input,
+    sourcemap,
+    esModule,
+    interop,
+    iife,
+    amd,
+    umd,
+    name,
+    id,
+    extend,
+  } = options2;
+
+  const { globals } = options2;
 
   input = resolvePath(cwd, input || "src/index.ts");
   sourcemap = sourcemap !== false;
@@ -65,6 +80,7 @@ const analizePkg = async (cwd: string, pkg?: Pkg): Promise<BundlibPkg> => {
     name,
     extend,
     id,
+    globals,
   };
 
   return { cwd, pkg, external, types, options };
