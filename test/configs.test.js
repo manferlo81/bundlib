@@ -17,6 +17,8 @@ describe("package to configs", () => {
 
   });
 
+
+
   test("should generate CommonJS and ES modules config", async () => {
 
     const pkg = await analizePkg(cwd, {
@@ -31,19 +33,19 @@ describe("package to configs", () => {
 
     expect(configs).toHaveLength(2);
 
-    const [config, config2] = configs;
+    const [cjsConfig, esConfig] = configs;
 
-    expect(typeof config).toBe("object");
-    expect(typeof config.output).toBe("object");
-    expect(config.output.format).toBe("cjs");
+    expect(typeof cjsConfig).toBe("object");
+    expect(typeof cjsConfig.output).toBe("object");
+    expect(cjsConfig.output.format).toBe("cjs");
 
-    expect(typeof config2).toBe("object");
-    expect(typeof config2.output).toBe("object");
-    expect(config2.output.format).toBe("es");
+    expect(typeof esConfig).toBe("object");
+    expect(typeof esConfig.output).toBe("object");
+    expect(esConfig.output.format).toBe("es");
 
   });
 
-  test("should generate IIFE, AMD and UMD modules config", async () => {
+  test("should generate IIFE and AMD modules config", async () => {
 
     const pkg = await analizePkg(cwd, {
       bundlib: {
@@ -51,7 +53,6 @@ describe("package to configs", () => {
         id: "lib",
         iife: "out/lib.iife.js",
         amd: "out/lib.amd.js",
-        umd: "out/lib.umd.js",
         globals: {},
       },
     });
@@ -61,25 +62,46 @@ describe("package to configs", () => {
       true,
     );
 
-    expect(configs).toHaveLength(3);
+    expect(configs).toHaveLength(2);
 
-    const [config, config2, config3] = configs;
+    const [iifeConfig, amdConfig] = configs;
 
-    expect(typeof config).toBe("object");
-    expect(typeof config.output).toBe("object");
-    expect(config.output.format).toBe("iife");
+    expect(typeof iifeConfig).toBe("object");
+    expect(typeof iifeConfig.output).toBe("object");
+    expect(iifeConfig.output.format).toBe("iife");
 
-    expect(typeof config2).toBe("object");
-    expect(typeof config2.output).toBe("object");
-    expect(config2.output.format).toBe("amd");
-    expect(typeof config2.output.amd).toBe("object");
-    expect(config2.output.amd.id).toBe("lib");
+    expect(typeof amdConfig).toBe("object");
+    expect(typeof amdConfig.output).toBe("object");
+    expect(amdConfig.output.format).toBe("amd");
+    expect(typeof amdConfig.output.amd).toBe("object");
+    expect(amdConfig.output.amd.id).toBe("lib");
 
-    expect(typeof config3).toBe("object");
-    expect(typeof config3.output).toBe("object");
-    expect(config3.output.format).toBe("umd");
-    expect(typeof config3.output.amd).toBe("object");
-    expect(config3.output.amd.id).toBe("lib");
+  });
+
+  test("should generate UMD module config", async () => {
+
+    const pkg = await analizePkg(cwd, {
+      bundlib: {
+        name: "lib",
+        id: "lib",
+        umd: "out/lib.umd.js",
+      },
+    });
+
+    const configs = pkgToConfigs(
+      pkg,
+      true,
+    );
+
+    expect(configs).toHaveLength(1);
+
+    const [umdConfig] = configs;
+
+    expect(typeof umdConfig).toBe("object");
+    expect(typeof umdConfig.output).toBe("object");
+    expect(umdConfig.output.format).toBe("umd");
+    expect(typeof umdConfig.output.amd).toBe("object");
+    expect(umdConfig.output.amd.id).toBe("lib");
 
   });
 
