@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "ts-node src-bin -dw",
     "build": "ts-node src-bin -d",
+    "test": "jest",
     "prepublishOnly": "rm -rf .cache && rm -rf dist && rm -rf types && npm run build"
   },
   "keywords": [
@@ -33,6 +34,7 @@
     "typescript": "^3.4.3"
   },
   "devDependencies": {
+    "@types/jest": "^24.0.11",
     "@types/rollup-plugin-buble": "^0.19.1",
     "jest": "^24.7.1",
     "ts-node": "^8.0.3"
