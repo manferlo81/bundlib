@@ -1,14 +1,10 @@
 # Bundlib
 
+[![CircleCI](https://circleci.com/gh/manferlo81/bundlib.svg?style=svg)](https://circleci.com/gh/manferlo81/bundlib)
+
 A Zero-configuration, automatic javascript library bundler using [Typescript](#) and [Rollup.js](#).
 
 > :warning: Bundlib is still under active development, if you find any issue/bug please open a new issue.
-
-## A bit of history
-
-I love [Rollup.js](#) and I love [Typescript](#) and I always use them for my projects, but I found myself setting up the same thing once and once again, so I needed a tool to setup the project for me, then I found [Microbundle](#), which is awesome, it inspired me but it didn't really suit my needs, that's when I decided to write [Bundlib](#).
-
-Bundlib is meant to be used only for libraries (it does not support HTML nor CSS), it builds CommonJS and ES modules without any configuration [see Features for more info](#features), to start [see First steps](#first-steps).
 
 ## Install
 
@@ -171,4 +167,4 @@ Bundlib has only two options
 
 # License
 
-MIT
+MIT License
