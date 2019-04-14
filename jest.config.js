@@ -2,11 +2,13 @@ module.exports = {
 
   testEnvironment: "node",
 
-  collectCoverage: true,
+  collectCoverage: false,
   coverageDirectory: "coverage",
   coverageReporters: [
     "json",
-    "text"
+    "text",
   ],
+
+  verbose: true,
 
 };
