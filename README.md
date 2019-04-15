@@ -1,6 +1,6 @@
 # Bundlib
 
-[![CircleCI](https://circleci.com/gh/manferlo81/bundlib.svg?style=svg)](https://circleci.com/gh/manferlo81/bundlib)
+[![CircleCI](https://circleci.com/gh/manferlo81/bundlib.svg?style=svg)](https://circleci.com/gh/manferlo81/bundlib) [![Greenkeeper badge](https://badges.greenkeeper.io/manferlo81/bundlib.svg)](https://greenkeeper.io/)
 
 A Zero-configuration, automatic javascript library bundler using [Typescript](#) and [Rollup.js](#).
 
