@@ -1,5 +1,10 @@
 import chalk from "chalk";
+import ora, { Options as OraOptions } from "ora";
 import { relative } from "path";
+
+export function spinner(text: OraOptions | string) {
+  return ora(text).start();
+}
 
 export function log(text?: any, error?: boolean) {
   // tslint:disable-next-line: no-console
