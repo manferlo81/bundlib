@@ -1,18 +1,13 @@
 import { OutputOptions, rollup, RollupOptions } from "rollup";
 import { written } from "./console";
+import sequential from "./sequential";
 
 const build = (configs: RollupOptions[], cwd: string): void => {
 
-  const buildIt = async (index: number = 0): Promise<void> => {
-
-    const config = configs[index];
-
-    if (!config) {
-      return;
-    }
+  sequential(configs, async (config, index, next) => {
 
     if (!config.output) {
-      return buildIt(index as number + 1);
+      return next();
     }
 
     const buildResult = await rollup(config);
@@ -21,11 +16,9 @@ const build = (configs: RollupOptions[], cwd: string): void => {
 
     written((config.output as OutputOptions).file as string, cwd);
 
-    buildIt(index as number + 1);
+    next();
 
-  };
-
-  buildIt();
+  });
 
 };
 
