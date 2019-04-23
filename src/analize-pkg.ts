@@ -1,5 +1,5 @@
 import mod from "module";
-import { parse, resolve as resolvePath } from "path";
+import { extname, join, parse, resolve as resolvePath } from "path";
 
 import getPkg from "./get-pkg";
 import { BundlibBuildOptions, BundlibPkgOptions, Pkg } from "./pkg";
@@ -24,12 +24,10 @@ const analizePkg = async (cwd: string, pkg?: Pkg): Promise<BundlibPkg> => {
 
   if (types) {
 
-    const { dir, ext } = parse(types);
+    const ext = extname(types);
 
-    // in case types points to folder/index.d.ts
-    // set types to folder
-    if (ext === ".ts") {
-      types = dir;
+    if (ext !== ".ts") {
+      types = join(types, "index.d.ts");
     }
 
   }

@@ -1,14 +1,15 @@
 import { resolve as resolvePath } from "path";
 import { Plugin, RollupOptions } from "rollup";
 
+import { createBrowserConfig, createModuleConfig } from "./create-config";
 import { BundlibPkg } from "./types";
 
 import babel from "rollup-plugin-babel";
 import buble from "rollup-plugin-buble";
 import commonjs from "rollup-plugin-commonjs";
+import { dts, ts } from "rollup-plugin-dts";
 import resolve from "rollup-plugin-node-resolve";
 import { terser } from "rollup-plugin-terser";
-import { createBrowserConfig, createModuleConfig } from "./create-config";
 import transpile from "./plugins/transpile";
 
 const pkgToConfigs = ({ cwd, pkg, external, types, options }: BundlibPkg, dev: boolean): RollupOptions[] => {
@@ -64,11 +65,14 @@ const pkgToConfigs = ({ cwd, pkg, external, types, options }: BundlibPkg, dev: b
 
   const modulePlugins = (): Array<Plugin | false> => [
 
-    transpile({
-      cacheRoot: resolvePath(cwd, ".cache"),
-      sourcemap,
-      types: typesPath(),
-    }) as Plugin,
+    ts({
+      banner: false,
+      compilerOptions: {
+        target: 7,
+        module: 6,
+        sourceMap: sourcemap,
+      },
+    }),
 
     ...transform,
 
@@ -182,6 +186,29 @@ const pkgToConfigs = ({ cwd, pkg, external, types, options }: BundlibPkg, dev: b
       extend,
       globals,
       id,
+    );
+
+    configs.push(config);
+
+  }
+
+  if (types) {
+
+    const typesOutputFile = resolvePath(cwd, types);
+
+    const config = createModuleConfig(
+      apiInput,
+      "es",
+      typesOutputFile,
+      false,
+      esModule,
+      interop,
+      external,
+      [
+        dts({
+          banner: false,
+        }),
+      ],
     );
 
     configs.push(config);
