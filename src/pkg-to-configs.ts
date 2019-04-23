@@ -34,14 +34,10 @@ const pkgToConfigs = ({ cwd, pkg, external, types, options }: BundlibPkg, dev: b
 
   const configs: RollupOptions[] = [];
 
-  const typesPath = () => !configs.length && types;
-
-  const extensions: string[] = [".ts"];
-
   const transform: Plugin[] = [
 
     babel({
-      extensions,
+      extensions: [".ts", ".js"],
       exclude: /node_modules/,
       babelrc: false,
       plugins: [require.resolve("babel-plugin-transform-async-to-promises")],

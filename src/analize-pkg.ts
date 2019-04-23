@@ -1,5 +1,5 @@
 import mod from "module";
-import { extname, join, parse, resolve as resolvePath } from "path";
+import { extname, join, resolve as resolvePath } from "path";
 
 import getPkg from "./get-pkg";
 import { BundlibBuildOptions, BundlibPkgOptions, Pkg } from "./pkg";
