@@ -17,8 +17,6 @@ describe("package to configs", () => {
 
   });
 
-
-
   test("should generate CommonJS and ES modules config", async () => {
 
     const pkg = await analizePkg(cwd, {

@@ -80,22 +80,22 @@ describe("analize", () => {
 
   });
 
-  test("should read types folder", async () => {
+  test("should types filename default to index.d.ts", async () => {
 
     const folder = "types";
+    const index = "index.d.ts";
 
     const analized = await analize({
-      types: `${folder}/index.d.ts`,
+      types: folder,
     });
 
     expect(typeof analized).toBe("object");
     expect(analized).toHaveProperty("types");
 
     const { types } = analized;
-    const len = folder.length;
 
     expect(typeof types).toBe("string");
-    expect(types.substr(types.length - len, len)).toBe(folder);
+    expect(types.substr(types.length - index.length, index.length)).toBe(index);
 
   });
 
