@@ -11,7 +11,6 @@ import { dts, ts } from "rollup-plugin-dts";
 import resolve from "rollup-plugin-node-resolve";
 import { terser } from "rollup-plugin-terser";
 import removeEmptyLines from "./plugins/remove-empty-lines";
-import transpile from "./plugins/transpile";
 
 const pkgToConfigs = ({ cwd, pkg, external, types, options }: BundlibPkg, dev: boolean): RollupOptions[] => {
 
