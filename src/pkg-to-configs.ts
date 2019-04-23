@@ -204,15 +204,13 @@ const pkgToConfigs = ({ cwd, pkg, external, types, options }: BundlibPkg, dev: b
 
   if (types) {
 
-    const typesOutputFile = resolvePath(cwd, types);
-
     const config = createModuleConfig(
       apiInput,
       "es",
-      typesOutputFile,
+      types,
       false,
-      esModule,
-      interop,
+      false,
+      false,
       external,
       typesPlugins(),
     );
