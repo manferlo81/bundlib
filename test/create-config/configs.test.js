@@ -43,6 +43,32 @@ describe("package to configs", () => {
 
   });
 
+  test("should generate CommonJS module with types config", async () => {
+
+    const pkg = await analizePkg(cwd, {
+      main: "out/lib.cjs.js",
+      types: "out/lib.d.ts",
+    });
+
+    const configs = pkgToConfigs(
+      pkg,
+      true,
+    );
+
+    expect(configs).toHaveLength(2);
+
+    const [cjsConfig, dtsConfig] = configs;
+
+    expect(typeof cjsConfig).toBe("object");
+    expect(typeof cjsConfig.output).toBe("object");
+    expect(cjsConfig.output.format).toBe("cjs");
+
+    expect(typeof dtsConfig).toBe("object");
+    expect(typeof dtsConfig.output).toBe("object");
+    expect(dtsConfig.output.format).toBe("es");
+
+  });
+
   test("should generate IIFE and AMD modules config", async () => {
 
     const pkg = await analizePkg(cwd, {
