@@ -5,7 +5,7 @@ executors:
   node:
     docker:
       - image: circleci/node:10
-    working_directory: ~/repo
+    working_directory: &working_directory ~/repo
 
 commands:
   npm_publish:
@@ -42,11 +42,15 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       - run:
+          name: Build
+          command: npm run build
+
+      - run:
           name: Test
           command: npm test
 
       - persist_to_workspace:
-          root: ~/repo
+          root: *working_directory
           paths: .
 
 
@@ -55,7 +59,7 @@ jobs:
     steps:
 
       - attach_workspace:
-          at: ~/repo
+          at: *working_directory
 
       - npm_publish
 
