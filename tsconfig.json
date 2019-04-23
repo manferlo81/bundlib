@@ -10,9 +10,9 @@
     "resolveJsonModule": true,
     //
     "strict": true,
-    // "noUnusedLocals": true,
-    // "noImplicitReturns": true,
-    // "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noImplicitReturns": true,
+    "noImplicitAny": true,
     //
     "baseUrl": ".",
     "paths": {
