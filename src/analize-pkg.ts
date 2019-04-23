@@ -45,6 +45,7 @@ const analizePkg = async (cwd: string, pkg?: Pkg): Promise<BundlibPkg> => {
     name,
     id,
     extend,
+    equals,
   } = options2;
 
   const { globals } = options2;
@@ -53,6 +54,7 @@ const analizePkg = async (cwd: string, pkg?: Pkg): Promise<BundlibPkg> => {
   sourcemap = sourcemap !== false;
   esModule = !!esModule;
   interop = !!interop;
+  equals = !!equals;
 
   iife = iife || null;
   amd = amd || null;
@@ -79,6 +81,7 @@ const analizePkg = async (cwd: string, pkg?: Pkg): Promise<BundlibPkg> => {
     extend,
     id,
     globals,
+    equals,
   };
 
   return { cwd, pkg, external, types, options };

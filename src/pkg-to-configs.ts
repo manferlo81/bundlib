@@ -8,6 +8,7 @@ import babel from "rollup-plugin-babel";
 import buble from "rollup-plugin-buble";
 import commonjs from "rollup-plugin-commonjs";
 import { dts, ts } from "rollup-plugin-dts";
+import exportEquals from "rollup-plugin-export-equals";
 import resolve from "rollup-plugin-node-resolve";
 import { terser } from "rollup-plugin-terser";
 import removeEmptyLines from "./plugins/remove-empty-lines";
@@ -29,6 +30,8 @@ const pkgToConfigs = ({ cwd, pkg, external, types, options }: BundlibPkg, dev: b
     id,
     extend,
     globals,
+
+    equals,
 
   } = options;
 
@@ -92,6 +95,7 @@ const pkgToConfigs = ({ cwd, pkg, external, types, options }: BundlibPkg, dev: b
     }),
 
     !dev && removeEmptyLines(),
+    !!pkg.main && equals && exportEquals(),
 
   ];
 

@@ -79,7 +79,7 @@ the `"bundlib"` field in `package.json` may contain any of the following propert
 
 #### esModule
 
-* *used in:* `CommonJS, IIFE, AMD & UMD bulds`
+* *used in:* `CommonJS, IIFE, AMD & UMD builds`
 * *type:* `boolean`
 * *defaults to* `false`
 
@@ -87,13 +87,13 @@ the `"bundlib"` field in `package.json` may contain any of the following propert
 
 #### interop
 
-* *used in:* `CommonJS, IIFE, AMD & UMD bulds`
+* *used in:* `CommonJS, IIFE, AMD & UMD builds`
 * *type:* `boolean`
 * *defaults to* `false`
 
 #### name
 
-* *used in:* `IIFE, AMD & UMD bulds`
+* *used in:* `IIFE, AMD & UMD builds`
 * *type:* `string`
 * *required for:* `IIFE, AMD & UMD builds`
 
@@ -101,7 +101,7 @@ the `"bundlib"` field in `package.json` may contain any of the following propert
 
 #### id
 
-* *used in:* `AMD & UMD bulds`
+* *used in:* `AMD & UMD builds`
 * *type:* `string`
 
 *optional amd id for* `AMD` or `UMD` *build.*
@@ -109,7 +109,7 @@ the `"bundlib"` field in `package.json` may contain any of the following propert
 
 #### extend
 
-* *used in:* `IIFE, AMD & UMD bulds`
+* *used in:* `IIFE, AMD & UMD builds`
 * *type:* `boolean`
 * *defaults to* `false`
 
@@ -117,7 +117,7 @@ the `"bundlib"` field in `package.json` may contain any of the following propert
 
 #### globals
 
-* *used in:* `IIFE, AMD & UMD bulds`
+* *used in:* `IIFE, AMD & UMD builds`
 * *type:* `object`
 
 *object to map names to globals*
@@ -143,6 +143,16 @@ the `"bundlib"` field in `package.json` may contain any of the following propert
 *the output path for* `UMD` *build.*
 > *if not present,* `UMD` *build will be skipped.*
 
+#### equals
+
+* *used in:* `types for CommonJS build`
+* *type:* `boolean`
+* *defaults to* `false`
+
+*fixes type export for CommonJS module using* `module.exports = ...`
+
+> :warning: note that this options should only be used when your library has a default export and no named exports.
+
 ## CLI
 
 ```sh
@@ -165,6 +175,6 @@ Bundlib has only two options
 * [x] Transforms async/await using [Babel](#) and [babel-plugin-transform-async-to-promises](#) for ES5 support
 * [x] Transforms using [Buble](#)
 
-# License
+## License
 
 MIT License

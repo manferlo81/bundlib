@@ -16,6 +16,8 @@ export interface BundlibBuildOptions {
   id: string | null;
   globals?: Record<string, string>;
 
+  equals: boolean;
+
 }
 
 //
