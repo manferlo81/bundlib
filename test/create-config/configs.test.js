@@ -1,4 +1,4 @@
-const { analizePkg, pkgToConfigs } = require("..");
+const { analizePkg, pkgToConfigs } = require("../..");
 
 const cwd = process.cwd();
 

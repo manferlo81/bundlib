@@ -1,8 +1,4 @@
-const { analizePkg } = require("..");
-
-const cwd = process.cwd();
-
-const analize = (options) => options ? analizePkg(cwd, options) : analizePkg(cwd);
+const analize = require("../test-helpers/analize");
 
 describe("analize", () => {
 
