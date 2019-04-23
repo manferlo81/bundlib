@@ -10,6 +10,7 @@ import commonjs from "rollup-plugin-commonjs";
 import { dts, ts } from "rollup-plugin-dts";
 import resolve from "rollup-plugin-node-resolve";
 import { terser } from "rollup-plugin-terser";
+import removeEmptyLines from "./plugins/remove-empty-lines";
 import transpile from "./plugins/transpile";
 
 const pkgToConfigs = ({ cwd, pkg, external, types, options }: BundlibPkg, dev: boolean): RollupOptions[] => {
@@ -86,6 +87,16 @@ const pkgToConfigs = ({ cwd, pkg, external, types, options }: BundlibPkg, dev: b
     commonjs(),
 
     ...modulePlugins(),
+
+  ];
+
+  const typesPlugins = () => [
+
+    dts({
+      banner: false,
+    }),
+
+    !dev && removeEmptyLines(),
 
   ];
 
@@ -204,11 +215,7 @@ const pkgToConfigs = ({ cwd, pkg, external, types, options }: BundlibPkg, dev: b
       esModule,
       interop,
       external,
-      [
-        dts({
-          banner: false,
-        }),
-      ],
+      typesPlugins(),
     );
 
     configs.push(config);
