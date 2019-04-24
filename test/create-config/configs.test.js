@@ -1,12 +1,11 @@
-const { analizePkg, pkgToConfigs } = require("../..");
-
-const cwd = process.cwd();
+const { pkgToConfigs } = require("../..");
+const analize = require("../test-helpers/analize");
 
 describe("package to configs", () => {
 
   test("should generate empty array", async () => {
 
-    const pkg = await analizePkg(cwd, {});
+    const pkg = await analize({});
 
     const configs = pkgToConfigs(
       pkg,
@@ -19,7 +18,7 @@ describe("package to configs", () => {
 
   test("should generate CommonJS and ES modules config", async () => {
 
-    const pkg = await analizePkg(cwd, {
+    const pkg = await analize({
       main: "out/lib.cjs.js",
       module: "out/lib.es.js",
     });
@@ -45,7 +44,7 @@ describe("package to configs", () => {
 
   test("should generate CommonJS module with types config", async () => {
 
-    const pkg = await analizePkg(cwd, {
+    const pkg = await analize({
       main: "out/lib.cjs.js",
       types: "out/lib.d.ts",
     });
@@ -71,7 +70,7 @@ describe("package to configs", () => {
 
   test("should generate IIFE and AMD modules config", async () => {
 
-    const pkg = await analizePkg(cwd, {
+    const pkg = await analize({
       bundlib: {
         name: "lib",
         id: "lib",
@@ -104,7 +103,7 @@ describe("package to configs", () => {
 
   test("should generate UMD module config", async () => {
 
-    const pkg = await analizePkg(cwd, {
+    const pkg = await analize({
       bundlib: {
         name: "lib",
         id: "lib",
