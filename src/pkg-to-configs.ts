@@ -14,8 +14,6 @@ import removeEmptyLines from "./plugins/remove-empty-lines";
 
 const pkgToConfigs = (
   {
-    cwd,
-    pkg,
     input,
     output,
     dependencies,
@@ -115,7 +113,7 @@ const pkgToConfigs = (
     }),
 
     !dev && removeEmptyLines(),
-    !!pkg.main && equals && exportEquals(),
+    !!cjsOutputFile && equals && exportEquals(),
 
   ];
 
