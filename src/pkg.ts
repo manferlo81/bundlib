@@ -1,23 +1,27 @@
 export type Dependencies = Record<string, string>;
 
-export interface BundlibBuildOptions {
-
+export interface BundlibBuildInputOptions {
   input: string;
+}
+
+export interface BundlibOutputOptions {
 
   sourcemap: boolean;
   esModule: boolean;
   interop: boolean;
-
-  iife: string | null;
-  amd: string | null;
-  umd: string | null;
-  name: string;
   extend: boolean;
+  equals: boolean;
+
+  name: string;
   id: string | null;
   globals?: Record<string, string>;
 
-  equals: boolean;
+}
 
+export interface BundlibBuildOptions extends BundlibOutputOptions, BundlibBuildInputOptions {
+  iife: string | null;
+  amd: string | null;
+  umd: string | null;
 }
 
 //
@@ -33,6 +37,8 @@ export interface Pkg {
   bin?: string;
   dependencies?: Dependencies;
   peerDependencies?: Dependencies;
+  bundleDependencies?: string[];
+  bundledDependencies?: string[];
   typings?: string;
   types?: string;
   bundlib?: BundlibPkgOptions;

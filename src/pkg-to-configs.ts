@@ -1,4 +1,3 @@
-import { resolve as resolvePath } from "path";
 import { Plugin, RollupOptions } from "rollup";
 
 import { createBrowserConfig, createModuleConfig } from "./create-config";
@@ -13,25 +12,46 @@ import resolve from "rollup-plugin-node-resolve";
 import { terser } from "rollup-plugin-terser";
 import removeEmptyLines from "./plugins/remove-empty-lines";
 
-const pkgToConfigs = ({ cwd, pkg, external, types, options }: BundlibPkg, dev: boolean): RollupOptions[] => {
+const pkgToConfigs = (
+  {
+    cwd,
+    pkg,
+    input,
+    output,
+    dependencies,
+    options,
+  }: BundlibPkg,
+  dev: boolean,
+): RollupOptions[] => {
+
+  const apiInput = input;
 
   const {
+    cjs: cjsOutputFile,
+    es: esOutputFile,
+    iife: iifeOutputFile,
+    amd: amdOutputFile,
+    umd: umdOutputFile,
+    types: typesOutputFile,
+  } = output;
 
-    input: apiInput,
+  const {
+    builtin: builtinDependencies,
+    runtime: runtimeDependencies,
+    peer: peerDependencies,
+  } = dependencies;
+
+  const {
 
     sourcemap,
     esModule,
     interop,
+    extend,
+    equals,
 
-    iife,
-    amd,
-    umd,
     name,
     id,
-    extend,
     globals,
-
-    equals,
 
   } = options;
 
@@ -99,9 +119,13 @@ const pkgToConfigs = ({ cwd, pkg, external, types, options }: BundlibPkg, dev: b
 
   ];
 
-  if (pkg.main) {
+  const external = [
+    ...builtinDependencies,
+    ...runtimeDependencies,
+    ...peerDependencies,
+  ];
 
-    const cjsOutputFile = resolvePath(cwd, pkg.main);
+  if (cjsOutputFile) {
 
     const config: RollupOptions = createModuleConfig(
       apiInput,
@@ -118,14 +142,12 @@ const pkgToConfigs = ({ cwd, pkg, external, types, options }: BundlibPkg, dev: b
 
   }
 
-  if (pkg.module) {
-
-    const esmOutputFile = resolvePath(cwd, pkg.module);
+  if (esOutputFile) {
 
     const config: RollupOptions = createModuleConfig(
       apiInput,
       "es",
-      esmOutputFile,
+      esOutputFile,
       sourcemap,
       true,
       false,
@@ -137,9 +159,7 @@ const pkgToConfigs = ({ cwd, pkg, external, types, options }: BundlibPkg, dev: b
 
   }
 
-  if (iife) {
-
-    const iifeOutputFile = resolvePath(cwd, iife);
+  if (iifeOutputFile) {
 
     const config = createBrowserConfig(
       apiInput,
@@ -158,14 +178,12 @@ const pkgToConfigs = ({ cwd, pkg, external, types, options }: BundlibPkg, dev: b
 
   }
 
-  if (amd) {
-
-    const umdOutputFile = resolvePath(cwd, amd);
+  if (amdOutputFile) {
 
     const config = createBrowserConfig(
       apiInput,
       "amd",
-      umdOutputFile,
+      amdOutputFile,
       sourcemap,
       esModule,
       interop,
@@ -180,9 +198,7 @@ const pkgToConfigs = ({ cwd, pkg, external, types, options }: BundlibPkg, dev: b
 
   }
 
-  if (umd) {
-
-    const umdOutputFile = resolvePath(cwd, umd);
+  if (umdOutputFile) {
 
     const config = createBrowserConfig(
       apiInput,
@@ -202,12 +218,12 @@ const pkgToConfigs = ({ cwd, pkg, external, types, options }: BundlibPkg, dev: b
 
   }
 
-  if (types) {
+  if (typesOutputFile) {
 
     const config = createModuleConfig(
       apiInput,
       "es",
-      types,
+      typesOutputFile,
       false,
       false,
       false,

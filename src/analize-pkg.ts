@@ -1,90 +1,83 @@
 import mod from "module";
-import { extname, join, resolve as resolvePath } from "path";
+import { resolve as resolvePath } from "path";
 
 import getPkg from "./get-pkg";
-import { BundlibBuildOptions, BundlibPkgOptions, Pkg } from "./pkg";
-import { BundlibPkg } from "./types";
+import { BundlibOutputOptions, BundlibPkgOptions, Pkg } from "./pkg";
+import { BundlibDependencies, BundlibPkg, BundlibPkgOutput } from "./types";
 
 const analizePkg = async (cwd: string, pkg?: Pkg): Promise<BundlibPkg> => {
 
   pkg = pkg || await getPkg(cwd);
 
-  const { dependencies, peerDependencies, types: pkgTypes, typings, bundlib } = pkg;
+  const {
+    name: pkgName,
+    main,
+    module: esModuleFile,
+    dependencies: runtimeDependencies,
+    peerDependencies,
+    bundledDependencies,
+    bundleDependencies,
+    types: pkgTypes,
+    typings,
+    bundlib,
+  } = pkg;
 
-  const external: string[] = [...mod.builtinModules];
-  if (dependencies) {
-    external.push(...Object.keys(dependencies));
-  }
-  if (peerDependencies) {
-    external.push(...Object.keys(peerDependencies));
-  }
-
-  let types: string | null = pkgTypes || typings || null;
-  types = types && resolvePath(cwd, types);
-
-  if (types) {
-
-    const ext = extname(types);
-
-    if (ext !== ".ts") {
-      types = join(types, "index.d.ts");
-    }
-
-  }
-
-  const options2: BundlibPkgOptions = bundlib || {};
-
-  let {
-    input,
+  const {
+    input: pkgInput,
+    iife: iifeFile,
+    amd: amdFile,
+    umd: umdFile,
     sourcemap,
     esModule,
     interop,
-    iife,
-    amd,
-    umd,
     name,
     id,
     extend,
+    globals,
     equals,
-  } = options2;
+  } = bundlib || {} as BundlibPkgOptions;
 
-  const { globals } = options2;
+  const input = resolvePath(cwd, pkgInput || "src/index.ts");
 
-  input = resolvePath(cwd, input || "src/index.ts");
-  sourcemap = sourcemap !== false;
-  esModule = !!esModule;
-  interop = !!interop;
-  equals = !!equals;
+  const types2 = typings || pkgTypes;
 
-  iife = iife || null;
-  amd = amd || null;
-  umd = umd || null;
+  const output: BundlibPkgOutput = {
+    cjs: main ? resolvePath(cwd, main) : null,
+    es: esModuleFile ? resolvePath(cwd, esModuleFile) : null,
+    iife: iifeFile ? resolvePath(cwd, iifeFile) : null,
+    amd: amdFile ? resolvePath(cwd, amdFile) : null,
+    umd: umdFile ? resolvePath(cwd, umdFile) : null,
+    types: types2 ? resolvePath(cwd, types2) : null,
+  };
 
-  name = name || "";
+  const dependencies: BundlibDependencies = {
+    builtin: mod.builtinModules,
+    runtime: runtimeDependencies ? Object.keys(runtimeDependencies) : [],
+    peer: peerDependencies ? Object.keys(peerDependencies) : [],
+    bundled: bundledDependencies || bundleDependencies || [],
+  };
 
-  if ((iife || amd || umd) && !name) {
+  const { iife, amd, umd } = output;
+  const nameRequired = iife || amd || umd;
+
+  const buildName = name || pkgName;
+
+  if (nameRequired && !buildName) {
     throw new Error("name option is required for IIFE and UMD builds");
   }
 
-  extend = !!extend;
-  id = id || null;
-
-  const options: BundlibBuildOptions = {
-    input,
-    sourcemap,
-    esModule,
-    interop,
-    iife,
-    amd,
-    umd,
-    name,
-    extend,
-    id,
+  const options: BundlibOutputOptions = {
+    sourcemap: sourcemap !== false,
+    esModule: !!esModule,
+    interop: !!interop,
+    name: buildName,
+    extend: !!extend,
+    id: id || null,
     globals,
-    equals,
+    equals: !!equals,
   };
 
-  return { cwd, pkg, external, types, options };
+  return { cwd, pkg, dependencies, input, output, options };
 
 };
 
