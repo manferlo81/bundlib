@@ -10,7 +10,7 @@
     "lint": "tslint src/**/*.ts",
     "clean": "rimraf dist types coverage",
     "dev": "ts-node src-bin -dw",
-    "build": "npm run lint && ts-node src-bin -d",
+    "build": "npm run lint && ts-node src-bin",
     "test": "jest",
     "preversion": "npm run clean && npm run build && npm test"
   },
