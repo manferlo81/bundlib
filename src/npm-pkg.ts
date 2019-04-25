@@ -12,7 +12,7 @@ export interface BundlibOutputOptions {
   extend: boolean;
   equals: boolean;
 
-  name: string;
+  name: string | null;
   id: string | null;
   globals?: Record<string, string>;
 
@@ -31,7 +31,7 @@ export type BundlibPkgOptions = Partial<BundlibBuildOptions>;
 //
 
 export interface Pkg {
-  name: string;
+  name?: string;
   main?: string;
   module?: string;
   bin?: string;

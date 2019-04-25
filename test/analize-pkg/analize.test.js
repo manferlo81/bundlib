@@ -109,20 +109,6 @@ describe("analize", () => {
 
   });
 
-  test("should throw error if not name present", async () => {
-
-    await expect(
-      analize({
-        bundlib: {
-          iife: "out/lib.iife.js",
-          amd: "out/lib.amd.js",
-          umd: "out/lib.umd.js",
-        },
-      })
-    ).rejects.toThrow();
-
-  });
-
   test("build name should default to package name", async () => {
 
     const pkgName = "pkg-name";

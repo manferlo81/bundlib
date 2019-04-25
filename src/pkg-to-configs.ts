@@ -157,6 +157,12 @@ const pkgToConfigs = (
 
   }
 
+  const nameRequired = iifeOutputFile || amdOutputFile || umdOutputFile;
+
+  if (!name && nameRequired) {
+    throw new Error("name option is required for IIFE and UMD builds");
+  }
+
   if (iifeOutputFile) {
 
     const config = createBrowserConfig(
@@ -167,7 +173,7 @@ const pkgToConfigs = (
       esModule,
       interop,
       browserPlugins(),
-      name,
+      name as string,
       extend,
       globals,
     );
@@ -186,7 +192,7 @@ const pkgToConfigs = (
       esModule,
       interop,
       browserPlugins(),
-      name,
+      name as string,
       extend,
       globals,
       id,
@@ -206,7 +212,7 @@ const pkgToConfigs = (
       esModule,
       interop,
       browserPlugins(),
-      name,
+      name as string,
       extend,
       globals,
       id,

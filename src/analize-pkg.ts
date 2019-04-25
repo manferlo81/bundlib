@@ -57,14 +57,7 @@ const analizePkg = async (cwd: string, pkg?: Pkg): Promise<BundlibPkg> => {
     bundled: bundledDependencies || bundleDependencies || [],
   };
 
-  const { iife, amd, umd } = output;
-  const nameRequired = iife || amd || umd;
-
-  const buildName = name || pkgName;
-
-  if (nameRequired && !buildName) {
-    throw new Error("name option is required for IIFE and UMD builds");
-  }
+  const buildName = name || pkgName || null;
 
   const options: BundlibOutputOptions = {
     sourcemap: sourcemap !== false,
