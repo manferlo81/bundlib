@@ -24,12 +24,17 @@ describe("analize", () => {
     });
 
     expect(typeof analized).toBe("object");
-    expect(analized).toHaveProperty("external");
+    expect(analized).toHaveProperty("dependencies");
 
-    const { external } = analized;
+    const { dependencies } = analized;
 
-    expect(external).toContain("bundelib-dep1");
-    expect(external).toContain("bundelib-dep2");
+    expect(dependencies).toHaveProperty("runtime");
+    expect(dependencies).toHaveProperty("peer");
+
+    const { runtime, peer } = dependencies;
+
+    expect(runtime).toContain("bundelib-dep1");
+    expect(peer).toContain("bundelib-dep2");
 
   });
 
@@ -38,10 +43,12 @@ describe("analize", () => {
     const analized = await analize({});
 
     expect(typeof analized).toBe("object");
-    expect(analized).toHaveProperty("types");
+    expect(analized).toHaveProperty("output");
 
-    const { types } = analized;
+    const { output } = analized;
+    expect(output).toHaveProperty("types");
 
+    const { types } = output;
     expect(types).toBeNull();
 
   });
@@ -53,10 +60,12 @@ describe("analize", () => {
     });
 
     expect(typeof analized).toBe("object");
-    expect(analized).toHaveProperty("types");
+    expect(analized).toHaveProperty("output");
 
-    const { types } = analized;
+    const { output } = analized;
+    expect(output).toHaveProperty("types");
 
+    const { types } = output;
     expect(typeof types).toBe("string");
 
   });
@@ -68,30 +77,35 @@ describe("analize", () => {
     });
 
     expect(typeof analized).toBe("object");
-    expect(analized).toHaveProperty("types");
+    expect(analized).toHaveProperty("output");
 
-    const { types } = analized;
+    const { output } = analized;
+    expect(output).toHaveProperty("types");
 
+    const { types } = output;
     expect(typeof types).toBe("string");
 
   });
 
-  test("should types filename default to index.d.ts", async () => {
+  test("should read typings over types", async () => {
 
-    const folder = "types";
-    const index = "index.d.ts";
+    const typings = "typings";
 
     const analized = await analize({
-      types: folder,
+      types: "types",
+      typings,
     });
 
     expect(typeof analized).toBe("object");
-    expect(analized).toHaveProperty("types");
+    expect(analized).toHaveProperty("output");
 
-    const { types } = analized;
+    const { output } = analized;
+    expect(output).toHaveProperty("types");
 
+    const { types } = output;
     expect(typeof types).toBe("string");
-    expect(types.substr(types.length - index.length, index.length)).toBe(index);
+
+    expect(types.substr(types.length - typings.length)).toBe(typings);
 
   });
 
@@ -109,37 +123,28 @@ describe("analize", () => {
 
   });
 
+  test("build name should default to package name", async () => {
 
+    const pkgName = "pkg-name";
 
-  // test("should analize package.json", async () => {
+    const analized = await analize({
+      name: pkgName,
+      bundlib: {
+        iife: "out/lib.iife.js",
+        amd: "out/lib.amd.js",
+        umd: "out/lib.umd.js",
+      },
+    });
 
-  //   const json = {
-  //     main: "test/output.js",
-  //     peerDependencies: {},
-  //     types: "index.d.ts",
-  //   };
+    expect(typeof analized).toBe("object");
+    expect(analized).toHaveProperty("options");
 
-  //   const analized = await analize(json);
+    const { options } = analized;
+    expect(options).toHaveProperty("name");
 
-  //   expect(typeof analized).toBe("object");
-  //   expect(analized).toHaveProperty("cwd");
-  //   expect(analized).toHaveProperty("pkg");
-  //   expect(analized).toHaveProperty("external");
-  //   expect(analized).toHaveProperty("types");
-  //   expect(analized).toHaveProperty("options");
+    const { name } = options;
+    expect(name).toBe(pkgName);
 
-  //   const { cwd: analizedCWD, pkg, external, types, options } = analized;
-
-  //   expect(analizedCWD).toBe(cwd);
-  //   expect(pkg).toBe(json);
-  //   expect(external).toHaveProperty("length");
-  //   expect(typeof types).toBe("string");
-  //   expect(typeof options).toBe("object");
-  //   expect(options).toHaveProperty("input");
-  //   expect(options).toHaveProperty("sourcemap");
-  //   expect(options).toHaveProperty("esModule");
-  //   expect(options).toHaveProperty("interop");
-
-  // });
+  });
 
 });
