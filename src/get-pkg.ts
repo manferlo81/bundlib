@@ -2,7 +2,7 @@ import { readFile as fsReadFile } from "fs";
 import { resolve as resolvePath } from "path";
 import { promisify } from "util";
 
-import { Pkg } from "./pkg";
+import { Pkg } from "./npm-pkg";
 
 const readFile = promisify(fsReadFile);
 

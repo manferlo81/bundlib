@@ -1,9 +1,9 @@
 import mod from "module";
 import { resolve as resolvePath } from "path";
 
+import { BundlibDependencies, BundlibPkg, BundlibPkgOutput } from "./bundlib-pkg";
 import getPkg from "./get-pkg";
-import { BundlibOutputOptions, BundlibPkgOptions, Pkg } from "./pkg";
-import { BundlibDependencies, BundlibPkg, BundlibPkgOutput } from "./types";
+import { BundlibOutputOptions, BundlibPkgOptions, Pkg } from "./npm-pkg";
 
 const analizePkg = async (cwd: string, pkg?: Pkg): Promise<BundlibPkg> => {
 

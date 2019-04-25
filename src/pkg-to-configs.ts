@@ -1,7 +1,7 @@
 import { Plugin, RollupOptions } from "rollup";
 
+import { BundlibPkg } from "./bundlib-pkg";
 import { createBrowserConfig, createModuleConfig } from "./create-config";
-import { BundlibPkg } from "./types";
 
 import babel from "rollup-plugin-babel";
 import buble from "rollup-plugin-buble";
