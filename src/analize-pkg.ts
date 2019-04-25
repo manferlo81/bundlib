@@ -85,6 +85,7 @@ const analizePkg = async (cwd: string, pkg?: Pkg): Promise<BundlibPkg> => {
   };
 
   return { cwd, pkg, external, types, options };
+
 };
 
 export default analizePkg;

@@ -18,14 +18,46 @@ export type ConfigExtra = Extra<
 export type BuildFormat = Some<ModuleFormat, "cjs" | "es" | "iife" | "amd" | "umd">;
 
 export interface BundlibOptions {
+
+  /**
+   * makes bundlib build a development bundle
+   * @default false
+   */
   dev?: boolean;
+
+  /**
+   * makes bundlib to run in watch mode
+   * @default false
+   */
   watch?: boolean;
+
 }
 
 export interface BundlibPkg {
+
+  /**
+   * the current working directory
+   */
   cwd: string;
+
+  /**
+   * the original package.json
+   */
   pkg: Pkg;
+
+  /**
+   * use dependencies instead
+   */
   external: string[];
+
+  /**
+   * type definition folder resolved from package.json's types & typings
+   */
   types: string | null;
+
+  /**
+   * bundlib options, extracted from package.josn then normalized
+   */
   options: BundlibBuildOptions;
+
 }
