@@ -1,7 +1,7 @@
 import { Plugin, RollupOptions } from "rollup";
 
-import { BundlibPkg } from "./bundlib-pkg";
 import { createBrowserConfig, createModuleConfig } from "./create-config";
+import { AnalizedPkg } from "./pkg";
 
 import babel from "rollup-plugin-babel";
 import buble from "rollup-plugin-buble";
@@ -18,7 +18,7 @@ const pkgToConfigs = (
     output,
     dependencies,
     options,
-  }: BundlibPkg,
+  }: AnalizedPkg,
   dev: boolean,
 ): RollupOptions[] => {
 

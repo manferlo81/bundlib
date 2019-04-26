@@ -2,10 +2,16 @@ import mod from "module";
 import { resolve as resolvePath } from "path";
 import readPkg from "read-pkg";
 
-import { BundlibDependencies, BundlibPkg, BundlibPkgOutput } from "./bundlib-pkg";
-import { BundlibOutputOptions, BundlibPkgOptions, Pkg } from "./npm-pkg";
+import {
+  AnalizedPkg,
+  BundlibBuildOptions,
+  BundlibDependencies,
+  BundlibOutputFiles,
+  BundlibPkgOptions,
+  Pkg,
+} from "./pkg";
 
-const analizePkg = async (cwd: string, pkg?: Pkg): Promise<BundlibPkg> => {
+const analizePkg = async (cwd: string, pkg?: Pkg): Promise<AnalizedPkg> => {
 
   pkg = pkg || await readPkg({ cwd }) as Pkg;
 
@@ -41,7 +47,7 @@ const analizePkg = async (cwd: string, pkg?: Pkg): Promise<BundlibPkg> => {
 
   const types2 = typings || pkgTypes;
 
-  const output: BundlibPkgOutput = {
+  const output: BundlibOutputFiles = {
     cjs: main ? resolvePath(cwd, main) : null,
     es: esModuleFile ? resolvePath(cwd, esModuleFile) : null,
     iife: iifeFile ? resolvePath(cwd, iifeFile) : null,
@@ -59,7 +65,7 @@ const analizePkg = async (cwd: string, pkg?: Pkg): Promise<BundlibPkg> => {
 
   const buildName = name || pkgName || null;
 
-  const options: BundlibOutputOptions = {
+  const options: BundlibBuildOptions = {
     sourcemap: sourcemap !== false,
     esModule: !!esModule,
     interop: !!interop,
