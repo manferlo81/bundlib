@@ -1,5 +1,6 @@
 import analizePkg from "./analize-pkg";
-import { spinner } from "./console";
+import { spinner, written } from "./console";
+import { WRITTEN } from "./events";
 import pkgToConfigs from "./pkg-to-configs";
 import rollItUp from "./roll-it-up";
 import { BundlibOptions } from "./types";
@@ -12,11 +13,17 @@ const bundlib = async (cwd: string, options: BundlibOptions = {}) => {
   const pkg = await analizePkg(cwd);
   loading.succeed();
 
-  return await rollItUp(
+  const buildProcess = await rollItUp(
     pkgToConfigs(pkg, !!dev),
     cwd,
     !!watch,
   );
+
+  buildProcess.on(WRITTEN, (filename) => {
+    written(filename, cwd);
+  });
+
+  return await buildProcess;
 
 };
 
