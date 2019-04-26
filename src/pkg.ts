@@ -37,10 +37,10 @@ export interface BundlibOutputFiles extends BundlibOutputOptions {
 }
 
 export interface BundlibDependencies {
-  builtin: string[];
-  runtime: string[];
-  peer: string[];
-  bundled: string[];
+  builtin: readonly string[];
+  runtime: readonly string[];
+  peer: readonly string[];
+  bundled: readonly string[];
 }
 
 export interface AnalizedPkg {

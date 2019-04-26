@@ -1,4 +1,4 @@
-import mod from "module";
+import builtinModules from "builtin-modules";
 import { resolve as resolvePath } from "path";
 import readPkg from "read-pkg";
 
@@ -57,7 +57,7 @@ const analizePkg = async (cwd: string, pkg?: Pkg): Promise<AnalizedPkg> => {
   };
 
   const dependencies: BundlibDependencies = {
-    builtin: mod.builtinModules,
+    builtin: builtinModules,
     runtime: runtimeDependencies ? Object.keys(runtimeDependencies) : [],
     peer: peerDependencies ? Object.keys(peerDependencies) : [],
     bundled: bundledDependencies || bundleDependencies || [],

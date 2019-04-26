@@ -24,6 +24,7 @@
   "dependencies": {
     "@babel/core": "^7.4.3",
     "babel-plugin-transform-async-to-promises": "^0.8.10",
+    "builtin-modules": "^3.1.0",
     "chalk": "^2.4.2",
     "commander": "^2.20.0",
     "ora": "^3.4.0",
