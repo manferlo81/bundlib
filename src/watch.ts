@@ -1,36 +1,42 @@
 import { EventEmitter } from "events";
 import { watch as rollupWatch } from "rollup";
-import { WRITTEN } from "./events";
-import { BuldFunction } from "./types";
+import { BuildEventEmitter, BuildEventType, BuldFunction } from "./types";
 
-const watch: BuldFunction = (configs, cwd) => {
+const watch: BuldFunction = (configs) => {
 
   let firstTime = true;
   const watcher = rollupWatch(configs);
 
-  const result = new EventEmitter();
+  const result: BuildEventEmitter = new EventEmitter();
 
   watcher.on("event", (event) => {
 
-    const { code, output/* , error */ } = event;
+    const { code, output, error } = event;
 
     if (code === "START") {
       if (firstTime) {
         firstTime = false;
       } else {
-        // showInfo("changes detected, rebuilding");
-        // log();
+        result.emit(
+          BuildEventType.REBUILDING,
+        );
       }
     } else if (code === "BUNDLE_END") {
       for (const filename of output) {
-        // written(filename, cwd);
-        result.emit(WRITTEN, filename);
+        result.emit(
+          BuildEventType.WRITTEN,
+          filename,
+        );
       }
     } else if (code === "END") {
-      // log();
-      // showInfo("watching for changes");
+      result.emit(
+        BuildEventType.WATCHING,
+      );
     } else if (code === "ERROR" || code === "FATAL") {
-      // showError(error);
+      result.emit(
+        BuildEventType.ERROR,
+        error,
+      );
     }
 
   });

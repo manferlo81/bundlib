@@ -33,9 +33,23 @@ export interface BundlibOptions {
 
 }
 
-// tslint:disable-next-line: no-empty-interface
+export enum BuildEventType {
+  REBUILDING = "REBUILDING",
+  WATCHING = "WATCHING",
+  WRITTEN = "WRIITEN",
+  ERROR = "ERROR",
+}
+
 export interface BuildEventEmitter extends EventEmitter {
+
+  on(event: BuildEventType.REBUILDING | BuildEventType.WATCHING, listener: () => void): this;
+  on(event: BuildEventType.WRITTEN, listener: (filename: string) => void): this;
+  on(event: BuildEventType.ERROR, listener: (error: Error) => void): this;
+
+  emit(event: BuildEventType.REBUILDING | BuildEventType.WATCHING): boolean;
+  emit(event: BuildEventType.WRITTEN, filename: string): boolean;
+  emit(event: BuildEventType.ERROR, error: Error): boolean;
 
 }
 
-export type BuldFunction = (configs: RollupOptions[], cwd: string) => BuildEventEmitter;
+export type BuldFunction = (configs: RollupOptions[]) => BuildEventEmitter;

@@ -1,12 +1,11 @@
 import { EventEmitter } from "events";
 import { OutputOptions, rollup, RollupOptions } from "rollup";
-import { WRITTEN } from "./events";
 import sequential from "./sequential";
-import { BuldFunction } from "./types";
+import { BuildEventEmitter, BuildEventType, BuldFunction } from "./types";
 
-const build: BuldFunction = (configs, cwd) => {
+const build: BuldFunction = (configs) => {
 
-  const result = new EventEmitter();
+  const result: BuildEventEmitter = new EventEmitter();
 
   sequential(configs, async (config, index, next) => {
 
@@ -20,8 +19,7 @@ const build: BuldFunction = (configs, cwd) => {
 
     const { file } = config.output as OutputOptions;
 
-    // written(file as string, cwd);
-    result.emit(WRITTEN, file);
+    result.emit(BuildEventType.WRITTEN, file as string);
 
     next();
 

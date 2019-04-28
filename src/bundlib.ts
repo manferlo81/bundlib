@@ -1,9 +1,8 @@
 import analizePkg from "./analize-pkg";
 import { spinner, written } from "./console";
-import { WRITTEN } from "./events";
 import pkgToConfigs from "./pkg-to-configs";
 import rollItUp from "./roll-it-up";
-import { BundlibOptions } from "./types";
+import { BuildEventType, BundlibOptions } from "./types";
 
 const bundlib = async (cwd: string, options: BundlibOptions = {}) => {
 
@@ -13,14 +12,30 @@ const bundlib = async (cwd: string, options: BundlibOptions = {}) => {
   const pkg = await analizePkg(cwd);
   loading.succeed();
 
+  const configs = pkgToConfigs(pkg, !!dev);
+
   const buildProcess = await rollItUp(
-    pkgToConfigs(pkg, !!dev),
-    cwd,
+    configs,
     !!watch,
   );
 
-  buildProcess.on(WRITTEN, (filename) => {
+  buildProcess.on(BuildEventType.WRITTEN, (filename) => {
     written(filename, cwd);
+  });
+
+  buildProcess.on(BuildEventType.ERROR, (err) => {
+    // tslint:disable-next-line: no-console
+    console.error(err);
+  });
+
+  buildProcess.on(BuildEventType.WATCHING, () => {
+    // tslint:disable-next-line: no-console
+    console.log("watching for changes...");
+  });
+
+  buildProcess.on(BuildEventType.REBUILDING, () => {
+    // tslint:disable-next-line: no-console
+    console.log("rebuilding...");
   });
 
   return await buildProcess;
