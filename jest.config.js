@@ -4,7 +4,7 @@ module.exports = {
 
   testEnvironment: "node",
 
-  collectCoverage: !CI,
+  collectCoverage: true,
   collectCoverageFrom: [
     "dist/**",
   ],
