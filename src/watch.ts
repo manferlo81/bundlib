@@ -1,45 +1,62 @@
 import { EventEmitter } from "events";
-import { watch as rollupWatch } from "rollup";
-import { BuildEventEmitter, BuildEventType, BuldFunction } from "./types";
+import { RollupWatcher, watch as rollupWatch } from "rollup";
+import { BUILDING, BUILT, ERROR, REBUILDING, WATCHING, WRITING, WRITTEN } from "./events";
+import { BuildEventEmitter, BuldFunction } from "./types";
 
-const watch: BuldFunction = (configs) => {
-
-  let firstTime = true;
-  const watcher = rollupWatch(configs);
-
-  const result: BuildEventEmitter = new EventEmitter();
+function mapWatcherToEvents(watcher: RollupWatcher, result: BuildEventEmitter) {
 
   watcher.on("event", (event) => {
 
     const { code, output, error } = event;
 
+    // tslint:disable-next-line: no-console
+    // console.log(">>>>>>>", event);
+
     if (code === "START") {
-      if (firstTime) {
-        firstTime = false;
-      } else {
+      result.emit(
+        REBUILDING,
+      );
+      result.emit(
+        BUILDING,
+      );
+    } else if (code === "END") {
+      result.emit(
+        BUILT,
+      );
+      result.emit(
+        WATCHING,
+      );
+    } else if (code === "BUNDLE_START") {
+      for (const filename of output) {
         result.emit(
-          BuildEventType.REBUILDING,
+          WRITING,
+          filename,
         );
       }
     } else if (code === "BUNDLE_END") {
       for (const filename of output) {
         result.emit(
-          BuildEventType.WRITTEN,
+          WRITTEN,
           filename,
         );
       }
-    } else if (code === "END") {
-      result.emit(
-        BuildEventType.WATCHING,
-      );
     } else if (code === "ERROR" || code === "FATAL") {
       result.emit(
-        BuildEventType.ERROR,
+        ERROR,
         error,
       );
     }
 
   });
+
+}
+
+const watch: BuldFunction = (configs) => {
+
+  const watcher = rollupWatch(configs);
+  const result: BuildEventEmitter = new EventEmitter();
+
+  mapWatcherToEvents(watcher, result);
 
   return result;
 

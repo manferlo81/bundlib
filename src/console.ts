@@ -1,32 +1,32 @@
-import chalk from "chalk";
-import ora, { Options as OraOptions } from "ora";
+import ora, { Options as OraOptions, Ora } from "ora";
 import { relative } from "path";
 
-export function spinner(text: OraOptions | string) {
-  return ora(text).start();
+interface SpinnerResolve {
+  (err?: Error | null, message?: string): Ora;
+  ora: Ora;
 }
 
-export function log(text?: any, error?: boolean) {
-  // tslint:disable-next-line: no-console
-  (error ? console.error : console.log)(text || "");
+export function spinner(options: OraOptions | string): SpinnerResolve {
+
+  const instance = ora(options).start();
+
+  const handler: SpinnerResolve = (err?, message?) => {
+    return err ? instance.fail(err.message || (err.toString && err.toString())) : instance.succeed(message);
+  };
+
+  handler.ora = instance;
+
+  return handler;
+
 }
 
-export function showError(error: { id?: any }) {
-  const tag = chalk.bgRed.white(" error ");
-  let text = `${tag} error found`;
-  if (error.id) {
-    text = `${text} in file ${error.id}`;
-  }
-  log(text, true);
-  log(error, true);
-}
+export function buildSpinner(filename: string, cwd: string): SpinnerResolve {
 
-export function showInfo(text: string) {
-  log(chalk.blueBright(`  >> ${text} <<`));
-}
+  const relativeFilename = relative(cwd, filename);
 
-export function written(filename: string, cwd: string) {
-  const tag = chalk.greenBright.inverse(" built ");
-  filename = chalk.yellow(relative(cwd, filename));
-  log(`${tag} ${filename}`);
+  return spinner({
+    text: relativeFilename,
+    color: "cyan",
+  });
+
 }

@@ -1,10 +1,10 @@
 import { RollupOptions } from "rollup";
 
 import build from "./build";
-import { BuildEventEmitter } from "./types";
+import { BuildEventEmitterOrPromise } from "./types";
 import watchBuild from "./watch";
 
-const rollItUp = async (configs: RollupOptions[], watch: boolean): Promise<BuildEventEmitter> => {
+const rollItUp = (configs: RollupOptions[], watch: boolean): BuildEventEmitterOrPromise => {
 
   return watch
     ? watchBuild(configs)

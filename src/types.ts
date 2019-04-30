@@ -33,23 +33,28 @@ export interface BundlibOptions {
 
 }
 
-export enum BuildEventType {
-  REBUILDING = "REBUILDING",
-  WATCHING = "WATCHING",
-  WRITTEN = "WRIITEN",
-  ERROR = "ERROR",
-}
+export type EventBuilding = "BUILDING";
+export type EventBuilt = "BUILT";
+
+export type EventWriting = "WRITING";
+export type EventWritten = "WRITTEN";
+
+export type EventRebuilding = "REBUILDING";
+export type EventWatching = "WATCHING";
+
+export type EventError = "ERROR";
 
 export interface BuildEventEmitter extends EventEmitter {
 
-  on(event: BuildEventType.REBUILDING | BuildEventType.WATCHING, listener: () => void): this;
-  on(event: BuildEventType.WRITTEN, listener: (filename: string) => void): this;
-  on(event: BuildEventType.ERROR, listener: (error: Error) => void): this;
+  on(event: EventWriting | EventWritten, listener: (filename: string) => void): this;
+  on(event: EventError, listener: (error: Error) => void): this;
+  on(event: EventWatching | EventRebuilding | EventBuilding | EventBuilt, listener: () => void): this;
 
-  emit(event: BuildEventType.REBUILDING | BuildEventType.WATCHING): boolean;
-  emit(event: BuildEventType.WRITTEN, filename: string): boolean;
-  emit(event: BuildEventType.ERROR, error: Error): boolean;
+  emit(event: EventWriting | EventWritten, filename: string): boolean;
+  emit(event: EventError, error: Error): boolean;
+  emit(event: EventWatching | EventRebuilding | EventBuilding | EventBuilt): boolean;
 
 }
 
-export type BuldFunction = (configs: RollupOptions[]) => BuildEventEmitter;
+export type BuildEventEmitterOrPromise = BuildEventEmitter | Promise<BuildEventEmitter>;
+export type BuldFunction = (configs: RollupOptions[]) => BuildEventEmitterOrPromise;

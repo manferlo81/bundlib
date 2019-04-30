@@ -11,10 +11,10 @@ function createNext<T>(arr: ArrayLike<T>, callback: OneByOneCallback<T>) {
       return;
     }
 
-    const prevIndex = index++;
-    const item = arr[prevIndex];
+    const currentIndex = index++;
+    const item = arr[currentIndex];
 
-    return await callback(item, next, prevIndex);
+    callback(item, next, currentIndex);
 
   };
 
@@ -25,8 +25,7 @@ function createNext<T>(arr: ArrayLike<T>, callback: OneByOneCallback<T>) {
 function oneByOne<T>(arr: ArrayLike<T>, callback: OneByOneCallback<T>) {
 
   const next = createNext(arr, callback);
-
-  return next();
+  next();
 
 }
 

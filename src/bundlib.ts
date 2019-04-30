@@ -1,8 +1,9 @@
 import analizePkg from "./analize-pkg";
-import { spinner, written } from "./console";
+import { buildSpinner, spinner } from "./console";
+import { ERROR, REBUILDING, WATCHING, WRITING, WRITTEN } from "./events";
 import pkgToConfigs from "./pkg-to-configs";
 import rollItUp from "./roll-it-up";
-import { BuildEventType, BundlibOptions } from "./types";
+import { BundlibOptions } from "./types";
 
 const bundlib = async (cwd: string, options: BundlibOptions = {}) => {
 
@@ -10,30 +11,38 @@ const bundlib = async (cwd: string, options: BundlibOptions = {}) => {
 
   const loading = spinner("reading package.json\n");
   const pkg = await analizePkg(cwd);
-  loading.succeed();
+  loading(null);
 
   const configs = pkgToConfigs(pkg, !!dev);
+
+  const files: Record<string, null | ((err?: Error) => void)> = {};
 
   const buildProcess = await rollItUp(
     configs,
     !!watch,
   );
 
-  buildProcess.on(BuildEventType.WRITTEN, (filename) => {
-    written(filename, cwd);
+  buildProcess.on(WRITING, (filename) => {
+    files[filename] = buildSpinner(filename, cwd);
   });
 
-  buildProcess.on(BuildEventType.ERROR, (err) => {
+  buildProcess.on(WRITTEN, (filename) => {
+    const oraHandler = files[filename] || buildSpinner(filename, cwd);
+    oraHandler();
+    files[filename] = null;
+  });
+
+  buildProcess.on(ERROR, (err) => {
     // tslint:disable-next-line: no-console
     console.error(err);
   });
 
-  buildProcess.on(BuildEventType.WATCHING, () => {
+  buildProcess.on(WATCHING, () => {
     // tslint:disable-next-line: no-console
     console.log("watching for changes...");
   });
 
-  buildProcess.on(BuildEventType.REBUILDING, () => {
+  buildProcess.on(REBUILDING, () => {
     // tslint:disable-next-line: no-console
     console.log("rebuilding...");
   });
