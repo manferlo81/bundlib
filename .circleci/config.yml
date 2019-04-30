@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  codecov: codecov/codecov@1.0.4
+
 executors:
 
   node:
@@ -53,6 +56,15 @@ jobs:
           root: *working_directory
           paths: .
 
+  upload_coverage:
+    executor: node
+    steps:
+
+      - attach_workspace:
+          at: *working_directory
+
+      - codecov/upload:
+          file: coverage/*.json
 
   publish:
     executor: node
@@ -75,6 +87,13 @@ workflows:
               only: /.*/
             branches:
               only: /.*/
+
+      - upload_coverage:
+          requires:
+            - unit_test
+          filters:
+            branches:
+              ignore: /greenkeeper.*/
 
       - publish:
           context: NPM
