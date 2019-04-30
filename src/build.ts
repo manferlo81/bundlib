@@ -1,13 +1,13 @@
 import { EventEmitter } from "events";
 import { OutputOptions, rollup, RollupOptions } from "rollup";
-import sequential from "./sequential";
+import oneByOne from "./one-by-one";
 import { BuildEventEmitter, BuildEventType, BuldFunction } from "./types";
 
 const build: BuldFunction = (configs) => {
 
   const result: BuildEventEmitter = new EventEmitter();
 
-  sequential(configs, async (config, index, next) => {
+  oneByOne(configs, async (config, next) => {
 
     if (!config.output) {
       return next();
