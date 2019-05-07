@@ -30,9 +30,11 @@ const bundlib = async (cwd: string, { dev, watch, silent }: BundlibOptions = {})
     });
 
     buildProcess.on(WRITTEN, (filename) => {
-      const oraHandler = files[filename] || buildSpinner(filename, cwd);
-      oraHandler.succeed();
-      files[filename] = null;
+      let instance = files[filename];
+      if (instance) {
+        instance.succeed();
+        files[filename] = instance = null;
+      }
     });
 
     buildProcess.on(ERROR, (err) => {
