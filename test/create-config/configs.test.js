@@ -35,9 +35,12 @@ describe("package to configs", () => {
 
   test("should generate CommonJS module with types config", async () => {
 
-    const configs = await createConfigs(cwd, true, {
+    const configs = await createConfigs(cwd, false, {
       main: "out/lib.cjs.js",
       types: "out/lib.d.ts",
+      bundlib: {
+        equals: true,
+      },
     });
 
     expect(configs).toHaveLength(2);
