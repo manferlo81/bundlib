@@ -2,9 +2,11 @@ const analize = require("../test-helpers/analize");
 
 describe("analize", () => {
 
+  const cwd = process.cwd();
+
   test("should read package.json if not provided", async () => {
 
-    const analized = await analize();
+    const analized = await analize(cwd);
 
     expect(typeof analized).toBe("object");
     expect(analized).toHaveProperty("pkg");
@@ -14,7 +16,7 @@ describe("analize", () => {
 
   test("should add dependencies and peerDependencies to external", async () => {
 
-    const analized = await analize({
+    const analized = await analize(cwd, {
       dependencies: {
         "bundelib-dep1": "1.0.0",
       },
@@ -40,7 +42,7 @@ describe("analize", () => {
 
   test("should set types to null", async () => {
 
-    const analized = await analize({});
+    const analized = await analize(cwd, {});
 
     expect(typeof analized).toBe("object");
     expect(analized).toHaveProperty("output");
@@ -55,7 +57,7 @@ describe("analize", () => {
 
   test("should read types", async () => {
 
-    const analized = await analize({
+    const analized = await analize(cwd, {
       types: "types",
     });
 
@@ -72,7 +74,7 @@ describe("analize", () => {
 
   test("should read typings", async () => {
 
-    const analized = await analize({
+    const analized = await analize(cwd, {
       typings: "types",
     });
 
@@ -91,7 +93,7 @@ describe("analize", () => {
 
     const typings = "typings";
 
-    const analized = await analize({
+    const analized = await analize(cwd, {
       types: "types",
       typings,
     });
@@ -113,7 +115,7 @@ describe("analize", () => {
 
     const pkgName = "pkg-name";
 
-    const analized = await analize({
+    const analized = await analize(cwd, {
       name: pkgName,
       bundlib: {
         iife: "out/lib.iife.js",

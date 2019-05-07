@@ -1,16 +1,12 @@
-const { pkgToConfigs } = require("../..");
-const analize = require("../test-helpers/analize");
+const createConfigs = require("../test-helpers/create-configs");
 
 describe("package to configs", () => {
 
+  const cwd = process.cwd();
+
   test("should generate empty array", async () => {
 
-    const pkg = await analize({});
-
-    const configs = pkgToConfigs(
-      pkg,
-      false,
-    );
+    const configs = await createConfigs(cwd, false, {});
 
     expect(configs).toHaveLength(0);
 
@@ -18,15 +14,10 @@ describe("package to configs", () => {
 
   test("should generate CommonJS and ES modules config", async () => {
 
-    const pkg = await analize({
+    const configs = await createConfigs(cwd, true, {
       main: "out/lib.cjs.js",
       module: "out/lib.es.js",
     });
-
-    const configs = pkgToConfigs(
-      pkg,
-      true,
-    );
 
     expect(configs).toHaveLength(2);
 
@@ -44,15 +35,10 @@ describe("package to configs", () => {
 
   test("should generate CommonJS module with types config", async () => {
 
-    const pkg = await analize({
+    const configs = await createConfigs(cwd, true, {
       main: "out/lib.cjs.js",
       types: "out/lib.d.ts",
     });
-
-    const configs = pkgToConfigs(
-      pkg,
-      true,
-    );
 
     expect(configs).toHaveLength(2);
 
@@ -70,7 +56,7 @@ describe("package to configs", () => {
 
   test("should generate IIFE and AMD modules config", async () => {
 
-    const pkg = await analize({
+    const configs = await createConfigs(cwd, true, {
       bundlib: {
         name: "lib",
         id: "lib",
@@ -79,11 +65,6 @@ describe("package to configs", () => {
         globals: {},
       },
     });
-
-    const configs = pkgToConfigs(
-      pkg,
-      true,
-    );
 
     expect(configs).toHaveLength(2);
 
@@ -103,18 +84,13 @@ describe("package to configs", () => {
 
   test("should generate UMD module config", async () => {
 
-    const pkg = await analize({
+    const configs = await createConfigs(cwd, true, {
       bundlib: {
         name: "lib",
         id: "lib",
         umd: "out/lib.umd.js",
       },
     });
-
-    const configs = pkgToConfigs(
-      pkg,
-      true,
-    );
 
     expect(configs).toHaveLength(1);
 
