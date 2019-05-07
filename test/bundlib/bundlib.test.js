@@ -1,11 +1,12 @@
-const { resolve } = require("path");
-
 require("../mock/mock-file-write");
+require("../mock/mock-ora");
+
+const { resolve } = require("path");
 const { bundlib } = require("../..");
 
 describe("bundlib", () => {
 
-  test("bundlib should generates 3 files", async (done) => {
+  test("bundlib should generates files", async (done) => {
 
     const projectCwd = resolve(process.cwd(), "test/projects/1");
     const files = ["lib.js", "lib.d.ts"].map(
