@@ -12,6 +12,22 @@ describe("package to configs", () => {
 
   });
 
+  test("should throw if name required and not provided", (done) => {
+
+    createConfigs(cwd, false, {
+      bundlib: {
+        iife: "out/lib.js",
+      },
+    })
+      .then(() => {
+        done("promise did not throw.");
+      })
+      .catch(() => {
+        done();
+      });
+
+  });
+
   test("should generate CommonJS and ES modules config", async () => {
 
     const configs = await createConfigs(cwd, true, {
