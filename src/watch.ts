@@ -1,62 +1,74 @@
 import { EventEmitter } from "events";
-import { RollupWatcher, watch as rollupWatch } from "rollup";
+import { watch as rollupWatch } from "rollup";
 import { BUILDING, BUILT, ERROR, REBUILDING, WATCHING, WRITING, WRITTEN } from "./events";
 import { BuildEventEmitter, BuldFunction } from "./types";
 
-function mapWatcherToEvents(watcher: RollupWatcher, result: BuildEventEmitter) {
+interface WatchEvent {
+  output: any;
+  error: any;
+}
 
-  watcher.on("event", (event) => {
+type EmitMethod = (result: EventEmitter, event: WatchEvent) => void;
 
-    const { code, output, error } = event;
+const ERR: EmitMethod = (result, { error }) => {
+  result.emit(
+    ERROR,
+    error,
+  );
+};
 
-    // tslint:disable-next-line: no-console
-    // console.log(">>>>>>>", event);
+const map: Record<string, EmitMethod> = {
 
-    if (code === "START") {
+  START(result) {
+    [REBUILDING, BUILDING].forEach((eventType) => {
+      result.emit(eventType);
+    });
+  },
+
+  END(result) {
+    [BUILT, WATCHING].forEach((eventType) => {
+      result.emit(eventType);
+    });
+  },
+
+  BUNDLE_START(result, { output }) {
+    for (const filename of output) {
       result.emit(
-        REBUILDING,
-      );
-      result.emit(
-        BUILDING,
-      );
-    } else if (code === "END") {
-      result.emit(
-        BUILT,
-      );
-      result.emit(
-        WATCHING,
-      );
-    } else if (code === "BUNDLE_START") {
-      for (const filename of output) {
-        result.emit(
-          WRITING,
-          filename,
-        );
-      }
-    } else if (code === "BUNDLE_END") {
-      for (const filename of output) {
-        result.emit(
-          WRITTEN,
-          filename,
-        );
-      }
-    } else if (code === "ERROR" || code === "FATAL") {
-      result.emit(
-        ERROR,
-        error,
+        WRITING,
+        filename,
       );
     }
+  },
 
-  });
+  BUNDLE_END(result, { output }) {
+    for (const filename of output) {
+      result.emit(
+        WRITTEN,
+        filename,
+      );
+    }
+  },
 
-}
+  ERROR: ERR,
+  FATAL: ERR,
+
+};
 
 const watch: BuldFunction = (configs) => {
 
   const watcher = rollupWatch(configs);
   const result: BuildEventEmitter = new EventEmitter();
 
-  mapWatcherToEvents(watcher, result);
+  watcher.on("event", (event) => {
+
+    const { code } = event;
+
+    const emit: EmitMethod | undefined = map[code];
+    if (emit) {
+      emit(result, event);
+    }
+
+  });
 
   return result;
 
