@@ -1,5 +1,5 @@
 import { EventEmitter } from "events";
-import { OutputOptions, rollup, RollupOptions } from "rollup";
+import { OutputOptions, rollup } from "rollup";
 import { BUILDING, BUILT, WRITING, WRITTEN } from "./events";
 import oneByOne from "./one-by-one";
 import { BuildEventEmitter, BuldFunction } from "./types";
@@ -14,16 +14,13 @@ const build: BuldFunction = async (configs) => {
 
     oneByOne(configs, async (config, next, index) => {
 
-      if (!config.output) {
-        return next();
-      }
-
-      const filename = (config.output as OutputOptions).file as string;
+      const output = config.output as OutputOptions;
+      const filename = output.file as string;
 
       result.emit(WRITING, filename);
 
-      const buildResult = await rollup(config as RollupOptions);
-      await buildResult.write(config.output);
+      const buildResult = await rollup(config);
+      await buildResult.write(output);
 
       result.emit(WRITTEN, filename);
 
