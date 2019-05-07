@@ -6,11 +6,13 @@ import pkgToConfigs from "./pkg-to-configs";
 import rollItUp from "./roll-it-up";
 import { BundlibOptions } from "./types";
 
-const bundlib = async (cwd: string, { dev, watch }: BundlibOptions = {}) => {
+const bundlib = async (cwd: string, { dev, watch, silent }: BundlibOptions = {}) => {
 
-  const loading = spinner("reading package.json\n");
+  const loading = !silent && spinner("reading package.json\n");
   const pkg = await analizePkg(cwd);
-  loading.succeed();
+  if (loading) {
+    loading.succeed();
+  }
 
   const configs = pkgToConfigs(pkg, !!dev);
 
@@ -21,30 +23,34 @@ const bundlib = async (cwd: string, { dev, watch }: BundlibOptions = {}) => {
     !!watch,
   );
 
-  buildProcess.on(WRITING, (filename) => {
-    files[filename] = buildSpinner(filename, cwd);
-  });
+  if (!silent) {
 
-  buildProcess.on(WRITTEN, (filename) => {
-    const oraHandler = files[filename] || buildSpinner(filename, cwd);
-    oraHandler.succeed();
-    files[filename] = null;
-  });
+    buildProcess.on(WRITING, (filename) => {
+      files[filename] = buildSpinner(filename, cwd);
+    });
 
-  buildProcess.on(ERROR, (err) => {
-    // tslint:disable-next-line: no-console
-    console.error(err);
-  });
+    buildProcess.on(WRITTEN, (filename) => {
+      const oraHandler = files[filename] || buildSpinner(filename, cwd);
+      oraHandler.succeed();
+      files[filename] = null;
+    });
 
-  buildProcess.on(WATCHING, () => {
-    // tslint:disable-next-line: no-console
-    console.log("watching for changes...");
-  });
+    buildProcess.on(ERROR, (err) => {
+      // tslint:disable-next-line: no-console
+      console.error(err);
+    });
 
-  buildProcess.on(REBUILDING, () => {
-    // tslint:disable-next-line: no-console
-    console.log("rebuilding...");
-  });
+    buildProcess.on(WATCHING, () => {
+      // tslint:disable-next-line: no-console
+      console.log("watching for changes...");
+    });
+
+    buildProcess.on(REBUILDING, () => {
+      // tslint:disable-next-line: no-console
+      console.log("rebuilding...");
+    });
+
+  }
 
   return await buildProcess;
 
