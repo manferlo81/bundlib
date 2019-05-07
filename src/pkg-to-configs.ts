@@ -74,7 +74,9 @@ const pkgToConfigs = (
 
   ];
 
-  const minify = !dev && terser({
+  const prod = !dev;
+
+  const minify = prod && terser({
     sourcemap,
     toplevel: true,
     module: true,
@@ -112,7 +114,7 @@ const pkgToConfigs = (
       banner: false,
     }),
 
-    !dev && removeEmptyLines(),
+    prod && removeEmptyLines(),
     !!cjsOutputFile && equals && exportEquals(),
 
   ];
