@@ -14,5 +14,3 @@ jest.mock("fs", () => {
   return { ...fs, writeFileSync, writeFile };
 
 });
-
-module.exports = require("fs");
