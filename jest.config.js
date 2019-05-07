@@ -1,6 +1,9 @@
+// @ts-check
+
 const CI = process.env.CI;
 
-module.exports = {
+/** @type { jest.InitialOptions } */
+const config = {
 
   testEnvironment: "node",
 
@@ -18,3 +21,5 @@ module.exports = {
   verbose: true,
 
 };
+
+module.exports = config;
