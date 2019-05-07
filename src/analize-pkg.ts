@@ -25,7 +25,7 @@ const analizePkg = async (cwd: string, pkg?: Pkg): Promise<AnalizedPkg> => {
     bundleDependencies,
     types: pkgTypes,
     typings,
-    bundlib,
+    bundlib: pkgBundlib,
   } = pkg;
 
   const {
@@ -41,11 +41,11 @@ const analizePkg = async (cwd: string, pkg?: Pkg): Promise<AnalizedPkg> => {
     extend,
     globals,
     equals,
-  } = bundlib || {} as BundlibPkgOptions;
+  } = pkgBundlib || {} as BundlibPkgOptions;
 
   const input = resolvePath(cwd, pkgInput || "src/index.ts");
 
-  const types2 = typings || pkgTypes;
+  const typesPath = typings || pkgTypes;
 
   const output: BundlibOutputFiles = {
     cjs: main ? resolvePath(cwd, main) : null,
@@ -53,7 +53,7 @@ const analizePkg = async (cwd: string, pkg?: Pkg): Promise<AnalizedPkg> => {
     iife: iifeFile ? resolvePath(cwd, iifeFile) : null,
     amd: amdFile ? resolvePath(cwd, amdFile) : null,
     umd: umdFile ? resolvePath(cwd, umdFile) : null,
-    types: types2 ? resolvePath(cwd, types2) : null,
+    types: typesPath ? resolvePath(cwd, typesPath) : null,
   };
 
   const dependencies: BundlibDependencies = {
