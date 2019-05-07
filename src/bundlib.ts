@@ -1,3 +1,4 @@
+import { Ora } from "ora";
 import analizePkg from "./analize-pkg";
 import { buildSpinner, spinner } from "./console";
 import { ERROR, REBUILDING, WATCHING, WRITING, WRITTEN } from "./events";
@@ -5,17 +6,15 @@ import pkgToConfigs from "./pkg-to-configs";
 import rollItUp from "./roll-it-up";
 import { BundlibOptions } from "./types";
 
-const bundlib = async (cwd: string, options: BundlibOptions = {}) => {
-
-  const { dev, watch } = options;
+const bundlib = async (cwd: string, { dev, watch }: BundlibOptions = {}) => {
 
   const loading = spinner("reading package.json\n");
   const pkg = await analizePkg(cwd);
-  loading(null);
+  loading.succeed();
 
   const configs = pkgToConfigs(pkg, !!dev);
 
-  const files: Record<string, null | ((err?: Error) => void)> = {};
+  const files: Record<string, null | Ora> = {};
 
   const buildProcess = await rollItUp(
     configs,
@@ -28,7 +27,7 @@ const bundlib = async (cwd: string, options: BundlibOptions = {}) => {
 
   buildProcess.on(WRITTEN, (filename) => {
     const oraHandler = files[filename] || buildSpinner(filename, cwd);
-    oraHandler();
+    oraHandler.succeed();
     files[filename] = null;
   });
 
