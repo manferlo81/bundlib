@@ -9,7 +9,7 @@ describe("roll-it-up", () => {
   test("roll-it-up should generates files", async (done) => {
 
     const projectCwd = resolve(process.cwd(), "test/projects/1");
-    const files = ["lib.js", "lib.d.ts"].map(
+    const files = ["lib.js"].map(
       (fn) => resolve(projectCwd, fn)
     );
 

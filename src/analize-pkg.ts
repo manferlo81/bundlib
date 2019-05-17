@@ -1,6 +1,7 @@
 import builtinModules from "builtin-modules";
-import { resolve as resolvePath } from "path";
+// import { resolve as resolvePath } from "path";
 import readPkg from "read-pkg";
+import resolvePath from "./resolve";
 
 import {
   AnalizedPkg,
@@ -43,17 +44,17 @@ const analizePkg = async (cwd: string, pkg?: Pkg): Promise<AnalizedPkg> => {
     equals,
   } = pkgBundlib || {} as BundlibPkgOptions;
 
-  const input = resolvePath(cwd, pkgInput || "src/index.ts");
+  const input = resolvePath(pkgInput || "src/index.ts", cwd);
 
   const typesPath = typings || pkgTypes;
 
   const output: BundlibOutputFiles = {
-    cjs: main ? resolvePath(cwd, main) : null,
-    es: esModuleFile ? resolvePath(cwd, esModuleFile) : null,
-    iife: iifeFile ? resolvePath(cwd, iifeFile) : null,
-    amd: amdFile ? resolvePath(cwd, amdFile) : null,
-    umd: umdFile ? resolvePath(cwd, umdFile) : null,
-    types: typesPath ? resolvePath(cwd, typesPath) : null,
+    cjs: main ? resolvePath(main, cwd) : null,
+    es: esModuleFile ? resolvePath(esModuleFile, cwd) : null,
+    iife: iifeFile ? resolvePath(iifeFile, cwd) : null,
+    amd: amdFile ? resolvePath(amdFile, cwd) : null,
+    umd: umdFile ? resolvePath(umdFile, cwd) : null,
+    types: typesPath ? resolvePath(typesPath, cwd) : null,
   };
 
   const dependencies: BundlibDependencies = {

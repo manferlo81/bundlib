@@ -1,3 +1,4 @@
+import { dirname, extname } from "path";
 import { Plugin, RollupOptions } from "rollup";
 
 import { createBrowserConfig, createModuleConfig } from "./create-config";
@@ -6,14 +7,14 @@ import { AnalizedPkg } from "./pkg";
 import babel from "rollup-plugin-babel";
 import buble from "rollup-plugin-buble";
 import commonjs from "rollup-plugin-commonjs";
-import { dts, ts } from "rollup-plugin-dts";
-import exportEquals from "rollup-plugin-export-equals";
-import resolve from "rollup-plugin-node-resolve";
+import nodeResolve from "rollup-plugin-node-resolve";
 import { terser } from "rollup-plugin-terser";
-import removeEmptyLines from "./plugins/remove-empty-lines";
+import ts2 from "rollup-plugin-typescript2";
+import resolvePath from "./resolve";
 
 const pkgToConfigs = (
   {
+    cwd,
     input,
     output,
     dependencies,
@@ -45,77 +46,82 @@ const pkgToConfigs = (
     esModule,
     interop,
     extend,
-    equals,
+    // equals,
 
-    name,
+    name: pkgName,
     id,
     globals,
 
   } = options;
 
-  const configs: RollupOptions[] = [];
-
-  const transform: Plugin[] = [
-
-    babel({
-      extensions: [".ts", ".js"],
-      exclude: /node_modules/,
-      babelrc: false,
-      plugins: [require.resolve("babel-plugin-transform-async-to-promises")],
-    }),
-
-    buble({
-      exclude: /node_modules/,
-      target: {
-        node: 0.12,
-      },
-      objectAssign: true,
-    }) as Plugin,
-
-  ];
-
   const prod = !dev;
 
-  const minify = prod && terser({
-    sourcemap,
-    toplevel: true,
-    module: true,
-  });
+  const configs: RollupOptions[] = [];
 
-  const modulePlugins = (): Array<Plugin | false> => [
+  let typesOutputDir = typesOutputFile;
+  if (typesOutputDir && extname(typesOutputDir) === ".ts") {
+    typesOutputDir = dirname(typesOutputDir);
+  }
 
-    ts({
-      banner: false,
-      compilerOptions: {
-        target: 7,
-        module: 6,
-        sourceMap: sourcemap,
-      },
-    }),
+  const modulePlugins = (): Array<Plugin | false> => {
 
-    ...transform,
+    const declarationDir = !configs.length && typesOutputDir;
 
-    minify,
+    return [
 
-  ];
+      ts2({
+        cacheRoot: resolvePath(".cache/rpt2", cwd),
+        useTsconfigDeclarationDir: true,
+        tsconfigDefaults: {
+          include: [
+            resolvePath("src/**/*.ts", cwd),
+          ],
+          exclude: [],
+        },
+        tsconfigOverride: {
+          compilerOptions: {
+            target: "esnext",
+            module: "esnext",
+            moduleResolution: "node",
+            sourceMap: sourcemap,
+            declaration: !!declarationDir,
+            declarationDir: declarationDir || "",
+            emitDeclarationOnly: false,
+          },
+        },
+      }),
+
+      babel({
+        extensions: [".ts", ".js"],
+        exclude: /node_modules/,
+        babelrc: false,
+        plugins: [require.resolve("babel-plugin-transform-async-to-promises")],
+      }),
+
+      buble({
+        exclude: /node_modules/,
+        target: {
+          node: 0.12,
+        },
+        objectAssign: true,
+      }) as Plugin,
+
+      prod && terser({
+        sourcemap,
+        toplevel: true,
+        module: true,
+      }),
+
+    ];
+
+  };
 
   const browserPlugins = () => [
 
-    resolve() as Plugin,
+    nodeResolve(),
     commonjs(),
 
     ...modulePlugins(),
-
-  ];
-
-  const typesPlugins = () => [
-
-    dts({
-      banner: false,
-    }),
-
-    prod && removeEmptyLines(),
-    !!cjsOutputFile && equals && exportEquals(),
 
   ];
 
@@ -124,23 +130,6 @@ const pkgToConfigs = (
     ...runtimeDependencies,
     ...peerDependencies,
   ];
-
-  if (cjsOutputFile) {
-
-    const config: RollupOptions = createModuleConfig(
-      apiInput,
-      "cjs",
-      cjsOutputFile,
-      sourcemap,
-      esModule,
-      interop,
-      external,
-      modulePlugins(),
-    );
-
-    configs.push(config);
-
-  }
 
   if (esOutputFile) {
 
@@ -159,9 +148,26 @@ const pkgToConfigs = (
 
   }
 
+  if (cjsOutputFile) {
+
+    const config: RollupOptions = createModuleConfig(
+      apiInput,
+      "cjs",
+      cjsOutputFile,
+      sourcemap,
+      esModule,
+      interop,
+      external,
+      modulePlugins(),
+    );
+
+    configs.push(config);
+
+  }
+
   const nameRequired = iifeOutputFile || amdOutputFile || umdOutputFile;
 
-  if (!name && nameRequired) {
+  if (!pkgName && nameRequired) {
     throw new Error("name option is required for IIFE and UMD builds");
   }
 
@@ -175,7 +181,7 @@ const pkgToConfigs = (
       esModule,
       interop,
       browserPlugins(),
-      name as string,
+      pkgName as string,
       extend,
       globals,
     );
@@ -194,7 +200,7 @@ const pkgToConfigs = (
       esModule,
       interop,
       browserPlugins(),
-      name as string,
+      pkgName as string,
       extend,
       globals,
       id,
@@ -214,7 +220,7 @@ const pkgToConfigs = (
       esModule,
       interop,
       browserPlugins(),
-      name as string,
+      pkgName as string,
       extend,
       globals,
       id,
@@ -224,22 +230,22 @@ const pkgToConfigs = (
 
   }
 
-  if (typesOutputFile) {
+  // if (typesOutputFile) {
 
-    const config = createModuleConfig(
-      apiInput,
-      "es",
-      typesOutputFile,
-      false,
-      false,
-      false,
-      external,
-      typesPlugins(),
-    );
+  //   const config = createModuleConfig(
+  //     apiInput,
+  //     "es",
+  //     typesOutputFile,
+  //     false,
+  //     false,
+  //     false,
+  //     external,
+  //     typesPlugins(),
+  //   );
 
-    configs.push(config);
+  //   configs.push(config);
 
-  }
+  // }
 
   // if (pkg.bin) {
 

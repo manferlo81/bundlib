@@ -37,7 +37,7 @@ describe("package to configs", () => {
 
     expect(configs).toHaveLength(2);
 
-    const [cjsConfig, esConfig] = configs;
+    const [esConfig, cjsConfig] = configs;
 
     expect(typeof cjsConfig).toBe("object");
     expect(typeof cjsConfig.output).toBe("object");
@@ -46,30 +46,6 @@ describe("package to configs", () => {
     expect(typeof esConfig).toBe("object");
     expect(typeof esConfig.output).toBe("object");
     expect(esConfig.output.format).toBe("es");
-
-  });
-
-  test("should generate CommonJS module with types config", async () => {
-
-    const configs = await createConfigs(cwd, false, {
-      main: "out/lib.cjs.js",
-      types: "out/lib.d.ts",
-      bundlib: {
-        equals: true,
-      },
-    });
-
-    expect(configs).toHaveLength(2);
-
-    const [cjsConfig, dtsConfig] = configs;
-
-    expect(typeof cjsConfig).toBe("object");
-    expect(typeof cjsConfig.output).toBe("object");
-    expect(cjsConfig.output.format).toBe("cjs");
-
-    expect(typeof dtsConfig).toBe("object");
-    expect(typeof dtsConfig.output).toBe("object");
-    expect(dtsConfig.output.format).toBe("es");
 
   });
 

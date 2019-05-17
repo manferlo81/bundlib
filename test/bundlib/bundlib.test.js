@@ -9,8 +9,8 @@ describe("bundlib", () => {
   test("bundlib should generates files", async (done) => {
 
     const projectCwd = resolve(process.cwd(), "test/projects/1");
-    const files = ["lib.js", "lib.d.ts"].map(
-      (fn) => resolve(projectCwd, fn)
+    const files = ["lib.js"].map(
+      (filename) => resolve(projectCwd, filename)
     );
 
     const writtenListener = jest.fn();
@@ -34,7 +34,7 @@ describe("bundlib", () => {
   test("bundlib (with options) should generates files", async (done) => {
 
     const projectCwd = resolve(process.cwd(), "test/projects/1");
-    const files = ["lib.js", "lib.d.ts"].map(
+    const files = ["lib.js"].map(
       (fn) => resolve(projectCwd, fn)
     );
 
