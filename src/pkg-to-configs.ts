@@ -1,3 +1,4 @@
+import { readFileSync, writeFileSync } from "fs";
 import { dirname, extname } from "path";
 import { Plugin, RollupOptions } from "rollup";
 
@@ -46,7 +47,7 @@ const pkgToConfigs = (
     esModule,
     interop,
     extend,
-    // equals,
+    equals,
 
     name: pkgName,
     id,
@@ -90,6 +91,16 @@ const pkgToConfigs = (
           },
         },
       }),
+
+      (declarationDir && equals) ? {
+        name: "equals",
+        writeBundle() {
+          const filename = resolvePath(declarationDir + "/index.d.ts", cwd);
+          const indexContent = readFileSync(filename).toString();
+          const transformetContent = indexContent.replace(/export default ([\w_$]+[\d\w_$]*)/, "export = $1");
+          writeFileSync(filename, transformetContent);
+        },
+      } : false,
 
       babel({
         extensions: [".ts", ".js"],
