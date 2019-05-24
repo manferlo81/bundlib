@@ -42,7 +42,7 @@ const bundlib = async (cwd: string, { dev, watch, silent }: BundlibOptions = {})
       console.error(err);
     });
 
-    if (dev) {
+    if (watch) {
 
       buildProcess.on(BUILT, () => {
         // tslint:disable-next-line: no-console
