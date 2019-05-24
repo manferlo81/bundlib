@@ -179,4 +179,4 @@ Bundlib has only two options
 
 ## License
 
-[MIT License](LICENSE)
+[MIT](LICENSE) :copyright: Manuel Fernández
