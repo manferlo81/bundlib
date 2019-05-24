@@ -7,6 +7,8 @@ import addShebang from "rollup-plugin-add-shebang";
 import babel from "rollup-plugin-babel";
 import buble from "rollup-plugin-buble";
 
+import api from "./plugins/api";
+
 import { bin, dependencies } from "./package.json";
 
 const input = "src-bin/index.ts";
@@ -39,16 +41,7 @@ const config = {
       },
     }),
 
-    {
-      resolveId(id) {
-        if (id === "@API") {
-          return {
-            id: __dirname,
-            external: true,
-          };
-        }
-      },
-    },
+    api("@API", __dirname),
 
     ts2({
       cacheRoot: ".cache/rpt2",
