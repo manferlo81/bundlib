@@ -12,27 +12,23 @@ export interface BundlibBuildOptions {
   extend: boolean;
   equals: boolean;
 
+  browser: "umd" | "amd" | "iife";
   name: string | null;
   id: string | null;
   globals?: Record<string, string>;
 
 }
 
-export interface BundlibOutputOptions {
-  iife: string | null;
-  amd: string | null;
-  umd: string | null;
-}
+export type BundlibPkgOptions = Partial<BundlibInputOptions & BundlibBuildOptions>;
 
-export type BundlibPkgOptions = Partial<BundlibInputOptions & BundlibOutputOptions & BundlibBuildOptions>;
-
-export interface Pkg extends PackageJson {
+export interface BundlibPkgJson extends PackageJson {
   bundlib?: BundlibPkgOptions;
 }
 
-export interface BundlibOutputFiles extends BundlibOutputOptions {
+export interface BundlibOutputFiles {
   cjs: string | null;
   es: string | null;
+  browser: string | null;
   types: string | null;
 }
 
@@ -53,7 +49,7 @@ export interface AnalizedPkg {
   /**
    * the original package.json
    */
-  pkg: Pkg;
+  pkg: BundlibPkgJson;
 
   /**
    * dependencies

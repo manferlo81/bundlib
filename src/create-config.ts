@@ -1,5 +1,12 @@
 import { ExternalOption, OutputOptions as RollupOutputOptions, Plugin, RollupOptions } from "rollup";
-import { BuildFormat, ConfigExtra, FilterablePlugins, OutputExtra, Some } from "./types";
+import {
+  BrowserBuildFormat,
+  BuildFormat,
+  ConfigExtra,
+  FilterablePlugins,
+  ModuleBuildFormat,
+  OutputExtra,
+} from "./types";
 
 export function createOutput(
   format: BuildFormat,
@@ -53,7 +60,7 @@ export function createConfig(
 
 export function createModuleConfig(
   input: string,
-  format: Some<BuildFormat, "cjs" | "es">,
+  format: ModuleBuildFormat,
   file: string,
   sourcemap: boolean,
   esModule: boolean,
@@ -75,7 +82,7 @@ export function createModuleConfig(
 
 export function createBrowserConfig(
   input: string,
-  format: Some<BuildFormat, "iife" | "amd" | "umd">,
+  format: BrowserBuildFormat,
   file: string,
   sourcemap: boolean,
   esModule: boolean,

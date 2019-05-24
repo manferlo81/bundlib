@@ -29,9 +29,7 @@ const pkgToConfigs = (
   const {
     cjs: cjsOutputFile,
     es: esOutputFile,
-    iife: iifeOutputFile,
-    amd: amdOutputFile,
-    umd: umdOutputFile,
+    browser: browserOutputFile,
     types: typesOutputFile,
   } = output;
 
@@ -49,6 +47,7 @@ const pkgToConfigs = (
     extend,
     equals,
 
+    browser: browserFormat,
     name: pkgName,
     id,
     globals,
@@ -170,57 +169,16 @@ const pkgToConfigs = (
 
   }
 
-  const nameRequired = iifeOutputFile || amdOutputFile || umdOutputFile;
-
-  if (!pkgName && nameRequired) {
+  if (!pkgName && browserOutputFile) {
     throw new Error("name option is required for IIFE and UMD builds");
   }
 
-  if (iifeOutputFile) {
+  if (browserOutputFile) {
 
     const config = createBrowserConfig(
       apiInput,
-      "iife",
-      iifeOutputFile,
-      sourcemap,
-      esModule,
-      interop,
-      browserPlugins(),
-      pkgName as string,
-      extend,
-      globals,
-    );
-
-    configs.push(config);
-
-  }
-
-  if (amdOutputFile) {
-
-    const config = createBrowserConfig(
-      apiInput,
-      "amd",
-      amdOutputFile,
-      sourcemap,
-      esModule,
-      interop,
-      browserPlugins(),
-      pkgName as string,
-      extend,
-      globals,
-      id,
-    );
-
-    configs.push(config);
-
-  }
-
-  if (umdOutputFile) {
-
-    const config = createBrowserConfig(
-      apiInput,
-      "umd",
-      umdOutputFile,
+      browserFormat,
+      browserOutputFile,
       sourcemap,
       esModule,
       interop,

@@ -8,18 +8,19 @@ import {
   BundlibBuildOptions,
   BundlibDependencies,
   BundlibOutputFiles,
+  BundlibPkgJson,
   BundlibPkgOptions,
-  Pkg,
 } from "./pkg";
 
-const analizePkg = async (cwd: string, pkg?: Pkg): Promise<AnalizedPkg> => {
+const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPkg> => {
 
-  pkg = pkg || await readPkg({ cwd }) as Pkg;
+  pkg = pkg || await readPkg({ cwd }) as BundlibPkgJson;
 
   const {
     name: pkgName,
     main,
     module: esModuleFile,
+    browser: browserFile,
     dependencies: runtimeDependencies,
     peerDependencies,
     bundledDependencies,
@@ -29,14 +30,16 @@ const analizePkg = async (cwd: string, pkg?: Pkg): Promise<AnalizedPkg> => {
     bundlib: pkgBundlib,
   } = pkg;
 
+  if (browserFile && typeof browserFile !== "string") {
+    throw new Error("invalid package.json browser field.");
+  }
+
   const {
     input: pkgInput,
-    iife: iifeFile,
-    amd: amdFile,
-    umd: umdFile,
     sourcemap,
     esModule,
     interop,
+    browser,
     name,
     id,
     extend,
@@ -51,9 +54,7 @@ const analizePkg = async (cwd: string, pkg?: Pkg): Promise<AnalizedPkg> => {
   const output: BundlibOutputFiles = {
     cjs: main ? resolvePath(main, cwd) : null,
     es: esModuleFile ? resolvePath(esModuleFile, cwd) : null,
-    iife: iifeFile ? resolvePath(iifeFile, cwd) : null,
-    amd: amdFile ? resolvePath(amdFile, cwd) : null,
-    umd: umdFile ? resolvePath(umdFile, cwd) : null,
+    browser: browserFile ? resolvePath(browserFile, cwd) : null,
     types: typesPath ? resolvePath(typesPath, cwd) : null,
   };
 
@@ -70,6 +71,7 @@ const analizePkg = async (cwd: string, pkg?: Pkg): Promise<AnalizedPkg> => {
     sourcemap: sourcemap !== false,
     esModule: !!esModule,
     interop: !!interop,
+    browser: browser || "umd",
     name: buildName,
     extend: !!extend,
     id: id || null,

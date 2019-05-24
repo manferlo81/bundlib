@@ -15,9 +15,7 @@ describe("package to configs", () => {
   test("should throw if name required and not provided", (done) => {
 
     createConfigs(cwd, false, {
-      bundlib: {
-        iife: "out/lib.js",
-      },
+      browser: "out/lib.js",
     })
       .then(() => {
         done("promise did not throw.");
@@ -49,55 +47,139 @@ describe("package to configs", () => {
 
   });
 
-  test("should generate IIFE and AMD modules config", async () => {
+  test("should generate IIFE build config", async () => {
+
+    const format = "iife";
+    const name = "libName";
 
     const configs = await createConfigs(cwd, true, {
+      browser: "out/lib.iife.js",
       bundlib: {
-        name: "lib",
-        id: "lib",
-        iife: "out/lib.iife.js",
-        amd: "out/lib.amd.js",
+        browser: format,
+        name,
         globals: {},
       },
     });
 
-    expect(configs).toHaveLength(2);
+    expect(configs).toHaveLength(1);
+    const [config] = configs;
 
-    const [iifeConfig, amdConfig] = configs;
+    expect(typeof config).toBe("object");
+    const { output } = config;
 
-    expect(typeof iifeConfig).toBe("object");
-    expect(typeof iifeConfig.output).toBe("object");
-    expect(iifeConfig.output.format).toBe("iife");
-
-    expect(typeof amdConfig).toBe("object");
-    expect(typeof amdConfig.output).toBe("object");
-    expect(amdConfig.output.format).toBe("amd");
-    expect(typeof amdConfig.output.amd).toBe("object");
-    expect(amdConfig.output.amd.id).toBe("lib");
+    expect(typeof output).toBe("object");
+    expect(output.format).toBe(format);
+    expect(output.name).toBe(name);
 
   });
 
-  test("should generate UMD module config", async () => {
+  test("should generate AMD build config", async () => {
+
+    const format = "amd";
+    const name = "libName";
+    const id = "lib-id";
 
     const configs = await createConfigs(cwd, true, {
+      browser: "out/lib.js",
       bundlib: {
-        name: "lib",
-        id: "lib",
-        umd: "out/lib.umd.js",
+        browser: format,
+        name,
+        id,
+        globals: {},
       },
     });
 
     expect(configs).toHaveLength(1);
+    const [config] = configs;
 
-    const [umdConfig] = configs;
+    expect(typeof config).toBe("object");
+    const { output } = config;
 
-    expect(typeof umdConfig).toBe("object");
-    expect(typeof umdConfig.output).toBe("object");
-    expect(umdConfig.output.format).toBe("umd");
-    expect(typeof umdConfig.output.amd).toBe("object");
-    expect(umdConfig.output.amd.id).toBe("lib");
+    expect(typeof output).toBe("object");
+    expect(output.format).toBe(format);
+    expect(output.name).toBe(name);
+
+    expect(typeof output.amd).toBe("object");
+    expect(output.amd.id).toBe(id);
 
   });
+
+  test("should generate UMD build config", async () => {
+
+    const format = "umd";
+    const name = "libName";
+    const id = "lib-id";
+
+    const configs = await createConfigs(cwd, true, {
+      browser: "out/lib.js",
+      bundlib: {
+        browser: format,
+        name,
+        id,
+        globals: {},
+      },
+    });
+
+    expect(configs).toHaveLength(1);
+    const [config] = configs;
+
+    expect(typeof config).toBe("object");
+    const { output } = config;
+
+    expect(typeof output).toBe("object");
+    expect(output.format).toBe(format);
+    expect(output.name).toBe(name);
+
+    expect(typeof output.amd).toBe("object");
+    expect(output.amd.id).toBe(id);
+
+  });
+
+  test("should generate UMD build if not format provided", async () => {
+
+    const name = "libName";
+
+    const configs = await createConfigs(cwd, true, {
+      browser: "out/lib.js",
+      bundlib: {
+        name,
+        globals: {},
+      },
+    });
+
+    expect(configs).toHaveLength(1);
+    const [config] = configs;
+
+    expect(typeof config).toBe("object");
+    const { output } = config;
+
+    expect(typeof output).toBe("object");
+    expect(output.format).toBe("umd");
+    expect(output.name).toBe(name);
+
+  });
+
+  // test("should generate UMD module config", async () => {
+
+  //   const configs = await createConfigs(cwd, true, {
+  //     bundlib: {
+  //       name: "lib",
+  //       id: "lib",
+  //       umd: "out/lib.umd.js",
+  //     },
+  //   });
+
+  //   expect(configs).toHaveLength(1);
+
+  //   const [umdConfig] = configs;
+
+  //   expect(typeof umdConfig).toBe("object");
+  //   expect(typeof umdConfig.output).toBe("object");
+  //   expect(umdConfig.output.format).toBe("umd");
+  //   expect(typeof umdConfig.output.amd).toBe("object");
+  //   expect(umdConfig.output.amd.id).toBe("lib");
+
+  // });
 
 
 });

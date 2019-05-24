@@ -23,35 +23,38 @@ npm i bundlib -g
 ## First steps
 Bundlib will use `src/index.ts` as entry file for your library by default, make sure you create it before you try to build. Add the corresponding scripts to your `package.json` ([see below for CLI options](#cli)) and run them.
 
-## CommonJS module
+## Build
 
-Building a `CommonJS Module` is as simple as creating a `"main"` field in `package.json` pointing to the output file, and `bundlib` will build it for you.
+### CommonJS module
 
-## ES module
+Building a `CommonJS Module` is as simple as adding a `"main"` field to your `package.json` pointing to the output file, and `bundlib` will build it for you.
 
-To build a `ES Module` simply add a `"module"` field in `package.json` pointing to the output file.
+### ES module
 
-## IIFE, AMD and UMD build
+To build a `ES Module` simply add a `"module"` field to your `package.json` pointing to the output file.
 
-For IIFE, AMD and UMD builds you will need to use the `"bundlib"` field in `package.json`, see the [configuration section](#configuration) for more info.
+### IIFE, AMD and UMD build
+
+For IIFE, AMD and UMD builds, add a `"browser"` field to your `package.json`. the default format is `"umd"` but it can be changed to `"iife"` or `"amd"` using the `browser` option, see the [configuration section](#configuration) for more info.
 
 ## Configuration
 
 Configuration is done throu the `"bundlib"` field in `package.json`.
 
-### Example
+##### Example
 
-The following example will generate a **UMD** build in `my-lib.umd.js` file inside the `dist` folder, then you can use the library in the browser (for example) using the global `myLib` (`window.myLib`).
+The following example will generate a **AMD** build in `my-lib.amd.js` file inside the `dist` folder, then you can use the library in the browser (for example) using the global `myLib` (`window.myLib`).
 
 ```javascript
 // package.json
 {
   "version": "1.0.0",
   "name": "my-lib",
+  "browser" : "dist/my-lib.amd.js",
   // ...
   "bundlib": {
     "name": "myLib",
-    "umd": "dist/my-lib.umd.js"
+    "browser": "amd"
   }
   // ...
 }
@@ -91,6 +94,13 @@ the `"bundlib"` field in `package.json` may contain any of the following propert
 * *type:* `boolean`
 * *defaults to* `false`
 
+#### browser
+
+* *type:* `"iife" | "amd" | "umd"`
+* *defaults to* `"umd"`
+
+*defines the format to be used for the* `browser` *build*
+
 #### name
 
 * *used in:* `IIFE, AMD & UMD builds`
@@ -99,7 +109,7 @@ the `"bundlib"` field in `package.json` may contain any of the following propert
 
 *the* `IIFE`, `AMD` or `UMD` *name*
 
-*if not provided it will default to* `"name"` *field in* `package.json`
+*if not provided it will default to* `"name"` *field in* `package.json` *, if it doesn't exist the build process will throw*
 
 #### id
 
@@ -123,27 +133,6 @@ the `"bundlib"` field in `package.json` may contain any of the following propert
 * *type:* `object`
 
 *object to map names to globals*
-
-#### iife
-
-* *type:* `string`
-
-*the output path for* `IIFE` *build.*
-> *if not present,* `IIFE` *build will be skipped.*
-
-#### amd
-
-* *type:* `string`
-
-*the output path for* `AMD` *build.*
-> *if not present,* `AMD` *build will be skipped.*
-
-#### umd
-
-* *type:* `string`
-
-*the output path for* `UMD` *build.*
-> *if not present,* `UMD` *build will be skipped.*
 
 #### equals
 
@@ -170,12 +159,19 @@ Bundlib has only two options
 
 ## Features
 
+### Current Features
+
 * [x] Creates a CommonJS Module based on the `"main"` field in `package.json`
 * [x] Creates an ES Modules based on the `"module"` field in `package.json`
+* [x] Creates an browser build based on the `"browser"` field in `package.json`
 * [x] Exports types declarations based on the `"typings"` or `"types"` field in your `package.json`
-* [x] Creates IIFE, AMD and UMD builds using the `"bundlib"` field in your `package.json`, see [configuration section](#configuration) for more info.
 * [x] Transforms async/await using [Babel](#) and [babel-plugin-transform-async-to-promises](#) for ES5 support
 * [x] Transforms using [Buble](#)
+* [x] Minifies build using [terser](#)
+
+### Upcomming Features
+
+* [ ] Creates an CLI binary build based on the `"bin"` field in `package.json`
 
 ## License
 
