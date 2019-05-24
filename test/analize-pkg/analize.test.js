@@ -117,11 +117,7 @@ describe("analize", () => {
 
     const analized = await analize(cwd, {
       name: pkgName,
-      bundlib: {
-        iife: "out/lib.iife.js",
-        amd: "out/lib.amd.js",
-        umd: "out/lib.umd.js",
-      },
+      browser: "out/lib.umd.js",
     });
 
     expect(typeof analized).toBe("object");
