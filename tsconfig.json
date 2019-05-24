@@ -14,9 +14,6 @@
     "paths": {
       "*": [
         "declarations/*"
-      ],
-      "@API": [
-        "src/index.ts"
       ]
     },
   }

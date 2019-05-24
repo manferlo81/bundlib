@@ -41,7 +41,7 @@ const config = {
       },
     }),
 
-    api("@API", __dirname),
+    api("../src", __dirname),
 
     ts2({
       cacheRoot: ".cache/rpt2",
