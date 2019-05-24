@@ -1,3 +1,11 @@
+# 0.3.0 (24-05-2019)
+
+* build cli tool from source code
+* deprecated iife, amd & umd options
+* added browser option
+* build browser build base on browser field
+* refactoring
+
 # 0.2.6 (22-05-2019)
 
 * updated dependencies
