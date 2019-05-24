@@ -41,9 +41,9 @@ const config = {
 
     {
       resolveId(id) {
-        if (id === "../src") {
+        if (id === "@API") {
           return {
-            id: "..",
+            id: __dirname,
             external: true,
           };
         }
