@@ -4,6 +4,7 @@
 * deprecated iife, amd & umd options
 * added browser option
 * build browser build base on browser field
+* improved documentation
 * refactoring
 
 # 0.2.6 (22-05-2019)

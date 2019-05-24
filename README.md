@@ -27,11 +27,11 @@ Bundlib will use `src/index.ts` as entry file for your library by default, make 
 
 ### CommonJS module
 
-Building a `CommonJS Module` is as simple as adding a `"main"` field to your `package.json` pointing to the output file, and `bundlib` will build it for you.
+Building a `CommonJS Module` is as simple as adding a `"main"` field to your `package.json` pointing to the output file, and `bundlib` will build it for you. see the [configuration section](#configuration) for some extra options.
 
 ### ES module
 
-To build a `ES Module` simply add a `"module"` field to your `package.json` pointing to the output file.
+To build a `ES Module` simply add a `"module"` field to your `package.json` pointing to the output file. see the [configuration section](#configuration) for some extra options.
 
 ### IIFE, AMD and UMD build
 
@@ -70,7 +70,9 @@ the `"bundlib"` field in `package.json` may contain any of the following propert
 * *type:* `string`
 * *defaults to* `"src/index.ts"`
 
-*the path to the input file*
+*the path to the input file, it has to be a* `.ts` *file*
+
+> *allowing javascript (*`.js`*) files as input is comming soon*
 
 #### sourcemap
 
@@ -78,7 +80,7 @@ the `"bundlib"` field in `package.json` may contain any of the following propert
 * *type:* `boolean`
 * *defaults to* `true`
 
-*whether to generate source maps*
+*whether or not to generate source maps*
 
 #### esModule
 
@@ -86,13 +88,15 @@ the `"bundlib"` field in `package.json` may contain any of the following propert
 * *type:* `boolean`
 * *defaults to* `false`
 
-*whether to add a* `esModule` *property to your build.*
+*whether or not to add a* `__esModule: true` *property to your non-es-module build.*
 
 #### interop
 
 * *used in:* `CommonJS, IIFE, AMD & UMD builds`
 * *type:* `boolean`
 * *defaults to* `false`
+
+*whether or not to add an interop block*
 
 #### browser
 
@@ -117,6 +121,7 @@ the `"bundlib"` field in `package.json` may contain any of the following propert
 * *type:* `string`
 
 *optional amd id for* `AMD` or `UMD` *build.*
+
 > *if not present,* `AMD` *module will be defined with no id.*
 
 #### extend
@@ -125,7 +130,7 @@ the `"bundlib"` field in `package.json` may contain any of the following propert
 * *type:* `boolean`
 * *defaults to* `false`
 
-*whether to extend the name on an* `IIFE`, `AMD` or `UMD` *build.*
+*whether or not to extend the global exported variable on an* `IIFE`, `AMD` or `UMD` *build.*
 
 #### globals
 
@@ -140,7 +145,7 @@ the `"bundlib"` field in `package.json` may contain any of the following propert
 * *type:* `boolean`
 * *defaults to* `false`
 
-*fixes type export for CommonJS module using* `module.exports = ...`
+*fixes type export for CommonJS module using* `export = ...` instead of `export default ...`
 
 > :warning: note that this options should only be used when your library has a default export and no named exports.
 
