@@ -1,5 +1,4 @@
 require("../mock/mock-file-write");
-require("../mock/mock-ora");
 
 const { resolve } = require("path");
 const { bundlib } = require("../..");

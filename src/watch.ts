@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
 import { watch as rollupWatch } from "rollup";
-import { BUILDING, BUILT, ERROR, REBUILDING, WATCHING, WRITING, WRITTEN } from "./events";
+import { BUILDING, BUILT, ERROR, WRITING, WRITTEN } from "./events";
 import { BuildEventEmitter, BuldFunction } from "./types";
 
 interface WatchEvent {
@@ -20,15 +20,11 @@ const ERR: EmitMethod = (result, { error }) => {
 const map: Record<string, EmitMethod> = {
 
   START(result) {
-    [REBUILDING, BUILDING].forEach((eventType) => {
-      result.emit(eventType);
-    });
+    result.emit(BUILDING);
   },
 
   END(result) {
-    [BUILT, WATCHING].forEach((eventType) => {
-      result.emit(eventType);
-    });
+    result.emit(BUILT);
   },
 
   BUNDLE_START(result, { output }) {

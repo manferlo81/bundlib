@@ -9,6 +9,7 @@ import babel from "rollup-plugin-babel";
 import buble from "rollup-plugin-buble";
 import commonjs from "rollup-plugin-commonjs";
 import exportEquals from "rollup-plugin-export-equals";
+import json from "rollup-plugin-json";
 import nodeResolve from "rollup-plugin-node-resolve";
 import { terser } from "rollup-plugin-terser";
 import ts2 from "rollup-plugin-typescript2";
@@ -90,6 +91,8 @@ const pkgToConfigs = (
           },
         },
       }),
+
+      json() as Plugin,
 
       declarationDir && equals && exportEquals({
         file: resolvePath(joinPath(declarationDir, "index.d.ts"), cwd),

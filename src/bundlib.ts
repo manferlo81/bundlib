@@ -1,22 +1,24 @@
-import { Ora } from "ora";
+import { relative } from "path";
 import analizePkg from "./analize-pkg";
-import { buildSpinner, spinner } from "./console";
-import { ERROR, REBUILDING, WATCHING, WRITING, WRITTEN } from "./events";
+import { BUILT, ERROR, WRITING, WRITTEN } from "./events";
 import pkgToConfigs from "./pkg-to-configs";
 import rollItUp from "./roll-it-up";
 import { BundlibOptions } from "./types";
 
+import { version } from "../package.json";
+
 const bundlib = async (cwd: string, { dev, watch, silent }: BundlibOptions = {}) => {
 
-  const loading = !silent && spinner("reading package.json\n");
-  const pkg = await analizePkg(cwd);
-  if (loading) {
-    loading.succeed();
+  if (!silent) {
+    // tslint:disable-next-line: no-console
+    console.log("bundlib v" + version);
+    // tslint:disable-next-line: no-console
+    console.log("reading package.json...");
   }
 
-  const configs = pkgToConfigs(pkg, !!dev);
+  const pkg = await analizePkg(cwd);
 
-  const files: Record<string, null | Ora> = {};
+  const configs = pkgToConfigs(pkg, !!dev);
 
   const buildProcess = await rollItUp(
     configs,
@@ -26,15 +28,13 @@ const bundlib = async (cwd: string, { dev, watch, silent }: BundlibOptions = {})
   if (!silent) {
 
     buildProcess.on(WRITING, (filename) => {
-      files[filename] = buildSpinner(filename, cwd);
+      // tslint:disable-next-line: no-console
+      console.log(`building > ${relative(cwd, filename)}...`);
     });
 
     buildProcess.on(WRITTEN, (filename) => {
-      let instance = files[filename];
-      if (instance) {
-        instance.succeed();
-        files[filename] = instance = null;
-      }
+      // tslint:disable-next-line: no-console
+      console.log(`built > ${relative(cwd, filename)}`);
     });
 
     buildProcess.on(ERROR, (err) => {
@@ -42,19 +42,18 @@ const bundlib = async (cwd: string, { dev, watch, silent }: BundlibOptions = {})
       console.error(err);
     });
 
-    buildProcess.on(WATCHING, () => {
-      // tslint:disable-next-line: no-console
-      console.log("watching for changes...");
-    });
+    if (dev) {
 
-    buildProcess.on(REBUILDING, () => {
-      // tslint:disable-next-line: no-console
-      console.log("rebuilding...");
-    });
+      buildProcess.on(BUILT, () => {
+        // tslint:disable-next-line: no-console
+        console.log("watching for changes...");
+      });
+
+    }
 
   }
 
-  return await buildProcess;
+  return buildProcess;
 
 };
 
