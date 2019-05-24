@@ -39,13 +39,36 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     sourcemap,
     esModule,
     interop,
-    browser,
+    browser: pkgBrowserFormat,
     name,
     id,
     extend,
     globals,
     equals,
+    iife,
+    amd,
+    umd,
   } = pkgBundlib || {} as BundlibPkgOptions;
+
+  // compatible with version lower than 0.3
+
+  if ((iife && amd) || (iife && umd) || (amd && umd)) {
+    throw new Error("multiple browser builds are no longer supported in bundlib >= 0.3.");
+  }
+
+  if (iife || amd || umd) {
+
+    // warn about deprecated options
+
+    // tslint:disable-next-line: no-console
+    console.log("options iife, amd & umd are deprecated in version >= 0.3");
+  }
+
+  // get format from deprecated options if no format specified
+
+  const browserFormat = pkgBrowserFormat || (iife ? "iife" : amd ? "amd" : "umd");
+
+  //
 
   const input = resolvePath(pkgInput || "src/index.ts", cwd);
 
@@ -71,7 +94,7 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     sourcemap: sourcemap !== false,
     esModule: !!esModule,
     interop: !!interop,
-    browser: browser || "umd",
+    browser: browserFormat,
     name: buildName,
     extend: !!extend,
     id: id || null,

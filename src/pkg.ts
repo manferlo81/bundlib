@@ -19,7 +19,13 @@ export interface BundlibBuildOptions {
 
 }
 
-export type BundlibPkgOptions = Partial<BundlibInputOptions & BundlibBuildOptions>;
+interface BundlibDeprecatedOptions {
+  iife: string;
+  amd: string;
+  umd: string;
+}
+
+export type BundlibPkgOptions = Partial<BundlibInputOptions & BundlibBuildOptions & BundlibDeprecatedOptions>;
 
 export interface BundlibPkgJson extends PackageJson {
   bundlib?: BundlibPkgOptions;
