@@ -1,17 +1,17 @@
-import { readFileSync, writeFileSync } from "fs";
-import { dirname, extname } from "path";
+import { dirname, extname, join as joinPath } from "path";
 import { Plugin, RollupOptions } from "rollup";
 
 import { createBrowserConfig, createModuleConfig } from "./create-config";
 import { AnalizedPkg } from "./pkg";
+import resolvePath from "./resolve";
 
 import babel from "rollup-plugin-babel";
 import buble from "rollup-plugin-buble";
 import commonjs from "rollup-plugin-commonjs";
+import exportEquals from "rollup-plugin-export-equals";
 import nodeResolve from "rollup-plugin-node-resolve";
 import { terser } from "rollup-plugin-terser";
 import ts2 from "rollup-plugin-typescript2";
-import resolvePath from "./resolve";
 
 const pkgToConfigs = (
   {
@@ -64,7 +64,7 @@ const pkgToConfigs = (
     typesOutputDir = dirname(typesOutputDir);
   }
 
-  const modulePlugins = (): Array<Plugin | false> => {
+  const modulePlugins = (): Array<Plugin | null | false> => {
 
     const declarationDir = !configs.length && typesOutputDir;
 
@@ -92,15 +92,9 @@ const pkgToConfigs = (
         },
       }),
 
-      (declarationDir && equals) ? {
-        name: "equals",
-        writeBundle() {
-          const filename = resolvePath(declarationDir + "/index.d.ts", cwd);
-          const indexContent = readFileSync(filename).toString();
-          const transformetContent = indexContent.replace(/export default ([\w_$]+[\d\w_$]*)/, "export = $1");
-          writeFileSync(filename, transformetContent);
-        },
-      } : false,
+      declarationDir && equals && exportEquals({
+        file: resolvePath(joinPath(declarationDir, "index.d.ts"), cwd),
+      }) || null,
 
       babel({
         extensions: [".ts", ".js"],
