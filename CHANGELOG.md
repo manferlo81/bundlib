@@ -1,5 +1,6 @@
 # 0.3.1 (25-05-2019)
 
+* fixed types export issue related to #7
 * improved documentation
 
 # 0.3.0 (24-05-2019)

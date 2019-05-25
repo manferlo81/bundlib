@@ -162,6 +162,10 @@ Bundlib has only two options
 
 > Combine your options according to your needs.
 
+## Known Issues
+
+* [Issue #7](https://github.com/manferlo81/bundlib/issues/7)
+
 ## Features
 
 ### Current Features
