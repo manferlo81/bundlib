@@ -44,7 +44,7 @@ const config = {
     api("../src", __dirname),
 
     ts2({
-      cacheRoot: ".cache/rpt2",
+      cacheRoot: ".cache/rpt2-cli",
       tsconfigOverride: {
         compilerOptions: {
           target: "esnext",
