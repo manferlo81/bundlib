@@ -2,6 +2,7 @@
 
 * fixed types export issue related to #7
 * improved documentation
+* refactoring
 
 # 0.3.0 (24-05-2019)
 
