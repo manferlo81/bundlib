@@ -1,3 +1,7 @@
+# 0.3.1 (25-05-2019)
+
+* improved documentation
+
 # 0.3.0 (24-05-2019)
 
 * build cli tool from source code

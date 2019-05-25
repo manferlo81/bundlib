@@ -4,19 +4,19 @@
 
 A Zero-configuration, automatic javascript library bundler using [Typescript](https://github.com/Microsoft/TypeScript) and [Rollup.js](https://github.com/rollup/rollup).
 
-> :warning: Bundlib is still under active development, if you find any issue/bug please open a new issue.
+> :warning: Bundlib is still under active development, please [file a new issue](https://github.com/manferlo81/bundlib/issues) if you find any issue/bug, suggestions are welcome as well.
 
 ## Install
 
-* as a dev dependency
+##### as a dev dependency
 
-```sh
+```bash
 npm i bundlib -D
 ```
 
-* or install it globally if you wish
+##### or install it globally if you wish
 
-```sh
+```bash
 npm i bundlib -g
 ```
 
@@ -43,7 +43,7 @@ Configuration is done throu the `"bundlib"` field in `package.json`.
 
 ##### Example
 
-The following example will generate a **AMD** build in `my-lib.amd.js` file inside the `dist` folder, then you can use the library in the browser (for example) using the global `myLib` (`window.myLib`).
+The following example will generate a **AMD** build with filename `my-lib.amd.js` inside the `dist` folder, then you can use the library in the browser (for example) using the global `myLib` (`window.myLib`).
 
 ```javascript
 // package.json
@@ -151,7 +151,7 @@ the `"bundlib"` field in `package.json` may contain any of the following propert
 
 ## CLI
 
-```sh
+```bash
 bundlib [options]
 ```
 
@@ -180,4 +180,4 @@ Bundlib has only two options
 
 ## License
 
-[MIT](LICENSE) :copyright: Manuel Fernández
+[MIT](LICENSE) &copy; Manuel Fernández
