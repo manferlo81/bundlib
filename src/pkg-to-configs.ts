@@ -17,7 +17,7 @@ import ts2 from "rollup-plugin-typescript2";
 const pkgToConfigs = (
   {
     cwd,
-    input,
+    input: apiInput,
     output,
     dependencies,
     options,
@@ -25,7 +25,7 @@ const pkgToConfigs = (
   dev: boolean,
 ): RollupOptions[] => {
 
-  const apiInput = input;
+  const apiFolder = dirname(apiInput);
 
   const {
     cjs: cjsOutputFile,
@@ -67,15 +67,17 @@ const pkgToConfigs = (
   const modulePlugins = (): Array<Plugin | null | false> => {
 
     const declarationDir = !configs.length && typesOutputDir;
+    const srcFolderContent = resolvePath("**/*.ts", apiFolder);
 
     return [
 
       ts2({
+        include: srcFolderContent,
         cacheRoot: resolvePath(".cache/rpt2", cwd),
         useTsconfigDeclarationDir: true,
         tsconfigDefaults: {
           include: [
-            resolvePath("src/**/*.ts", cwd),
+            srcFolderContent,
           ],
           exclude: [],
         },
