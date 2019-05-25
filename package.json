@@ -7,7 +7,7 @@
   "bin": "bin/bundlib-cli.js",
   "typings": "types/index.d.ts",
   "scripts": {
-    "clean": "rm -rf bin dist types coverage",
+    "clean": "rm -rf .cache bin dist types coverage",
     "dev": "ts-node src-bin -dw",
     "build:cli": "tslint src-bin/**/*.ts && rollup -c",
     "build:api": "tslint src/**/*.ts && ts-node src-bin",
