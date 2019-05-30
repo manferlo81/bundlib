@@ -1,3 +1,7 @@
+# 0.4.0 (30-05-2019)
+
+* added min option
+
 # 0.3.1 (25-05-2019)
 
 * fixed types export issue related to #7
