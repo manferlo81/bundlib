@@ -41,8 +41,6 @@ export interface BundlibOptions {
 
   silent?: boolean;
 
-  min?: boolean;
-
 }
 
 export type EventBuilding = "BUILDING";
