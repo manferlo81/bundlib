@@ -10,7 +10,7 @@
     "clean": "rm -rf .cache bin dist types coverage",
     "dev": "ts-node src-bin -dw",
     "build:cli": "tslint src-bin/**/*.ts && rollup -c",
-    "build:api": "tslint src/**/*.ts && ts-node src-bin",
+    "build:api": "tslint src/**/*.ts && ts-node src-bin -d",
     "build": "npm run build:cli && npm run build:api",
     "test": "jest",
     "preversion": "npm run clean && npm run build && npm test"

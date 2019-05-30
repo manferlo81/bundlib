@@ -1,8 +1,12 @@
 import { PackageJson } from "read-pkg";
 
-export interface BundlibInputOptions {
+import { BrowserBuildFormat } from "./types";
+
+export interface BundlibPkgInputOptions {
   input: string;
 }
+
+export type PkgJsonFields = "main" | "module" | "browser";
 
 export interface BundlibBuildOptions {
 
@@ -12,11 +16,15 @@ export interface BundlibBuildOptions {
   extend: boolean;
   equals: boolean;
 
-  browser: "umd" | "amd" | "iife";
+  browser: BrowserBuildFormat;
   name: string | null;
   id: string | null;
   globals?: Record<string, string>;
 
+}
+
+interface BundlibTransformableOptions {
+  min: PkgJsonFields[];
 }
 
 interface BundlibDeprecatedOptions {
@@ -25,7 +33,12 @@ interface BundlibDeprecatedOptions {
   umd: string;
 }
 
-export type BundlibPkgOptions = Partial<BundlibInputOptions & BundlibBuildOptions & BundlibDeprecatedOptions>;
+export type BundlibPkgOptions = Partial<
+  BundlibPkgInputOptions &
+  BundlibBuildOptions &
+  BundlibDeprecatedOptions &
+  BundlibTransformableOptions
+>;
 
 export interface BundlibPkgJson extends PackageJson {
   bundlib?: BundlibPkgOptions;
@@ -70,6 +83,8 @@ export interface AnalizedPkg {
   /**
    */
   output: BundlibOutputFiles;
+
+  minify: Record<PkgJsonFields, boolean>;
 
   /**
    * bundlib options, extracted from package.josn then normalized

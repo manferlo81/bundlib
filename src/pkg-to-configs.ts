@@ -3,7 +3,9 @@ import { Plugin, RollupOptions } from "rollup";
 
 import { createBrowserConfig, createModuleConfig } from "./create-config";
 import { AnalizedPkg } from "./pkg";
+import renameMin from "./rename-min";
 import resolvePath from "./resolve";
+import { BundlibOptions } from "./types";
 
 import babel from "rollup-plugin-babel";
 import buble from "rollup-plugin-buble";
@@ -13,13 +15,13 @@ import json from "rollup-plugin-json";
 import nodeResolve from "rollup-plugin-node-resolve";
 import { terser } from "rollup-plugin-terser";
 import ts2 from "rollup-plugin-typescript2";
-import { BundlibOptions } from "./types";
 
 const pkgToConfigs = (
   {
     cwd,
     input: apiInput,
     output,
+    minify,
     dependencies,
     options,
   }: AnalizedPkg,
@@ -65,7 +67,7 @@ const pkgToConfigs = (
     typesOutputDir = dirname(typesOutputDir);
   }
 
-  const modulePlugins = (): Array<Plugin | null | false> => {
+  const modulePlugins = (mini: boolean): Array<Plugin | null | false> => {
 
     const declarationDir = !configs.length && typesOutputDir;
     const srcFolderContent = resolvePath("**/*.ts", apiFolder);
@@ -116,7 +118,7 @@ const pkgToConfigs = (
         objectAssign: true,
       }) as Plugin,
 
-      prod && terser({
+      mini && terser({
         sourcemap,
         toplevel: true,
         module: true,
@@ -126,12 +128,12 @@ const pkgToConfigs = (
 
   };
 
-  const browserPlugins = () => [
+  const browserPlugins = (mini: boolean) => [
 
     nodeResolve(),
     commonjs(),
 
-    ...modulePlugins(),
+    ...modulePlugins(mini),
 
   ];
 
@@ -151,10 +153,27 @@ const pkgToConfigs = (
       true,
       false,
       external,
-      modulePlugins(),
+      modulePlugins(prod),
     );
 
     configs.push(config);
+
+    if (minify.module) {
+
+      const configMin: RollupOptions = createModuleConfig(
+        apiInput,
+        "es",
+        renameMin(esOutputFile),
+        sourcemap,
+        true,
+        false,
+        external,
+        modulePlugins(true),
+      );
+
+      configs.push(configMin);
+
+    }
 
   }
 
@@ -168,10 +187,27 @@ const pkgToConfigs = (
       esModule,
       interop,
       external,
-      modulePlugins(),
+      modulePlugins(prod),
     );
 
     configs.push(config);
+
+    if (minify.main) {
+
+      const configMin: RollupOptions = createModuleConfig(
+        apiInput,
+        "cjs",
+        renameMin(cjsOutputFile),
+        sourcemap,
+        esModule,
+        interop,
+        external,
+        modulePlugins(true),
+      );
+
+      configs.push(configMin);
+
+    }
 
   }
 
@@ -188,7 +224,7 @@ const pkgToConfigs = (
       sourcemap,
       esModule,
       interop,
-      browserPlugins(),
+      browserPlugins(prod),
       pkgName as string,
       extend,
       globals,
@@ -196,6 +232,26 @@ const pkgToConfigs = (
     );
 
     configs.push(config);
+
+    if (minify.browser) {
+
+      const configMin = createBrowserConfig(
+        apiInput,
+        browserFormat,
+        renameMin(browserOutputFile),
+        sourcemap,
+        esModule,
+        interop,
+        browserPlugins(true),
+        pkgName as string,
+        extend,
+        globals,
+        id,
+      );
+
+      configs.push(configMin);
+
+    }
 
   }
 

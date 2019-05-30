@@ -10,6 +10,7 @@ import {
   BundlibOutputFiles,
   BundlibPkgJson,
   BundlibPkgOptions,
+  PkgJsonFields,
 } from "./pkg";
 
 const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPkg> => {
@@ -48,6 +49,7 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     iife,
     amd,
     umd,
+    min,
   } = pkgBundlib || {} as BundlibPkgOptions;
 
   // compatible with version lower than 0.3
@@ -90,6 +92,11 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   const buildName = name || pkgName || null;
 
+  const minify = (["main", "module", "browser"] as PkgJsonFields[]).reduce((r, v) => {
+    r[v] = !!min && min.indexOf(v) >= 0;
+    return r;
+  }, {} as Record<PkgJsonFields, boolean>);
+
   const options: BundlibBuildOptions = {
     sourcemap: sourcemap !== false,
     esModule: !!esModule,
@@ -102,7 +109,7 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     equals: !!equals,
   };
 
-  return { cwd, pkg, dependencies, input, output, options };
+  return { cwd, pkg, dependencies, input, output, minify, options };
 
 };
 
