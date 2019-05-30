@@ -13,6 +13,7 @@ import json from "rollup-plugin-json";
 import nodeResolve from "rollup-plugin-node-resolve";
 import { terser } from "rollup-plugin-terser";
 import ts2 from "rollup-plugin-typescript2";
+import { BundlibOptions } from "./types";
 
 const pkgToConfigs = (
   {
@@ -22,7 +23,7 @@ const pkgToConfigs = (
     dependencies,
     options,
   }: AnalizedPkg,
-  dev: boolean,
+  { dev }: BundlibOptions = {},
 ): RollupOptions[] => {
 
   const apiFolder = dirname(apiInput);
