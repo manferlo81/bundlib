@@ -5,7 +5,6 @@ import { createBrowserConfig, createModuleConfig } from "./create-config";
 import { AnalizedPkg } from "./pkg";
 import renameMin from "./rename-min";
 import resolvePath from "./resolve";
-import { BundlibOptions } from "./types";
 
 import babel from "rollup-plugin-babel";
 import buble from "rollup-plugin-buble";
@@ -25,7 +24,7 @@ const pkgToConfigs = (
     dependencies,
     options,
   }: AnalizedPkg,
-  { dev }: BundlibOptions = {},
+  dev?: boolean,
 ): RollupOptions[] => {
 
   const apiFolder = dirname(apiInput);

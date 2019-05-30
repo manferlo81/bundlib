@@ -10,9 +10,7 @@ import { BundlibOptions } from "./types";
 // https://github.com/manferlo81/bundlib/issues/7
 const version = 0.3;
 
-const bundlib = async (cwd: string, options: BundlibOptions = {}) => {
-
-  const { watch, silent } = options;
+const bundlib = async (cwd: string, { dev, watch, silent }: BundlibOptions = {}) => {
 
   if (!silent) {
     log(false, "bundlib v%s\r\n", version);
@@ -21,11 +19,11 @@ const bundlib = async (cwd: string, options: BundlibOptions = {}) => {
 
   const pkg = await analizePkg(cwd);
 
-  const configs = pkgToConfigs(pkg, options);
+  const configs = pkgToConfigs(pkg, dev);
 
   const buildProcess = await rollItUp(
     configs,
-    options,
+    watch,
   );
 
   if (!silent) {

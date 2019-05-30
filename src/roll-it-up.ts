@@ -1,10 +1,10 @@
 import { RollupOptions } from "rollup";
 
 import build from "./build";
-import { BuildEventEmitterOrPromise, BundlibOptions } from "./types";
+import { BuildEventEmitterOrPromise } from "./types";
 import watchBuild from "./watch";
 
-const rollItUp = (configs: RollupOptions[], { watch }: BundlibOptions = {}): BuildEventEmitterOrPromise => {
+const rollItUp = (configs: RollupOptions[], watch?: boolean): BuildEventEmitterOrPromise => {
 
   return watch
     ? watchBuild(configs)
