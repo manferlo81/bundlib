@@ -1,6 +1,7 @@
-# 0.4.0 (30-05-2019)
+# 0.3.2 (30-05-2019)
 
 * added min option
+* dependencies updated
 
 # 0.3.1 (25-05-2019)
 
@@ -19,7 +20,7 @@
 
 # 0.2.6 (22-05-2019)
 
-* updated dependencies
+* dependencies updated
 
 # 0.1.x
 
