@@ -163,10 +163,13 @@ the `"bundlib"` field in `package.json` may contain any of the following propert
 bundlib [options]
 ```
 
-Bundlib has only two options
+Bundlib has only three options
 
 * `-d`, `--dev` : *creates a development, not minified builds.*
+
 * `-w`, `--watch` : *runs* `bundlib` *in watch mode.*
+
+* `-s`, `--silent` : *prevent messages from showing in the console.*
 
 > Combine your options according to your needs.
 

@@ -8,12 +8,13 @@ program
   .version(version, "-v, --version")
   .option("-d, --dev", "create development builds")
   .option("-w, --watch", "run bundlib in watch mode")
+  .option("-s, --silent", "prevent messages from showing in the console")
   .action(async () => {
-    const { dev, watch } = program;
+    const { dev, watch, silent } = program;
     try {
       await bundlib(
         process.cwd(),
-        { dev, watch },
+        { dev, watch, silent },
       );
     } catch (err) {
       // tslint:disable-next-line: no-console

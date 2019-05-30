@@ -1,6 +1,7 @@
 # 0.3.2 (30-05-2019)
 
-* added min option
+* added `--silent` cli option
+* added `min` option
 * dependencies updated
 
 # 0.3.1 (25-05-2019)
@@ -12,9 +13,9 @@
 # 0.3.0 (24-05-2019)
 
 * build cli tool from source code
-* deprecated iife, amd & umd options
-* added browser option
-* build browser build base on browser field
+* deprecated `iife`, `amd` & `umd` options
+* added `browser` option
+* build browser build base on `browser` field
 * improved documentation
 * refactoring
 
