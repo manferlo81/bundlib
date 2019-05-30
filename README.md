@@ -149,6 +149,14 @@ the `"bundlib"` field in `package.json` may contain any of the following propert
 
 > :warning: note that this options should only be used when your library has a default export and no named exports.
 
+#### min
+
+* *used in:* `all builds`
+* *type:* `Array<"main" | "module" | "browser">`
+* *defaults to* `[]`
+
+*Defines which module to build an aditional minified version. The minified file will be renamed from* `*.js` to `*.min.js`.
+
 ## CLI
 
 ```bash
