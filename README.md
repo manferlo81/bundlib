@@ -21,6 +21,7 @@ npm i bundlib -g
 ```
 
 ## First steps
+
 Bundlib will use `src/index.ts` as entry file for your library by default, make sure you create it before you try to build. Add the corresponding scripts to your `package.json` ([see below for CLI options](#cli)) and run them.
 
 ## Build
@@ -100,6 +101,7 @@ the `"bundlib"` field in `package.json` may contain any of the following propert
 
 #### browser
 
+* *added in* `v0.3.0`
 * *type:* `"iife" | "amd" | "umd"`
 * *defaults to* `"umd"`
 
@@ -141,6 +143,7 @@ the `"bundlib"` field in `package.json` may contain any of the following propert
 
 #### equals
 
+* *added in* `v0.1.0`
 * *used in:* `types for CommonJS build`
 * *type:* `boolean`
 * *defaults to* `false`
@@ -151,11 +154,39 @@ the `"bundlib"` field in `package.json` may contain any of the following propert
 
 #### min
 
+* *added in* `v0.3.2`
 * *used in:* `all builds`
 * *type:* `Array<"main" | "module" | "browser">`
 * *defaults to* `[]`
 
 *Defines which module to build an aditional minified version. The minified file will be renamed from* `*.js` to `*.min.js`.
+
+### Deprecated Options
+
+#### iife
+
+* *deprecated in* `v0.3.0`*, use* [browser option](#browser) *instead.*
+* *type:* `string`
+
+*the output path for* `IIFE` *build.*
+> *if not present,* `IIFE` *build will be skipped.*
+
+#### amd
+
+* *deprecated in* `v0.3.0`*, use* [browser option](#browser) *instead.*
+* *type:* `string`
+
+*the output path for* `AMD` *build.*
+> *if not present,* `AMD` *build will be skipped.*
+
+#### umd
+
+* *deprecated in* `v0.3.0`*, use* [browser option](#browser) *instead.*
+* *type:* `string`
+
+*the output path for* `UMD` *build.*
+> *if not present,* `UMD` *build will be skipped.*
+
 
 ## CLI
 

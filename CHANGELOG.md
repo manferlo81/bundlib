@@ -2,6 +2,7 @@
 
 * added `--silent` cli option
 * added `min` option
+* improved documentation
 * dependencies updated
 
 # 0.3.1 (25-05-2019)
