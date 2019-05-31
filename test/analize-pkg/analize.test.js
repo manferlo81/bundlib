@@ -4,6 +4,155 @@ describe("analize", () => {
 
   const cwd = process.cwd();
 
+  test("should throw on invalid browser field", async () => {
+
+    expect(analize(cwd, {
+      browser: 100,
+    })).rejects.toThrow(TypeError);
+
+  });
+
+  test("should throw on invalid bundlib field", async () => {
+
+    expect(analize(cwd, {
+      bundlib: [],
+    })).rejects.toThrow(TypeError);
+
+  });
+
+  test("should throw on invalid input option", async () => {
+
+    expect(analize(cwd, {
+      bundlib: {
+        input: 100,
+      },
+    })).rejects.toThrow(TypeError);
+
+  });
+
+  test("should throw on invalid browser option", async () => {
+
+    expect(analize(cwd, {
+      bundlib: {
+        browser: 100,
+      },
+    })).rejects.toThrow(TypeError);
+
+  });
+
+  test("should throw on invalid name option", async () => {
+
+    expect(analize(cwd, {
+      bundlib: {
+        name: 100,
+      },
+    })).rejects.toThrow(TypeError);
+
+  });
+
+  test("should throw on invalid id option", async () => {
+
+    expect(analize(cwd, {
+      bundlib: {
+        id: 100,
+      },
+    })).rejects.toThrow(TypeError);
+
+  });
+
+  test("should throw on invalid min option", async () => {
+
+    expect(analize(cwd, {
+      bundlib: {
+        min: 100,
+      },
+    })).rejects.toThrow(TypeError);
+
+  });
+
+  test("should work with string min option", () => {
+
+    ["main", "module", "browser"].forEach(async (min) => {
+
+      const analized = await analize(cwd, {
+        bundlib: {
+          min,
+        },
+      });
+
+      expect(analized).toHaveProperty("minify");
+      expect(analized.minify).toHaveProperty(min);
+      expect(analized.minify[min]).toBe(true);
+
+    });
+
+
+  });
+
+  test("should work with array min option", async () => {
+
+    const analized = await analize(cwd, {
+      bundlib: {
+        min: ["main", "module", "browser"],
+      },
+    });
+
+    expect(analized).toHaveProperty("minify");
+
+    expect(analized.minify).toHaveProperty("main");
+    expect(analized.minify.main).toBe(true);
+
+    expect(analized.minify).toHaveProperty("module");
+    expect(analized.minify.module).toBe(true);
+
+    expect(analized.minify).toHaveProperty("browser");
+    expect(analized.minify.browser).toBe(true);
+
+  });
+
+  test("should throw on invalid globals option", async () => {
+
+    expect(analize(cwd, {
+      bundlib: {
+        globals: 100,
+      },
+    })).rejects.toThrow(TypeError);
+
+  });
+
+  test("should work with array globals option", async () => {
+
+    const analized = await analize(cwd, {
+      bundlib: {
+        globals: ["module1", "module2"],
+      },
+    });
+
+    expect(analized.browser.globals).toEqual({
+      module1: "module1",
+      module2: "module2",
+    });
+
+  });
+
+  test("should work with object globals option", async () => {
+
+    const analized = await analize(cwd, {
+      bundlib: {
+        globals: {
+          module1: "module1",
+          module2: "module2",
+        },
+      },
+    });
+
+    expect(analized.browser.globals).toEqual({
+      module1: "module1",
+      module2: "module2",
+    });
+
+  });
+
   test("should read package.json if not provided", async () => {
 
     const analized = await analize(cwd);

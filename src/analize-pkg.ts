@@ -34,7 +34,7 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
   } = pkg;
 
   if (browserFile && !isString(browserFile)) {
-    throw new Error("invalid package.json browser field.");
+    throw new TypeError("invalid package.json browser field.");
   }
 
   if (!isNull(bundlibOptions) && (!isObject(bundlibOptions) || Array.isArray(bundlibOptions))) {
@@ -55,7 +55,7 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
   } = (bundlibOptions || {}) as BundlibPkgOptions;
 
   if (!isNull(pkgInput) && !isString(pkgInput)) {
-    throw new Error("Invalid input options.");
+    throw new TypeError("Invalid input options.");
   }
 
   if (!isNull(pkgBrowserFormat) && !isString(pkgBrowserFormat)) {
@@ -72,6 +72,10 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   if (!isNull(browserGlobals) && !isObject(browserGlobals)) {
     throw new TypeError("invalid globals option.");
+  }
+
+  if (!isNull(min) && (!isString(min) && !Array.isArray(min))) {
+    throw new TypeError("invalid min option.");
   }
 
   // compatible with version <0.3
@@ -117,12 +121,20 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   const buildName = browserName || pkgName || null;
 
-  const minify: MinifyOutOptions = (min && Array.isArray(min)) ? min.reduce((result, value) => {
-    if (value === "main" || value === "module" || value === "browser") {
-      result[value] = true;
-    }
-    return result;
-  }, {} as MinifyOutOptions) : {};
+  const minify: MinifyOutOptions = !min
+    ? {}
+    : Array.isArray(min)
+      ? min.reduce((result, value) => {
+        if (value === "main" || value === "module" || value === "browser") {
+          result[value] = true;
+        }
+        return result;
+      }, {} as MinifyOutOptions)
+      : (min === "main" || min === "module" || min === "browser")
+        ? {
+          [min]: true,
+        }
+        : {};
 
   const globals = !browserGlobals
     ? {}

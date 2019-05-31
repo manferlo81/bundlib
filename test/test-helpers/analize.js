@@ -1,5 +1,5 @@
 const { analizePkg } = require("../..");
 
-const analize = (cwd, options) => options ? analizePkg(cwd, options) : analizePkg(cwd);
+const analize = (cwd, pkg) => pkg ? analizePkg(cwd, pkg) : analizePkg(cwd);
 
 module.exports = analize;
