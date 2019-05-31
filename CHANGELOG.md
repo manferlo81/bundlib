@@ -1,3 +1,7 @@
+# 0.4.0 (31-05-2019)
+
+* `min` option behavior changed
+
 # 0.3.2 (30-05-2019)
 
 * added `--silent` cli option

@@ -152,7 +152,7 @@ const pkgToConfigs = (
       true,
       false,
       external,
-      modulePlugins(prod),
+      modulePlugins(prod && !minify.module),
     );
 
     configs.push(config);
@@ -186,7 +186,7 @@ const pkgToConfigs = (
       esModule,
       interop,
       external,
-      modulePlugins(prod),
+      modulePlugins(prod && !minify.main),
     );
 
     configs.push(config);
@@ -223,7 +223,7 @@ const pkgToConfigs = (
       sourcemap,
       esModule,
       interop,
-      browserPlugins(prod),
+      browserPlugins(prod && !minify.browser),
       pkgName as string,
       extend,
       globals,
@@ -253,77 +253,6 @@ const pkgToConfigs = (
     }
 
   }
-
-  // if (typesOutputFile) {
-
-  //   const config = createModuleConfig(
-  //     apiInput,
-  //     "es",
-  //     typesOutputFile,
-  //     false,
-  //     false,
-  //     false,
-  //     external,
-  //     typesPlugins(),
-  //   );
-
-  //   configs.push(config);
-
-  // }
-
-  // if (pkg.bin) {
-
-  //   const file = resolvePath(cwd, pkg.bin);
-
-  //   const output: RollupOutputOptions = {
-  //     file,
-  //     format: "cjs",
-  //     sourcemap,
-  //     esModule,
-  //     interop,
-  //   };
-
-  //   const config: RollupOptions = {
-
-  //     input: resolvePath(cwd, "src-bin/index.ts"),
-  //     output,
-
-  //     external,
-
-  //     plugins: [
-
-  //       stripShebang(),
-  //       json() as Plugin,
-
-  //       mapId({
-  //         map: {
-  //           src: apiInput,
-  //           dest: "..",
-  //           external: true,
-  //         },
-  //       }),
-
-  //       transpile({
-  //         cacheRoot: resolvePath(cwd, ".cache/api"),
-  //         sourcemap,
-  //         types: false,
-  //       }),
-
-  //       ...transform,
-
-  //       minify,
-
-  //       addShebang({
-  //         include: file,
-  //       }),
-
-  //     ].filter<Plugin>(Boolean as any),
-
-  //   };
-
-  //   configs.push(config);
-
-  // }
 
   return configs;
 
