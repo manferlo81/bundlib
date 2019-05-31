@@ -161,6 +161,8 @@ the `"bundlib"` field in `package.json` may contain any of the following propert
 
 *Defines which module to build an aditional minified version. The minified file will be renamed from* `*.js` to `*.min.js`.
 
+> *In* `v0.4.0` *the behavior of this option slightly changed. Output modules affected by this option won't be minified, even if the* [`dev`](#-dev-d) *cli option hasn\'t been set.*
+
 ### Deprecated Options
 
 #### iife
@@ -194,15 +196,27 @@ the `"bundlib"` field in `package.json` may contain any of the following propert
 bundlib [options]
 ```
 
-Bundlib has only three options
+### Options
 
-* `-d`, `--dev` : *creates a development, not minified builds.*
+*Bundlib has only three options...*
 
-* `-w`, `--watch` : *runs* `bundlib` *in watch mode.*
+#### --dev, -d
 
-* `-s`, `--silent` : *prevent messages from showing in the console.*
+*type:* `boolean`
 
-> Combine your options according to your needs.
+*creates a development, not minified builds.*
+
+#### --watch, -w
+
+*type:* `boolean`
+
+*runs* `bundlib` *in watch mode.*
+
+#### --silent, -s
+
+*type:* `boolean`
+
+*prevent messages from showing in the console.*
 
 ## Known Issues
 
