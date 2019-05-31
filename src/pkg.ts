@@ -10,7 +10,6 @@ export interface BundlibPkgInputOptions {
 }
 
 export interface BundlibPkgFlagOptions {
-  sourcemap: PkgJsonPossibleTypes;
   esModule: PkgJsonPossibleTypes;
   interop: PkgJsonPossibleTypes;
   extend: PkgJsonPossibleTypes;
@@ -25,6 +24,7 @@ export interface BundlibPkgBrowserOptions {
 }
 
 export interface BundlibPkgTransformableOptions {
+  sourcemap: PkgJsonPossibleTypes;
   min: PkgJsonPossibleTypes;
 }
 
@@ -32,6 +32,10 @@ export interface BundlibPkgDeprecatedOptions {
   iife: PkgJsonPossibleTypes;
   amd: PkgJsonPossibleTypes;
   umd: PkgJsonPossibleTypes;
+}
+
+interface BundlibPkgSourceMapOptions {
+  sourcemap: boolean;
 }
 
 export type BundlibPkgThrouOptions = Partial<BundlibPkgFlagOptions>;
@@ -78,5 +82,5 @@ export interface AnalizedPkg {
   output: BundlibOutputFiles;
   minify: MinifyOutOptions;
   browser: BrowserOptions;
-  options: BundlibPkgThrouOptions;
+  options: BundlibPkgSourceMapOptions & BundlibPkgThrouOptions;
 }

@@ -44,14 +44,12 @@ const pkgToConfigs = (
   } = dependencies;
 
   const {
-    sourcemap: genSourcemap,
+    sourcemap,
     esModule,
     interop,
     extend,
     equals,
   } = options;
-
-  const sourcemap = genSourcemap !== false;
 
   const {
     format: browserFormat,

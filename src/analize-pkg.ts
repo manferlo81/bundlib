@@ -21,15 +21,15 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   const {
     name: pkgName,
-    main,
+    main: cjsModuleFile,
     module: esModuleFile,
     browser: browserFile,
+    types: pkgTypes,
+    typings,
     dependencies: runtimeDependencies,
     peerDependencies,
     bundledDependencies,
     bundleDependencies,
-    types: pkgTypes,
-    typings,
     bundlib: bundlibOptions,
   } = pkg;
 
@@ -51,6 +51,7 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     amd,
     umd,
     min,
+    sourcemap,
     ...through
   } = (bundlibOptions || {}) as BundlibPkgOptions;
 
@@ -106,7 +107,7 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
   const typesPath = pkgTypes || typings;
 
   const output: BundlibOutputFiles = {
-    main: main ? resolvePath(main, cwd) : null,
+    main: cjsModuleFile ? resolvePath(cjsModuleFile, cwd) : null,
     module: esModuleFile ? resolvePath(esModuleFile, cwd) : null,
     browser: browserFile ? resolvePath(browserFile, cwd) : null,
     types: typesPath ? resolvePath(typesPath, cwd) : null,
@@ -154,7 +155,12 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     globals,
   };
 
-  return { cwd, pkg, dependencies, input, output, minify, browser, options: through };
+  const options = {
+    sourcemap: sourcemap !== false,
+    ...through,
+  };
+
+  return { cwd, pkg, dependencies, input, output, minify, browser, options };
 
 };
 
