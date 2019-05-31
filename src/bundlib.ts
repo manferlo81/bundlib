@@ -8,7 +8,7 @@ import { BundlibOptions } from "./types";
 // import { version } from "../package.json";
 // version has to be hardcoded due to issue #7
 // https://github.com/manferlo81/bundlib/issues/7
-const version = 0.3;
+const version = 0.4;
 
 const bundlib = async (cwd: string, { dev, watch, silent }: BundlibOptions = {}) => {
 
