@@ -13,7 +13,7 @@ import {
   BundlibPkgOptions,
   MinifyOutOptions,
 } from "./pkg";
-import { isNull, isObject, isString } from "./type-check";
+import { isArray, isNull, isObject, isString } from "./type-check";
 
 const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPkg> => {
 
@@ -37,7 +37,7 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     throw new TypeError("invalid package.json browser field.");
   }
 
-  if (!isNull(bundlibOptions) && (!isObject(bundlibOptions) || Array.isArray(bundlibOptions))) {
+  if (!isNull(bundlibOptions) && (!isObject(bundlibOptions) || isArray(bundlibOptions))) {
     throw new TypeError("invalid package.json bundlib field.");
   }
 
@@ -74,7 +74,7 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     throw new TypeError("invalid globals option.");
   }
 
-  if (!isNull(min) && (!isString(min) && !Array.isArray(min))) {
+  if (!isNull(min) && (!isString(min) && !isArray(min))) {
     throw new TypeError("invalid min option.");
   }
 
@@ -123,7 +123,7 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   const minify: MinifyOutOptions = !min
     ? {}
-    : Array.isArray(min)
+    : isArray(min)
       ? min.reduce((result, value) => {
         if (value === "main" || value === "module" || value === "browser") {
           result[value] = true;
@@ -137,8 +137,8 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
         : {};
 
   const globals = !browserGlobals
-    ? {}
-    : Array.isArray(browserGlobals)
+    ? null
+    : isArray(browserGlobals)
       ? browserGlobals.reduce<Record<string, string>>((r, v) => {
         if (isString(v)) {
           r[v] = v;

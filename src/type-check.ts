@@ -9,3 +9,5 @@ export function isObject<V = any>(value: unknown): value is Record<keyof any, V>
 export function isString(value: unknown): value is string {
   return typeof value === "string";
 }
+
+export const isArray = Array.isArray;
