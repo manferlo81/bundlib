@@ -12,17 +12,11 @@ describe("package to configs", () => {
 
   });
 
-  test("should throw if name required and not provided", (done) => {
+  test("should throw if name required and not provided", () => {
 
-    createConfigs(cwd, false, {
+    expect(createConfigs(cwd, false, {
       browser: "out/lib.js",
-    })
-      .then(() => {
-        done("promise did not throw.");
-      })
-      .catch(() => {
-        done();
-      });
+    })).rejects.toThrow();
 
   });
 
@@ -158,6 +152,34 @@ describe("package to configs", () => {
     expect(output.name).toBe(name);
 
   });
+
+  test("should generate CommonJS module config with extra minified version", async () => {
+
+    const minifiedName = "lib.cjs.min.js";
+
+    const configs = await createConfigs(cwd, true, {
+      main: "out/lib.cjs.js",
+      bundlib: {
+        min: "main",
+      },
+    });
+
+    expect(configs).toHaveLength(2);
+
+    const [cjsConfig, cjsMinConfig] = configs;
+
+    expect(typeof cjsConfig).toBe("object");
+    expect(typeof cjsConfig.output).toBe("object");
+    expect(cjsConfig.output.format).toBe("cjs");
+
+    expect(typeof cjsMinConfig).toBe("object");
+    expect(typeof cjsMinConfig.output).toBe("object");
+    expect(cjsMinConfig.output.format).toBe("cjs");
+    const { file } = cjsMinConfig.output;
+    expect(file.substr(file.length - minifiedName.length)).toBe(minifiedName);
+
+  });
+
 
   // test("should generate UMD module config", async () => {
 
