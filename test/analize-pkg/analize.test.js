@@ -91,11 +91,11 @@ describe("analize", () => {
 
   test("should read typings over types", async () => {
 
-    const typings = "typings";
+    const inTypes = "types";
 
     const analized = await analize(cwd, {
-      types: "types",
-      typings,
+      typings: "typings",
+      types: inTypes,
     });
 
     expect(typeof analized).toBe("object");
@@ -107,7 +107,7 @@ describe("analize", () => {
     const { types } = output;
     expect(typeof types).toBe("string");
 
-    expect(types.substr(types.length - typings.length)).toBe(typings);
+    expect(types.substr(types.length - inTypes.length)).toBe(inTypes);
 
   });
 
@@ -121,12 +121,12 @@ describe("analize", () => {
     });
 
     expect(typeof analized).toBe("object");
-    expect(analized).toHaveProperty("options");
+    expect(analized).toHaveProperty("browser");
 
-    const { options } = analized;
-    expect(options).toHaveProperty("name");
+    const { browser } = analized;
+    expect(browser).toHaveProperty("name");
 
-    const { name } = options;
+    const { name } = browser;
     expect(name).toBe(pkgName);
 
   });

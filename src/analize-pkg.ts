@@ -3,15 +3,17 @@ import builtinModules from "builtin-modules";
 import readPkg from "read-pkg";
 import resolvePath from "./resolve";
 
+import { validateBrowserFormat } from "./browser-format";
 import {
   AnalizedPkg,
-  BundlibBuildOptions,
+  BrowserOptions,
   BundlibDependencies,
   BundlibOutputFiles,
   BundlibPkgJson,
   BundlibPkgOptions,
-  PkgJsonFields,
+  MinifyOutOptions,
 } from "./pkg";
+import { isNull, isObject, isString } from "./type-check";
 
 const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPkg> => {
 
@@ -28,31 +30,51 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     bundleDependencies,
     types: pkgTypes,
     typings,
-    bundlib: pkgBundlib,
+    bundlib: bundlibOptions,
   } = pkg;
 
-  if (browserFile && typeof browserFile !== "string") {
+  if (browserFile && !isString(browserFile)) {
     throw new Error("invalid package.json browser field.");
+  }
+
+  if (!isNull(bundlibOptions) && (!isObject(bundlibOptions) || Array.isArray(bundlibOptions))) {
+    throw new TypeError("invalid package.json bundlib field.");
   }
 
   const {
     input: pkgInput,
-    sourcemap,
-    esModule,
-    interop,
     browser: pkgBrowserFormat,
-    name,
+    name: browserName,
     id,
-    extend,
-    globals,
-    equals,
+    globals: browserGlobals,
     iife,
     amd,
     umd,
     min,
-  } = pkgBundlib || {} as BundlibPkgOptions;
+    ...through
+  } = (bundlibOptions || {}) as BundlibPkgOptions;
 
-  // compatible with version lower than 0.3
+  if (!isNull(pkgInput) && !isString(pkgInput)) {
+    throw new Error("Invalid input options.");
+  }
+
+  if (!isNull(pkgBrowserFormat) && !isString(pkgBrowserFormat)) {
+    throw new TypeError("invalid browser option.");
+  }
+
+  if (!isNull(browserName) && !isString(browserName)) {
+    throw new TypeError("invalid name option.");
+  }
+
+  if (!isNull(id) && !isString(id)) {
+    throw new TypeError("invalid id option.");
+  }
+
+  if (!isNull(browserGlobals) && !isObject(browserGlobals)) {
+    throw new TypeError("invalid globals option.");
+  }
+
+  // compatible with version <0.3
 
   if ((iife && amd) || (iife && umd) || (amd && umd)) {
     throw new Error("multiple browser builds are no longer supported in bundlib >= 0.3.");
@@ -68,13 +90,16 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   // get format from deprecated options if no format specified
 
-  const browserFormat = pkgBrowserFormat || (iife ? "iife" : amd ? "amd" : "umd");
+  const browserFormat = validateBrowserFormat(pkgBrowserFormat || (iife ? "iife" : amd ? "amd" : "umd")) || "umd";
 
   //
 
-  const input = resolvePath(pkgInput || "src/index.ts", cwd);
+  const input = resolvePath(
+    pkgInput || "src/index.ts",
+    cwd,
+  );
 
-  const typesPath = typings || pkgTypes;
+  const typesPath = pkgTypes || typings;
 
   const output: BundlibOutputFiles = {
     cjs: main ? resolvePath(main, cwd) : null,
@@ -90,26 +115,30 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     bundled: bundledDependencies || bundleDependencies || [],
   };
 
-  const buildName = name || pkgName || null;
+  const buildName = browserName || pkgName || null;
 
-  const minify = (["main", "module", "browser"] as PkgJsonFields[]).reduce((r, v) => {
-    r[v] = !!min && min.indexOf(v) >= 0;
+  const minify: MinifyOutOptions = (min && Array.isArray(min)) ? min.reduce((result, value) => {
+    if (value === "main" || value === "module" || value === "browser") {
+      result[value] = true;
+    }
+    return result;
+  }, {} as MinifyOutOptions) : {};
+
+  const globals = Array.isArray(browserGlobals) ? browserGlobals.reduce<Record<string, string>>((r, v) => {
+    if (isString(v)) {
+      r[v] = v;
+    }
     return r;
-  }, {} as Record<PkgJsonFields, boolean>);
+  }, {}) : browserGlobals as Record<string, string>;
 
-  const options: BundlibBuildOptions = {
-    sourcemap: sourcemap !== false,
-    esModule: !!esModule,
-    interop: !!interop,
-    browser: browserFormat,
+  const browser: BrowserOptions = {
+    format: browserFormat,
     name: buildName,
-    extend: !!extend,
     id: id || null,
     globals,
-    equals: !!equals,
   };
 
-  return { cwd, pkg, dependencies, input, output, minify, options };
+  return { cwd, pkg, dependencies, input, output, minify, browser, options: through };
 
 };
 

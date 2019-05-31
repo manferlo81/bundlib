@@ -22,6 +22,7 @@ const pkgToConfigs = (
     output,
     minify,
     dependencies,
+    browser: browserOptions,
     options,
   }: AnalizedPkg,
   dev?: boolean,
@@ -43,19 +44,21 @@ const pkgToConfigs = (
   } = dependencies;
 
   const {
-
-    sourcemap,
+    sourcemap: genSourcemap,
     esModule,
     interop,
     extend,
     equals,
+  } = options;
 
-    browser: browserFormat,
+  const sourcemap = genSourcemap !== false;
+
+  const {
+    format: browserFormat,
     name: pkgName,
     id,
     globals,
-
-  } = options;
+  } = browserOptions;
 
   const prod = !dev;
 
@@ -183,8 +186,8 @@ const pkgToConfigs = (
       "cjs",
       cjsOutputFile,
       sourcemap,
-      esModule,
-      interop,
+      !!esModule,
+      !!interop,
       external,
       modulePlugins(prod && !minify.main),
     );
@@ -198,8 +201,8 @@ const pkgToConfigs = (
         "cjs",
         renameMin(cjsOutputFile),
         sourcemap,
-        esModule,
-        interop,
+        !!esModule,
+        !!interop,
         external,
         modulePlugins(true),
       );
@@ -221,12 +224,12 @@ const pkgToConfigs = (
       browserFormat,
       browserOutputFile,
       sourcemap,
-      esModule,
-      interop,
+      !!esModule,
+      !!interop,
       browserPlugins(prod && !minify.browser),
       pkgName as string,
-      extend,
-      globals,
+      !!extend,
+      globals || {},
       id,
     );
 
@@ -239,12 +242,12 @@ const pkgToConfigs = (
         browserFormat,
         renameMin(browserOutputFile),
         sourcemap,
-        esModule,
-        interop,
+        !!esModule,
+        !!interop,
         browserPlugins(true),
         pkgName as string,
-        extend,
-        globals,
+        !!extend,
+        globals || {},
         id,
       );
 

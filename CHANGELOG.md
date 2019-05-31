@@ -2,6 +2,7 @@
 
 * `min` option behavior changed
 * documented changes in `min` option behavior
+* refactoring
 * dependencies updated
 
 # 0.3.2 (30-05-2019)
