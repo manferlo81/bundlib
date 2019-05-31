@@ -48,8 +48,8 @@ export interface BundlibPkgJson extends PackageJson {
 }
 
 export interface BundlibOutputFiles {
-  cjs: string | null;
-  es: string | null;
+  main: string | null;
+  module: string | null;
   browser: string | null;
   types: string | null;
 }

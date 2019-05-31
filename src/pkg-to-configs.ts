@@ -31,8 +31,8 @@ const pkgToConfigs = (
   const apiFolder = dirname(apiInput);
 
   const {
-    cjs: cjsOutputFile,
-    es: esOutputFile,
+    main: cjsOutputFile,
+    module: esOutputFile,
     browser: browserOutputFile,
     types: typesOutputFile,
   } = output;

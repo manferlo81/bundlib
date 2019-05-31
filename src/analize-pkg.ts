@@ -102,8 +102,8 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
   const typesPath = pkgTypes || typings;
 
   const output: BundlibOutputFiles = {
-    cjs: main ? resolvePath(main, cwd) : null,
-    es: esModuleFile ? resolvePath(esModuleFile, cwd) : null,
+    main: main ? resolvePath(main, cwd) : null,
+    module: esModuleFile ? resolvePath(esModuleFile, cwd) : null,
     browser: browserFile ? resolvePath(browserFile, cwd) : null,
     types: typesPath ? resolvePath(typesPath, cwd) : null,
   };
@@ -124,12 +124,16 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     return result;
   }, {} as MinifyOutOptions) : {};
 
-  const globals = Array.isArray(browserGlobals) ? browserGlobals.reduce<Record<string, string>>((r, v) => {
-    if (isString(v)) {
-      r[v] = v;
-    }
-    return r;
-  }, {}) : browserGlobals as Record<string, string>;
+  const globals = !browserGlobals
+    ? {}
+    : Array.isArray(browserGlobals)
+      ? browserGlobals.reduce<Record<string, string>>((r, v) => {
+        if (isString(v)) {
+          r[v] = v;
+        }
+        return r;
+      }, {})
+      : browserGlobals as Record<string, string>;
 
   const browser: BrowserOptions = {
     format: browserFormat,
