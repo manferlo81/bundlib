@@ -79,7 +79,7 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     throw new TypeError("invalid globals option.");
   }
 
-  if (!isNull(min) && (!isString(min) && !isArray(min) && min !== true)) {
+  if (!isNull(min) && (!isString(min) && !isArray(min) && min !== true && min !== false)) {
     throw new TypeError("invalid min option.");
   }
 
@@ -129,7 +129,7 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
   const minify: MinifyOutOptions = !min
     ? {}
     : min === true
-      ? {}
+      ? { main: true, module: true, browser: true }
       : isArray(min)
         ? min.reduce((result, value) => {
           if (isValidMin(value)) {
