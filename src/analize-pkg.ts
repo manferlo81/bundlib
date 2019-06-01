@@ -52,7 +52,10 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     umd,
     min,
     sourcemap,
-    ...through
+    esModule,
+    interop,
+    extend,
+    equals,
   } = (bundlibOptions || {}) as BundlibPkgOptions;
 
   if (!isNull(pkgInput) && !isString(pkgInput)) {
@@ -157,7 +160,10 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   const options = {
     sourcemap: sourcemap !== false,
-    ...through,
+    esModule,
+    interop,
+    extend,
+    equals,
   };
 
   return { cwd, pkg, dependencies, input, output, minify, browser, options };

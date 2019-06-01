@@ -1,3 +1,8 @@
+# 0.4.1 (01-06-2019)
+
+* improved documentation
+* refactoring
+
 # 0.4.0 (31-05-2019)
 
 * `min` option behavior changed
