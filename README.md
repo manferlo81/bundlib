@@ -155,10 +155,11 @@ the `"bundlib"` field in `package.json` may contain any of the following propert
 #### min
 
 * *added in* `v0.3.2`
+* `boolean` *support added in* `v0.4.1`
 * *used in:* `all builds`
-* *type:* `"main" | "module" | "browser" | Array<"main" | "module" | "browser">`
+* *type:* `"main" | "module" | "browser" | boolean | Array<"main" | "module" | "browser">`
 
-*Defines which module to build an aditional minified version. The minified file will be renamed from* `*.ext` to `*.min.ext`.
+*Defines which module to build an aditional minified version, if* `true` *will affect all modules. The minified file will be renamed from* `*.ext` to `*.min.ext`.
 
 > *In* `v0.4.0` *the behavior of this option slightly changed. Output modules affected by this option won't be minified, even if the* [`dev`](#-dev-d) *cli option hasn\'t been set.*
 

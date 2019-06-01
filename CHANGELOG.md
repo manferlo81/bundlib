@@ -1,5 +1,6 @@
 # 0.4.1 (01-06-2019)
 
+* `min` option as boolean
 * improved documentation
 * refactoring
 

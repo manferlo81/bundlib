@@ -3,7 +3,6 @@ import builtinModules from "builtin-modules";
 import readPkg from "read-pkg";
 import resolvePath from "./resolve";
 
-import { validateBrowserFormat } from "./browser-format";
 import {
   AnalizedPkg,
   BrowserOptions,
@@ -14,6 +13,8 @@ import {
   MinifyOutOptions,
 } from "./pkg";
 import { isArray, isNull, isObject, isString } from "./type-check";
+import { validateBrowserFormat } from "./val-format";
+import { isValidMin } from "./val-min";
 
 const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPkg> => {
 
@@ -43,6 +44,11 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   const {
     input: pkgInput,
+    sourcemap,
+    esModule,
+    interop,
+    extend,
+    equals,
     browser: pkgBrowserFormat,
     name: browserName,
     id,
@@ -51,11 +57,6 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     amd,
     umd,
     min,
-    sourcemap,
-    esModule,
-    interop,
-    extend,
-    equals,
   } = (bundlibOptions || {}) as BundlibPkgOptions;
 
   if (!isNull(pkgInput) && !isString(pkgInput)) {
@@ -78,7 +79,7 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     throw new TypeError("invalid globals option.");
   }
 
-  if (!isNull(min) && (!isString(min) && !isArray(min))) {
+  if (!isNull(min) && (!isString(min) && !isArray(min) && min !== true)) {
     throw new TypeError("invalid min option.");
   }
 
@@ -127,18 +128,20 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   const minify: MinifyOutOptions = !min
     ? {}
-    : isArray(min)
-      ? min.reduce((result, value) => {
-        if (value === "main" || value === "module" || value === "browser") {
-          result[value] = true;
-        }
-        return result;
-      }, {} as MinifyOutOptions)
-      : (min === "main" || min === "module" || min === "browser")
-        ? {
-          [min]: true,
-        }
-        : {};
+    : min === true
+      ? {}
+      : isArray(min)
+        ? min.reduce((result, value) => {
+          if (isValidMin(value)) {
+            result[value] = true;
+          }
+          return result;
+        }, {} as MinifyOutOptions)
+        : isValidMin(min)
+          ? {
+            [min]: true,
+          }
+          : {};
 
   const globals = !browserGlobals
     ? null
