@@ -153,30 +153,34 @@ describe("package to configs", () => {
 
   });
 
-  test("should generate CommonJS module config with extra minified version", async () => {
+  test("should generate configs with extra minified versions", async () => {
 
-    const minifiedName = "lib.cjs.min.js";
+    const minifiedPostfix = ".min.js";
 
-    const configs = await createConfigs(cwd, true, {
+    const configs = await createConfigs(cwd, false, {
       main: "out/lib.cjs.js",
+      module: "out/lib.es.js",
+      browser: "out/lib.umd.js",
       bundlib: {
-        min: "main",
+        name: "lib",
+        min: ["main", "module", "browser"],
       },
     });
 
-    expect(configs).toHaveLength(2);
+    expect(configs).toHaveLength(6);
 
-    const [cjsConfig, cjsMinConfig] = configs;
+    configs.forEach((config, index) => {
 
-    expect(typeof cjsConfig).toBe("object");
-    expect(typeof cjsConfig.output).toBe("object");
-    expect(cjsConfig.output.format).toBe("cjs");
+      const isMin = index % 2;
 
-    expect(typeof cjsMinConfig).toBe("object");
-    expect(typeof cjsMinConfig.output).toBe("object");
-    expect(cjsMinConfig.output.format).toBe("cjs");
-    const { file } = cjsMinConfig.output;
-    expect(file.substr(file.length - minifiedName.length)).toBe(minifiedName);
+      if (isMin) {
+
+        const { file } = config.output;
+        expect(file.substr(file.length - minifiedPostfix.length)).toBe(minifiedPostfix);
+
+      }
+
+    });
 
   });
 
