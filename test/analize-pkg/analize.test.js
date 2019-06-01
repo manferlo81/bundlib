@@ -110,6 +110,27 @@ describe("analize", () => {
 
   });
 
+  test("should work with true as min option", async () => {
+
+    const analized = await analize(cwd, {
+      bundlib: {
+        min: true,
+      },
+    });
+
+    expect(analized).toHaveProperty("minify");
+
+    expect(analized.minify).toHaveProperty("main");
+    expect(analized.minify.main).toBe(true);
+
+    expect(analized.minify).toHaveProperty("module");
+    expect(analized.minify.module).toBe(true);
+
+    expect(analized.minify).toHaveProperty("browser");
+    expect(analized.minify.browser).toBe(true);
+
+  });
+
   test("should throw on invalid globals option", async () => {
 
     expect(analize(cwd, {
