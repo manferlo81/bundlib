@@ -12,7 +12,7 @@
     "build:cli": "tslint src-bin/**/*.ts && rollup -c",
     "build:api": "tslint src/**/*.ts && ts-node src-bin -d",
     "build": "npm run build:cli && npm run build:api",
-    "test": "jest",
+    "test": "jest --colors",
     "preversion": "npm run clean && npm run build && npm test"
   },
   "keywords": [
