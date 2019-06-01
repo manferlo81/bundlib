@@ -5,7 +5,7 @@ const { bundlib } = require("../..");
 
 describe("bundlib", () => {
 
-  test("bundlib should generates files", async (done) => {
+  test("should generates files", async (done) => {
 
     const projectCwd = resolve(process.cwd(), "test/projects/1");
     const files = ["lib.js"].map(
@@ -30,7 +30,7 @@ describe("bundlib", () => {
 
   }, 10000);
 
-  test("bundlib (with options) should generates files", async (done) => {
+  test("should generates files, with options", async (done) => {
 
     const projectCwd = resolve(process.cwd(), "test/projects/1");
     const files = ["lib.js"].map(
@@ -41,6 +41,7 @@ describe("bundlib", () => {
 
     const build = await bundlib(projectCwd, {
       dev: true,
+      silent: true,
     });
 
     build.on("WRITTEN", writtenListener);
