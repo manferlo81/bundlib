@@ -93,7 +93,7 @@ workflows:
             - unit_test
           filters:
             branches:
-              ignore: /greenkeeper.*/
+              only: /master/
 
       - publish:
           context: NPM
