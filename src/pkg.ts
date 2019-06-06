@@ -1,29 +1,28 @@
 import { PackageJson } from "read-pkg";
 import { PkgJsonPossibleTypes } from "./json-types";
-import { BrowserBuildFormat, Some } from "./types";
+import { BrowserBuildFormat } from "./types";
 
-export type PkgJsonOutputFields = "main" | "module" | "browser" | "types" | "typings";
-export type PkgJsonModuleOutputFields = Some<PkgJsonOutputFields, "main" | "module" | "browser">;
+export type PkgJsonRelevantOutputFields = "main" | "module" | "browser" | "types" | "typings";
+export type PkgJsonModuleOutputFields = Extract<PkgJsonRelevantOutputFields, "main" | "module" | "browser">;
+export type PkgJsonTypesOutputFields = Extract<PkgJsonRelevantOutputFields, "types">;
 
 export interface BundlibPkgInputOptions {
   input: PkgJsonPossibleTypes;
 }
 
-export interface BundlibPkgFlagOptions {
+export interface BundlibPkgFlagOptions222 {
+  sourcemap: PkgJsonPossibleTypes;
   esModule: PkgJsonPossibleTypes;
   interop: PkgJsonPossibleTypes;
   extend: PkgJsonPossibleTypes;
   equals: PkgJsonPossibleTypes;
 }
 
-export interface BundlibPkgBrowserOptions {
+export interface BundlibPkgOtherOptions {
   browser: PkgJsonPossibleTypes;
   name: PkgJsonPossibleTypes;
   id: PkgJsonPossibleTypes;
   globals: PkgJsonPossibleTypes;
-}
-
-export interface BundlibPkgTransformableOptions {
   sourcemap: PkgJsonPossibleTypes;
   min: PkgJsonPossibleTypes;
 }
@@ -34,16 +33,10 @@ export interface BundlibPkgDeprecatedOptions {
   umd: PkgJsonPossibleTypes;
 }
 
-interface BundlibPkgSourceMapOptions {
-  sourcemap: boolean;
-}
-
-export type BundlibPkgThrouOptions = Partial<BundlibPkgFlagOptions>;
-
-export type BundlibPkgOptions = BundlibPkgThrouOptions & Partial<
+export type BundlibPkgOptions = Partial<
   BundlibPkgInputOptions &
-  BundlibPkgBrowserOptions &
-  BundlibPkgTransformableOptions &
+  BundlibPkgFlagOptions222 &
+  BundlibPkgOtherOptions &
   BundlibPkgDeprecatedOptions
 >;
 
@@ -51,12 +44,11 @@ export interface BundlibPkgJson extends PackageJson {
   bundlib?: PkgJsonPossibleTypes;
 }
 
-export interface BundlibOutputFiles {
-  main: string | null;
-  module: string | null;
-  browser: string | null;
-  types: string | null;
-}
+export type BundlibPkgFlagFields = keyof BundlibPkgFlagOptions222;
+
+export type PkgJsonOutputFields = PkgJsonModuleOutputFields | PkgJsonTypesOutputFields;
+
+export type BundlibOutputFiles = Record<PkgJsonOutputFields, string | null>;
 
 export interface BundlibDependencies {
   builtin: readonly string[];
@@ -65,7 +57,7 @@ export interface BundlibDependencies {
   bundled: readonly string[];
 }
 
-export type MinifyOutOptions = Partial<Record<PkgJsonModuleOutputFields, boolean>>;
+export type MinifyOutOptions = Partial<Record<PkgJsonModuleOutputFields, true>>;
 
 export interface BrowserOptions {
   format: BrowserBuildFormat;
@@ -82,5 +74,5 @@ export interface AnalizedPkg {
   output: BundlibOutputFiles;
   minify: MinifyOutOptions;
   browser: BrowserOptions;
-  options: BundlibPkgSourceMapOptions & BundlibPkgThrouOptions;
+  options: Record<BundlibPkgFlagFields, boolean>;
 }

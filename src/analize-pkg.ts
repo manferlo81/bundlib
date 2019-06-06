@@ -1,8 +1,9 @@
 import builtinModules from "builtin-modules";
-// import { resolve as resolvePath } from "path";
 import readPkg from "read-pkg";
 import resolvePath from "./resolve";
 
+import { log } from "./console";
+import { error, invalidOption, invalidPkgField } from "./errors";
 import {
   AnalizedPkg,
   BrowserOptions,
@@ -13,12 +14,13 @@ import {
   MinifyOutOptions,
 } from "./pkg";
 import { isArray, isNull, isObject, isString } from "./type-check";
-import { validateBrowserFormat } from "./val-format";
-import { isValidMin } from "./val-min";
+import { BrowserBuildFormat } from "./types";
+import { validateBrowserFormat } from "./validate-fmt";
+import { isValidMin } from "./validate-min";
 
 const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPkg> => {
 
-  pkg = pkg || await readPkg({ cwd }) as BundlibPkgJson;
+  const resolvedPkg: BundlibPkgJson = pkg || await readPkg({ cwd });
 
   const {
     name: pkgName,
@@ -32,14 +34,14 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     bundledDependencies,
     bundleDependencies,
     bundlib: bundlibOptions,
-  } = pkg;
+  } = resolvedPkg;
 
   if (browserFile && !isString(browserFile)) {
-    throw new TypeError("invalid package.json browser field.");
+    throw invalidPkgField("browser");
   }
 
   if (!isNull(bundlibOptions) && (!isObject(bundlibOptions) || isArray(bundlibOptions))) {
-    throw new TypeError("invalid package.json bundlib field.");
+    throw invalidPkgField("bundlib");
   }
 
   const {
@@ -60,46 +62,45 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
   } = (bundlibOptions || {}) as BundlibPkgOptions;
 
   if (!isNull(pkgInput) && !isString(pkgInput)) {
-    throw new TypeError("Invalid input options.");
+    throw invalidOption("input");
   }
 
   if (!isNull(pkgBrowserFormat) && !isString(pkgBrowserFormat)) {
-    throw new TypeError("invalid browser option.");
+    throw invalidOption("browser");
   }
 
   if (!isNull(browserName) && !isString(browserName)) {
-    throw new TypeError("invalid name option.");
+    throw invalidOption("name");
   }
 
   if (!isNull(id) && !isString(id)) {
-    throw new TypeError("invalid id option.");
+    throw invalidOption("id");
   }
 
   if (!isNull(browserGlobals) && !isObject(browserGlobals)) {
-    throw new TypeError("invalid globals option.");
+    throw invalidOption("globals");
   }
 
   if (!isNull(min) && (!isString(min) && !isArray(min) && min !== true && min !== false)) {
-    throw new TypeError("invalid min option.");
+    throw invalidOption("min");
   }
 
   // compatible with version <0.3
 
   if ((iife && amd) || (iife && umd) || (amd && umd)) {
-    throw new Error("multiple browser builds are no longer supported in bundlib >= 0.3.");
+    throw error("multiple browser builds are no longer supported in bundlib >= 0.3.");
   }
 
   if (iife || amd || umd) {
-
     // warn about deprecated options
-
-    // tslint:disable-next-line: no-console
-    console.log("options iife, amd & umd are deprecated in version >= 0.3");
+    log(false, "options iife, amd & umd are deprecated in version >= 0.3");
   }
+
+  const deprecatedBrowserFormat: BrowserBuildFormat | null = iife ? "iife" : amd ? "amd" : null;
 
   // get format from deprecated options if no format specified
 
-  const browserFormat = validateBrowserFormat(pkgBrowserFormat || (iife ? "iife" : amd ? "amd" : "umd")) || "umd";
+  const browserFormat: BrowserBuildFormat = validateBrowserFormat(pkgBrowserFormat || deprecatedBrowserFormat, "umd");
 
   //
 
@@ -146,11 +147,11 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
   const globals = !browserGlobals
     ? null
     : isArray(browserGlobals)
-      ? browserGlobals.reduce<Record<string, string>>((r, v) => {
-        if (isString(v)) {
-          r[v] = v;
+      ? browserGlobals.reduce<Record<string, string>>((result, value) => {
+        if (isString(value)) {
+          result[value] = value;
         }
-        return r;
+        return result;
       }, {})
       : browserGlobals as Record<string, string>;
 
@@ -163,13 +164,13 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   const options = {
     sourcemap: sourcemap !== false,
-    esModule,
-    interop,
-    extend,
-    equals,
+    esModule: !!esModule,
+    interop: !!interop,
+    extend: !!extend,
+    equals: !!equals,
   };
 
-  return { cwd, pkg, dependencies, input, output, minify, browser, options };
+  return { cwd, pkg: resolvedPkg, dependencies, input, output, minify, browser, options };
 
 };
 

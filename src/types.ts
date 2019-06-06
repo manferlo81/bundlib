@@ -6,7 +6,6 @@ import {
   RollupOptions,
 } from "rollup";
 
-export type Some<T, X extends T> = Exclude<T, Exclude<T, X>>;
 export type ExcludeProps<T, X extends keyof T> = Pick<T, Exclude<keyof T, X>>;
 
 export type OutputExtra = ExcludeProps<
@@ -20,8 +19,8 @@ export type ConfigExtra = ExcludeProps<
   "input" | "output" | "external" | "plugins"
 >;
 
-export type ModuleBuildFormat = Some<RollupModuleFormat, "cjs" | "es">;
-export type BrowserBuildFormat = Some<RollupModuleFormat, "iife" | "amd" | "umd">;
+export type ModuleBuildFormat = Extract<RollupModuleFormat, "cjs" | "es">;
+export type BrowserBuildFormat = Extract<RollupModuleFormat, "iife" | "amd" | "umd">;
 
 export type BuildFormat = ModuleBuildFormat | BrowserBuildFormat;
 
