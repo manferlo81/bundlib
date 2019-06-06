@@ -1,15 +1,17 @@
-// @ts-check
+const { main } = require("./package.json");
 
 const CI = process.env.CI;
 
-/** @type { jest.InitialOptions } */
 const config = {
 
   testEnvironment: "node",
+  browser: false,
+
+  cacheDirectory: ".cache/jest",
 
   collectCoverage: true,
   collectCoverageFrom: [
-    "dist/**",
+    main,
   ],
   coverageDirectory: "coverage",
   coverageReporters: [
