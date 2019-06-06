@@ -1,3 +1,8 @@
+# 0.5.0 (06-06-2019)
+
+* dependencies updated
+* refactoring
+
 # 0.4.1 (01-06-2019)
 
 * `min` option as boolean
