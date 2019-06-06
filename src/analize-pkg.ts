@@ -12,11 +12,12 @@ import {
   BundlibPkgJson,
   BundlibPkgOptions,
   MinifyOutOptions,
+  PkgJsonModuleOutputFields,
 } from "./pkg";
 import { isArray, isNull, isObject, isString } from "./type-check";
 import { BrowserBuildFormat } from "./types";
-import { validateBrowserFormat } from "./validate-fmt";
-import { isValidMin } from "./validate-min";
+import { isBrowserFormat } from "./validate-fmt";
+import { isValidMinOption } from "./validate-min";
 
 const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPkg> => {
 
@@ -65,7 +66,7 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     throw invalidOption("input");
   }
 
-  if (!isNull(pkgBrowserFormat) && !isString(pkgBrowserFormat)) {
+  if (!isNull(pkgBrowserFormat) && !isBrowserFormat(pkgBrowserFormat)) {
     throw invalidOption("browser");
   }
 
@@ -81,7 +82,7 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     throw invalidOption("globals");
   }
 
-  if (!isNull(min) && (!isString(min) && !isArray(min) && min !== true && min !== false)) {
+  if (!isNull(min) && !isValidMinOption(min)) {
     throw invalidOption("min");
   }
 
@@ -93,14 +94,14 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   if (iife || amd || umd) {
     // warn about deprecated options
-    log(false, "options iife, amd & umd are deprecated in version >= 0.3");
+    log("options iife, amd & umd are deprecated in version >= 0.3");
   }
 
   const deprecatedBrowserFormat: BrowserBuildFormat | null = iife ? "iife" : amd ? "amd" : null;
 
   // get format from deprecated options if no format specified
 
-  const browserFormat: BrowserBuildFormat = validateBrowserFormat(pkgBrowserFormat || deprecatedBrowserFormat, "umd");
+  const browserFormat: BrowserBuildFormat = pkgBrowserFormat || deprecatedBrowserFormat || "umd";
 
   //
 
@@ -129,20 +130,16 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   const minify: MinifyOutOptions = !min
     ? {}
-    : min === true
+    : min as unknown as boolean === true
       ? { main: true, module: true, browser: true }
       : isArray(min)
         ? min.reduce((result, value) => {
-          if (isValidMin(value)) {
-            result[value] = true;
-          }
+          result[value] = true;
           return result;
         }, {} as MinifyOutOptions)
-        : isValidMin(min)
-          ? {
-            [min]: true,
-          }
-          : {};
+        : {
+          [min as PkgJsonModuleOutputFields]: true,
+        };
 
   const globals = !browserGlobals
     ? null

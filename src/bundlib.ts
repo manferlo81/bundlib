@@ -13,8 +13,8 @@ const version = 0.4;
 const bundlib = async (cwd: string, { dev, watch, silent }: BundlibOptions = {}) => {
 
   if (!silent) {
-    log(false, "bundlib v%s\r\n", version);
-    log(false, "> reading package.json...");
+    log("bundlib v%s\r\n", version);
+    log("> reading package.json...");
   }
 
   const pkg = await analizePkg(cwd);
@@ -37,13 +37,13 @@ const bundlib = async (cwd: string, { dev, watch, silent }: BundlibOptions = {})
     });
 
     buildProcess.on(ERROR, (err) => {
-      log(true, err);
+      log(err);
     });
 
     if (watch) {
 
       buildProcess.on(BUILT, () => {
-        log(false, "> watching for changes...");
+        log("> watching for changes...");
       });
 
     }

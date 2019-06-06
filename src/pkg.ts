@@ -18,6 +18,8 @@ export interface BundlibPkgFlagOptions222 {
   equals: PkgJsonPossibleTypes;
 }
 
+export type ValidMinOption = PkgJsonModuleOutputFields | PkgJsonModuleOutputFields[] | boolean | null | undefined;
+
 export interface BundlibPkgOtherOptions {
   browser: PkgJsonPossibleTypes;
   name: PkgJsonPossibleTypes;

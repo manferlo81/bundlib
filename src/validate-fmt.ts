@@ -5,14 +5,3 @@ export function isBrowserFormat(value: unknown): value is BrowserBuildFormat {
     value === "iife" || value === "amd" || value === "umd"
   );
 }
-
-export function validateBrowserFormat(
-  format: unknown,
-  defaultFormat: BrowserBuildFormat,
-): BrowserBuildFormat {
-
-  return isBrowserFormat(format)
-    ? format
-    : defaultFormat;
-
-}

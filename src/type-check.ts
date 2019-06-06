@@ -10,4 +10,8 @@ export function isString(value: unknown): value is string {
   return typeof value === "string";
 }
 
+export function isBool(value: unknown): value is boolean {
+  return value === true || value === false;
+}
+
 export const isArray = Array.isArray;

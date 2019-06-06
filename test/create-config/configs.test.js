@@ -4,19 +4,19 @@ describe("package to configs", () => {
 
   const cwd = process.cwd();
 
-  test("should generate empty array", async () => {
-
-    const configs = await createConfigs(cwd, false, {});
-
-    expect(configs).toHaveLength(0);
-
-  });
-
   test("should throw if name required and not provided", () => {
 
     expect(createConfigs(cwd, false, {
       browser: "out/lib.js",
     })).rejects.toThrow();
+
+  });
+
+  test("should generate empty array", async () => {
+
+    const configs = await createConfigs(cwd, false, {});
+
+    expect(configs).toHaveLength(0);
 
   });
 
@@ -184,28 +184,27 @@ describe("package to configs", () => {
 
   });
 
+  // // test("should generate UMD module config", async () => {
 
-  // test("should generate UMD module config", async () => {
+  // //   const configs = await createConfigs(cwd, true, {
+  // //     bundlib: {
+  // //       name: "lib",
+  // //       id: "lib",
+  // //       umd: "out/lib.umd.js",
+  // //     },
+  // //   });
 
-  //   const configs = await createConfigs(cwd, true, {
-  //     bundlib: {
-  //       name: "lib",
-  //       id: "lib",
-  //       umd: "out/lib.umd.js",
-  //     },
-  //   });
+  // //   expect(configs).toHaveLength(1);
 
-  //   expect(configs).toHaveLength(1);
+  // //   const [umdConfig] = configs;
 
-  //   const [umdConfig] = configs;
+  // //   expect(typeof umdConfig).toBe("object");
+  // //   expect(typeof umdConfig.output).toBe("object");
+  // //   expect(umdConfig.output.format).toBe("umd");
+  // //   expect(typeof umdConfig.output.amd).toBe("object");
+  // //   expect(umdConfig.output.amd.id).toBe("lib");
 
-  //   expect(typeof umdConfig).toBe("object");
-  //   expect(typeof umdConfig.output).toBe("object");
-  //   expect(umdConfig.output.format).toBe("umd");
-  //   expect(typeof umdConfig.output.amd).toBe("object");
-  //   expect(umdConfig.output.amd.id).toBe("lib");
-
-  // });
+  // // });
 
 
 });
