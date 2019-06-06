@@ -46,14 +46,14 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   const {
     input: pkgInput,
-    sourcemap,
-    esModule,
-    interop,
-    extend,
-    equals,
+    sourcemap: sourcemapFlag,
+    esModule: esModuleFlag,
+    interop: interopFlag,
+    extend: extendFlag,
+    equals: equalsFlag,
     browser: pkgBrowserFormat,
     name: browserName,
-    id,
+    id: amdId,
     globals: browserGlobals,
     iife,
     amd,
@@ -73,7 +73,7 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     throw invalidOption("name");
   }
 
-  if (!isNull(id) && !isString(id)) {
+  if (!isNull(amdId) && !isString(amdId)) {
     throw invalidOption("id");
   }
 
@@ -158,16 +158,16 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
   const browser: BrowserOptions = {
     format: browserFormat,
     name: buildName,
-    id: id || null,
+    id: amdId || null,
     globals,
   };
 
   const options = {
-    sourcemap: sourcemap !== false,
-    esModule: !!esModule,
-    interop: !!interop,
-    extend: !!extend,
-    equals: !!equals,
+    sourcemap: sourcemapFlag !== false,
+    esModule: !!esModuleFlag,
+    interop: !!interopFlag,
+    extend: !!extendFlag,
+    equals: !!equalsFlag,
   };
 
   return { cwd, pkg: resolvedPkg, dependencies, input, output, minify, browser, options };
