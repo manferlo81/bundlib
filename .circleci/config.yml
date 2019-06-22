@@ -96,7 +96,7 @@ workflows:
               only: /master/
 
       - publish:
-          context: NPM
+          context: npm
           requires:
             - unit_test
           filters:
