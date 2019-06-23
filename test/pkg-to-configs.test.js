@@ -45,7 +45,7 @@ describe("package to configs", () => {
 
     const configs = await createConfigs(cwd, true, {
       browser: "out/lib.iife.js",
-      bundlib: { browser: format, name },
+      bundlib: { browser: format, name, globals: {} },
     });
 
     expect(configs).toHaveLength(1);
@@ -66,7 +66,7 @@ describe("package to configs", () => {
 
     const configs = await createConfigs(cwd, true, {
       browser: "out/lib.js",
-      bundlib: { browser: format, name, id },
+      bundlib: { browser: format, name, id, globals: {} },
     });
 
     expect(configs).toHaveLength(1);
@@ -88,7 +88,7 @@ describe("package to configs", () => {
 
     const configs = await createConfigs(cwd, true, {
       browser: "out/lib.js",
-      bundlib: { browser: format, name, id },
+      bundlib: { browser: format, name, id, globals: {} },
     });
 
     expect(configs).toHaveLength(1);
@@ -122,6 +122,25 @@ describe("package to configs", () => {
 
   });
 
+  test("should add exportEquals plugin if conditions apply", async () => {
+
+    const configs = await createConfigs(cwd, true, {
+      main: "out/lib.js",
+      types: "out/lib.d.ts",
+      bundlib: {
+        equals: true,
+      },
+    });
+
+    expect(configs).toHaveLength(1);
+
+    const [config] = configs;
+    const pluginNames = config.plugins.map((plugin) => plugin.name);
+
+    expect(pluginNames).toContain("export-equals");
+
+  });
+
   test("should generate configs with extra minified versions", async () => {
 
     const minifiedPostfix = ".min.js";
@@ -152,28 +171,5 @@ describe("package to configs", () => {
     });
 
   });
-
-  // // test("should generate UMD module config", async () => {
-
-  // //   const configs = await createConfigs(cwd, true, {
-  // //     bundlib: {
-  // //       name: "lib",
-  // //       id: "lib",
-  // //       umd: "out/lib.umd.js",
-  // //     },
-  // //   });
-
-  // //   expect(configs).toHaveLength(1);
-
-  // //   const [umdConfig] = configs;
-
-  // //   expect(typeof umdConfig).toBe("object");
-  // //   expect(typeof umdConfig.output).toBe("object");
-  // //   expect(umdConfig.output.format).toBe("umd");
-  // //   expect(typeof umdConfig.output.amd).toBe("object");
-  // //   expect(umdConfig.output.amd.id).toBe("lib");
-
-  // // });
-
 
 });
