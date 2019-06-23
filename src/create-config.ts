@@ -69,21 +69,16 @@ export function createBrowserConfig(
   plugins: Array<Plugin | null | false>,
   name: string,
   extend: boolean,
-  globals?: Record<string, string>,
+  globals?: Record<string, string> | null,
   id?: string | null,
 ) {
 
   const output = createOutput(format, file, sourcemap, esModule, interop, {
     name,
     extend,
-    globals,
+    ...globals && { globals },
+    ...id && (format === "umd" || format === "amd") && { amd: { id } },
   });
-
-  if (id && (format === "umd" || format === "amd")) {
-    output.amd = {
-      id,
-    };
-  }
 
   const external = globals ? Object.keys(globals) : [];
 

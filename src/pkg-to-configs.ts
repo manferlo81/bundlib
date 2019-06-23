@@ -106,9 +106,9 @@ function pkgToConfigs(
 
       json() as Plugin,
 
-      declarationDir && equals && exportEquals({
+      declarationDir && equals ? exportEquals({
         file: resolve(joinPath(declarationDir, "index.d.ts"), cwd),
-      }) || null,
+      }) : null,
 
       babel({
         extensions: [".ts", ".js"],
@@ -152,33 +152,33 @@ function pkgToConfigs(
 
   if (esOutputFile) {
 
-    const config: RollupOptions = createModuleConfig(
-      apiInput,
-      "es",
-      esOutputFile,
-      sourcemap,
-      true,
-      false,
-      external,
-      modulePlugins(prod && !minify.module),
-    );
-
-    configs.push(config);
-
-    if (minify.module) {
-
-      const configMin: RollupOptions = createModuleConfig(
+    configs.push(
+      createModuleConfig(
         apiInput,
         "es",
-        renameMin(esOutputFile),
+        esOutputFile,
         sourcemap,
         true,
         false,
         external,
-        modulePlugins(true),
-      );
+        modulePlugins(prod && !minify.module),
+      ),
+    );
 
-      configs.push(configMin);
+    if (minify.module) {
+
+      configs.push(
+        createModuleConfig(
+          apiInput,
+          "es",
+          renameMin(esOutputFile),
+          sourcemap,
+          true,
+          false,
+          external,
+          modulePlugins(true),
+        ),
+      );
 
     }
 
@@ -186,33 +186,33 @@ function pkgToConfigs(
 
   if (cjsOutputFile) {
 
-    const config: RollupOptions = createModuleConfig(
-      apiInput,
-      "cjs",
-      cjsOutputFile,
-      sourcemap,
-      esModule,
-      interop,
-      external,
-      modulePlugins(prod && !minify.main),
-    );
-
-    configs.push(config);
-
-    if (minify.main) {
-
-      const configMin: RollupOptions = createModuleConfig(
+    configs.push(
+      createModuleConfig(
         apiInput,
         "cjs",
-        renameMin(cjsOutputFile),
+        cjsOutputFile,
         sourcemap,
         esModule,
         interop,
         external,
-        modulePlugins(true),
-      );
+        modulePlugins(prod && !minify.main),
+      ),
+    );
 
-      configs.push(configMin);
+    if (minify.main) {
+
+      configs.push(
+        createModuleConfig(
+          apiInput,
+          "cjs",
+          renameMin(cjsOutputFile),
+          sourcemap,
+          esModule,
+          interop,
+          external,
+          modulePlugins(true),
+        ),
+      );
 
     }
 
@@ -220,39 +220,39 @@ function pkgToConfigs(
 
   if (browserOutputFile) {
 
-    const config = createBrowserConfig(
-      apiInput,
-      browserFormat,
-      browserOutputFile,
-      sourcemap,
-      esModule,
-      interop,
-      browserPlugins(prod && !minify.browser),
-      pkgName as string,
-      extend,
-      globals || {},
-      id,
-    );
-
-    configs.push(config);
-
-    if (minify.browser) {
-
-      const configMin = createBrowserConfig(
+    configs.push(
+      createBrowserConfig(
         apiInput,
         browserFormat,
-        renameMin(browserOutputFile),
+        browserOutputFile,
         sourcemap,
         esModule,
         interop,
-        browserPlugins(true),
+        browserPlugins(prod && !minify.browser),
         pkgName as string,
         extend,
-        globals || {},
+        globals,
         id,
-      );
+      ),
+    );
 
-      configs.push(configMin);
+    if (minify.browser) {
+
+      configs.push(
+        createBrowserConfig(
+          apiInput,
+          browserFormat,
+          renameMin(browserOutputFile),
+          sourcemap,
+          esModule,
+          interop,
+          browserPlugins(true),
+          pkgName as string,
+          extend,
+          globals,
+          id,
+        ),
+      );
 
     }
 
