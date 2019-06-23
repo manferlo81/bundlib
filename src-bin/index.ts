@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
 import program from "commander";
+
 import { version } from "../package.json";
-import { bundlib } from "../src";
+import bundlib from "./bundlib";
 
 program
   .version(version, "-v, --version")

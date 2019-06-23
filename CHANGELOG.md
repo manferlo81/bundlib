@@ -1,5 +1,11 @@
 # Bundlib Changelog
 
+## 0.6.0
+*23-JUN-2019*
+
+* deprecated options (`iife`, `amd` & `umd`) removed
+* full api & cli makeover
+
 ## 0.5.4
 *23-JUN-2019*
 
