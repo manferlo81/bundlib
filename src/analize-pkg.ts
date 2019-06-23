@@ -1,6 +1,7 @@
 import builtinModules from "builtin-modules";
 import readPkg from "read-pkg";
 
+import { extname } from "path";
 import { error, invalidOption, invalidPkgField } from "./errors";
 import { PkgJsonPossibleTypes } from "./json-types";
 import {
@@ -87,10 +88,12 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
   }
 
   if (iife || amd || umd) {
-    throw error("options iife, amd & umd were removed in version >= 0.6");
+    throw error("options iife, amd & umd were removed in version 0.6");
   }
 
-  const browserFormat: BrowserBuildFormat = pkgBrowserFormat || "umd";
+  if (pkgInput && extname(pkgInput) !== ".ts") {
+    throw error("option input has to point to a typescript (.ts) file.");
+  }
 
   const input = resolve(
     pkgInput || "src/index.ts",
@@ -138,6 +141,8 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
         return result;
       }, {})
       : browserGlobals as Record<string, string>;
+
+  const browserFormat: BrowserBuildFormat = pkgBrowserFormat || "umd";
 
   const browser: BrowserOptions = {
     format: browserFormat,

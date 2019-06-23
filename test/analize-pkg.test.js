@@ -115,6 +115,30 @@ describe("analize", () => {
 
   });
 
+  test("should throw on removed options", async () => {
+
+    const removedOptions = [
+      "iife",
+      "amd",
+      "umd",
+    ];
+
+    removedOptions.forEach((option) => {
+      expect(analize(cwd, {
+        bundlib: { [option]: true },
+      })).rejects.toThrow(TypeError);
+    });
+
+  });
+
+  test("should throw on non typescript input option", async () => {
+
+    expect(analize(cwd, {
+      bundlib: { input: "index.js" },
+    })).rejects.toThrow(TypeError);
+
+  });
+
   test("should read package.json if not provided", async () => {
 
     const analized = await analize(cwd);
@@ -131,6 +155,16 @@ describe("analize", () => {
     const analized = await analize(cwd, pkg);
 
     expect(analized.pkg).toBe(pkg);
+
+  });
+
+  test("should read input option", async () => {
+
+    const analized = await analize(cwd, {
+      bundlib: { input: "src/main.ts" },
+    });
+
+    expect(analized.input).toMatch(/main\.ts$/);
 
   });
 
@@ -152,7 +186,18 @@ describe("analize", () => {
 
   });
 
-  test("should set types to null", async () => {
+  test("should set builtin dependencies", async () => {
+
+    const analized = await analize(cwd, {});
+
+    const { builtin } = analized.dependencies;
+
+    expect(builtin).toContain("path");
+    expect(builtin).toContain("events");
+
+  });
+
+  test("should set types to null if no type path provided", async () => {
 
     const analized = await analize(cwd, {});
 
@@ -164,7 +209,7 @@ describe("analize", () => {
   test("should read types", async () => {
 
     const analized = await analize(cwd, {
-      types: "types",
+      types: "types/index.d.ts",
     });
 
     const { types } = analized.output;
@@ -193,7 +238,7 @@ describe("analize", () => {
     });
 
     const { types } = analized.output;
-    expect(types.substr(types.length - inTypes.length)).toBe(inTypes);
+    expect(types).toMatch(new RegExp(`${inTypes}$`));
 
   });
 
