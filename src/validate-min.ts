@@ -9,9 +9,9 @@ export function isValidMin(value: unknown): value is PkgJsonModuleOutputFields {
 
 type ValidMin = PkgJsonModuleOutputFields | PkgJsonModuleOutputFields[];
 
-export function isValidMinOption(value: unknown): value is ValidMin {
+export function isValidMinOption(value: any): value is ValidMin {
   return isBool(value) || isValidMin(value) || (
-    isArray(value) && value.every((item) => (
+    isArray<PkgJsonModuleOutputFields>(value) && value.every((item) => (
       isValidMin(item)
     ))
   );

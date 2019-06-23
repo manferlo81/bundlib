@@ -1,5 +1,7 @@
-import { resolve } from "path";
+import { resolve as pathResolve } from "path";
 
-const resolvePath = (filename: string, cwd: string) => resolve(cwd, filename);
+function resolve(filename: string, cwd: string) {
+  return pathResolve(cwd, filename);
+}
 
-export default resolvePath;
+export default resolve;

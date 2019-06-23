@@ -5,7 +5,7 @@ import pkgToConfigs from "./pkg-to-configs";
 import rollItUp from "./roll-it-up";
 import { BundlibOptions } from "./types";
 
-const bundlib = async (cwd: string, { dev, watch, silent }: BundlibOptions = {}) => {
+async function bundlib(cwd: string, { dev, watch, silent }: BundlibOptions = {}) {
 
   if (!silent) {
     log("> reading package.json...");
@@ -46,6 +46,6 @@ const bundlib = async (cwd: string, { dev, watch, silent }: BundlibOptions = {})
 
   return buildProcess;
 
-};
+}
 
 export default bundlib;

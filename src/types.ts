@@ -6,15 +6,13 @@ import {
   RollupOptions,
 } from "rollup";
 
-export type ExcludeProps<T, X extends keyof T> = Pick<T, Exclude<keyof T, X>>;
-
-export type OutputExtra = ExcludeProps<
+export type OutputExtra = Omit<
   RollupOutputOptions,
   "file" | "format" | "sourcemap" | "esModule" | "interop"
 >;
 
 export type FilterablePlugins = Array<Plugin | null | false>;
-export type ConfigExtra = ExcludeProps<
+export type ConfigExtra = Omit<
   RollupOptions,
   "input" | "output" | "external" | "plugins"
 >;
@@ -22,7 +20,7 @@ export type ConfigExtra = ExcludeProps<
 export type ModuleBuildFormat = Extract<RollupModuleFormat, "cjs" | "es">;
 export type BrowserBuildFormat = Extract<RollupModuleFormat, "iife" | "amd" | "umd">;
 
-export type BuildFormat = ModuleBuildFormat | BrowserBuildFormat;
+export type BundlibBuildFormat = ModuleBuildFormat | BrowserBuildFormat;
 
 export interface BundlibOptions {
 

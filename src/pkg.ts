@@ -10,7 +10,7 @@ export interface BundlibPkgInputOptions {
   input: PkgJsonPossibleTypes;
 }
 
-export interface BundlibPkgFlagOptions222 {
+export interface BundlibPkgFlagOptions {
   sourcemap: PkgJsonPossibleTypes;
   esModule: PkgJsonPossibleTypes;
   interop: PkgJsonPossibleTypes;
@@ -37,7 +37,7 @@ export interface BundlibPkgDeprecatedOptions {
 
 export type BundlibPkgOptions = Partial<
   BundlibPkgInputOptions &
-  BundlibPkgFlagOptions222 &
+  BundlibPkgFlagOptions &
   BundlibPkgOtherOptions &
   BundlibPkgDeprecatedOptions
 >;
@@ -46,7 +46,7 @@ export interface BundlibPkgJson extends PackageJson {
   bundlib?: PkgJsonPossibleTypes;
 }
 
-export type BundlibPkgFlagFields = keyof BundlibPkgFlagOptions222;
+export type BundlibPkgFlagFields = keyof BundlibPkgFlagOptions;
 
 export type PkgJsonOutputFields = PkgJsonModuleOutputFields | PkgJsonTypesOutputFields;
 

@@ -4,7 +4,7 @@ import { Plugin, RollupOptions } from "rollup";
 import { createBrowserConfig, createModuleConfig } from "./create-config";
 import { AnalizedPkg } from "./pkg";
 import renameMin from "./rename-min";
-import resolvePath from "./resolve";
+import resolve from "./resolve";
 
 import babel from "rollup-plugin-babel";
 import buble from "rollup-plugin-buble";
@@ -15,7 +15,8 @@ import nodeResolve from "rollup-plugin-node-resolve";
 import { terser } from "rollup-plugin-terser";
 import ts2 from "rollup-plugin-typescript2";
 
-const pkgToConfigs = (
+function pkgToConfigs(pkg: AnalizedPkg, dev?: boolean): RollupOptions[];
+function pkgToConfigs(
   {
     cwd,
     input: apiInput,
@@ -26,7 +27,7 @@ const pkgToConfigs = (
     options,
   }: AnalizedPkg,
   dev?: boolean,
-): RollupOptions[] => {
+): RollupOptions[] {
 
   const apiFolder = dirname(apiInput);
 
@@ -70,13 +71,13 @@ const pkgToConfigs = (
   const modulePlugins = (mini: boolean): Array<Plugin | null | false> => {
 
     const declarationDir = !configs.length && typesOutputDir;
-    const srcFolderContent = resolvePath("**/*.ts", apiFolder);
+    const srcFolderContent = resolve("**/*.ts", apiFolder);
 
     return [
 
       ts2({
         include: srcFolderContent,
-        cacheRoot: resolvePath(".cache/rpt2", cwd),
+        cacheRoot: resolve(".cache/rpt2", cwd),
         useTsconfigDeclarationDir: true,
         tsconfigDefaults: {
           include: [
@@ -100,7 +101,7 @@ const pkgToConfigs = (
       json() as Plugin,
 
       declarationDir && equals && exportEquals({
-        file: resolvePath(joinPath(declarationDir, "index.d.ts"), cwd),
+        file: resolve(joinPath(declarationDir, "index.d.ts"), cwd),
       }) || null,
 
       babel({
@@ -257,6 +258,6 @@ const pkgToConfigs = (
 
   return configs;
 
-};
+}
 
 export default pkgToConfigs;

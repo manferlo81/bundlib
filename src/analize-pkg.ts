@@ -1,9 +1,10 @@
 import builtinModules from "builtin-modules";
 import readPkg from "read-pkg";
-import resolvePath from "./resolve";
+import resolve from "./resolve";
 
 import { log } from "./console";
 import { error, invalidOption, invalidPkgField } from "./errors";
+import { PkgJsonPossibleTypes } from "./json-types";
 import {
   AnalizedPkg,
   BrowserOptions,
@@ -19,7 +20,7 @@ import { BrowserBuildFormat } from "./types";
 import { isBrowserFormat } from "./validate-fmt";
 import { isValidMinOption } from "./validate-min";
 
-const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPkg> => {
+async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPkg> {
 
   const resolvedPkg: BundlibPkgJson = pkg || await readPkg({ cwd });
 
@@ -78,7 +79,7 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     throw invalidOption("id");
   }
 
-  if (!isNull(browserGlobals) && !isObject(browserGlobals)) {
+  if (!isNull(browserGlobals) && !isObject<PkgJsonPossibleTypes>(browserGlobals)) {
     throw invalidOption("globals");
   }
 
@@ -105,7 +106,7 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   //
 
-  const input = resolvePath(
+  const input = resolve(
     pkgInput || "src/index.ts",
     cwd,
   );
@@ -113,10 +114,10 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
   const typesPath = pkgTypes || typings;
 
   const output: BundlibOutputFiles = {
-    main: cjsModuleFile ? resolvePath(cjsModuleFile, cwd) : null,
-    module: esModuleFile ? resolvePath(esModuleFile, cwd) : null,
-    browser: browserFile ? resolvePath(browserFile, cwd) : null,
-    types: typesPath ? resolvePath(typesPath, cwd) : null,
+    main: cjsModuleFile ? resolve(cjsModuleFile, cwd) : null,
+    module: esModuleFile ? resolve(esModuleFile, cwd) : null,
+    browser: browserFile ? resolve(browserFile, cwd) : null,
+    types: typesPath ? resolve(typesPath, cwd) : null,
   };
 
   const dependencies: BundlibDependencies = {
@@ -169,6 +170,6 @@ const analizePkg = async (cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   return { cwd, pkg: resolvedPkg, dependencies, input, output, minify, browser, options };
 
-};
+}
 
 export default analizePkg;

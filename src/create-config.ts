@@ -1,38 +1,17 @@
-import { ExternalOption, OutputOptions as RollupOutputOptions, Plugin, RollupOptions } from "rollup";
+import {
+  ExternalOption,
+  OutputOptions as RollupOutputOptions,
+  Plugin,
+  RollupOptions,
+} from "rollup";
 import {
   BrowserBuildFormat,
-  BuildFormat,
   ConfigExtra,
   FilterablePlugins,
   ModuleBuildFormat,
-  OutputExtra,
 } from "./types";
 
-export function createOutput(
-  format: BuildFormat,
-  file: string,
-  sourcemap: boolean,
-  esModule: boolean,
-  interop: boolean,
-  extra?: OutputExtra,
-): RollupOutputOptions {
-
-  const output: RollupOutputOptions = {
-
-    file,
-    format,
-
-    sourcemap,
-    esModule,
-    interop,
-
-    ...extra,
-
-  };
-
-  return output;
-
-}
+import createOutput from "./create-output";
 
 export function createConfig(
   input: string,

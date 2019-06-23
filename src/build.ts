@@ -1,10 +1,10 @@
 import { EventEmitter } from "events";
-import { OutputOptions, rollup } from "rollup";
+import { OutputOptions, rollup, RollupOptions } from "rollup";
 import { BUILDING, BUILT, WRITING, WRITTEN } from "./events";
 import oneByOne from "./one-by-one";
 import { BuildEventEmitter, BuldFunction } from "./types";
 
-const build: BuldFunction = async (configs) => {
+async function build(configs: RollupOptions[]) {
 
   const result: BuildEventEmitter = new EventEmitter();
 
@@ -36,6 +36,6 @@ const build: BuldFunction = async (configs) => {
 
   return result;
 
-};
+}
 
-export default build;
+export default (build as BuldFunction);
