@@ -1,8 +1,7 @@
-import { join, parse } from "path";
+import renamePre from "./rename-pre";
 
 function renameMin(filename: string): string {
-  const { dir, name, ext } = parse(filename);
-  return join(dir, name + ".min" + ext);
+  return renamePre(filename, "min");
 }
 
 export default renameMin;

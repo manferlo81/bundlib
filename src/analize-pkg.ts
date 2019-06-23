@@ -1,8 +1,6 @@
 import builtinModules from "builtin-modules";
 import readPkg from "read-pkg";
-import resolve from "./resolve";
 
-import { log } from "./console";
 import { error, invalidOption, invalidPkgField } from "./errors";
 import { PkgJsonPossibleTypes } from "./json-types";
 import {
@@ -15,6 +13,7 @@ import {
   MinifyOutOptions,
   PkgJsonModuleOutputFields,
 } from "./pkg";
+import resolve from "./resolve";
 import { isArray, isNull, isObject, isString } from "./type-check";
 import { BrowserBuildFormat } from "./types";
 import { isBrowserFormat } from "./validate-fmt";
@@ -87,24 +86,11 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     throw invalidOption("min");
   }
 
-  // compatible with version <0.3
-
-  if ((iife && amd) || (iife && umd) || (amd && umd)) {
-    throw error("multiple browser builds are no longer supported in bundlib >= 0.3.");
-  }
-
   if (iife || amd || umd) {
-    // warn about deprecated options
-    log("options iife, amd & umd are deprecated in version >= 0.3");
+    throw error("options iife, amd & umd were removed in version >= 0.6");
   }
 
-  const deprecatedBrowserFormat: BrowserBuildFormat | null = iife ? "iife" : amd ? "amd" : null;
-
-  // get format from deprecated options if no format specified
-
-  const browserFormat: BrowserBuildFormat = pkgBrowserFormat || deprecatedBrowserFormat || "umd";
-
-  //
+  const browserFormat: BrowserBuildFormat = pkgBrowserFormat || "umd";
 
   const input = resolve(
     pkgInput || "src/index.ts",

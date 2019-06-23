@@ -29,7 +29,7 @@ export interface BundlibPkgOtherOptions {
   min: PkgJsonPossibleTypes;
 }
 
-export interface BundlibPkgDeprecatedOptions {
+export interface BundlibPkgRemovedOptions {
   iife: PkgJsonPossibleTypes;
   amd: PkgJsonPossibleTypes;
   umd: PkgJsonPossibleTypes;
@@ -39,7 +39,7 @@ export type BundlibPkgOptions = Partial<
   BundlibPkgInputOptions &
   BundlibPkgFlagOptions &
   BundlibPkgOtherOptions &
-  BundlibPkgDeprecatedOptions
+  BundlibPkgRemovedOptions
 >;
 
 export interface BundlibPkgJson extends PackageJson {

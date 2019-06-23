@@ -4,14 +4,14 @@ import {
   Plugin,
   RollupOptions,
 } from "rollup";
+
+import createOutput from "./create-output";
 import {
   BrowserBuildFormat,
   ConfigExtra,
   FilterablePlugins,
   ModuleBuildFormat,
 } from "./types";
-
-import createOutput from "./create-output";
 
 export function createConfig(
   input: string,

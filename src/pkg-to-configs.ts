@@ -59,6 +59,12 @@ function pkgToConfigs(
     globals,
   } = browserOptions;
 
+  const nameNeeded = browserOutputFile && (browserFormat === "iife" || browserFormat === "umd");
+
+  if (nameNeeded && !pkgName) {
+    throw new Error("name option is required for IIFE and UMD builds");
+  }
+
   const prod = !dev;
 
   const configs: RollupOptions[] = [];
@@ -210,10 +216,6 @@ function pkgToConfigs(
 
     }
 
-  }
-
-  if (!pkgName && browserOutputFile) {
-    throw new Error("name option is required for IIFE and UMD builds");
   }
 
   if (browserOutputFile) {
