@@ -1,4 +1,6 @@
-const createConfigs = require("../test-helpers/create-configs");
+// @ts-check
+
+const createConfigs = require("./create-configs");
 
 describe("package to configs", () => {
 
@@ -31,12 +33,7 @@ describe("package to configs", () => {
 
     const [esConfig, cjsConfig] = configs;
 
-    expect(typeof cjsConfig).toBe("object");
-    expect(typeof cjsConfig.output).toBe("object");
     expect(cjsConfig.output.format).toBe("cjs");
-
-    expect(typeof esConfig).toBe("object");
-    expect(typeof esConfig.output).toBe("object");
     expect(esConfig.output.format).toBe("es");
 
   });
@@ -48,20 +45,14 @@ describe("package to configs", () => {
 
     const configs = await createConfigs(cwd, true, {
       browser: "out/lib.iife.js",
-      bundlib: {
-        browser: format,
-        name,
-        globals: {},
-      },
+      bundlib: { browser: format, name },
     });
 
     expect(configs).toHaveLength(1);
-    const [config] = configs;
 
-    expect(typeof config).toBe("object");
+    const [config] = configs;
     const { output } = config;
 
-    expect(typeof output).toBe("object");
     expect(output.format).toBe(format);
     expect(output.name).toBe(name);
 
@@ -75,25 +66,16 @@ describe("package to configs", () => {
 
     const configs = await createConfigs(cwd, true, {
       browser: "out/lib.js",
-      bundlib: {
-        browser: format,
-        name,
-        id,
-        globals: {},
-      },
+      bundlib: { browser: format, name, id },
     });
 
     expect(configs).toHaveLength(1);
-    const [config] = configs;
 
-    expect(typeof config).toBe("object");
+    const [config] = configs;
     const { output } = config;
 
-    expect(typeof output).toBe("object");
     expect(output.format).toBe(format);
     expect(output.name).toBe(name);
-
-    expect(typeof output.amd).toBe("object");
     expect(output.amd.id).toBe(id);
 
   });
@@ -106,25 +88,16 @@ describe("package to configs", () => {
 
     const configs = await createConfigs(cwd, true, {
       browser: "out/lib.js",
-      bundlib: {
-        browser: format,
-        name,
-        id,
-        globals: {},
-      },
+      bundlib: { browser: format, name, id },
     });
 
     expect(configs).toHaveLength(1);
-    const [config] = configs;
 
-    expect(typeof config).toBe("object");
+    const [config] = configs;
     const { output } = config;
 
-    expect(typeof output).toBe("object");
     expect(output.format).toBe(format);
     expect(output.name).toBe(name);
-
-    expect(typeof output.amd).toBe("object");
     expect(output.amd.id).toBe(id);
 
   });
@@ -135,16 +108,12 @@ describe("package to configs", () => {
 
     const configs = await createConfigs(cwd, true, {
       browser: "out/lib.js",
-      bundlib: {
-        name,
-        globals: {},
-      },
+      bundlib: { name },
     });
 
     expect(configs).toHaveLength(1);
-    const [config] = configs;
 
-    expect(typeof config).toBe("object");
+    const [config] = configs;
     const { output } = config;
 
     expect(typeof output).toBe("object");
