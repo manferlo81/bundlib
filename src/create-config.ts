@@ -67,7 +67,7 @@ export function createBrowserConfig(
   sourcemap: RollupSourcemap,
   esModule: boolean,
   interop: boolean,
-  plugins: Array<Plugin | null | false>,
+  plugins: FilterablePlugins,
   name: string,
   extend: boolean,
   globals?: Record<string, string> | null,
