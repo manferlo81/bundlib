@@ -1,3 +1,4 @@
+import builtinModules from "builtin-modules";
 import { dirname, extname, join as joinPath } from "path";
 import { Plugin, RollupOptions } from "rollup";
 
@@ -39,7 +40,6 @@ function pkgToConfigs(
   } = output;
 
   const {
-    builtin: builtinDependencies,
     runtime: runtimeDependencies,
     peer: peerDependencies,
   } = dependencies;
@@ -145,7 +145,7 @@ function pkgToConfigs(
   ];
 
   const external = [
-    ...builtinDependencies,
+    ...builtinModules,
     ...runtimeDependencies,
     ...peerDependencies,
   ];

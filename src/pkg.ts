@@ -53,10 +53,8 @@ export type PkgJsonOutputFields = PkgJsonModuleOutputFields | PkgJsonTypesOutput
 export type BundlibOutputFiles = Record<PkgJsonOutputFields, string | null>;
 
 export interface BundlibDependencies {
-  builtin: readonly string[];
   runtime: readonly string[];
   peer: readonly string[];
-  bundled: readonly string[];
 }
 
 export type MinifyOutOptions = Partial<Record<PkgJsonModuleOutputFields, true>>;

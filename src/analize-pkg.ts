@@ -1,4 +1,3 @@
-import builtinModules from "builtin-modules";
 import readPkg from "read-pkg";
 
 import { extname } from "path";
@@ -33,8 +32,6 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     typings,
     dependencies: runtimeDependencies,
     peerDependencies,
-    bundledDependencies,
-    bundleDependencies,
     bundlib: bundlibOptions,
   } = resolvedPkg;
 
@@ -110,10 +107,8 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
   };
 
   const dependencies: BundlibDependencies = {
-    builtin: builtinModules,
     runtime: runtimeDependencies ? Object.keys(runtimeDependencies) : [],
     peer: peerDependencies ? Object.keys(peerDependencies) : [],
-    bundled: bundledDependencies || bundleDependencies || [],
   };
 
   const buildName = browserName || pkgName || null;

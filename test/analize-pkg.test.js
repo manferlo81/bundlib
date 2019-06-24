@@ -186,17 +186,6 @@ describe("analize", () => {
 
   });
 
-  test("should set builtin dependencies", async () => {
-
-    const analized = await analize(cwd, {});
-
-    const { builtin } = analized.dependencies;
-
-    expect(builtin).toContain("path");
-    expect(builtin).toContain("events");
-
-  });
-
   test("should set types to null if no type path provided", async () => {
 
     const analized = await analize(cwd, {});
