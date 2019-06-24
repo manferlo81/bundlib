@@ -1,15 +1,29 @@
 // @ts-check
 
+const { join: pathJoin } = require("path");
 const analize = require("./analize");
 
 describe("analize", () => {
 
   const cwd = process.cwd();
 
-  test("should throw on invalid browser field", async () => {
+  test("should throw on no package.json", () => {
+
+    expect(analize(pathJoin(cwd, "dist"))).rejects.toThrow();
+
+  });
+
+  test("should throw on invalid folder", () => {
+
+    expect(analize(pathJoin(cwd, "does-not-exist"))).rejects.toThrow();
+
+  });
+
+  test("should throw on invalid browser field", () => {
 
     const invalidBrowserPaths = [
-      100,
+      1,
+      { "name": "value" },
     ];
 
     invalidBrowserPaths.forEach((browser) => {
@@ -19,9 +33,10 @@ describe("analize", () => {
 
   });
 
-  test("should throw on invalid bundlib field", async () => {
+  test("should throw on invalid bundlib field", () => {
 
     const invalidBundlibOptions = [
+      1,
       [],
     ];
 
@@ -32,10 +47,12 @@ describe("analize", () => {
 
   });
 
-  test("should throw on invalid input option", async () => {
+  test("should throw on invalid input option", () => {
 
     const invalidInputs = [
-      100,
+      1,
+      true,
+      false,
     ];
 
     invalidInputs.forEach((input) => {
@@ -47,10 +64,29 @@ describe("analize", () => {
 
   });
 
-  test("should throw on invalid browser format option", async () => {
+  test("should throw on invalid sourcemap option", () => {
+
+    const invalidInputs = [
+      100,
+      "string",
+      {},
+      [],
+    ];
+
+    invalidInputs.forEach((sourcemap) => {
+      expect(analize(cwd, {
+        // @ts-ignore
+        bundlib: { sourcemap },
+      })).rejects.toThrow(TypeError);
+    });
+
+  });
+
+  test("should throw on invalid browser format option", () => {
 
     const invalidBrowserFormats = [
-      100,
+      1,
+      "string",
     ];
 
     invalidBrowserFormats.forEach((browser) => {
@@ -62,10 +98,12 @@ describe("analize", () => {
 
   });
 
-  test("should throw on invalid name option", async () => {
+  test("should throw on invalid name option", () => {
 
     const invalidNameOptions = [
-      100,
+      1,
+      true,
+      false,
     ];
 
     invalidNameOptions.forEach((name) => {
@@ -77,10 +115,12 @@ describe("analize", () => {
 
   });
 
-  test("should throw on invalid id option", async () => {
+  test("should throw on invalid id option", () => {
 
     const invalidIdOptions = [
-      100,
+      1,
+      true,
+      false,
     ];
 
     invalidIdOptions.forEach((id) => {
@@ -92,10 +132,12 @@ describe("analize", () => {
 
   });
 
-  test("should throw on invalid globals option", async () => {
+  test("should throw on invalid globals option", () => {
 
     const invalidGlobalsOptions = [
-      100,
+      1,
+      true,
+      false,
     ];
 
     invalidGlobalsOptions.forEach((globals) => {
@@ -107,10 +149,12 @@ describe("analize", () => {
 
   });
 
-  test("should throw on invalid min option", async () => {
+  test("should throw on invalid min option", () => {
 
     const invalidMinOptions = [
-      100,
+      1,
+      "string",
+      ["string"],
     ];
 
     invalidMinOptions.forEach((min) => {
@@ -122,7 +166,7 @@ describe("analize", () => {
 
   });
 
-  test("should throw on removed options", async () => {
+  test("should throw on removed options", () => {
 
     const removedOptions = [
       "iife",
@@ -164,6 +208,40 @@ describe("analize", () => {
     expect(analized.pkg).toBe(pkg);
 
   });
+
+  test("should return analized package.json", async () => {
+
+    const pkg = { name: "lib" };
+    const { input, output, sourcemap, dependencies, browser, minify, options } = await analize(cwd, pkg);
+
+    expect(input).toEqual(expect.any(String));
+    expect(output).toEqual({
+      main: null,
+      module: null,
+      browser: null,
+      types: null,
+    });
+    expect(sourcemap).toBe(true);
+    expect(dependencies).toEqual({
+      runtime: expect.any(Array),
+      peer: expect.any(Array),
+    });
+    expect(browser).toEqual({
+      format: "umd",
+      name: "lib",
+      id: null,
+      globals: null,
+    });
+    expect(minify).toEqual({});
+    expect(options).toEqual({
+      extend: false,
+      esModule: false,
+      interop: false,
+      equals: false,
+    });
+
+  });
+
 
   test("should read input option", async () => {
 
