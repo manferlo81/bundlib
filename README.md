@@ -8,16 +8,8 @@ A Zero-configuration, automatic javascript library bundler using [Typescript](ht
 
 ## Install
 
-##### as a dev dependency
-
 ```bash
 npm i bundlib -D
-```
-
-##### or install it globally if you wish
-
-```bash
-npm i bundlib -g
 ```
 
 ## First steps
@@ -42,7 +34,7 @@ For IIFE, AMD and UMD builds, add a `"browser"` field to your `package.json`. th
 
 Configuration is done throu the `"bundlib"` field in `package.json`.
 
-##### Example
+***example***
 
 The following example will generate a **AMD** build with filename `my-lib.amd.js` inside the `dist` folder, then you can use the library in the browser (for example) using the global `myLib` (`window.myLib`).
 
@@ -63,7 +55,7 @@ The following example will generate a **AMD** build with filename `my-lib.amd.js
 
 ### Options
 
-the `"bundlib"` field in `package.json` may contain any of the following properties.
+*The* `"bundlib"` *field in* `package.json` *may contain any of the following properties. Any invalid option will cause `bundlib` to throw at build time. Any unknown option will be ignored.*
 
 #### input
 
@@ -71,17 +63,16 @@ the `"bundlib"` field in `package.json` may contain any of the following propert
 * *type:* `string`
 * *defaults to* `"src/index.ts"`
 
-*the path to the input file, it has to be a* `.ts` *file*
-
-> *allowing javascript (*`.js`*) files as input is comming soon*
+*The path to the file to be used as entry point. It has to be a* `.ts` *file.*
 
 #### sourcemap
 
+* `"inline"` *support added in* `v0.6.0`
 * *used in:* `all builds`
-* *type:* `boolean`
+* *type:* `boolean` | `"inline"`
 * *defaults to* `true`
 
-*whether or not to generate source maps*
+*Whether or not to generate source maps. Anything other than* `false` *or* `"inline"` *will default to* `true`*.*
 
 #### esModule
 
@@ -89,7 +80,7 @@ the `"bundlib"` field in `package.json` may contain any of the following propert
 * *type:* `boolean`
 * *defaults to* `false`
 
-*whether or not to add a* `__esModule: true` *property to your non-es-module build.*
+*Whether or not to add a* `__esModule: true` *property to your non-es-module build.*
 
 #### interop
 
@@ -97,34 +88,34 @@ the `"bundlib"` field in `package.json` may contain any of the following propert
 * *type:* `boolean`
 * *defaults to* `false`
 
-*whether or not to add an interop block*
+*Whether or not to add an interop block.*
 
 #### browser
 
 * *added in* `v0.3.0`
-* *type:* `"iife" | "amd" | "umd"`
+* *type:* `"iife"` | `"amd"` | `"umd"`
 * *defaults to* `"umd"`
 
-*defines the format to be used for the* `browser` *build*
+*Defines the format to be used for the* `browser` *build.*
 
 #### name
 
-* *used in:* `IIFE, AMD & UMD builds`
+* *used in:* `IIFE & UMD builds`
 * *type:* `string`
-* *required for:* `IIFE, AMD & UMD builds`
+* *required for:* `IIFE & UMD builds`
 
-*the* `IIFE`, `AMD` or `UMD` *name*
+*The name to be used to expose your library to the global scope in a* `IIFE` or `UMD` *build.*
 
-*if not provided it will default to* `"name"` *field in* `package.json` *, if it doesn't exist the build process will throw*
+*If not provided it will default to* `"name"` *field in* `package.json` *. If this last one doesn't exist the build process will throw.*
 
 #### id
 
 * *used in:* `AMD & UMD builds`
 * *type:* `string`
 
-*optional amd id for* `AMD` or `UMD` *build.*
+*Optional amd id for* `AMD` or `UMD` *builds.*
 
-> *if not present,* `AMD` *module will be defined with no id.*
+> *If not present,* `AMD` *module will be defined with no id.*
 
 #### extend
 
@@ -132,14 +123,14 @@ the `"bundlib"` field in `package.json` may contain any of the following propert
 * *type:* `boolean`
 * *defaults to* `false`
 
-*whether or not to extend the global exported variable on an* `IIFE`, `AMD` or `UMD` *build.*
+*Whether or not to extend the globally exposed name on a* `IIFE`, `AMD` or `UMD` *build.*
 
 #### globals
 
 * *used in:* `IIFE, AMD & UMD builds`
-* *type:* `object`
+* *type:* `{ [name: string]: string }` | `string[]`
 
-*object to map names to globals*
+*Object or array to map names to globals.*
 
 #### equals
 
@@ -148,9 +139,9 @@ the `"bundlib"` field in `package.json` may contain any of the following propert
 * *type:* `boolean`
 * *defaults to* `false`
 
-*fixes type export for CommonJS module using* `export = ...` instead of `export default ...`
+*Fixes type export for CommonJS module using* `export = ...` *instead of* `export default ...`
 
-> :warning: note that this options should only be used when your library has a default export and no named exports.
+> :warning: Note that this options should only be used when your library has a default export and no named exports.
 
 #### min
 
@@ -159,36 +150,9 @@ the `"bundlib"` field in `package.json` may contain any of the following propert
 * *used in:* `all builds`
 * *type:* `"main" | "module" | "browser" | boolean | Array<"main" | "module" | "browser">`
 
-*Defines which module to build an aditional minified version, if* `true` *will affect all modules. The minified file will be renamed from* `*.ext` to `*.min.ext`.
+*Defines which module to build an aditional minified version, if* `true` *will affect all modules. The minified file will be renamed from* `*.ext` to `*.min.ext`*.*
 
 > *In* `v0.4.0` *the behavior of this option slightly changed. Output modules affected by this option won't be minified, even if the* [`dev`](#-dev-d) *cli option hasn\'t been set.*
-
-### Deprecated Options
-
-#### iife
-
-* *deprecated in* `v0.3.0`*, use* [browser option](#browser) *instead.*
-* *type:* `string`
-
-*the output path for* `IIFE` *build.*
-> *if not present,* `IIFE` *build will be skipped.*
-
-#### amd
-
-* *deprecated in* `v0.3.0`*, use* [browser option](#browser) *instead.*
-* *type:* `string`
-
-*the output path for* `AMD` *build.*
-> *if not present,* `AMD` *build will be skipped.*
-
-#### umd
-
-* *deprecated in* `v0.3.0`*, use* [browser option](#browser) *instead.*
-* *type:* `string`
-
-*the output path for* `UMD` *build.*
-> *if not present,* `UMD` *build will be skipped.*
-
 
 ## CLI
 
@@ -218,6 +182,105 @@ bundlib [options]
 
 *prevent messages from showing in the console.*
 
+## API
+
+***example***
+
+```javascript
+// rollup.config.js
+
+import { analizePkg, pkgToConfigs } from "bundlib";
+
+const dev = !process.env.production;
+
+export default async () => pkgToConfigs(
+  await analizePkg(process.cwd()),
+  dev,
+);
+```
+
+### analizePkg
+
+```typescript
+analizePkg(cwd: string, pkg?: PkgJson): Promise<AnalizedPkg>;
+```
+
+*Analizes* `package.json` *and return useful normalized information. If* `pkg` *not provided it will be read from the current working directory* `cwd`*.*
+
+### pkgToConfigs
+
+```typescript
+pkgToConfigs(pkg: AnalizedPkg, dev?: boolean): RollupOptions[];
+```
+
+*Returns an array of Rollup configs from the* `pkg` *provided. This method does not checks for* `pkg` *integrity nor format, as it was intended to be used with the object resulting from* [`analizePkg`](#analizepkg)
+
+### createOutput
+
+```typescript
+createOutput(
+  format: "cjs" | "es" | "umd" | "iife" | "amd",
+  outputFile: string,
+  sourcemap: boolean | "inline",
+  esModule: boolean,
+  interop: boolean,
+  extra?: OutputExtra,
+): RollupOutputOptions;
+```
+
+*Creates Rollup output options. This method was intended for internal purposes but was exposed as it may be useful.*
+
+### createConfig
+
+```typescript
+createConfig(
+  inputFile: string,
+  outputOptions: RollupOutputOptions,
+  external: RollupExternalOption,
+  plugins: Array<RollupPlugin | null | false>,
+  extra?: ConfigExtra,
+): RollupOptions;
+```
+
+*Creates Rollup config object. This method was intended for internal purposes but was exposed as it may be useful.*
+
+### createModuleConfig
+
+```typescript
+createModuleConfig(
+  inputFile: string,
+  format: "cjs" | "es",
+  outputFile: string,
+  sourcemap: boolean | "inline",
+  esModule: boolean,
+  interop: boolean,
+  external: ExternalOption,
+  plugins: Array<Plugin | null | false>,
+): RollupOptions;
+```
+
+*Creates CommonJS or ESModule Rollup config object. This method was intended for internal purposes but was exposed as it may be useful.*
+
+### createBrowserConfig
+
+```typescript
+createBrowserConfig(
+  inputFile: string,
+  format: "umd" | "iife" | "amd",
+  outputFile: string,
+  sourcemap: boolean | "inline",
+  esModule: boolean,
+  interop: boolean,
+  plugins: Array<Plugin | null | false>,
+  name: string,
+  extend: boolean,
+  globals?: Record<string, string> | null,
+  id?: string | null,
+): RollupOptions;
+```
+
+*Creates browser Rollup config object. This method was intended for internal purposes but was exposed as it may be useful.*
+
 ## Known Issues
 
 * [Issue #7](https://github.com/manferlo81/bundlib/issues/7)
@@ -229,10 +292,10 @@ bundlib [options]
 * [x] Creates a CommonJS Module based on the `"main"` field in `package.json`
 * [x] Creates an ES Modules based on the `"module"` field in `package.json`
 * [x] Creates an browser build based on the `"browser"` field in `package.json`
-* [x] Exports types declarations based on the `"typings"` or `"types"` field in your `package.json`
-* [x] Transforms async/await using [Babel](#) and [babel-plugin-transform-async-to-promises](#) for ES5 support
-* [x] Transforms using [Buble](#)
-* [x] Minifies build using [terser](#)
+* [x] Exports types declarations based on the `"types"` or `"typings"` field in your `package.json`
+* [x] Transforms async/await using [Babel](https://github.com/babel/babel) and [babel-plugin-transform-async-to-promises](https://github.com/rpetrich/babel-plugin-transform-async-to-promises) for ES5 support
+* [x] Transforms using [Buble](https://github.com/bublejs/buble)
+* [x] Minifies build using [Terser](https://github.com/terser-js/terser)
 
 ### Upcomming Features
 
@@ -240,4 +303,4 @@ bundlib [options]
 
 ## License
 
-[MIT](LICENSE) &copy; Manuel Fernández
+[MIT](LICENSE) &copy; [Manuel Fernández](https://github.com/manferlo81)
