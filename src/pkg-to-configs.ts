@@ -22,6 +22,7 @@ function pkgToConfigs(
     cwd,
     input: apiInput,
     output,
+    sourcemap,
     minify,
     dependencies,
     browser: browserOptions,
@@ -29,8 +30,6 @@ function pkgToConfigs(
   }: AnalizedPkg,
   dev?: boolean,
 ): RollupOptions[] {
-
-  const apiFolder = dirname(apiInput);
 
   const {
     main: cjsOutputFile,
@@ -45,7 +44,6 @@ function pkgToConfigs(
   } = dependencies;
 
   const {
-    sourcemap,
     esModule,
     interop,
     extend,
@@ -66,6 +64,9 @@ function pkgToConfigs(
   }
 
   const prod = !dev;
+
+  const apiFolder = dirname(apiInput);
+  const sourcemapBool = !!sourcemap;
 
   const configs: RollupOptions[] = [];
 
@@ -96,7 +97,7 @@ function pkgToConfigs(
             target: "esnext",
             module: "esnext",
             moduleResolution: "node",
-            sourceMap: sourcemap,
+            sourceMap: sourcemapBool,
             declaration: !!declarationDir,
             declarationDir: declarationDir || "",
             emitDeclarationOnly: false,
@@ -126,7 +127,7 @@ function pkgToConfigs(
       }) as Plugin,
 
       mini && terser({
-        sourcemap,
+        sourcemap: sourcemapBool,
         toplevel: true,
         module: true,
       }),

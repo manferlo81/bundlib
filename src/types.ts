@@ -14,6 +14,8 @@ export type ConfigExtra = Omit<
   "input" | "output" | "external" | "plugins"
 >;
 
+export type RollupSourcemap = boolean | "inline";
+
 export type FilterablePlugins = Array<Plugin | null | false>;
 
 export type ModuleBuildFormat = Extract<RollupModuleFormat, "cjs" | "es">;

@@ -1,6 +1,7 @@
 import readPkg from "read-pkg";
 
 import { extname } from "path";
+import { BundlibOptions } from "./bundlib-options";
 import { error, invalidOption, invalidPkgField } from "./errors";
 import { PkgJsonPossibleTypes } from "./json-types";
 import {
@@ -9,7 +10,7 @@ import {
   BundlibDependencies,
   BundlibOutputFiles,
   BundlibPkgJson,
-  BundlibPkgOptions,
+  FlagOptions,
   MinifyOutOptions,
   PkgJsonModuleOutputFields,
 } from "./pkg";
@@ -45,7 +46,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   const {
     input: pkgInput,
-    sourcemap: sourcemapFlag,
+    sourcemap: sourcemapOption,
     esModule: esModuleFlag,
     interop: interopFlag,
     extend: extendFlag,
@@ -58,7 +59,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     amd,
     umd,
     min,
-  } = (bundlibOptions || {}) as BundlibPkgOptions;
+  } = (bundlibOptions || {}) as BundlibOptions;
 
   if (!isNull(pkgInput) && !isString(pkgInput)) {
     throw invalidOption("input");
@@ -146,15 +147,16 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     globals,
   };
 
-  const options = {
-    sourcemap: sourcemapFlag !== false,
+  const sourcemap = sourcemapOption === "inline" ? "inline" : (sourcemapOption !== false);
+
+  const options: FlagOptions = {
     esModule: !!esModuleFlag,
     interop: !!interopFlag,
     extend: !!extendFlag,
     equals: !!equalsFlag,
   };
 
-  return { cwd, pkg: resolvedPkg, dependencies, input, output, minify, browser, options };
+  return { cwd, pkg: resolvedPkg, input, output, sourcemap, dependencies, minify, browser, options };
 
 }
 

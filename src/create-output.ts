@@ -1,11 +1,11 @@
 import { OutputOptions as RollupOutputOptions } from "rollup";
 
-import { BundlibBuildFormat, OutputExtra } from "./types";
+import { BundlibBuildFormat, OutputExtra, RollupSourcemap } from "./types";
 
 export function createOutput(
   format: BundlibBuildFormat,
   file: string,
-  sourcemap: boolean | "inline",
+  sourcemap: RollupSourcemap,
   esModule: boolean,
   interop: boolean,
   extra?: OutputExtra,

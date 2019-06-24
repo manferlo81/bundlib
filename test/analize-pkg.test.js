@@ -26,6 +26,7 @@ describe("analize", () => {
     ];
 
     invalidBundlibOptions.forEach((bundlib) => {
+      // @ts-ignore
       expect(analize(cwd, { bundlib })).rejects.toThrow(TypeError);
     });
 
@@ -39,6 +40,7 @@ describe("analize", () => {
 
     invalidInputs.forEach((input) => {
       expect(analize(cwd, {
+        // @ts-ignore
         bundlib: { input },
       })).rejects.toThrow(TypeError);
     });
@@ -53,6 +55,7 @@ describe("analize", () => {
 
     invalidBrowserFormats.forEach((browser) => {
       expect(analize(cwd, {
+        // @ts-ignore
         bundlib: { browser },
       })).rejects.toThrow(TypeError);
     });
@@ -67,6 +70,7 @@ describe("analize", () => {
 
     invalidNameOptions.forEach((name) => {
       expect(analize(cwd, {
+        // @ts-ignore
         bundlib: { name },
       })).rejects.toThrow(TypeError);
     });
@@ -81,6 +85,7 @@ describe("analize", () => {
 
     invalidIdOptions.forEach((id) => {
       expect(analize(cwd, {
+        // @ts-ignore
         bundlib: { id },
       })).rejects.toThrow(TypeError);
     });
@@ -95,6 +100,7 @@ describe("analize", () => {
 
     invalidGlobalsOptions.forEach((globals) => {
       expect(analize(cwd, {
+        // @ts-ignore
         bundlib: { globals },
       })).rejects.toThrow(TypeError);
     });
@@ -109,6 +115,7 @@ describe("analize", () => {
 
     invalidMinOptions.forEach((min) => {
       expect(analize(cwd, {
+        // @ts-ignore
         bundlib: { min },
       })).rejects.toThrow(TypeError);
     });
@@ -405,7 +412,17 @@ describe("analize", () => {
       bundlib: { sourcemap: false },
     });
 
-    expect(analized.options.sourcemap).toBe(false);
+    expect(analized.sourcemap).toBe(false);
+
+  });
+
+  test("should read inline sourcemap option", async () => {
+
+    const analized = await analize(cwd, {
+      bundlib: { sourcemap: "inline" },
+    });
+
+    expect(analized.sourcemap).toBe("inline");
 
   });
 
@@ -413,7 +430,7 @@ describe("analize", () => {
 
     const analized = await analize(cwd, {});
 
-    expect(analized.options.sourcemap).toBe(true);
+    expect(analized.sourcemap).toBe(true);
 
   });
 

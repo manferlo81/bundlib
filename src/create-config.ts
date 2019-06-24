@@ -11,6 +11,7 @@ import {
   ConfigExtra,
   FilterablePlugins,
   ModuleBuildFormat,
+  RollupSourcemap,
 } from "./types";
 
 export function createConfig(
@@ -41,7 +42,7 @@ export function createModuleConfig(
   input: string,
   format: ModuleBuildFormat,
   file: string,
-  sourcemap: boolean,
+  sourcemap: RollupSourcemap,
   esModule: boolean,
   interop: boolean,
   external: ExternalOption,
@@ -63,7 +64,7 @@ export function createBrowserConfig(
   input: string,
   format: BrowserBuildFormat,
   file: string,
-  sourcemap: boolean,
+  sourcemap: RollupSourcemap,
   esModule: boolean,
   interop: boolean,
   plugins: Array<Plugin | null | false>,
