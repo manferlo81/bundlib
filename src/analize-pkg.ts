@@ -37,14 +37,14 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     throw invalidPkgField("bundlib");
   }
 
-  const firstUnknownOption = bundlibOptions && getFirstUnknownOption(bundlibOptions);
-  if (firstUnknownOption) {
-    throw unknownOption(firstUnknownOption);
-  }
-
   const firstRemovedOption = bundlibOptions && getFirstRemovedOption(bundlibOptions);
   if (firstRemovedOption) {
     throw error(`option ${firstRemovedOption.name} was removed in version ${firstRemovedOption.ver}`);
+  }
+
+  const firstUnknownOption = bundlibOptions && getFirstUnknownOption(bundlibOptions);
+  if (firstUnknownOption) {
+    throw unknownOption(firstUnknownOption);
   }
 
   const {
@@ -87,18 +87,6 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   if (!isNull(min) && !isValidMinOption(min)) {
     throw invalidOption("min");
-  }
-
-  // We removed this options recently
-  // so we throw for now
-  if (
-    bundlibOptions && (
-      "iife" in bundlibOptions ||
-      "amd" in bundlibOptions ||
-      "umd" in bundlibOptions
-    )
-  ) {
-    throw error("options iife, amd & umd were removed in version 0.6");
   }
 
   if (pkgInput && extname(pkgInput) !== ".ts") {

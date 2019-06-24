@@ -4,10 +4,7 @@ const removedOptions: Record<string, string> = {
   umd: "0.6.0",
 };
 
-export function getFirstRemovedOption(options?: Record<string, any>): { name: string, ver: string } | null {
-  if (!options) {
-    return null;
-  }
+export function getFirstRemovedOption(options: Record<string, any>): { name: string, ver: string } | null {
   const optionNames = Object.keys(options);
   for (let i = 0, len = optionNames.length; i < len; i++) {
     const name = optionNames[i];

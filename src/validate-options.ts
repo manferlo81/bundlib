@@ -12,15 +12,12 @@ const validFields: Record<keyof BundlibOptions, true> = ([
   "id",
   "globals",
   "min",
-] as Array<keyof BundlibOptions>).reduce<Record<keyof BundlibOptions, true>>((result, value) => ({
-  ...result,
-  [value]: true,
-}), {} as any);
+] as Array<keyof BundlibOptions>).reduce<Record<keyof BundlibOptions, true>>((result, value) => {
+  result[value] = true;
+  return result;
+}, {} as any);
 
 export function getFirstUnknownOption(options: Record<string, any>): string | null {
-  if (!options) {
-    return null;
-  }
   const optionNames = Object.keys(options);
   for (let i = 0, len = optionNames.length; i < len; i++) {
     const name = optionNames[i];

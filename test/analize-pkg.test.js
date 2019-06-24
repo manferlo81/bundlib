@@ -182,6 +182,21 @@ describe("analize", () => {
 
   });
 
+  test("should throw on invalid option", () => {
+
+    const invalidOptions = [
+      "option1",
+      "option2",
+    ];
+
+    invalidOptions.forEach((option) => {
+      expect(analize(cwd, {
+        bundlib: { [option]: true },
+      })).rejects.toThrow(TypeError);
+    });
+
+  });
+
   test("should throw on non typescript input option", async () => {
 
     expect(analize(cwd, {
