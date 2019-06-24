@@ -3,34 +3,33 @@ import { BrowserBuildFormat } from "./types";
 export type ModuleField = "main" | "module" | "browser";
 
 export interface BundlibPkgInputOptions {
-  input: string | null;
+  input?: string | null;
 }
 
 export interface BundlibPkgFlagOptions {
-  esModule: boolean;
-  interop: boolean;
-  extend: boolean;
-  equals: boolean;
+  esModule?: boolean | null;
+  interop?: boolean | null;
+  extend?: boolean | null;
+  equals?: boolean | null;
 }
 
 export interface BundlibPkgOtherOptions {
-  sourcemap: boolean | "inline";
-  browser: BrowserBuildFormat;
-  name: string;
-  id: string;
-  globals: Record<string, string> | string[];
-  min: ModuleField | ModuleField[] | boolean | null;
+  sourcemap?: boolean | "inline" | null;
+  browser?: BrowserBuildFormat | null;
+  name?: string | null;
+  id?: string | null;
+  globals?: Record<string, string> | string[] | null;
+  min?: ModuleField | ModuleField[] | boolean | null;
 }
 
 export interface BundlibPkgRemovedOptions {
-  iife: any;
-  amd: any;
-  umd: any;
+  iife?: any;
+  amd?: any;
+  umd?: any;
 }
 
-export type BundlibOptions = Partial<
+export type BundlibOptions =
   BundlibPkgInputOptions &
   BundlibPkgFlagOptions &
   BundlibPkgOtherOptions &
-  BundlibPkgRemovedOptions
->;
+  BundlibPkgRemovedOptions;
