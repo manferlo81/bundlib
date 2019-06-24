@@ -9,3 +9,7 @@ export function invalidPkgField(fieldName: string): TypeError {
 export function invalidOption(optionName: string): TypeError {
   return error(`Invalid ${optionName} options.`);
 }
+
+export function unknownOption(optionName: string): TypeError {
+  return error(`Unknown option "${optionName}"`);
+}

@@ -2,14 +2,16 @@ import readPkg from "read-pkg";
 
 import { extname } from "path";
 import { BundlibOptions } from "./bundlib-options";
-import { error, invalidOption, invalidPkgField } from "./errors";
+import { error, invalidOption, invalidPkgField, unknownOption } from "./errors";
 import { PkgJsonPossibleTypes } from "./json-types";
 import { BundlibPkgJson, PkgJsonModuleOutputFields } from "./pkg";
 import { AnalizedPkg, BrowserOptions, Dependencies, MinifyOptions, OutputFiles, OutputOptions } from "./pkg-analized";
 import resolve from "./resolve";
-import { isArray, isBool, isNull, isObject, isString } from "./type-check";
+import { isArray, isBool, isDictionary, isNull, isObject, isString } from "./type-check";
+import { RollupSourcemap } from "./types";
 import { isBrowserFormat } from "./validate-fmt";
 import { isValidMinOption } from "./validate-min";
+import { getFirstUnknowOption } from "./validate-options";
 
 async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPkg> {
 
@@ -31,11 +33,14 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     throw invalidPkgField("browser");
   }
 
-  if (!isNull(bundlibOptions) && (!isObject(bundlibOptions) || isArray(bundlibOptions))) {
+  if (!isNull(bundlibOptions) && !isDictionary(bundlibOptions)) {
     throw invalidPkgField("bundlib");
   }
 
-  // TODO: thorw on unknown options
+  const firstUnknownOption = getFirstUnknowOption(bundlibOptions);
+  if (firstUnknownOption) {
+    throw unknownOption(firstUnknownOption);
+  }
 
   const {
     input: pkgInput,
@@ -119,7 +124,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
         ? min.reduce((result, value) => {
           result[value] = true;
           return result;
-        }, {} as MinifyOptions)
+        }, { main: false, module: false, browser: false } as MinifyOptions)
         : {
           [min as PkgJsonModuleOutputFields]: true,
         };
@@ -142,7 +147,9 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     globals,
   };
 
-  const sourcemap = sourcemapOption === "inline" ? "inline" : (sourcemapOption !== false);
+  const sourcemap: RollupSourcemap = sourcemapOption === "inline"
+    ? "inline"
+    : (sourcemapOption !== false);
 
   const options: OutputOptions = {
     esModule: !!esModuleFlag,
