@@ -7,7 +7,7 @@ export function isValidMin(value: unknown): value is PkgJsonModuleOutputFields {
   );
 }
 
-type ValidMin = PkgJsonModuleOutputFields | PkgJsonModuleOutputFields[];
+type ValidMin = PkgJsonModuleOutputFields | PkgJsonModuleOutputFields[] | boolean;
 
 export function isValidMinOption(value: any): value is ValidMin {
   return isBool(value) || isValidMin(value) || (

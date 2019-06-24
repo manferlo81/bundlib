@@ -116,18 +116,21 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   const buildName = browserName || pkgName || null;
 
-  const minify: MinifyOptions = !min
-    ? {}
-    : min as unknown as boolean === true
-      ? { main: true, module: true, browser: true }
-      : isArray(min)
-        ? min.reduce((result, value) => {
-          result[value] = true;
-          return result;
-        }, { main: false, module: false, browser: false } as MinifyOptions)
-        : {
-          [min as PkgJsonModuleOutputFields]: true,
-        };
+  const minify: MinifyOptions = {
+    main: false,
+    module: false,
+    browser: false,
+    ...min && (
+      min === true
+        ? { main: true, module: true, browser: true }
+        : isArray(min)
+          ? min.reduce((result, value) => {
+            result[value] = true;
+            return result;
+          }, {} as Record<PkgJsonModuleOutputFields, true>)
+          : { [min]: true }
+    ),
+  };
 
   const globals = !browserGlobals
     ? null

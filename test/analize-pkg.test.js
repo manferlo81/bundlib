@@ -232,7 +232,11 @@ describe("analize", () => {
       id: null,
       globals: null,
     });
-    expect(minify).toEqual({});
+    expect(minify).toEqual({
+      main: false,
+      module: false,
+      browser: false,
+    });
     expect(options).toEqual({
       extend: false,
       esModule: false,
@@ -448,13 +452,25 @@ describe("analize", () => {
     });
 
     const analizedWithMain = await analizeWithStringMin("main");
-    expect(analizedWithMain.minify.main).toBe(true);
+    expect(analizedWithMain.minify).toEqual({
+      main: true,
+      module: false,
+      browser: false,
+    });
 
     const analizedWithModule = await analizeWithStringMin("module");
-    expect(analizedWithModule.minify.module).toBe(true);
+    expect(analizedWithModule.minify).toEqual({
+      main: false,
+      module: true,
+      browser: false,
+    });
 
     const analizedWithBrowser = await analizeWithStringMin("browser");
-    expect(analizedWithBrowser.minify.browser).toBe(true);
+    expect(analizedWithBrowser.minify).toEqual({
+      main: false,
+      module: false,
+      browser: true,
+    });
 
   });
 
@@ -466,9 +482,11 @@ describe("analize", () => {
       },
     });
 
-    expect(analized.minify.main).toBe(true);
-    expect(analized.minify.module).toBe(true);
-    expect(analized.minify.browser).toBe(true);
+    expect(analized.minify).toEqual({
+      main: true,
+      module: true,
+      browser: true,
+    });
 
   });
 
@@ -478,9 +496,11 @@ describe("analize", () => {
       bundlib: { min: true },
     });
 
-    expect(analized.minify.main).toBe(true);
-    expect(analized.minify.module).toBe(true);
-    expect(analized.minify.browser).toBe(true);
+    expect(analized.minify).toEqual({
+      main: true,
+      module: true,
+      browser: true,
+    });
 
   });
 

@@ -8,7 +8,7 @@ export type OutputFiles = {
 export type Dependencies = Record<"runtime" | "peer", readonly string[]>;
 
 export type MinifyOptions = {
-  [K in PkgJsonModuleOutputFields]?: boolean;
+  [K in PkgJsonModuleOutputFields]: boolean;
 };
 
 export interface BrowserOptions {
