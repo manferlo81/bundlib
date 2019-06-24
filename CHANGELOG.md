@@ -3,9 +3,10 @@
 ## 0.6.0
 *24-JUN-2019*
 
-* deprecated options (`iife`, `amd` & `umd`) removed
+* removed deprecated options
 * full api & cli makeover
 * inline sourcemap support
+* added option validation
 * improved documentation
 
 ## 0.5.4

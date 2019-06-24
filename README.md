@@ -55,7 +55,7 @@ The following example will generate a **AMD** build with filename `my-lib.amd.js
 
 ### Options
 
-*The* `"bundlib"` *field in* `package.json` *may contain any of the following properties. Any invalid option will cause `bundlib` to throw at build time. Any unknown option will be ignored.*
+*The* `"bundlib"` *field in* `package.json` *may contain any of the following properties. Any invalid or unknown option will cause `bundlib` to throw at build time.*
 
 #### input
 
