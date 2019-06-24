@@ -6,9 +6,7 @@ export interface BundlibPkgInputOptions {
   input?: string | null;
 }
 
-export type BundlibPkgFlagOptions = {
-  [K in FlagField]?: boolean | null;
-};
+export type BundlibPkgFlagOptions = Partial<Record<FlagField, boolean | null>>;
 
 export interface BundlibPkgOtherOptions {
   sourcemap?: RollupSourcemap | null;
@@ -19,14 +17,7 @@ export interface BundlibPkgOtherOptions {
   min?: PkgJsonModuleOutputFields | PkgJsonModuleOutputFields[] | boolean | null;
 }
 
-export interface BundlibPkgRemovedOptions {
-  iife?: any;
-  amd?: any;
-  umd?: any;
-}
-
 export type BundlibOptions =
   BundlibPkgInputOptions &
   BundlibPkgFlagOptions &
-  BundlibPkgOtherOptions &
-  BundlibPkgRemovedOptions;
+  BundlibPkgOtherOptions;

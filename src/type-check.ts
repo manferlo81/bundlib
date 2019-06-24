@@ -2,7 +2,7 @@ export function isNull(value: any): value is (null | undefined) {
   return value == null;
 }
 
-export function isObject<T>(value: any): value is Record<string | number, T> {
+export function isObject<T>(value: any): value is Record<keyof any, T> {
   return !!value && typeof value === "object";
 }
 

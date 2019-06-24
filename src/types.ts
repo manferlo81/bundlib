@@ -16,7 +16,7 @@ export type ConfigExtra = Omit<
 
 export type RollupSourcemap = boolean | "inline";
 
-export type FilterablePlugins = Array<Plugin | null | false>;
+export type FilterablePlugins = Array<Plugin | null | undefined | false>;
 
 export type ModuleBuildFormat = Extract<RollupModuleFormat, "cjs" | "es">;
 export type BrowserBuildFormat = Extract<RollupModuleFormat, "iife" | "amd" | "umd">;
