@@ -4,7 +4,6 @@ orbs:
   codecov: codecov/codecov@1.0.4
 
 executors:
-
   node:
     docker:
       - image: circleci/node:10
@@ -13,11 +12,9 @@ executors:
 commands:
   npm_publish:
     steps:
-
       - run:
           name: Login to npm
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
-
       - run:
           name: Publish to npm
           command: npm publish
@@ -27,31 +24,24 @@ jobs:
   unit_test:
     executor: node
     steps:
-
       - checkout
-
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            - v1-dependencies-
-
+            - v1-deps-bundlib-{{ checksum "package.json" }}
+            - v1-deps-bundlib-
       - run:
           name: Install dependencies
           command: npm install
-
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-
+          key: v1-deps-bundlib-{{ checksum "package.json" }}
       - run:
           name: Build
           command: npm run build
-
       - run:
           name: Test
           command: npm test
-
       - persist_to_workspace:
           root: *working_directory
           paths: .
@@ -59,20 +49,15 @@ jobs:
   upload_coverage:
     executor: node
     steps:
-
-      - attach_workspace:
+      - attach_workspace: &attach_workspace
           at: *working_directory
-
       - codecov/upload:
           file: coverage/*.json
 
   publish:
     executor: node
     steps:
-
-      - attach_workspace:
-          at: *working_directory
-
+      - attach_workspace: *attach_workspace
       - npm_publish
 
 workflows:
