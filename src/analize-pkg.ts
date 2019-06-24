@@ -4,16 +4,8 @@ import { extname } from "path";
 import { BundlibOptions } from "./bundlib-options";
 import { error, invalidOption, invalidPkgField } from "./errors";
 import { PkgJsonPossibleTypes } from "./json-types";
-import {
-  AnalizedPkg,
-  BrowserOptions,
-  BundlibDependencies,
-  BundlibOutputFiles,
-  BundlibPkgJson,
-  FlagOptions,
-  MinifyOutOptions,
-  PkgJsonModuleOutputFields,
-} from "./pkg";
+import { BundlibPkgJson, PkgJsonModuleOutputFields } from "./pkg";
+import { AnalizedPkg, BrowserOptions, Dependencies, MinifyOptions, OutputFiles, OutputOptions } from "./pkg-analized";
 import resolve from "./resolve";
 import { isArray, isBool, isNull, isObject, isString } from "./type-check";
 import { isBrowserFormat } from "./validate-fmt";
@@ -105,21 +97,21 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   const typesPath = pkgTypes || typings;
 
-  const output: BundlibOutputFiles = {
+  const output: OutputFiles = {
     main: cjsModuleFile ? resolve(cjsModuleFile, cwd) : null,
     module: esModuleFile ? resolve(esModuleFile, cwd) : null,
     browser: browserFile ? resolve(browserFile, cwd) : null,
     types: typesPath ? resolve(typesPath, cwd) : null,
   };
 
-  const dependencies: BundlibDependencies = {
+  const dependencies: Dependencies = {
     runtime: runtimeDependencies ? Object.keys(runtimeDependencies) : [],
     peer: peerDependencies ? Object.keys(peerDependencies) : [],
   };
 
   const buildName = browserName || pkgName || null;
 
-  const minify: MinifyOutOptions = !min
+  const minify: MinifyOptions = !min
     ? {}
     : min as unknown as boolean === true
       ? { main: true, module: true, browser: true }
@@ -127,7 +119,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
         ? min.reduce((result, value) => {
           result[value] = true;
           return result;
-        }, {} as MinifyOutOptions)
+        }, {} as MinifyOptions)
         : {
           [min as PkgJsonModuleOutputFields]: true,
         };
@@ -152,7 +144,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   const sourcemap = sourcemapOption === "inline" ? "inline" : (sourcemapOption !== false);
 
-  const options: FlagOptions = {
+  const options: OutputOptions = {
     esModule: !!esModuleFlag,
     interop: !!interopFlag,
     extend: !!extendFlag,

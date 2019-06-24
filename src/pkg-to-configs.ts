@@ -3,7 +3,7 @@ import { dirname, extname, join as joinPath } from "path";
 import { Plugin, RollupOptions } from "rollup";
 
 import { createBrowserConfig, createModuleConfig } from "./create-config";
-import { AnalizedPkg } from "./pkg";
+import { AnalizedPkg } from "./pkg-analized";
 import renameMin from "./rename-min";
 import resolve from "./resolve";
 

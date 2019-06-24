@@ -1,25 +1,22 @@
-import { BrowserBuildFormat } from "./types";
-
-export type ModuleField = "main" | "module" | "browser";
+import { PkgJsonModuleOutputFields } from "./pkg";
+import { FlagField } from "./pkg-analized";
+import { BrowserBuildFormat, RollupSourcemap } from "./types";
 
 export interface BundlibPkgInputOptions {
   input?: string | null;
 }
 
-export interface BundlibPkgFlagOptions {
-  esModule?: boolean | null;
-  interop?: boolean | null;
-  extend?: boolean | null;
-  equals?: boolean | null;
-}
+export type BundlibPkgFlagOptions = {
+  [K in FlagField]?: boolean | null;
+};
 
 export interface BundlibPkgOtherOptions {
-  sourcemap?: boolean | "inline" | null;
+  sourcemap?: RollupSourcemap | null;
   browser?: BrowserBuildFormat | null;
   name?: string | null;
   id?: string | null;
   globals?: Record<string, string> | string[] | null;
-  min?: ModuleField | ModuleField[] | boolean | null;
+  min?: PkgJsonModuleOutputFields | PkgJsonModuleOutputFields[] | boolean | null;
 }
 
 export interface BundlibPkgRemovedOptions {
