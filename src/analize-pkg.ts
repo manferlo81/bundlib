@@ -1,17 +1,17 @@
+import { extname } from "path";
 import readPkg from "read-pkg";
 
-import { extname } from "path";
 import { BundlibOptions } from "./bundlib-options";
 import { error, invalidOption, invalidPkgField, unknownOption } from "./errors";
-import { PkgJsonPossibleTypes } from "./json-types";
 import { BundlibPkgJson, PkgJsonModuleOutputFields } from "./pkg";
 import { AnalizedPkg, BrowserOptions, Dependencies, MinifyOptions, OutputFiles, OutputOptions } from "./pkg-analized";
+import { getFirstRemovedOption } from "./removed-options";
 import resolve from "./resolve";
 import { isArray, isBool, isDictionary, isNull, isObject, isString } from "./type-check";
 import { RollupSourcemap } from "./types";
 import { isBrowserFormat } from "./validate-fmt";
 import { isValidMinOption } from "./validate-min";
-import { getFirstUnknowOption } from "./validate-options";
+import { getFirstUnknownOption } from "./validate-options";
 
 async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPkg> {
 
@@ -37,9 +37,14 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     throw invalidPkgField("bundlib");
   }
 
-  const firstUnknownOption = getFirstUnknowOption(bundlibOptions);
+  const firstUnknownOption = bundlibOptions && getFirstUnknownOption(bundlibOptions);
   if (firstUnknownOption) {
     throw unknownOption(firstUnknownOption);
+  }
+
+  const firstRemovedOption = bundlibOptions && getFirstRemovedOption(bundlibOptions);
+  if (firstRemovedOption) {
+    throw error(`option ${firstRemovedOption.name} was removed in version ${firstRemovedOption.ver}`);
   }
 
   const {
@@ -53,9 +58,6 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     name: browserName,
     id: amdId,
     globals: browserGlobals,
-    iife,
-    amd,
-    umd,
     min,
   } = (bundlibOptions || {}) as BundlibOptions;
 
@@ -79,7 +81,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     throw invalidOption("id");
   }
 
-  if (!isNull(browserGlobals) && !isObject<PkgJsonPossibleTypes>(browserGlobals)) {
+  if (!isNull(browserGlobals) && !isObject(browserGlobals)) {
     throw invalidOption("globals");
   }
 
@@ -87,7 +89,15 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     throw invalidOption("min");
   }
 
-  if (iife || amd || umd) {
+  // We removed this options recently
+  // so we throw for now
+  if (
+    bundlibOptions && (
+      "iife" in bundlibOptions ||
+      "amd" in bundlibOptions ||
+      "umd" in bundlibOptions
+    )
+  ) {
     throw error("options iife, amd & umd were removed in version 0.6");
   }
 
