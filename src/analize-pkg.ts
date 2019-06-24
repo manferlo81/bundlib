@@ -15,8 +15,7 @@ import {
   PkgJsonModuleOutputFields,
 } from "./pkg";
 import resolve from "./resolve";
-import { isArray, isNull, isObject, isString } from "./type-check";
-import { BrowserBuildFormat } from "./types";
+import { isArray, isBool, isNull, isObject, isString } from "./type-check";
 import { isBrowserFormat } from "./validate-fmt";
 import { isValidMinOption } from "./validate-min";
 
@@ -36,13 +35,15 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     bundlib: bundlibOptions,
   } = resolvedPkg;
 
-  if (browserFile && !isString(browserFile)) {
+  if (!isNull(browserFile) && !isString(browserFile)) {
     throw invalidPkgField("browser");
   }
 
   if (!isNull(bundlibOptions) && (!isObject(bundlibOptions) || isArray(bundlibOptions))) {
     throw invalidPkgField("bundlib");
   }
+
+  // TODO: thorw on unknown options
 
   const {
     input: pkgInput,
@@ -51,7 +52,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     interop: interopFlag,
     extend: extendFlag,
     equals: equalsFlag,
-    browser: pkgBrowserFormat,
+    browser: browserFormat,
     name: browserName,
     id: amdId,
     globals: browserGlobals,
@@ -65,7 +66,11 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     throw invalidOption("input");
   }
 
-  if (!isNull(pkgBrowserFormat) && !isBrowserFormat(pkgBrowserFormat)) {
+  if (!isNull(sourcemapOption) && !isBool(sourcemapOption) && sourcemapOption !== "inline") {
+    throw invalidOption("sourcemap");
+  }
+
+  if (!isNull(browserFormat) && !isBrowserFormat(browserFormat)) {
     throw invalidOption("browser");
   }
 
@@ -138,10 +143,8 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
       }, {})
       : browserGlobals as Record<string, string>;
 
-  const browserFormat: BrowserBuildFormat = pkgBrowserFormat || "umd";
-
   const browser: BrowserOptions = {
-    format: browserFormat,
+    format: browserFormat || "umd",
     name: buildName,
     id: amdId || null,
     globals,
