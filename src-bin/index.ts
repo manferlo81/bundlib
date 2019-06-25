@@ -11,12 +11,12 @@ import bundlib from "./bundlib";
 import { log } from "./console";
 
 function logError(err: Error) {
-  // tslint:disable-next-line: no-console
-  console.error(`${chalk.bgRed.bold(" error ")} ${err.message || err}`);
   if (err.stack) {
     // tslint:disable-next-line: no-console
     console.error(err.stack);
   }
+  // tslint:disable-next-line: no-console
+  console.error(`${chalk.bgRed.bold(" error ")} ${err.message || err}`);
 }
 
 async function action() {
