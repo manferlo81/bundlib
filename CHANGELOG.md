@@ -1,7 +1,7 @@
 # Bundlib Changelog
 
 ## 0.6.0
-*24-JUN-2019*
+*25-JUN-2019*
 
 * removed deprecated options
 * full api & cli makeover

@@ -1,42 +1,56 @@
-import { EventEmitter } from "events";
 import { OutputOptions, rollup, RollupOptions } from "rollup";
 
-import { BUILDING, BUILT, WRITING, WRITTEN } from "./events";
 import oneByOne from "./one-by-one";
-import { BuildEventEmitter, BuldFunction } from "./types";
+import { BuildCallbackObject } from "./types";
 
-function build(configs: RollupOptions[]): BuildEventEmitter {
+function build(configs: RollupOptions[], callbacks: BuildCallbackObject): void {
 
-  const result: BuildEventEmitter = new EventEmitter();
+  oneByOne(configs, async (config, next, index) => {
 
-  setImmediate(() => {
+    if (index === 0) {
+      if (callbacks.start) {
+        callbacks.start();
+      }
+    }
 
-    result.emit(BUILDING);
+    const output = config.output as OutputOptions;
+    const filename = output.file as string;
 
-    oneByOne(configs, async (config, next, index) => {
+    if (callbacks.buildStart) {
+      callbacks.buildStart(filename);
+    }
 
-      const output = config.output as OutputOptions;
-      const filename = output.file as string;
+    const currentTime = Date.now();
 
-      result.emit(WRITING, filename);
-
+    try {
       const buildResult = await rollup(config);
       await buildResult.write(output);
-
-      result.emit(WRITTEN, filename);
-
-      next();
-
-      if (index + 1 >= configs.length) {
-        result.emit(BUILT);
+    } catch (err) {
+      if (callbacks.error) {
+        callbacks.error(err);
       }
+    }
 
-    });
+    const totalTime = Date.now() - currentTime;
+
+    if (callbacks.buildEnd) {
+      callbacks.buildEnd({
+        filename,
+        duration: totalTime,
+        size: 0,
+      });
+    }
+
+    if (index + 1 >= configs.length) {
+      if (callbacks.end) {
+        callbacks.end();
+      }
+    }
+
+    next();
 
   });
 
-  return result;
-
 }
 
-export default (build as BuldFunction);
+export default build;

@@ -1,51 +1,49 @@
 import { analizePkg, pkgToConfigs } from "../src";
 
-import { log, logFilename } from "./console";
-import { BUILT, ERROR, WRITING, WRITTEN } from "./events";
-import rollItUp from "./roll-it-up";
-import { BuildEventEmitter, BundlibOptions } from "./types";
+import { relative } from "path";
 
-async function bundlib(cwd: string, options?: BundlibOptions): Promise<BuildEventEmitter>;
-async function bundlib(cwd: string, { dev, watch, silent }: BundlibOptions = {}): Promise<BuildEventEmitter> {
+import build from "./build";
+import { log } from "./console";
+import { BundlibOptions } from "./types";
+import watchBuild from "./watch";
+
+async function bundlib(cwd: string, { dev, watch, silent }: BundlibOptions): Promise<void> {
 
   if (!silent) {
     log("> reading package.json...");
   }
 
   const pkg = await analizePkg(cwd);
-
   const configs = pkgToConfigs(pkg, dev);
 
-  const buildProcess = await rollItUp(
-    configs,
-    watch,
-  );
+  let buildIndex = 0;
 
-  if (!silent) {
+  (watch ? watchBuild : build)(configs, silent ? {} : {
 
-    buildProcess.on(WRITING, (filename) => {
-      logFilename(filename, cwd, "building > %s...");
-    });
+    buildEnd({ filename, duration, size }) {
+      log(`built: ${relative(cwd, filename)} (${size} bytes) in ${duration} ms`);
+    },
 
-    buildProcess.on(WRITTEN, (filename) => {
-      logFilename(filename, cwd, "built > %s");
-    });
-
-    buildProcess.on(ERROR, (err) => {
+    error(err) {
       log(err);
-    });
+    },
 
-    if (watch) {
+    ...watch && {
 
-      buildProcess.on(BUILT, () => {
+      start() {
+        if (buildIndex) {
+          log("> rebuilding...");
+        }
+        buildIndex++;
+      },
+
+      end() {
         log("> watching for changes...");
-      });
+      },
 
-    }
+    },
 
-  }
-
-  return buildProcess;
+  });
 
 }
 

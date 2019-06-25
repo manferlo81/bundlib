@@ -1,11 +1,11 @@
-type OneByOneNext = (err?: Error) => Promise<any> | any;
-type OneByOneCallback<T> = (item: T, next: OneByOneNext, index: number) => Promise<any> | any;
+type OneByOneNext = () => void;
+type OneByOneCallback<T> = (item: T, next: OneByOneNext, index: number) => void;
 
-function createNext<T>(arr: ArrayLike<T>, callback: OneByOneCallback<T>) {
+function createNext<T>(arr: ArrayLike<T>, callback: OneByOneCallback<T>): OneByOneNext {
 
   let index = 0;
 
-  const next: OneByOneNext = async (err) => {
+  const next: OneByOneNext = () => {
 
     if (!(index in arr)) {
       return;
@@ -22,11 +22,9 @@ function createNext<T>(arr: ArrayLike<T>, callback: OneByOneCallback<T>) {
 
 }
 
-function oneByOne<T>(arr: ArrayLike<T>, callback: OneByOneCallback<T>) {
-
+function oneByOne<T>(arr: ArrayLike<T>, callback: OneByOneCallback<T>): void {
   const next = createNext(arr, callback);
   next();
-
 }
 
 export default oneByOne;

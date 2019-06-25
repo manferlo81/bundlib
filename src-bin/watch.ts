@@ -1,47 +1,53 @@
-import { EventEmitter } from "events";
 import { RollupOptions, watch as rollupWatch } from "rollup";
-import { BUILDING, BUILT, ERROR, WRITING, WRITTEN } from "./events";
-import { BuildEventEmitter, BuldFunction } from "./types";
+import { BuildCallbackObject } from "./types";
 
 interface WatchEvent {
-  output: any;
-  error: any;
+  code: string;
+  duration: number;
+  input: string;
+  output: string[];
+  error: Error;
 }
 
-type EmitMethod = (result: EventEmitter, event: WatchEvent) => void;
+type EmitMethod = (callbacks: BuildCallbackObject, event: WatchEvent) => void;
 
-const ERR: EmitMethod = (result, { error }) => {
-  result.emit(
-    ERROR,
-    error,
-  );
+const ERR: EmitMethod = (callbacks, { error }) => {
+  if (callbacks.error) {
+    callbacks.error(error);
+  }
 };
 
 const map: Record<string, EmitMethod> = {
 
-  START(result) {
-    result.emit(BUILDING);
-  },
-
-  END(result) {
-    result.emit(BUILT);
-  },
-
-  BUNDLE_START(result, { output }) {
-    for (const filename of output) {
-      result.emit(
-        WRITING,
-        filename,
-      );
+  START(callbacks) {
+    if (callbacks.start) {
+      callbacks.start();
     }
   },
 
-  BUNDLE_END(result, { output }) {
-    for (const filename of output) {
-      result.emit(
-        WRITTEN,
-        filename,
-      );
+  END(callbacks) {
+    if (callbacks.end) {
+      callbacks.end();
+    }
+  },
+
+  BUNDLE_START(callbacks, { output }) {
+    if (callbacks.buildStart) {
+      for (const filename of output) {
+        callbacks.buildStart(filename);
+      }
+    }
+  },
+
+  BUNDLE_END(callbacks, { output, duration }) {
+    if (callbacks.buildEnd) {
+      for (const filename of output) {
+        callbacks.buildEnd({
+          filename,
+          duration: duration || 0,
+          size: 0,
+        });
+      }
     }
   },
 
@@ -50,24 +56,21 @@ const map: Record<string, EmitMethod> = {
 
 };
 
-function watch(configs: RollupOptions[]): BuildEventEmitter {
+function watch(configs: RollupOptions[], callbacks: BuildCallbackObject): void {
 
   const watcher = rollupWatch(configs);
-  const result: BuildEventEmitter = new EventEmitter();
 
-  watcher.on("event", (event) => {
+  watcher.on("event", (event: WatchEvent) => {
 
     const { code } = event;
 
     const emit: EmitMethod | undefined = map[code];
     if (emit) {
-      emit(result, event);
+      emit(callbacks, event);
     }
 
   });
 
-  return result;
-
 }
 
-export default (watch as BuldFunction);
+export default watch;
