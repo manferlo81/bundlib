@@ -2,7 +2,7 @@ import { extname } from "path";
 import readPkg from "read-pkg";
 
 import { BundlibOptions } from "./bundlib-options";
-import { error, invalidOption, invalidPkgField, unknownOption } from "./errors";
+import { error, invalidOption, invalidPkgField } from "./errors";
 import { BundlibPkgJson, PkgJsonModuleOutputFields } from "./pkg";
 import { AnalizedPkg, BrowserOptions, Dependencies, MinifyOptions, OutputFiles, OutputOptions } from "./pkg-analized";
 import { getFirstRemovedOption } from "./removed-options";
@@ -15,7 +15,11 @@ import { getFirstUnknownOption } from "./validate-options";
 
 async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPkg> {
 
-  const resolvedPkg: BundlibPkgJson = pkg || await readPkg({ cwd });
+  const resolvedPkg = pkg || await readPkg({ cwd });
+
+  if (!isDictionary(resolvedPkg)) {
+    throw error("Invalid package.json content");
+  }
 
   const {
     name: pkgName,
@@ -44,7 +48,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   const firstUnknownOption = bundlibOptions && getFirstUnknownOption(bundlibOptions);
   if (firstUnknownOption) {
-    throw unknownOption(firstUnknownOption);
+    throw error(`Unknown option "${firstUnknownOption}"`);
   }
 
   const {

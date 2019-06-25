@@ -3,13 +3,9 @@ export function error(msg: string): TypeError {
 }
 
 export function invalidPkgField(fieldName: string): TypeError {
-  return error(`Invalid package.json ${fieldName} field.`);
+  return error(`Invalid package.json ${fieldName} field`);
 }
 
 export function invalidOption(optionName: string): TypeError {
-  return error(`Invalid ${optionName} options.`);
-}
-
-export function unknownOption(optionName: string): TypeError {
-  return error(`Unknown option "${optionName}"`);
+  return error(`Invalid ${optionName} options`);
 }

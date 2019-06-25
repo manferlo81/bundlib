@@ -19,6 +19,22 @@ describe("analize", () => {
 
   });
 
+  test("should throw on invalid package.json", () => {
+
+    const invalidPkg = [
+      1,
+      "string",
+      [],
+      true,
+    ];
+
+    invalidPkg.forEach((pkg) => {
+      // @ts-ignore
+      expect(analize(cwd, pkg)).rejects.toThrow(TypeError);
+    });
+
+  });
+
   test("should throw on invalid browser field", () => {
 
     const invalidBrowserPaths = [
@@ -182,7 +198,7 @@ describe("analize", () => {
 
   });
 
-  test("should throw on invalid option", () => {
+  test("should throw on unknown option", () => {
 
     const invalidOptions = [
       "option1",
@@ -205,7 +221,7 @@ describe("analize", () => {
 
   });
 
-  test("should read package.json if not provided", async () => {
+  test("should read and analize package.json if not provided", async () => {
 
     const analized = await analize(cwd);
 

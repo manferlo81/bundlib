@@ -2,7 +2,7 @@ export function isNull(value: any): value is (null | undefined) {
   return value == null;
 }
 
-export function isObject<T>(value: any): value is Record<keyof any, T> {
+export function isObject<T = any>(value: any): value is (Record<string | symbol, T> | T[]) {
   return !!value && typeof value === "object";
 }
 
@@ -16,6 +16,6 @@ export function isBool(value: any): value is boolean {
 
 export const isArray: <T = any>(value: any) => value is T[] = Array.isArray;
 
-export function isDictionary<T>(value: any): value is Record<string, T> {
+export function isDictionary<T = any>(value: any): value is Record<string | symbol, T> {
   return isObject(value) && !isArray(value);
 }
