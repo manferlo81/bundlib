@@ -12,7 +12,11 @@ import { log } from "./console";
 
 function logError(err: Error) {
   // tslint:disable-next-line: no-console
-  console.error(`${chalk.bgRed.bold(" error ")} ${err && (err.message || err)}`);
+  console.error(`${chalk.bgRed.bold(" error ")} ${err.message || err}`);
+  if (err.stack) {
+    // tslint:disable-next-line: no-console
+    console.error(err.stack);
+  }
 }
 
 async function action() {
