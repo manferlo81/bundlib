@@ -14,7 +14,8 @@ async function bundlib(cwd: string, { dev, watch, silent }: BundlibOptions): Pro
   if (!silent) {
     log(`Bundlib v${version}
 `);
-    log("> reading package.json...");
+    log(`reading package.json...
+`);
   }
 
   const pkg = await analizePkg(cwd);
@@ -36,13 +37,15 @@ async function bundlib(cwd: string, { dev, watch, silent }: BundlibOptions): Pro
 
       start() {
         if (buildIndex) {
-          log("> rebuilding...");
+          log(`rebuilding...
+`);
         }
         buildIndex++;
       },
 
       end() {
-        log("> watching for changes...");
+        log(`
+watching for changes...`);
       },
 
     },
