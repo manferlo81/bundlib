@@ -203,6 +203,40 @@ export default async () => pkgToConfigs(
 
 ```typescript
 analizePkg(cwd: string, pkg?: PkgJson): Promise<AnalizedPkg>;
+
+interface AnalizedPkg {
+    cwd: string;
+    pkg: PkgJson;
+    dependencies: {
+      runtime: string[],
+      peer: string[],
+    };
+    input: string;
+    output: {
+      main: string | null;
+      module: string | null;
+      browser: string | null;
+      types: string | null;
+    };
+    sourcemap: boolean | "inline";
+    browser: {
+      format: "umd" | "iife" | "amd";
+      name: string | null;
+      id: string | null;
+      globals: Record<string, string> | null;
+    };
+    minify: {
+      main: boolean;
+      module: boolean;
+      browser: boolean;
+    };
+    options: {
+      extend: boolean;
+      esModule: boolean;
+      interop: boolean;
+      equals: boolean;
+    };
+}
 ```
 
 *Analizes* `package.json` *and return useful normalized information. If* `pkg` *not provided it will be read from the current working directory* `cwd`*.*
@@ -213,7 +247,7 @@ analizePkg(cwd: string, pkg?: PkgJson): Promise<AnalizedPkg>;
 pkgToConfigs(pkg: AnalizedPkg, dev?: boolean): RollupOptions[];
 ```
 
-*Returns an array of Rollup configs from the* `pkg` *provided. This method does not checks for* `pkg` *integrity nor format, as it was intended to be used with the object resulting from* [`analizePkg`](#analizepkg)
+*Returns an array of Rollup configs from the* [`pkg: AnalizedPkg`](#analizepkg) *provided. This method does not checks for* `pkg` *integrity nor format, as it was intended to be used with the object resulting from* [`analizePkg`](#analizepkg)*.*
 
 ### createOutput
 
