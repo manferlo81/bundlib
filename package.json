@@ -62,7 +62,10 @@
     "dist",
     "types"
   ],
-  "author": "Manuel Fernandez <manferlo81@gmail.com>",
+  "author": {
+    "name": "Manuel Fernandez",
+    "email": "manferlo81@gmail.com"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/manferlo81/bundlib.git"
