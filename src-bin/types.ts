@@ -7,7 +7,7 @@ export interface BundlibOptions {
 export interface BuildCallbackObject {
   start?: () => void;
   end?: () => void;
-  buildStart?: (filename: string) => void;
-  buildEnd?: (writeInfo: { filename: string, duration: number, size: number }) => void;
+  buildStart?: (input: string, output: string) => void;
+  buildEnd?: (output: string, size: number, duration: number) => void;
   error?: (error: Error) => void;
 }

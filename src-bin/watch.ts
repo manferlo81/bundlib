@@ -21,39 +21,6 @@ const ERR: EmitMethod = (callbacks, { error }) => {
 
 const map: Record<string, EmitMethod> = {
 
-  START(callbacks) {
-    if (callbacks.start) {
-      callbacks.start();
-    }
-  },
-
-  END(callbacks) {
-    if (callbacks.end) {
-      callbacks.end();
-    }
-  },
-
-  BUNDLE_START(callbacks, { output }) {
-    if (callbacks.buildStart) {
-      for (const filename of output) {
-        callbacks.buildStart(filename);
-      }
-    }
-  },
-
-  BUNDLE_END(callbacks, { output, duration }) {
-    if (callbacks.buildEnd) {
-      for (const filename of output) {
-        const { size } = statSync(filename);
-        callbacks.buildEnd({
-          filename,
-          duration: duration || 0,
-          size,
-        });
-      }
-    }
-  },
-
   ERROR: ERR,
   FATAL: ERR,
 
@@ -65,7 +32,36 @@ function watch(configs: RollupOptions[], callbacks: BuildCallbackObject): void {
 
   watcher.on("event", (event: WatchEvent) => {
 
-    const { code } = event;
+    const { code, input, output, duration, error } = event;
+
+    if (callbacks.start && code === "START") {
+      callbacks.start();
+    }
+
+    if (callbacks.end && code === "END") {
+      callbacks.end();
+    }
+
+    if (callbacks.buildStart && code === "BUNDLE_START") {
+      for (const filename of output) {
+        callbacks.buildStart(input, filename);
+      }
+    }
+
+    if (callbacks.buildEnd && code === "BUNDLE_END") {
+      for (const filename of output) {
+        const { size } = statSync(filename);
+        callbacks.buildEnd(
+          filename,
+          size,
+          duration || 0,
+        );
+      }
+    }
+
+    if (callbacks.error && (code === "ERROR" || code === "FATAL")) {
+      callbacks.error(error);
+    }
 
     const emit: EmitMethod | undefined = map[code];
     if (emit) {

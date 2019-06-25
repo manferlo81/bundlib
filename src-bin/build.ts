@@ -6,19 +6,17 @@ import { BuildCallbackObject } from "./types";
 
 function build(configs: RollupOptions[], callbacks: BuildCallbackObject): void {
 
+  if (callbacks.start) {
+    callbacks.start();
+  }
+
   oneByOne(configs, async (config, next, index) => {
 
-    if (index === 0) {
-      if (callbacks.start) {
-        callbacks.start();
-      }
-    }
-
-    const output = config.output as OutputOptions;
-    const filename = output.file as string;
+    const { input, output: outputOptions } = config as { input: string, output: OutputOptions };
+    const { file: output } = outputOptions as { file: string };
 
     if (callbacks.buildStart) {
-      callbacks.buildStart(filename);
+      callbacks.buildStart(input, output);
     }
 
     try {
@@ -26,18 +24,18 @@ function build(configs: RollupOptions[], callbacks: BuildCallbackObject): void {
       const currentTime = Date.now();
 
       const buildResult = await rollup(config);
-      await buildResult.write(output);
+      await buildResult.write(outputOptions);
 
-      const { size } = statSync(filename);
+      const { size } = statSync(output);
 
       const totalTime = Date.now() - currentTime;
 
       if (callbacks.buildEnd) {
-        callbacks.buildEnd({
-          filename,
-          duration: totalTime,
+        callbacks.buildEnd(
+          output,
           size,
-        });
+          totalTime,
+        );
       }
 
     } catch (err) {

@@ -43,7 +43,7 @@ async function action() {
 
       ...!silent && {
 
-        buildEnd({ filename, duration, size }) {
+        buildEnd(filename, size, duration) {
           log(
             `${
             chalk.green.inverse.bold(" built ")
