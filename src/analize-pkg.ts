@@ -5,7 +5,6 @@ import { BundlibOptions } from "./bundlib-options";
 import { error, invalidOption, invalidPkgField } from "./errors";
 import { BundlibPkgJson, PkgJsonModuleOutputFields } from "./pkg";
 import { AnalizedPkg, BrowserOptions, Dependencies, MinifyOptions, OutputFiles, OutputOptions } from "./pkg-analized";
-import { getFirstRemovedOption } from "./removed-options";
 import resolve from "./resolve";
 import { isArray, isBool, isDictionary, isNull, isObject, isString } from "./type-check";
 import { RollupSourcemap } from "./types";
@@ -39,11 +38,6 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   if (!isNull(bundlibOptions) && !isDictionary(bundlibOptions)) {
     throw invalidPkgField("bundlib");
-  }
-
-  const firstRemovedOption = bundlibOptions && getFirstRemovedOption(bundlibOptions);
-  if (firstRemovedOption) {
-    throw error(`option ${firstRemovedOption.name} was removed in version ${firstRemovedOption.ver}`);
   }
 
   const firstUnknownOption = bundlibOptions && getFirstUnknownOption(bundlibOptions);

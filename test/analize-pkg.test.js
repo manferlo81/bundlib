@@ -182,25 +182,12 @@ describe("analize", () => {
 
   });
 
-  test("should throw on removed options", () => {
-
-    const removedOptions = [
-      "iife",
-      "amd",
-      "umd",
-    ];
-
-    removedOptions.forEach((option) => {
-      expect(analize(cwd, {
-        bundlib: { [option]: true },
-      })).rejects.toThrow(TypeError);
-    });
-
-  });
-
   test("should throw on unknown option", () => {
 
     const invalidOptions = [
+      "iife",
+      "amd",
+      "umd",
       "option1",
       "option2",
     ];
