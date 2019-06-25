@@ -8,6 +8,7 @@
 * inline sourcemap support
 * added option validation
 * improved documentation
+* dependencies updated
 
 ## 0.5.4
 *23-JUN-2019*
