@@ -1,6 +1,8 @@
 import { analizePkg, pkgToConfigs } from "../src";
 
+import fileSize from "filesize";
 import { relative } from "path";
+import prettyMs from "pretty-ms";
 
 import build from "./build";
 import { log } from "./console";
@@ -26,7 +28,7 @@ async function bundlib(cwd: string, { dev, watch, silent }: BundlibOptions): Pro
   (watch ? watchBuild : build)(configs, silent ? {} : {
 
     buildEnd({ filename, duration, size }) {
-      log(`built: ${relative(cwd, filename)} (${size} bytes) in ${duration} ms`);
+      log(`built: ${relative(cwd, filename)} (${fileSize(size)}) in ${prettyMs(duration)}`);
     },
 
     error(err) {
