@@ -248,9 +248,18 @@ describe("analize", () => {
   test("should return analized package.json", async () => {
 
     const pkg = { name: "lib" };
-    const { input, output, sourcemap, dependencies, browser, minify, options } = await analize(cwd, pkg);
+    const {
+      input,
+      output,
+      sourcemap,
+      dependencies,
+      browser,
+      minify,
+      options,
+      cache,
+    } = await analize(cwd, pkg);
 
-    expect(input).toEqual(expect.any(String));
+    expect(typeof input).toEqual("string");
     expect(output).toEqual({
       main: null,
       module: null,
@@ -279,6 +288,7 @@ describe("analize", () => {
       interop: false,
       equals: false,
     });
+    expect(typeof cache).toBe("string");
 
   });
 
@@ -565,6 +575,26 @@ describe("analize", () => {
     const analized = await analize(cwd, {});
 
     expect(analized.sourcemap).toBe(true);
+
+  });
+
+  test("should read cache option", async () => {
+
+    const cache = "cache-folder";
+
+    const analized = await analize(cwd, {
+      bundlib: { cache },
+    });
+
+    expect(analized.cache).toMatch(new RegExp("[/\\\\]" + cache + "$"));
+
+  });
+
+  test("should default if cache not provided", async () => {
+
+    const analized = await analize(cwd, {});
+
+    expect(analized.cache).toMatch(/[/\\]\.cache$/);
 
   });
 
