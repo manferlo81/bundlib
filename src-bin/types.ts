@@ -2,7 +2,6 @@
 export interface BundlibOptions {
   dev?: boolean;
   watch?: boolean;
-  silent?: boolean;
 }
 
 export interface BuildCallbackObject {
