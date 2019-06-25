@@ -7,9 +7,13 @@ import { log } from "./console";
 import { BundlibOptions } from "./types";
 import watchBuild from "./watch";
 
+import { version } from "../package.json";
+
 async function bundlib(cwd: string, { dev, watch, silent }: BundlibOptions): Promise<void> {
 
   if (!silent) {
+    log(`Bundlib v${version}
+`);
     log("> reading package.json...");
   }
 
