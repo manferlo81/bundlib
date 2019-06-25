@@ -5,6 +5,7 @@
   "main": "dist/bundlib.cjs.js",
   "module": "dist/bundlib.es.js",
   "bin": "bin/bundlib-cli.js",
+  "types": "types/index.d.ts",
   "typings": "types/index.d.ts",
   "scripts": {
     "clean": "rm -rf .cache bin dist types coverage",
