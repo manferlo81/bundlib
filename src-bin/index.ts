@@ -54,7 +54,7 @@ async function action() {
         },
 
         error(err) {
-          throw err;
+          logError(err);
         },
 
         ...watch && {
@@ -69,7 +69,7 @@ async function action() {
 
           end() {
             log(`
-${chalk.cyan("watching for changes...")}`);
+${chalk.cyan("waiting for changes...")}`);
           },
 
         },
