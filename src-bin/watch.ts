@@ -1,4 +1,6 @@
+import { statSync } from "fs";
 import { RollupOptions, watch as rollupWatch } from "rollup";
+
 import { BuildCallbackObject } from "./types";
 
 interface WatchEvent {
@@ -42,10 +44,11 @@ const map: Record<string, EmitMethod> = {
   BUNDLE_END(callbacks, { output, duration }) {
     if (callbacks.buildEnd) {
       for (const filename of output) {
+        const { size } = statSync(filename);
         callbacks.buildEnd({
           filename,
           duration: duration || 0,
-          size: 0,
+          size,
         });
       }
     }

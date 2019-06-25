@@ -1,3 +1,4 @@
+import { statSync } from "fs";
 import { OutputOptions, rollup, RollupOptions } from "rollup";
 
 import oneByOne from "./one-by-one";
@@ -20,25 +21,31 @@ function build(configs: RollupOptions[], callbacks: BuildCallbackObject): void {
       callbacks.buildStart(filename);
     }
 
-    const currentTime = Date.now();
-
     try {
+
+      const currentTime = Date.now();
+
       const buildResult = await rollup(config);
       await buildResult.write(output);
+
+      const { size } = statSync(filename);
+
+      const totalTime = Date.now() - currentTime;
+
+      if (callbacks.buildEnd) {
+        callbacks.buildEnd({
+          filename,
+          duration: totalTime,
+          size,
+        });
+      }
+
     } catch (err) {
+
       if (callbacks.error) {
         callbacks.error(err);
       }
-    }
 
-    const totalTime = Date.now() - currentTime;
-
-    if (callbacks.buildEnd) {
-      callbacks.buildEnd({
-        filename,
-        duration: totalTime,
-        size: 0,
-      });
     }
 
     if (index + 1 >= configs.length) {
