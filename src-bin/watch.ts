@@ -11,21 +11,6 @@ interface WatchEvent {
   error: Error;
 }
 
-type EmitMethod = (callbacks: BuildCallbackObject, event: WatchEvent) => void;
-
-const ERR: EmitMethod = (callbacks, { error }) => {
-  if (callbacks.error) {
-    callbacks.error(error);
-  }
-};
-
-const map: Record<string, EmitMethod> = {
-
-  ERROR: ERR,
-  FATAL: ERR,
-
-};
-
 function watch(configs: RollupOptions[], callbacks: BuildCallbackObject): void {
 
   const watcher = rollupWatch(configs);
@@ -61,11 +46,6 @@ function watch(configs: RollupOptions[], callbacks: BuildCallbackObject): void {
 
     if (callbacks.error && (code === "ERROR" || code === "FATAL")) {
       callbacks.error(error);
-    }
-
-    const emit: EmitMethod | undefined = map[code];
-    if (emit) {
-      emit(callbacks, event);
     }
 
   });
