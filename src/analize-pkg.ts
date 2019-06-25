@@ -57,6 +57,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     id: amdId,
     globals: browserGlobals,
     min,
+    cache: cacheOption,
   } = (bundlibOptions || {}) as BundlibOptions;
 
   if (!isNull(pkgInput) && !isString(pkgInput)) {
@@ -87,14 +88,15 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     throw invalidOption("min");
   }
 
+  if (!isNull(cacheOption) && !isString(cacheOption)) {
+    throw invalidOption("cache");
+  }
+
   if (pkgInput && extname(pkgInput) !== ".ts") {
     throw error("option input has to point to a typescript (.ts) file.");
   }
 
-  const input = resolve(
-    pkgInput || "src/index.ts",
-    cwd,
-  );
+  const input = resolve(pkgInput || "src/index.ts", cwd);
 
   const typesPath = pkgTypes || typings;
 
@@ -150,6 +152,8 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     ? "inline"
     : (sourcemapOption !== false);
 
+  const cache = resolve(cacheOption || ".cache", cwd);
+
   const options: OutputOptions = {
     esModule: !!esModuleFlag,
     interop: !!interopFlag,
@@ -157,7 +161,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     equals: !!equalsFlag,
   };
 
-  return { cwd, pkg: resolvedPkg, input, output, sourcemap, dependencies, minify, browser, options };
+  return { cwd, pkg: resolvedPkg, input, output, sourcemap, dependencies, minify, browser, options, cache };
 
 }
 

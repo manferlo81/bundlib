@@ -19,11 +19,12 @@ export type OutputOptions = Record<FlagField, boolean>;
 export interface AnalizedPkg {
   cwd: string;
   pkg: BundlibPkgJson;
-  dependencies: Dependencies;
   input: string;
   output: OutputFiles;
   sourcemap: RollupSourcemap;
+  dependencies: Dependencies;
   browser: BrowserOptions;
   minify: MinifyOptions;
   options: OutputOptions;
+  cache: string;
 }

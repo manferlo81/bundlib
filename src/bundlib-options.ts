@@ -15,6 +15,7 @@ export interface BundlibPkgOtherOptions {
   id?: string | null;
   globals?: Record<string, string> | string[] | null;
   min?: PkgJsonModuleOutputFields | PkgJsonModuleOutputFields[] | boolean | null;
+  cache?: string | null;
 }
 
 export type BundlibOptions =

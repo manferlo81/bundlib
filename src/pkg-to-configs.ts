@@ -27,6 +27,7 @@ function pkgToConfigs(
     dependencies,
     browser: browserOptions,
     options,
+    cache: cacheFolder,
   }: AnalizedPkg,
   dev?: boolean,
 ): RollupOptions[] {
@@ -80,11 +81,13 @@ function pkgToConfigs(
     const declarationDir = !configs.length && typesOutputDir;
     const srcFolderContent = resolve("**/*.ts", apiFolder);
 
+    const cacheRoot = joinPath(cacheFolder, "rpt2");
+
     return [
 
       ts2({
         include: srcFolderContent,
-        cacheRoot: resolve(".cache/rpt2", cwd),
+        cacheRoot,
         useTsconfigDeclarationDir: true,
         tsconfigDefaults: {
           include: [

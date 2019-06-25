@@ -182,6 +182,24 @@ describe("analize", () => {
 
   });
 
+  test("should throw on invalid cache option", () => {
+
+    const invalidCacheOptions = [
+      1,
+      ["string"],
+      {},
+      true,
+    ];
+
+    invalidCacheOptions.forEach((cache) => {
+      expect(analize(cwd, {
+        // @ts-ignore
+        bundlib: { cache },
+      })).rejects.toThrow(TypeError);
+    });
+
+  });
+
   test("should throw on unknown option", () => {
 
     const invalidOptions = [

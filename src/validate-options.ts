@@ -12,6 +12,7 @@ const validFields: Record<keyof BundlibOptions, true> = ([
   "id",
   "globals",
   "min",
+  "cache",
 ] as Array<keyof BundlibOptions>).reduce<Record<keyof BundlibOptions, true>>((result, value) => {
   result[value] = true;
   return result;

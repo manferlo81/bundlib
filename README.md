@@ -154,6 +154,15 @@ The following example will generate a **AMD** build with filename `my-lib.amd.js
 
 > *In* `v0.4.0` *the behavior of this option slightly changed. Output modules affected by this option won't be minified, even if the* [`dev`](#-dev-d) *cli option hasn\'t been set.*
 
+#### cache
+
+* *added in* `v0.6.0`
+* *used in:* `all builds`
+* *type:* `string`
+* *defaults to* `".cache"`
+
+*Defines the directory to be used for cache storage, relative to the project root.*
+
 ## CLI
 
 ```bash
@@ -236,6 +245,7 @@ interface AnalizedPkg {
       interop: boolean;
       equals: boolean;
     };
+    cache: string;
 }
 ```
 

@@ -3,10 +3,11 @@
 ## 0.6.0
 *25-JUN-2019*
 
-* removed deprecated options
 * full api & cli makeover
-* inline sourcemap support
+* removed deprecated options
+* `"inline"` sourcemap support
 * added option validation
+* added `cache` option
 * improved documentation
 * dependencies updated
 
