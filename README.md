@@ -14,29 +14,27 @@ npm i bundlib -D
 
 ## First steps
 
-Bundlib will use `src/index.ts` as entry file for your library by default, make sure you create it before you try to build. Add the corresponding scripts to your `package.json` ([see below for CLI options](#cli)) and run them.
+*Bundlib will use* `src/index.ts` *as entry file for your library by default, it can be configured using [input option](#input). Add the corresponding scripts to your* `package.json` *and run them. [see below for CLI options](#cli).*
 
 ## Build
 
 ### CommonJS module
 
-Building a `CommonJS Module` is as simple as adding a `"main"` field to your `package.json` pointing to the output file, and `bundlib` will build it for you. see the [configuration section](#configuration) for some extra options.
+*Building a* `CommonJS Module` *is as simple as adding a* `"main"` *field to your* `package.json` *pointing to the output file, and* `bundlib` *will build it for you. [see the configuration section](#configuration) for extra options.*
 
 ### ES module
 
-To build a `ES Module` simply add a `"module"` field to your `package.json` pointing to the output file. see the [configuration section](#configuration) for some extra options.
+*To build a* `ES Module` *simply add a* `"module"` *field to your* `package.json` *pointing to the output file. [see the configuration section](#configuration) for extra options.*
 
 ### IIFE, AMD and UMD build
 
-For IIFE, AMD and UMD builds, add a `"browser"` field to your `package.json`. the default format is `"umd"` but it can be changed to `"iife"` or `"amd"` using the `browser` option, see the [configuration section](#configuration) for more info.
+*For IIFE, AMD and UMD builds, add a* `"browser"` *field to your* `package.json`*. the default format is* `"umd"` *but it can be changed to* `"iife"` *or* `"amd"` *using the* [`browser` *option*](#browser)*, see the [configuration section](#configuration) for more info.*
 
 ## Configuration
 
-Configuration is done throu the `"bundlib"` field in `package.json`.
+*Configuration is done throu the* `"bundlib"` *field in* `package.json`*.*
 
 ***example***
-
-The following example will generate a **AMD** build with filename `my-lib.amd.js` inside the `dist` folder, then you can use the library in the browser (for example) using the global `myLib` (`window.myLib`).
 
 ```javascript
 // package.json
@@ -55,7 +53,7 @@ The following example will generate a **AMD** build with filename `my-lib.amd.js
 
 ### Options
 
-*The* `"bundlib"` *field in* `package.json` *may contain any of the following properties. Any invalid or unknown option will cause `bundlib` to throw at build time.*
+*The* `"bundlib"` *field in* `package.json` *may contain any of the following properties. Any invalid or unknown option will cause* `Bundlib` *to throw at build time.*
 
 #### input
 
@@ -141,7 +139,7 @@ The following example will generate a **AMD** build with filename `my-lib.amd.js
 
 *Fixes type export for CommonJS module using* `export = ...` *instead of* `export default ...`
 
-> :warning: Note that this options should only be used when your library has a default export and no named exports.
+> :warning: *Note that this options should only be used when your library has a default export and no named exports.*
 
 #### min
 
@@ -150,9 +148,7 @@ The following example will generate a **AMD** build with filename `my-lib.amd.js
 * *used in:* `all builds`
 * *type:* `"main" | "module" | "browser" | boolean | Array<"main" | "module" | "browser">`
 
-*Defines which module to build an aditional minified version, if* `true` *will affect all modules. The minified file will be renamed from* `*.ext` to `*.min.ext`*.*
-
-> *In* `v0.4.0` *the behavior of this option slightly changed. Output modules affected by this option won't be minified, even if the* [`dev`](#-dev-d) *cli option hasn\'t been set.*
+*Defines which files should be used to build an aditional minified version, if* `true` *will affect all modules. The minified file will be renamed from* `*.ext` to `*.min.ext`*. This option will override the default behavior of the* [`--dev`, `-d` *cli option*](#-dev-d) *, which means only the minified version will be actually minified, the normal version will **NOT** be minified even if you don't set the* [`--dev`, `-d` *cli option*](#-dev-d)*.*
 
 #### cache
 
@@ -161,7 +157,7 @@ The following example will generate a **AMD** build with filename `my-lib.amd.js
 * *type:* `string`
 * *defaults to* `".cache"`
 
-*Defines the directory to be used for cache storage, relative to the project root.*
+*Defines the directory to be used for cache, relative to the project root.*
 
 ## CLI
 
@@ -173,23 +169,23 @@ bundlib [options]
 
 *Bundlib has only three options...*
 
-#### --dev, -d
+#### `--dev`, `-d`
 
 *type:* `boolean`
 
-*creates a development, not minified builds.*
+*creates development, not minified builds. Builds affected by the* [`min` *api option*](#min) *will ignore this option.*
 
-#### --watch, -w
-
-*type:* `boolean`
-
-*runs* `bundlib` *in watch mode.*
-
-#### --silent, -s
+#### `--watch`, `-w`
 
 *type:* `boolean`
 
-*prevent messages from showing in the console.*
+*Runs* `bundlib` *in watch mode.*
+
+#### `--silent`, `-s`
+
+*type:* `boolean`
+
+*Prevent messages from showing in the console.*
 
 ## API
 
@@ -257,7 +253,7 @@ interface AnalizedPkg {
 pkgToConfigs(pkg: AnalizedPkg, dev?: boolean): RollupOptions[];
 ```
 
-*Returns an array of Rollup configs from the* [`pkg: AnalizedPkg`](#analizepkg) *provided. This method does not checks for* `pkg` *integrity nor format, as it was intended to be used with the object resulting from* [`analizePkg`](#analizepkg)*.*
+*Returns an array of Rollup configs from the* [`pkg: AnalizedPkg`](#analizepkg) *provided. This method does not checks for* `pkg` *integrity nor format, as it is intended to be used with the object resulting from* [`analizePkg`](#analizepkg)*.*
 
 ### createOutput
 
@@ -333,17 +329,17 @@ createBrowserConfig(
 
 ### Current Features
 
-* [x] Creates a CommonJS Module based on the `"main"` field in `package.json`
-* [x] Creates an ES Modules based on the `"module"` field in `package.json`
-* [x] Creates an browser build based on the `"browser"` field in `package.json`
-* [x] Exports types declarations based on the `"types"` or `"typings"` field in your `package.json`
-* [x] Transforms async/await using [Babel](https://github.com/babel/babel) and [babel-plugin-transform-async-to-promises](https://github.com/rpetrich/babel-plugin-transform-async-to-promises) for ES5 support
-* [x] Transforms using [Buble](https://github.com/bublejs/buble)
-* [x] Minifies build using [Terser](https://github.com/terser-js/terser)
+* [x] *Creates a CommonJS Module based on the* `"main"` *field in* `package.json`
+* [x] *Creates an ES Modules based on the* `"module"` *field in* `package.json`
+* [x] *Creates an browser build based on the* `"browser"` *field in* `package.json`
+* [x] *Exports types declarations based on the* `"types"` *or* `"typings"` *field in your* `package.json`
+* [x] *Transforms async/await using [Babel](https://github.com/babel/babel) and [babel-plugin-transform-async-to-promises](https://github.com/rpetrich/babel-plugin-transform-async-to-promises) for ES5 support*
+* [x] *Transforms using [Buble](https://github.com/bublejs/buble)*
+* [x] *Minifies build using [Terser](https://github.com/terser-js/terser)*
 
 ### Upcomming Features
 
-* [ ] Creates an CLI binary build based on the `"bin"` field in `package.json`
+* [ ] *Creates an CLI binary build based on the* `"bin"` *field in* `package.json`
 
 ## License
 
