@@ -1,5 +1,6 @@
 import { analizePkg, pkgToConfigs } from "../src";
 
+import chalk from "chalk";
 import fileSize from "filesize";
 import { relative } from "path";
 import prettyMs from "pretty-ms";
@@ -14,9 +15,9 @@ import { version } from "../package.json";
 async function bundlib(cwd: string, { dev, watch, silent }: BundlibOptions): Promise<void> {
 
   if (!silent) {
-    log(`Bundlib v${version}
+    log(`${chalk.green.bold(`Bundlib v${version}`)}
 `);
-    log(`reading package.json...
+    log(`${chalk.cyan.bold("reading package.json...")}
 `);
   }
 
@@ -28,7 +29,17 @@ async function bundlib(cwd: string, { dev, watch, silent }: BundlibOptions): Pro
   (watch ? watchBuild : build)(configs, silent ? {} : {
 
     buildEnd({ filename, duration, size }) {
-      log(`built: ${relative(cwd, filename)} (${fileSize(size)}) in ${prettyMs(duration)}`);
+      log(
+        `${
+        chalk.green.inverse.bold(" built ")
+        } ${
+        chalk.yellow.bold(relative(cwd, filename))
+        } ( ${
+        chalk.magenta.bold(fileSize(size))
+        } ${chalk.cyan("in")} ${
+        chalk.magenta.bold(prettyMs(duration, { secondsDecimalDigits: 2 }))
+        } )`,
+      );
     },
 
     error(err) {
@@ -39,7 +50,7 @@ async function bundlib(cwd: string, { dev, watch, silent }: BundlibOptions): Pro
 
       start() {
         if (buildIndex) {
-          log(`rebuilding...
+          log(`${chalk.cyan("rebuilding...")}
 `);
         }
         buildIndex++;
@@ -47,7 +58,7 @@ async function bundlib(cwd: string, { dev, watch, silent }: BundlibOptions): Pro
 
       end() {
         log(`
-watching for changes...`);
+${chalk.cyan("watching for changes...")}`);
       },
 
     },
