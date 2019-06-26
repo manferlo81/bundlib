@@ -57,18 +57,24 @@ npm i bundlib -D
 
 #### input
 
-* *used in:* `all builds`
+* *used in:* `CommonJS`, `ES`, `Browser` builds
 * *type:* `string`
 * *defaults to* `"src/index.ts"`
 
-*The path to the file to be used as entry point. It has to be a* `.ts` *file.*
+*The path to the file to be used as entry point for modules. It has to be a* `.ts` *file.*
 
 #### binInput
+
+* *added in* `v0.7.0`
+* *used in:* `Binary`
+* *defaults to* `"src-bin/index.ts"`
+
+*The path to the file to be used as entry point for* `CLI` *binary. It has to be a* `.ts` *file.*
 
 #### sourcemap
 
 * `"inline"` *support added in* `v0.6.0`
-* *used in:* `all builds`
+* *used in:* `CommonJS`, `ES`, `Browser` builds
 * *type:* `boolean` | `"inline"`
 * *defaults to* `true`
 
@@ -76,7 +82,7 @@ npm i bundlib -D
 
 #### esModule
 
-* *used in:* `CommonJS, IIFE, AMD & UMD builds`
+* *used in:* `CommonJS`, `Browser` & `Binary` builds
 * *type:* `boolean`
 * *defaults to* `false`
 
@@ -84,7 +90,7 @@ npm i bundlib -D
 
 #### interop
 
-* *used in:* `CommonJS, IIFE, AMD & UMD builds`
+* *used in:* `CommonJS`, `Browser` & `Binary` builds
 * *type:* `boolean`
 * *defaults to* `false`
 
@@ -93,6 +99,7 @@ npm i bundlib -D
 #### browser
 
 * *added in* `v0.3.0`
+* *used in:* `Browser` build
 * *type:* `"iife"` | `"amd"` | `"umd"`
 * *defaults to* `"umd"`
 
@@ -100,9 +107,9 @@ npm i bundlib -D
 
 #### name
 
-* *used in:* `IIFE & UMD builds`
+* *used in:* `IIFE` & `UMD` builds
 * *type:* `string`
-* *required for:* `IIFE & UMD builds`
+* *required for:* `IIFE` & `UMD` builds
 
 *The name to be used to expose your library to the global scope in a* `IIFE` or `UMD` *build.*
 
@@ -110,7 +117,7 @@ npm i bundlib -D
 
 #### id
 
-* *used in:* `AMD & UMD builds`
+* *used in:* `AMD` & `UMD` builds
 * *type:* `string`
 
 *Optional amd id for* `AMD` or `UMD` *builds.*
@@ -119,7 +126,7 @@ npm i bundlib -D
 
 #### extend
 
-* *used in:* `IIFE, AMD & UMD builds`
+* *used in:* `Browser` builds
 * *type:* `boolean`
 * *defaults to* `false`
 
@@ -127,7 +134,7 @@ npm i bundlib -D
 
 #### globals
 
-* *used in:* `IIFE, AMD & UMD builds`
+* *used in:* `Browser` builds
 * *type:* `{ [name: string]: string }` | `string[]`
 
 *Object or array to map names to globals.*
@@ -135,7 +142,7 @@ npm i bundlib -D
 #### equals
 
 * *added in* `v0.1.0`
-* *used in:* `types for CommonJS build`
+* *used in:* types for `CommonJS` build
 * *type:* `boolean`
 * *defaults to* `false`
 
@@ -147,7 +154,7 @@ npm i bundlib -D
 
 * *added in* `v0.3.2`
 * `boolean` *support added in* `v0.4.1`
-* *used in:* `all builds`
+* *used in:* `CommonJS`, `ES` & `Browser` builds
 * *type:* `"main" | "module" | "browser" | boolean | Array<"main" | "module" | "browser">`
 
 *Defines which files should be used to build an aditional minified version, if* `true` *will affect all modules. The minified file will be renamed from* `*.ext` to `*.min.ext`*. This option will override the default behavior of the* [`--dev`, `-d` *cli option*](#-dev-d) *, which means only the minified version will be actually minified, the normal version will **NOT** be minified even if you don't set the* [`--dev`, `-d` *cli option*](#-dev-d)*.*
@@ -155,7 +162,7 @@ npm i bundlib -D
 #### cache
 
 * *added in* `v0.6.0`
-* *used in:* `all builds`
+* *used in:* `All` builds
 * *type:* `string`
 * *defaults to* `".cache"`
 
@@ -175,7 +182,7 @@ bundlib [options]
 
 *type:* `boolean`
 
-*creates development, not minified builds. Builds affected by the* [`min` *api option*](#min) *will ignore this option.*
+*Creates development, not minified builds. Builds affected by the* [`min` *api option*](#min) *will ignore this option.*
 
 #### `--watch`, `-w`
 
@@ -187,7 +194,7 @@ bundlib [options]
 
 *type:* `boolean`
 
-*Prevent messages from showing in the console.*
+*Prevents messages from showing in the console.*
 
 ## API
 
@@ -335,12 +342,12 @@ createBrowserConfig(
 
 * [x] *Creates a CommonJS Module based on the* `"main"` *field in* `package.json`
 * [x] *Creates an ES Modules based on the* `"module"` *field in* `package.json`
-* [x] *Creates an browser build based on the* `"browser"` *field in* `package.json` *(only if* `browser` *fields is a string)*
+* [x] *Creates an browser build based on the* `"browser"` *field in* `package.json` *(only if* `"browser"` *fields is a* `string`*)*
+* [x] *Creates an CLI binary build based on the* `"bin"` *field in* `package.json` *(only if* `"bin"` *fields is a* `string`*)*
 * [x] *Exports types declarations based on the* `"types"` *or* `"typings"` *field in your* `package.json`
-* [x] *Transforms async/await using [Babel](https://github.com/babel/babel) and [babel-plugin-transform-async-to-promises](https://github.com/rpetrich/babel-plugin-transform-async-to-promises) for ES5 support*
+* [x] *Transforms* `async/await` *using [Babel](https://github.com/babel/babel) and [babel-plugin-transform-async-to-promises](https://github.com/rpetrich/babel-plugin-transform-async-to-promises) for ES5 support*
 * [x] *Transforms using [Buble](https://github.com/bublejs/buble)*
 * [x] *Minifies build using [Terser](https://github.com/terser-js/terser)*
-* [x] *Creates an CLI binary build based on the* `"bin"` *field in* `package.json`
 
 ## License
 

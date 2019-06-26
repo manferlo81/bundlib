@@ -1,5 +1,11 @@
 # Bundlib Changelog
 
+## 0.7.0
+*26-JUN-2019*
+
+* documentation improved
+* added support for CLI binary file
+
 ## 0.6.0
 *25-JUN-2019*
 
