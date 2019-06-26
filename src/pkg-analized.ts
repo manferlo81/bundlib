@@ -23,6 +23,7 @@ export interface AnalizedPkg {
   cwd: string;
   pkg: BundlibPkgJson;
   input: string;
+  binInput: string;
   output: OutputFiles;
   sourcemap: RollupSourcemap;
   dependencies: Dependencies;

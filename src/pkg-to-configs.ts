@@ -17,12 +17,14 @@ import nodeResolve from "rollup-plugin-node-resolve";
 import stripShebang from "rollup-plugin-strip-shebang";
 import { terser } from "rollup-plugin-terser";
 import ts2 from "rollup-plugin-typescript2";
+import mapId from "./plugins/map-id";
 
 function pkgToConfigs(pkg: AnalizedPkg, dev?: boolean): RollupOptions[];
 function pkgToConfigs(
   {
     cwd,
     input: apiInput,
+    binInput: cliInput,
     output,
     sourcemap,
     minify,
@@ -79,7 +81,7 @@ function pkgToConfigs(
     typesOutputDir = dirname(typesOutputDir);
   }
 
-  const modulePlugins = (mini: boolean, bin?: { file: string }): Array<Plugin | null | false> => {
+  const modulePlugins = (mini: boolean, bin?: string): Array<Plugin | null | false> => {
 
     const declarationDir = !configs.length && typesOutputDir;
     const srcFolderContent = resolve("**/*.ts", apiFolder);
@@ -94,7 +96,15 @@ function pkgToConfigs(
         capture: (shebangFromFile) => shebang = shebangFromFile,
       }),
 
-      // map
+      !!bin && mapId({
+        cwd,
+        map: {
+          "../src": {
+            id: cwd,
+            external: true,
+          },
+        },
+      }),
 
       ts2({
         include: srcFolderContent,
@@ -141,7 +151,7 @@ function pkgToConfigs(
       }) as Plugin,
 
       !!bin && addShebang({
-        include: bin.file,
+        include: bin,
         shebang: () => shebang,
       }),
 
@@ -282,14 +292,14 @@ function pkgToConfigs(
 
     configs.push(
       createModuleConfig(
-        resolve("src-bin/index.ts", cwd),
+        cliInput,
         "cjs",
         binaryOutputFile,
         false, // sourcemap,
         esModule,
         interop,
         external,
-        modulePlugins(prod, { file: binaryOutputFile }),
+        modulePlugins(prod, binaryOutputFile),
       ),
     );
 

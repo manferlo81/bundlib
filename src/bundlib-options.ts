@@ -1,9 +1,9 @@
-import { PkgJsonModuleOutputFields } from "./pkg";
-import { FlagField } from "./pkg-analized";
+import { FlagField, ModuleOutputFields } from "./pkg-analized";
 import { BrowserBuildFormat, RollupSourcemap } from "./types";
 
 export interface BundlibPkgInputOptions {
   input?: string | null;
+  binInput?: string | null;
 }
 
 export type BundlibPkgFlagOptions = Partial<Record<FlagField, boolean | null>>;
@@ -14,7 +14,7 @@ export interface BundlibPkgOtherOptions {
   name?: string | null;
   id?: string | null;
   globals?: Record<string, string> | string[] | null;
-  min?: PkgJsonModuleOutputFields | PkgJsonModuleOutputFields[] | boolean | null;
+  min?: ModuleOutputFields | ModuleOutputFields[] | boolean | null;
   cache?: string | null;
 }
 

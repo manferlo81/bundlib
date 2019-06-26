@@ -60,6 +60,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   const {
     input: pkgInput,
+    binInput: pkgBinInput,
     sourcemap: sourcemapOption,
     esModule: esModuleFlag,
     interop: interopFlag,
@@ -109,7 +110,12 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     throw error("option input has to point to a typescript (.ts) file.");
   }
 
+  if (pkgBinInput && extname(pkgBinInput) !== ".ts") {
+    throw error("option binInput has to point to a typescript (.ts) file.");
+  }
+
   const input = resolve(pkgInput || "src/index.ts", cwd);
+  const binInput = resolve(pkgBinInput || "src-bin/index.ts", cwd);
 
   const typesPath = pkgTypes || typings;
 
@@ -175,7 +181,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     equals: !!equalsFlag,
   };
 
-  return { cwd, pkg: resolvedPkg, input, output, sourcemap, dependencies, minify, browser, options, cache };
+  return { cwd, pkg: resolvedPkg, input, binInput, output, sourcemap, dependencies, minify, browser, options, cache };
 
 }
 

@@ -63,6 +63,8 @@ npm i bundlib -D
 
 *The path to the file to be used as entry point. It has to be a* `.ts` *file.*
 
+#### binInput
+
 #### sourcemap
 
 * `"inline"` *support added in* `v0.6.0`
@@ -217,10 +219,12 @@ interface AnalizedPkg {
       peer: string[],
     };
     input: string;
+    binInput: string;
     output: {
       main: string | null;
       module: string | null;
       browser: string | null;
+      bin: string | null;
       types: string | null;
     };
     sourcemap: boolean | "inline";
@@ -336,10 +340,7 @@ createBrowserConfig(
 * [x] *Transforms async/await using [Babel](https://github.com/babel/babel) and [babel-plugin-transform-async-to-promises](https://github.com/rpetrich/babel-plugin-transform-async-to-promises) for ES5 support*
 * [x] *Transforms using [Buble](https://github.com/bublejs/buble)*
 * [x] *Minifies build using [Terser](https://github.com/terser-js/terser)*
-
-### Upcomming Features
-
-* [ ] *Creates an CLI binary build based on the* `"bin"` *field in* `package.json`
+* [x] *Creates an CLI binary build based on the* `"bin"` *field in* `package.json`
 
 ## License
 
