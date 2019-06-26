@@ -6,7 +6,7 @@ import { error, invalidOption, invalidPkgField } from "./errors";
 import { BundlibPkgJson, PkgJsonModuleOutputFields } from "./pkg";
 import { AnalizedPkg, BrowserOptions, Dependencies, MinifyOptions, OutputFiles, OutputOptions } from "./pkg-analized";
 import resolve from "./resolve";
-import { isArray, isBool, isDictionary, isNull, isObject, isString } from "./type-check";
+import { isArray, isBool, isDictionary, isNull, isObject, isString, isStringOrNull } from "./type-check";
 import { RollupSourcemap } from "./types";
 import { isBrowserFormat } from "./validate-fmt";
 import { isValidMinOption } from "./validate-min";
@@ -32,7 +32,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     bundlib: bundlibOptions,
   } = resolvedPkg;
 
-  if (!isNull(browserFile) && !isString(browserFile)) {
+  if (!isStringOrNull(browserFile)) {
     throw invalidPkgField("browser");
   }
 
@@ -60,7 +60,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     cache: cacheOption,
   } = (bundlibOptions || {}) as BundlibOptions;
 
-  if (!isNull(pkgInput) && !isString(pkgInput)) {
+  if (!isStringOrNull(pkgInput)) {
     throw invalidOption("input");
   }
 
@@ -72,11 +72,11 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     throw invalidOption("browser");
   }
 
-  if (!isNull(browserName) && !isString(browserName)) {
+  if (!isStringOrNull(browserName)) {
     throw invalidOption("name");
   }
 
-  if (!isNull(amdId) && !isString(amdId)) {
+  if (!isStringOrNull(amdId)) {
     throw invalidOption("id");
   }
 
@@ -88,7 +88,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     throw invalidOption("min");
   }
 
-  if (!isNull(cacheOption) && !isString(cacheOption)) {
+  if (!isStringOrNull(cacheOption)) {
     throw invalidOption("cache");
   }
 

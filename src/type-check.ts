@@ -19,3 +19,7 @@ export const isArray: <T = any>(value: any) => value is T[] = Array.isArray;
 export function isDictionary<T = any>(value: any): value is Record<string | symbol, T> {
   return isObject(value) && !isArray(value);
 }
+
+export function isStringOrNull(value: any): value is (string | null) {
+  return isNull(value) || isString(value);
+}
