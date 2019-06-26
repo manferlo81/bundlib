@@ -81,6 +81,9 @@ function pkgToConfigs(
     typesOutputDir = dirname(typesOutputDir);
   }
 
+  const extensions = [".ts", ".js"];
+  const exclude = /node_modules/;
+
   const modulePlugins = (mini: boolean, bin?: string): Array<Plugin | null | false> => {
 
     const declarationDir = !configs.length && !bin && typesOutputDir;
@@ -94,6 +97,7 @@ function pkgToConfigs(
 
       !!bin && stripShebang({
         capture: (shebangFromFile) => shebang = shebangFromFile,
+        sourcemap: sourcemapBool,
       }),
 
       !!bin && mapId({
@@ -136,14 +140,14 @@ function pkgToConfigs(
       }),
 
       babel({
-        extensions: [".ts", ".js"],
-        exclude: /node_modules/,
+        extensions,
+        exclude,
         babelrc: false,
         plugins: [require.resolve("babel-plugin-transform-async-to-promises")],
       }),
 
       buble({
-        exclude: /node_modules/,
+        exclude,
         target: {
           node: 0.12,
         },
@@ -167,8 +171,13 @@ function pkgToConfigs(
 
   const browserPlugins = (mini: boolean) => [
 
-    nodeResolve(),
-    commonjs(),
+    nodeResolve({
+      preferBuiltins: false,
+      extensions,
+    }),
+    commonjs({
+      sourceMap: sourcemapBool,
+    }),
 
     ...modulePlugins(mini),
 
@@ -295,7 +304,7 @@ function pkgToConfigs(
         cliInput,
         "cjs",
         binaryOutputFile,
-        false, // sourcemap,
+        sourcemap,
         esModule,
         interop,
         external,
