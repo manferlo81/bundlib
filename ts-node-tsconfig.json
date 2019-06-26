@@ -1,20 +1,21 @@
 {
   "compilerOptions": {
-    "target": "es2017",
-    "module": "es2015",
+    "target": "es6",
+    "module": "commonjs",
     "moduleResolution": "node",
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "strict": true,
     "noUnusedLocals": true,
     "noImplicitReturns": true,
     "noImplicitAny": true,
-    "removeComments": true,
     "baseUrl": ".",
+    "removeComments": true,
     "paths": {
       "*": [
         "declarations/*"
       ]
-    },
+    }
   }
 }

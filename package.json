@@ -9,8 +9,8 @@
   "typings": "types/index.d.ts",
   "scripts": {
     "clean": "rm -rf .cache bin dist types coverage",
-    "dev": "ts-node src-bin -dw",
-    "build": "tslint src/**/*.ts && ts-node src-bin -d",
+    "dev": "ts-node -P ts-node-tsconfig.json src-bin -dw",
+    "build": "tslint src/**/*.ts && ts-node -P ts-node-tsconfig.json src-bin -d",
     "test": "jest --color",
     "preversion": "npm run clean && npm run build && npm test"
   },
