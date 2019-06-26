@@ -331,7 +331,7 @@ createBrowserConfig(
 
 * [x] *Creates a CommonJS Module based on the* `"main"` *field in* `package.json`
 * [x] *Creates an ES Modules based on the* `"module"` *field in* `package.json`
-* [x] *Creates an browser build based on the* `"browser"` *field in* `package.json`
+* [x] *Creates an browser build based on the* `"browser"` *field in* `package.json` *(only if* `browser` *fields is a string)*
 * [x] *Exports types declarations based on the* `"types"` *or* `"typings"` *field in your* `package.json`
 * [x] *Transforms async/await using [Babel](https://github.com/babel/babel) and [babel-plugin-transform-async-to-promises](https://github.com/rpetrich/babel-plugin-transform-async-to-promises) for ES5 support*
 * [x] *Transforms using [Buble](https://github.com/bublejs/buble)*
