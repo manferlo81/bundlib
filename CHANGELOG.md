@@ -4,6 +4,7 @@
 *26-JUN-2019*
 
 * documentation improved
+* added `binInput` option
 * added support for CLI binary file
 
 ## 0.6.0
