@@ -1,9 +1,12 @@
-import { BundlibPkgJson, PkgJsonModuleOutputFields, PkgJsonOutputFields } from "./pkg";
+import { BundlibPkgJson } from "./pkg";
 import { BrowserBuildFormat, RollupSourcemap } from "./types";
 
-export type OutputFiles = Record<PkgJsonOutputFields, string | null>;
+export type ModuleOutputFields = "main" | "module" | "browser";
+export type OutputFields = ModuleOutputFields | "bin" | "types";
+
+export type OutputFiles = Record<OutputFields, string | null>;
 export type Dependencies = Record<"runtime" | "peer", readonly string[]>;
-export type MinifyOptions = Record<PkgJsonModuleOutputFields, boolean>;
+export type MinifyOptions = Record<ModuleOutputFields, boolean>;
 
 export interface BrowserOptions {
   format: BrowserBuildFormat;

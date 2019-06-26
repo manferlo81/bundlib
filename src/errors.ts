@@ -2,10 +2,10 @@ export function error(msg: string): TypeError {
   return new TypeError(msg);
 }
 
-export function invalidPkgField(fieldName: string): TypeError {
-  return error(`Invalid package.json ${fieldName} field`);
+export function invalidPkgField(field: string, type: string): TypeError {
+  return error(`Invalid package.json "${field}" field. It has to be of type ${type}`);
 }
 
-export function invalidOption(optionName: string): TypeError {
-  return error(`Invalid ${optionName} options`);
+export function invalidOption(option: string): TypeError {
+  return error(`Invalid "${option}" option`);
 }

@@ -3,8 +3,16 @@ import readPkg from "read-pkg";
 
 import { BundlibOptions } from "./bundlib-options";
 import { error, invalidOption, invalidPkgField } from "./errors";
-import { BundlibPkgJson, PkgJsonModuleOutputFields } from "./pkg";
-import { AnalizedPkg, BrowserOptions, Dependencies, MinifyOptions, OutputFiles, OutputOptions } from "./pkg-analized";
+import { BundlibPkgJson } from "./pkg";
+import {
+  AnalizedPkg,
+  BrowserOptions,
+  Dependencies,
+  MinifyOptions,
+  ModuleOutputFields,
+  OutputFiles,
+  OutputOptions,
+} from "./pkg-analized";
 import resolve from "./resolve";
 import { isArray, isBool, isDictionary, isNull, isObject, isString, isStringOrNull } from "./type-check";
 import { RollupSourcemap } from "./types";
@@ -14,7 +22,7 @@ import { getFirstUnknownOption } from "./validate-options";
 
 async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPkg> {
 
-  const resolvedPkg = pkg || await readPkg({ cwd });
+  const resolvedPkg = pkg || await readPkg({ cwd, normalize: false });
 
   if (!isDictionary(resolvedPkg)) {
     throw error("Invalid package.json content");
@@ -25,6 +33,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     main: cjsModuleFile,
     module: esModuleFile,
     browser: browserFile,
+    bin: binFile,
     types: pkgTypes,
     typings,
     dependencies: runtimeDependencies,
@@ -33,11 +42,15 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
   } = resolvedPkg;
 
   if (!isStringOrNull(browserFile)) {
-    throw invalidPkgField("browser");
+    throw invalidPkgField("browser", "string");
+  }
+
+  if (!isStringOrNull(binFile)) {
+    throw invalidPkgField("bin", "string");
   }
 
   if (!isNull(bundlibOptions) && !isDictionary(bundlibOptions)) {
-    throw invalidPkgField("bundlib");
+    throw invalidPkgField("bundlib", "object");
   }
 
   const firstUnknownOption = bundlibOptions && getFirstUnknownOption(bundlibOptions);
@@ -104,6 +117,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     main: cjsModuleFile ? resolve(cjsModuleFile, cwd) : null,
     module: esModuleFile ? resolve(esModuleFile, cwd) : null,
     browser: browserFile ? resolve(browserFile, cwd) : null,
+    bin: binFile ? resolve(binFile, cwd) : null,
     types: typesPath ? resolve(typesPath, cwd) : null,
   };
 
@@ -125,7 +139,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
           ? min.reduce((result, value) => {
             result[value] = true;
             return result;
-          }, {} as Record<PkgJsonModuleOutputFields, true>)
+          }, {} as Record<ModuleOutputFields, true>)
           : { [min]: true }
     ),
   };
