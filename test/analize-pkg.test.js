@@ -49,6 +49,20 @@ describe("analize", () => {
 
   });
 
+  test("should throw on invalid bin field", () => {
+
+    const invalidBrowserPaths = [
+      1,
+      { "name": "value" },
+    ];
+
+    invalidBrowserPaths.forEach((bin) => {
+      // @ts-ignore
+      expect(analize(cwd, { bin })).rejects.toThrow(TypeError);
+    });
+
+  });
+
   test("should throw on invalid bundlib field", () => {
 
     const invalidBundlibOptions = [
@@ -264,6 +278,7 @@ describe("analize", () => {
       main: null,
       module: null,
       browser: null,
+      bin: null,
       types: null,
     });
     expect(sourcemap).toBe(true);
@@ -292,6 +307,37 @@ describe("analize", () => {
 
   });
 
+  test("should read CommonJS output filename", async () => {
+
+    const analized = await analize(cwd, { main: "out/lib.js" });
+
+    expect(analized.output.main).toMatch(/out[\\/]lib\.js$/);
+
+  });
+
+  test("should read ESModule output filename", async () => {
+
+    const analized = await analize(cwd, { module: "out/lib.js" });
+
+    expect(analized.output.module).toMatch(/out[\\/]lib\.js$/);
+
+  });
+
+  test("should read browser output filename", async () => {
+
+    const analized = await analize(cwd, { browser: "out/lib.js" });
+
+    expect(analized.output.browser).toMatch(/out[\\/]lib\.js$/);
+
+  });
+
+  test("should read binary output filename", async () => {
+
+    const analized = await analize(cwd, { bin: "bin/cli.js" });
+
+    expect(analized.output.bin).toMatch(/bin[\\/]cli\.js$/);
+
+  });
 
   test("should read input option", async () => {
 
