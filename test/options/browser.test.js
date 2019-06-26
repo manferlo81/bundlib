@@ -13,6 +13,8 @@ describe("browser option", () => {
       "string",
     ];
 
+    expect.assertions(invalidBrowserFormats.length);
+
     invalidBrowserFormats.forEach((browser) => {
       expect(analize(cwd, {
         // @ts-ignore

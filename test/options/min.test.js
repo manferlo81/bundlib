@@ -14,6 +14,8 @@ describe("min option", () => {
       ["string"],
     ];
 
+    expect.assertions(invalidMinOptions.length);
+
     invalidMinOptions.forEach((min) => {
       expect(analize(cwd, {
         // @ts-ignore

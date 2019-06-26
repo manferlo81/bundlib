@@ -14,6 +14,8 @@ describe("globals option", () => {
       false,
     ];
 
+    expect.assertions(invalidGlobalsOptions.length);
+
     invalidGlobalsOptions.forEach((globals) => {
       expect(analize(cwd, {
         // @ts-ignore

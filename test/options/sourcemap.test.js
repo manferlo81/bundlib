@@ -8,14 +8,16 @@ describe("sourcemap option", () => {
 
   test("should throw on invalid sourcemap option", () => {
 
-    const invalidInputs = [
+    const invalidSoucemaps = [
       100,
       "string",
       {},
       [],
     ];
 
-    invalidInputs.forEach((sourcemap) => {
+    expect.assertions(invalidSoucemaps.length);
+
+    invalidSoucemaps.forEach((sourcemap) => {
       expect(analize(cwd, {
         // @ts-ignore
         bundlib: { sourcemap },

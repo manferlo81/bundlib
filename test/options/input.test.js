@@ -14,6 +14,8 @@ describe("input option", () => {
       false,
     ];
 
+    expect.assertions(invalidInputs.length);
+
     invalidInputs.forEach((input) => {
       expect(analize(cwd, {
         // @ts-ignore

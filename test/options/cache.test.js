@@ -15,6 +15,8 @@ describe("cache option", () => {
       true,
     ];
 
+    expect.assertions(invalidCacheOptions.length);
+
     invalidCacheOptions.forEach((cache) => {
       expect(analize(cwd, {
         // @ts-ignore

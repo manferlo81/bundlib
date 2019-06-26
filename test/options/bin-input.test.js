@@ -14,6 +14,8 @@ describe("binInput option", () => {
       false,
     ];
 
+    expect.assertions(invalidInputs.length);
+
     invalidInputs.forEach((binInput) => {
       expect(analize(cwd, {
         // @ts-ignore
@@ -23,9 +25,9 @@ describe("binInput option", () => {
 
   });
 
-  test("should throw on non typescript binary input option", async () => {
+  test("should throw on non typescript binary input option", () => {
 
-    expect(analize(cwd, {
+    return expect(analize(cwd, {
       bundlib: { binInput: "index.js" },
     })).rejects.toThrow(TypeError);
 

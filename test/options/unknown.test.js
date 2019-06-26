@@ -16,6 +16,8 @@ describe("unknown options", () => {
       "option2",
     ];
 
+    expect.assertions(invalidOptions.length);
+
     invalidOptions.forEach((option) => {
       expect(analize(cwd, {
         bundlib: { [option]: true },

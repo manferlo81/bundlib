@@ -14,6 +14,8 @@ describe("id option", () => {
       false,
     ];
 
+    expect.assertions(invalidIdOptions.length);
+
     invalidIdOptions.forEach((id) => {
       expect(analize(cwd, {
         // @ts-ignore

@@ -14,6 +14,8 @@ describe("name option", () => {
       false,
     ];
 
+    expect.assertions(invalidNameOptions.length);
+
     invalidNameOptions.forEach((name) => {
       expect(analize(cwd, {
         // @ts-ignore
