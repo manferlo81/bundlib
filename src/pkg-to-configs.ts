@@ -7,12 +7,14 @@ import { AnalizedPkg } from "./pkg-analized";
 import renameMin from "./rename-min";
 import resolve from "./resolve";
 
+import addShebang from "rollup-plugin-add-shebang";
 import babel from "rollup-plugin-babel";
 import buble from "rollup-plugin-buble";
 import commonjs from "rollup-plugin-commonjs";
 import exportEquals from "rollup-plugin-export-equals";
 import json from "rollup-plugin-json";
 import nodeResolve from "rollup-plugin-node-resolve";
+import stripShebang from "rollup-plugin-strip-shebang";
 import { terser } from "rollup-plugin-terser";
 import ts2 from "rollup-plugin-typescript2";
 
@@ -36,6 +38,7 @@ function pkgToConfigs(
     main: cjsOutputFile,
     module: esOutputFile,
     browser: browserOutputFile,
+    bin: binaryOutputFile,
     types: typesOutputFile,
   } = output;
 
@@ -76,14 +79,22 @@ function pkgToConfigs(
     typesOutputDir = dirname(typesOutputDir);
   }
 
-  const modulePlugins = (mini: boolean): Array<Plugin | null | false> => {
+  const modulePlugins = (mini: boolean, bin?: { file: string }): Array<Plugin | null | false> => {
 
     const declarationDir = !configs.length && typesOutputDir;
     const srcFolderContent = resolve("**/*.ts", apiFolder);
 
     const cacheRoot = joinPath(cacheFolder, "rpt2");
 
+    let shebang: string;
+
     return [
+
+      !!bin && stripShebang({
+        capture: (shebangFromFile) => shebang = shebangFromFile,
+      }),
+
+      // map
 
       ts2({
         include: srcFolderContent,
@@ -110,9 +121,9 @@ function pkgToConfigs(
 
       json() as Plugin,
 
-      declarationDir && equals ? exportEquals({
+      !!declarationDir && equals && exportEquals({
         file: resolve(joinPath(declarationDir, "index.d.ts"), cwd),
-      }) : null,
+      }),
 
       babel({
         extensions: [".ts", ".js"],
@@ -128,6 +139,11 @@ function pkgToConfigs(
         },
         objectAssign: true,
       }) as Plugin,
+
+      !!bin && addShebang({
+        include: bin.file,
+        shebang: () => shebang,
+      }),
 
       mini && terser({
         sourcemap: sourcemapBool,
@@ -259,6 +275,23 @@ function pkgToConfigs(
       );
 
     }
+
+  }
+
+  if (binaryOutputFile) {
+
+    configs.push(
+      createModuleConfig(
+        resolve("src-bin/index.ts", cwd),
+        "cjs",
+        binaryOutputFile,
+        false, // sourcemap,
+        esModule,
+        interop,
+        external,
+        modulePlugins(prod, { file: binaryOutputFile }),
+      ),
+    );
 
   }
 

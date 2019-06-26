@@ -9,11 +9,8 @@
   "typings": "types/index.d.ts",
   "scripts": {
     "clean": "rm -rf .cache bin dist types coverage",
-    "dev:cli": "rollup -cw",
-    "dev:api": "ts-node src-bin -dw",
-    "build:cli": "tslint src-bin/**/*.ts && rollup -c",
-    "build:api": "tslint src/**/*.ts && ts-node src-bin -d",
-    "build": "npm run build:cli && npm run build:api",
+    "dev": "ts-node src-bin -dw",
+    "build": "tslint src/**/*.ts && ts-node src-bin -d",
     "test": "jest --color",
     "preversion": "npm run clean && npm run build && npm test"
   },
