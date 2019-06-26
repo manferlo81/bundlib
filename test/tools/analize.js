@@ -1,10 +1,10 @@
 // @ts-check
 
-const { analizePkg } = require("..");
+const { analizePkg } = require("../..");
 
 /**
  * @param { string } cwd
- * @param { import("..").BundlibPkgJson } [pkg]
+ * @param { import("../../types").BundlibPkgJson } [pkg]
  */
 const analize = (cwd, pkg) => pkg ? analizePkg(cwd, pkg) : analizePkg(cwd);
 

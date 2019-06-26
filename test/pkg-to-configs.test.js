@@ -1,6 +1,6 @@
 // @ts-check
 
-const createConfigs = require("./create-configs");
+const createConfigs = require("./tools/create-configs");
 
 describe("package to configs", () => {
 
@@ -22,19 +22,27 @@ describe("package to configs", () => {
 
   });
 
-  test("should generate CommonJS and ES modules config", async () => {
+  test("should generate ES module config", async () => {
+
+    const configs = await createConfigs(cwd, true, {
+      module: "out/lib.cjs.js",
+    });
+
+    expect(configs).toHaveLength(1);
+    const [esConfig] = configs;
+    expect(esConfig.output.format).toBe("es");
+
+  });
+
+  test("should generate CommonJS module config", async () => {
 
     const configs = await createConfigs(cwd, true, {
       main: "out/lib.cjs.js",
-      module: "out/lib.es.js",
     });
 
-    expect(configs).toHaveLength(2);
-
-    const [esConfig, cjsConfig] = configs;
-
+    expect(configs).toHaveLength(1);
+    const [cjsConfig] = configs;
     expect(cjsConfig.output.format).toBe("cjs");
-    expect(esConfig.output.format).toBe("es");
 
   });
 
@@ -122,6 +130,22 @@ describe("package to configs", () => {
 
   });
 
+  test("should generate Bynary build config", async () => {
+
+    const configs = await createConfigs(cwd, true, {
+      bin: "out/lib.js",
+    });
+
+    expect(configs).toHaveLength(1);
+
+    const [config] = configs;
+    const { output } = config;
+
+    expect(typeof output).toBe("object");
+    expect(output.format).toBe("cjs");
+
+  });
+
   test("should add exportEquals plugin if conditions apply", async () => {
 
     const configs = await createConfigs(cwd, true, {
@@ -138,6 +162,22 @@ describe("package to configs", () => {
     const pluginNames = config.plugins.map((plugin) => plugin.name);
 
     expect(pluginNames).toContain("export-equals");
+
+  });
+
+  test("should add shebang plugins if conditions apply", async () => {
+
+    const configs = await createConfigs(cwd, true, {
+      bin: "bin/cli.js",
+    });
+
+    expect(configs).toHaveLength(1);
+
+    const [config] = configs;
+    const pluginNames = config.plugins.map((plugin) => plugin.name);
+
+    expect(pluginNames).toContain("strip-shebang");
+    expect(pluginNames).toContain("shebang");
 
   });
 
