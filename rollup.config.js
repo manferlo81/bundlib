@@ -7,7 +7,7 @@ import addShebang from "rollup-plugin-add-shebang";
 import babel from "rollup-plugin-babel";
 import buble from "rollup-plugin-buble";
 
-import api from "./plugins/api";
+import mapId from "./plugins/map-id";
 
 import { bin, dependencies } from "./package.json";
 
@@ -41,7 +41,14 @@ const config = {
       },
     }),
 
-    api("../src", __dirname),
+    mapId({
+      map: {
+        "../src": {
+          id: __dirname,
+          external: true,
+        },
+      },
+    }),
 
     ts2({
       cacheRoot: ".cache/rpt2-cli",
