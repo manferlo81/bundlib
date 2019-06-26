@@ -83,7 +83,7 @@ function pkgToConfigs(
 
   const modulePlugins = (mini: boolean, bin?: string): Array<Plugin | null | false> => {
 
-    const declarationDir = !configs.length && typesOutputDir;
+    const declarationDir = !configs.length && !bin && typesOutputDir;
     const srcFolderContent = resolve("**/*.ts", apiFolder);
 
     const cacheRoot = joinPath(cacheFolder, "rpt2");
