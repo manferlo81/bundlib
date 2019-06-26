@@ -42,11 +42,9 @@ const config = {
     }),
 
     mapId({
-      map: {
-        "../src": {
-          id: __dirname,
-          external: true,
-        },
+      "../src": {
+        id: __dirname,
+        external: true,
       },
     }),
 

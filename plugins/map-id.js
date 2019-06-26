@@ -1,12 +1,13 @@
-function mapId({ map } = {}) {
+/** @type { import("rollup").PluginImpl } */
+function mapId(options = {}) {
 
   return {
 
     name: "map-id",
 
-    resolveId(id) {
+    resolveId(moduleId) {
 
-      const result = map && map[id];
+      const result = options && options[moduleId];
 
       if (!result) {
         return;
@@ -16,8 +17,8 @@ function mapId({ map } = {}) {
         return result;
       }
 
-      const { id: resultId, external } = result;
-      return { id: resultId, external };
+      const { id, external } = result;
+      return { id, external };
 
     },
 
