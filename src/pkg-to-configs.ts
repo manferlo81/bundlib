@@ -99,7 +99,7 @@ function pkgToConfigs(
       !!bin && mapId({
         cwd,
         map: {
-          "../src": {
+          [apiInput]: {
             id: cwd,
             external: true,
           },

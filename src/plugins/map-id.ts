@@ -1,4 +1,5 @@
-import { Plugin } from "rollup";
+import { dirname, isAbsolute, join, normalize } from "path";
+import { Plugin, PluginImpl } from "rollup";
 
 interface MapDictionary {
   [X: string]: string | {
@@ -12,15 +13,23 @@ interface MapIdOptions {
   map?: MapDictionary;
 }
 
+function resolveId(id: string, cwd: string, from: string | undefined) {
+  return isAbsolute(id) ? id : normalize(join(
+    from ? dirname(from) : cwd,
+    id,
+  ));
+}
+
 function mapId({ cwd = process.cwd(), map = {} }: MapIdOptions = {}): Plugin {
 
   return {
 
     name: "map-id",
 
-    resolveId(moduleId) {
+    resolveId(moduleId, from) {
 
-      const result = map && map[moduleId];
+      const resolved = resolveId(moduleId, cwd, from);
+      const result = map[resolved] || map[join(resolved, ".ts")] || map[join(resolved, "/index.ts")];
 
       if (!result) {
         return;
@@ -39,4 +48,4 @@ function mapId({ cwd = process.cwd(), map = {} }: MapIdOptions = {}): Plugin {
 
 }
 
-export default mapId;
+export default mapId as PluginImpl<MapIdOptions>;
