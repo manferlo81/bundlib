@@ -2,6 +2,7 @@ import { BundlibOptions } from "./bundlib-options";
 
 const validFields: Record<keyof BundlibOptions, true> = ([
   "input",
+  "binInput",
   "extend",
   "esModule",
   "interop",
