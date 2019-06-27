@@ -4,6 +4,7 @@
 *27-JUN-2019*
 
 * fixed cache folder
+* dependencies updated
 
 ## 0.7.0
 *27-JUN-2019*
