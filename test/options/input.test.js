@@ -39,7 +39,7 @@ describe("input option", () => {
       bundlib: { input: "src/main.ts" },
     });
 
-    expect(analized.input).toMatch(/src[/\\]main\.ts$/);
+    expect(analized.input.api).toMatch(/src[/\\]main\.ts$/);
 
   });
 

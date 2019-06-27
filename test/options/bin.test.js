@@ -2,11 +2,11 @@
 
 const analize = require("../tools/analize");
 
-describe("binInput option", () => {
+describe("bin option", () => {
 
   const cwd = process.cwd();
 
-  test("should throw on invalid binInput option", () => {
+  test("should throw on invalid bin option", () => {
 
     const invalidInputs = [
       1,
@@ -16,10 +16,10 @@ describe("binInput option", () => {
 
     expect.assertions(invalidInputs.length);
 
-    invalidInputs.forEach((binInput) => {
+    invalidInputs.forEach((bin) => {
       expect(analize(cwd, {
         // @ts-ignore
-        bundlib: { binInput },
+        bundlib: { bin },
       })).rejects.toThrow(TypeError);
     });
 
@@ -28,18 +28,18 @@ describe("binInput option", () => {
   test("should throw on non typescript binary input option", () => {
 
     return expect(analize(cwd, {
-      bundlib: { binInput: "index.js" },
+      bundlib: { bin: "index.js" },
     })).rejects.toThrow(TypeError);
 
   });
 
-  test("should read binInput option", async () => {
+  test("should read bin option", async () => {
 
     const analized = await analize(cwd, {
-      bundlib: { binInput: "src-bin/main.ts" },
+      bundlib: { bin: "src-bin/main.ts" },
     });
 
-    expect(analized.binInput).toMatch(/src-bin[/\\]main\.ts$/);
+    expect(analized.input.bin).toMatch(/src-bin[/\\]main\.ts$/);
 
   });
 

@@ -55,7 +55,10 @@ describe("analize", () => {
       cache,
     } = await analize(cwd, pkg);
 
-    expect(typeof input).toEqual("string");
+    expect(input).toEqual({
+      api: expect.any(String),
+      bin: expect.any(String),
+    });
     expect(output).toEqual({
       main: null,
       module: null,
