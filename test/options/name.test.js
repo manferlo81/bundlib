@@ -39,16 +39,16 @@ describe("name option", () => {
 
   });
 
-  test("should default to package name if no name option provided", async () => {
+  test("should default to camelcased, unscoped package name if no name option provided", async () => {
 
-    const pkgName = "pkg-name";
+    const pkgName = "@scope/pkg-name";
 
     const analized = await analize(cwd, {
       name: pkgName,
       browser: "out/lib.umd.js",
     });
 
-    expect(analized.browser.name).toBe(pkgName);
+    expect(analized.browser.name).toBe("pkgName");
 
   });
 

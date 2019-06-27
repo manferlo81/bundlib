@@ -8,7 +8,7 @@ describe("package to configs", () => {
 
   test("should throw if name required and not provided", () => {
 
-    expect(createConfigs(cwd, false, {
+    return expect(createConfigs("", false, {
       browser: "out/lib.js",
     })).rejects.toThrow();
 
