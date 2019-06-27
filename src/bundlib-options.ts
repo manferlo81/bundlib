@@ -24,3 +24,5 @@ export type BundlibOptions =
   BundlibPkgInputOptions &
   BundlibPkgFlagOptions &
   BundlibPkgOtherOptions;
+
+export type OptionName = keyof BundlibOptions;

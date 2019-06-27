@@ -1,31 +1,28 @@
-import { BundlibOptions } from "./bundlib-options";
+import { OptionName } from "./bundlib-options";
 
-const validFields: Record<keyof BundlibOptions, true> = ([
-  "input",
-  "binInput",
-  "extend",
-  "esModule",
-  "interop",
-  "equals",
-  "sourcemap",
-  "browser",
-  "name",
-  "id",
-  "globals",
-  "min",
-  "cache",
-] as Array<keyof BundlibOptions>).reduce<Record<keyof BundlibOptions, true>>((result, value) => {
-  result[value] = true;
-  return result;
-}, {} as any);
-
-export function getFirstUnknownOption(options: Record<string, any>): string | null {
+function getFirstUnknownOption(options: Record<string, any>): string | null {
   const optionNames = Object.keys(options);
   for (let i = 0, len = optionNames.length; i < len; i++) {
-    const name = optionNames[i];
-    if (!(validFields as Record<string, true>)[name]) {
+    const name = optionNames[i] as OptionName;
+    if (
+      name !== "input" &&
+      name !== "binInput" &&
+      name !== "extend" &&
+      name !== "esModule" &&
+      name !== "interop" &&
+      name !== "equals" &&
+      name !== "sourcemap" &&
+      name !== "browser" &&
+      name !== "name" &&
+      name !== "id" &&
+      name !== "globals" &&
+      name !== "min" &&
+      name !== "cache"
+    ) {
       return name;
     }
   }
   return null;
 }
+
+export default getFirstUnknownOption;

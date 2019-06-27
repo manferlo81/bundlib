@@ -17,7 +17,7 @@ import resolve from "./resolve";
 import { isArray, isBool, isDictionary, isNull, isObject, isString, isStringOrNull } from "./type-check";
 import { RollupSourcemap } from "./types";
 import { isBrowserFormat, isValidMinOption } from "./validate";
-import { getFirstUnknownOption } from "./validate-options";
+import getFirstUnknownOption from "./validate-options";
 
 async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPkg> {
 
@@ -137,21 +137,16 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   const buildName = browserName || pkgName || null;
 
-  const minify: MinifyOptions = {
-    main: false,
-    module: false,
-    browser: false,
-    ...min && (
+  const minify: MinifyOptions = Object.assign(
+    { main: false, module: false, browser: false },
+    min && (
       min === true
         ? { main: true, module: true, browser: true }
         : isArray(min)
-          ? min.reduce((result, value) => {
-            result[value] = true;
-            return result;
-          }, {} as Record<ModuleOutputFields, true>)
+          ? min.reduce((result, value) => (result[value] = true, result), {} as Record<ModuleOutputFields, true>)
           : { [min]: true }
     ),
-  };
+  );
 
   const globals = !browserGlobals
     ? null
