@@ -1,21 +1,7 @@
 {
+  "extends": "./tsconfig.json",
   "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
-    "strict": true,
-    "noUnusedLocals": true,
-    "noImplicitReturns": true,
-    "noImplicitAny": true,
-    "baseUrl": ".",
-    "removeComments": true,
-    "paths": {
-      "*": [
-        "declarations/*"
-      ]
-    }
+    "target": "es5",
+    "module": "commonjs"
   }
 }
