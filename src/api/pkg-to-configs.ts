@@ -16,7 +16,6 @@ import nodeResolve from "rollup-plugin-node-resolve";
 import stripShebang from "rollup-plugin-strip-shebang";
 import { terser } from "rollup-plugin-terser";
 import ts2 from "rollup-plugin-typescript2";
-import resolveId from "./resolve-id";
 
 function pkgToConfigs(pkg: AnalizedPkg, dev?: boolean): RollupOptions[];
 function pkgToConfigs(
@@ -74,13 +73,9 @@ function pkgToConfigs(
 
   const prod = !dev;
 
-  const buildApi = !!(esOutputFile || cjsOutputFile || browserOutputFile);
-
   const apiFolder = dirname(apiInput);
-  const cliFolder = dirname(cliInput);
-
   const apiFolderContent = resolve(apiFolder, "**/*.ts");
-  const cliFolderContent = resolve(cliFolder, "**/*.ts");
+  const cwdFolderContent = resolve(cwd, "**/*.ts");
 
   const typesFilename = renamePre(basename(apiInput), "d");
   const sourcemapBool = !!sourcemap;
@@ -98,9 +93,7 @@ function pkgToConfigs(
   function createPlugins(browser: boolean, mini: boolean, bin?: string): Array<Plugin | null | false> {
 
     const declarationDir = !configs.length && !bin && typesOutputDir;
-    const include = buildApi
-      ? [bin ? cliFolderContent : apiFolderContent]
-      : [cliFolderContent, apiFolderContent];
+    const tsInclude = bin ? [cwdFolderContent] : [apiFolderContent];
     const cacheRoot = pathJoin(cacheFolder, "rpt2");
 
     let shebang: string;
@@ -112,13 +105,13 @@ function pkgToConfigs(
         sourcemap: sourcemapBool,
       }),
 
-      !!bin && buildApi && {
+      !!bin && !!cjsOutputFile && {
 
         name: "api",
 
         resolveId(moduleId, from) {
 
-          const resolved = resolveId(moduleId, cwd, from);
+          const resolved = !from ? moduleId : pathJoin(dirname(from), moduleId);
 
           if (
             resolved === apiInput ||
@@ -140,15 +133,6 @@ function pkgToConfigs(
         },
 
       },
-      // !!bin && buildApi && mapId({
-      //   cwd,
-      //   map: {
-      //     [apiInput]: {
-      //       id: cwd,
-      //       external: true,
-      //     },
-      //   },
-      // }),
 
       browser && nodeResolve({
         preferBuiltins: false,
@@ -160,11 +144,11 @@ function pkgToConfigs(
       }),
 
       ts2({
-        include,
+        include: tsInclude,
         cacheRoot,
         useTsconfigDeclarationDir: true,
         tsconfigDefaults: {
-          include,
+          include: tsInclude,
           exclude: [],
         },
         tsconfigOverride: {
