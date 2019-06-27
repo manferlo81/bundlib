@@ -75,43 +75,43 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
   } = (bundlibOptions || {}) as BundlibOptions;
 
   if (!isStringOrNull(pkgInput)) {
-    throw invalidOption("input");
+    throw invalidOption("input", "string");
   }
 
   if (!isStringOrNull(pkgBinInput)) {
-    throw invalidOption("binInput");
+    throw invalidOption("binInput", "string");
   }
 
   if (!isNull(sourcemapOption) && !isBool(sourcemapOption) && sourcemapOption !== "inline") {
-    throw invalidOption("sourcemap");
+    throw invalidOption("sourcemap", 'boolean | "inline"');
   }
 
   if (!isNull(browserFormat) && !isBrowserFormat(browserFormat)) {
-    throw invalidOption("format");
+    throw invalidOption("format", '"amd" | "iife" | "amd"');
   }
 
   if (!isNull(browserFormatOld) && !isBrowserFormat(browserFormatOld)) {
-    throw invalidOption("browser");
+    throw invalidOption("browser", '"amd" | "iife" | "amd"');
   }
 
   if (!isStringOrNull(browserName)) {
-    throw invalidOption("name");
+    throw invalidOption("name", "string");
   }
 
   if (!isStringOrNull(amdId)) {
-    throw invalidOption("id");
+    throw invalidOption("id", "string");
   }
 
   if (!isNull(browserGlobals) && !isObject(browserGlobals)) {
-    throw invalidOption("globals");
+    throw invalidOption("globals", "Object | Array");
   }
 
   if (!isNull(min) && !isValidMinOption(min)) {
-    throw invalidOption("min");
+    throw invalidOption("min", 'boolean | "main" | "module" | "browser" | Array<"main" | "module" | "browser">');
   }
 
   if (!isStringOrNull(cacheOption)) {
-    throw invalidOption("cache");
+    throw invalidOption("cache", "string");
   }
 
   if (pkgInput && extname(pkgInput) !== ".ts") {

@@ -1,8 +1,9 @@
 # Bundlib Changelog
 
 ## 0.7.0
-*26-JUN-2019*
+*27-JUN-2019*
 
+* better errors
 * documentation improved
 * added `bin` option
 * added `format` option
