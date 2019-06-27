@@ -13,6 +13,7 @@ function getFirstUnknownOption(options: Record<string, any>): string | null {
       name !== "equals" &&
       name !== "sourcemap" &&
       name !== "browser" &&
+      name !== "format" &&
       name !== "name" &&
       name !== "id" &&
       name !== "globals" &&

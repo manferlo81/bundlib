@@ -65,7 +65,8 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     interop: interopFlag,
     extend: extendFlag,
     equals: equalsFlag,
-    browser: browserFormat,
+    browser: browserFormatOld,
+    format: browserFormat,
     name: browserName,
     id: amdId,
     globals: browserGlobals,
@@ -86,6 +87,10 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
   }
 
   if (!isNull(browserFormat) && !isBrowserFormat(browserFormat)) {
+    throw invalidOption("format");
+  }
+
+  if (!isNull(browserFormatOld) && !isBrowserFormat(browserFormatOld)) {
     throw invalidOption("browser");
   }
 
@@ -162,7 +167,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
       : browserGlobals as Record<string, string>;
 
   const browser: BrowserOptions = {
-    format: browserFormat || "umd",
+    format: browserFormat || browserFormatOld || "umd",
     name: buildName,
     id: amdId || null,
     globals,

@@ -5,6 +5,8 @@
 
 * documentation improved
 * added `bin` option
+* added `format` option
+* deprecated `browser` option
 * added support for CLI binary file
 
 ## 0.6.0

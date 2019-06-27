@@ -13,6 +13,7 @@ export type MinOption = ModuleOutputFields | ModuleOutputFields[] | boolean | nu
 export interface BundlibPkgOtherOptions {
   sourcemap?: RollupSourcemap | null;
   browser?: BrowserBuildFormat | null;
+  format?: BrowserBuildFormat | null;
   name?: string | null;
   id?: string | null;
   globals?: Record<string, string> | string[] | null;
