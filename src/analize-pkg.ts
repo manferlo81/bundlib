@@ -169,7 +169,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     ? "inline"
     : (sourcemapOption !== false);
 
-  const cache = resolve(cwd, cacheOption || ".cache");
+  const cache = resolve(cwd, cacheOption || "node_modules/.cache");
 
   const options: OutputOptions = {
     esModule: !!esModuleFlag,

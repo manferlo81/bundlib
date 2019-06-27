@@ -164,7 +164,7 @@ npm i bundlib -D
 * *added in* `v0.6.0`
 * *used in:* `All` builds
 * *type:* `string`
-* *defaults to* `".cache"`
+* *defaults to* `"node_modules/.cache"`
 
 *Defines the directory to be used for cache, relative to the project root.*
 
