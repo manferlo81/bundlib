@@ -42,7 +42,7 @@ describe("cache option", () => {
 
     const analized = await analize(cwd, {});
 
-    expect(analized.cache).toMatch(/[/\\]\.cache$/);
+    expect(analized.cache).toMatch(/[/\\]\.cache[/\\]bundlib$/);
 
   });
 

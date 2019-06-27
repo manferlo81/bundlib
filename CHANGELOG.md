@@ -1,5 +1,10 @@
 # Bundlib Changelog
 
+## 0.7.1
+*27-JUN-2019*
+
+* fixed cache folder
+
 ## 0.7.0
 *27-JUN-2019*
 
