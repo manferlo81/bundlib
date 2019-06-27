@@ -1,29 +1,22 @@
 import { OptionName } from "./bundlib-options";
 
-function getFirstUnknownOption(options: Record<string, any>): string | null {
-  const optionNames = Object.keys(options);
-  for (let i = 0, len = optionNames.length; i < len; i++) {
-    const name = optionNames[i] as OptionName;
-    if (
-      name !== "input" &&
-      name !== "bin" &&
-      name !== "extend" &&
-      name !== "esModule" &&
-      name !== "interop" &&
-      name !== "equals" &&
-      name !== "sourcemap" &&
-      name !== "browser" &&
-      name !== "format" &&
-      name !== "name" &&
-      name !== "id" &&
-      name !== "globals" &&
-      name !== "min" &&
-      name !== "cache"
-    ) {
-      return name;
-    }
-  }
-  return null;
+function getInvalidOptions(options: Record<string, any>): string[] {
+  return Object.keys(options as Record<OptionName, any>).filter((name) => (
+    name !== "input" &&
+    name !== "bin" &&
+    name !== "extend" &&
+    name !== "esModule" &&
+    name !== "interop" &&
+    name !== "equals" &&
+    name !== "sourcemap" &&
+    name !== "browser" &&
+    name !== "format" &&
+    name !== "name" &&
+    name !== "id" &&
+    name !== "globals" &&
+    name !== "min" &&
+    name !== "cache"
+  ));
 }
 
-export default getFirstUnknownOption;
+export default getInvalidOptions;

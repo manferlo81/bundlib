@@ -18,7 +18,7 @@ import {
 import { isArray, isBool, isDictionary, isNull, isObject, isString, isStringOrNull } from "./type-check";
 import { RollupSourcemap } from "./types";
 import { isBrowserFormat, isValidMinOption } from "./validate";
-import getFirstUnknownOption from "./validate-options";
+import getInvalidOptions from "./validate-options";
 
 async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPkg> {
 
@@ -53,9 +53,9 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     throw invalidPkgField("bundlib", "Object");
   }
 
-  const firstUnknownOption = bundlibOptions && getFirstUnknownOption(bundlibOptions);
-  if (firstUnknownOption) {
-    throw error(`Unknown option "${firstUnknownOption}"`);
+  const invalidOptions = bundlibOptions && getInvalidOptions(bundlibOptions);
+  if (invalidOptions && invalidOptions.length) {
+    throw error(`Unknown options found: (${invalidOptions.map((name) => `"${name}"`).join(", ")})`);
   }
 
   const {
