@@ -9,7 +9,7 @@
   "typings": "types/index.d.ts",
   "bundlib": {
     "input": "src/api/index.ts",
-    "binInput": "src/cli/index.ts"
+    "bin": "src/cli/index.ts"
   },
   "scripts": {
     "clean": "rm -rf node_modules/.cache/** bin dist types coverage",

@@ -58,7 +58,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   const {
     input: pkgInput,
-    binInput: pkgBinInput,
+    bin: pkgBinInput,
     sourcemap: sourcemapOption,
     esModule: esModuleFlag,
     interop: interopFlag,

@@ -3,7 +3,7 @@ import { BrowserBuildFormat, RollupSourcemap } from "./types";
 
 export interface BundlibPkgInputOptions {
   input?: string | null;
-  binInput?: string | null;
+  bin?: string | null;
 }
 
 export type BundlibPkgFlagOptions = Partial<Record<FlagField, boolean | null>>;

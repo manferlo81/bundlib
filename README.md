@@ -63,7 +63,7 @@ npm i bundlib -D
 
 *The path to the file to be used as entry point for modules. It has to be a* `.ts` *file.*
 
-#### binInput
+#### bin
 
 * *added in* `v0.7.0`
 * *used in:* `Binary`

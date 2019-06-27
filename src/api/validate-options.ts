@@ -6,7 +6,7 @@ function getFirstUnknownOption(options: Record<string, any>): string | null {
     const name = optionNames[i] as OptionName;
     if (
       name !== "input" &&
-      name !== "binInput" &&
+      name !== "bin" &&
       name !== "extend" &&
       name !== "esModule" &&
       name !== "interop" &&
