@@ -1,11 +1,10 @@
 import builtinModules from "builtin-modules";
-import { dirname, extname, join as joinPath } from "path";
+import { basename, dirname, extname, join as pathJoin, resolve } from "path";
 import { Plugin, RollupOptions } from "rollup";
 
 import { createBrowserConfig, createModuleConfig } from "./create-config";
 import { AnalizedPkg } from "./pkg-analized";
-import renameMin from "./rename-min";
-import resolve from "./resolve";
+import { renameMin, renamePre } from "./rename";
 
 import addShebang from "rollup-plugin-add-shebang";
 import babel from "rollup-plugin-babel";
@@ -72,6 +71,7 @@ function pkgToConfigs(
   const prod = !dev;
 
   const apiFolder = dirname(apiInput);
+  const typesFilename = renamePre(basename(apiInput), "d");
   const sourcemapBool = !!sourcemap;
 
   const configs: RollupOptions[] = [];
@@ -87,9 +87,9 @@ function pkgToConfigs(
   const modulePlugins = (mini: boolean, bin?: string): Array<Plugin | null | false> => {
 
     const declarationDir = !configs.length && !bin && typesOutputDir;
-    const srcFolderContent = resolve("**/*.ts", apiFolder);
+    const srcFolderContent = resolve(apiFolder, "**/*.ts");
 
-    const cacheRoot = joinPath(cacheFolder, "rpt2");
+    const cacheRoot = pathJoin(cacheFolder, "rpt2");
 
     let shebang: string;
 
@@ -136,7 +136,7 @@ function pkgToConfigs(
       json() as Plugin,
 
       !!declarationDir && equals && exportEquals({
-        file: resolve(joinPath(declarationDir, "index.d.ts"), cwd),
+        file: resolve(cwd, pathJoin(declarationDir, typesFilename)),
       }),
 
       babel({

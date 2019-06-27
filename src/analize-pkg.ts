@@ -1,4 +1,4 @@
-import { extname } from "path";
+import { extname, resolve } from "path";
 import readPkg from "read-pkg";
 
 import { BundlibOptions } from "./bundlib-options";
@@ -13,7 +13,6 @@ import {
   OutputFiles,
   OutputOptions,
 } from "./pkg-analized";
-import resolve from "./resolve";
 import { isArray, isBool, isDictionary, isNull, isObject, isString, isStringOrNull } from "./type-check";
 import { RollupSourcemap } from "./types";
 import { isBrowserFormat, isValidMinOption } from "./validate";
@@ -117,17 +116,17 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     throw error("option binInput has to point to a typescript (.ts) file.");
   }
 
-  const input = resolve(pkgInput || "src/index.ts", cwd);
-  const binInput = resolve(pkgBinInput || "src-bin/index.ts", cwd);
+  const input = resolve(cwd, pkgInput || "src/index.ts");
+  const binInput = resolve(cwd, pkgBinInput || "src-bin/index.ts");
 
   const typesPath = pkgTypes || typings;
 
   const output: OutputFiles = {
-    main: cjsModuleFile ? resolve(cjsModuleFile, cwd) : null,
-    module: esModuleFile ? resolve(esModuleFile, cwd) : null,
-    browser: browserFile ? resolve(browserFile, cwd) : null,
-    bin: binFile ? resolve(binFile, cwd) : null,
-    types: typesPath ? resolve(typesPath, cwd) : null,
+    main: cjsModuleFile ? resolve(cwd, cjsModuleFile) : null,
+    module: esModuleFile ? resolve(cwd, esModuleFile) : null,
+    browser: browserFile ? resolve(cwd, browserFile) : null,
+    bin: binFile ? resolve(cwd, binFile) : null,
+    types: typesPath ? resolve(cwd, typesPath) : null,
   };
 
   const dependencies: Dependencies = {
@@ -170,7 +169,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     ? "inline"
     : (sourcemapOption !== false);
 
-  const cache = resolve(cacheOption || ".cache", cwd);
+  const cache = resolve(cwd, cacheOption || ".cache");
 
   const options: OutputOptions = {
     esModule: !!esModuleFlag,
