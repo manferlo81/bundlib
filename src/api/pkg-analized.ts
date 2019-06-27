@@ -4,6 +4,7 @@ import { BrowserBuildFormat, RollupSourcemap } from "./types";
 export type ModuleOutputFields = "main" | "module" | "browser";
 export type OutputFields = ModuleOutputFields | "bin" | "types";
 
+export type InputFiles = Record<"api" | "bin", string>;
 export type OutputFiles = Record<OutputFields, string | null>;
 export type Dependencies = Record<"runtime" | "peer", readonly string[]>;
 export type MinifyOptions = Record<ModuleOutputFields, boolean>;
@@ -22,8 +23,7 @@ export type OutputOptions = Record<FlagField, boolean>;
 export interface AnalizedPkg {
   cwd: string;
   pkg: BundlibPkgJson;
-  input: string;
-  binInput: string;
+  input: InputFiles;
   output: OutputFiles;
   sourcemap: RollupSourcemap;
   dependencies: Dependencies;

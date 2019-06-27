@@ -1,6 +1,4 @@
-export { default as createOutput } from "./create-output";
-export { createConfig, createModuleConfig, createBrowserConfig } from "./create-config";
 export { default as analizePkg } from "./analize-pkg";
-export { default as pkgToConfigs } from "./pkg-to-configs";
+export { default as configsFromPkg } from "./configs-from-pkg";
 export * from "./types";
 export * from "./pkg";

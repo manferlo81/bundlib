@@ -22,8 +22,7 @@ function pkgToConfigs(pkg: AnalizedPkg, dev?: boolean): RollupOptions[];
 function pkgToConfigs(
   {
     cwd,
-    input: apiInput,
-    binInput: cliInput,
+    input: inputObject,
     output,
     sourcemap,
     minify,
@@ -34,6 +33,11 @@ function pkgToConfigs(
   }: AnalizedPkg,
   dev?: boolean,
 ): RollupOptions[] {
+
+  const {
+    api: apiInput,
+    bin: cliInput,
+  } = inputObject;
 
   const {
     main: cjsOutputFile,

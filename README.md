@@ -203,12 +203,12 @@ bundlib [options]
 ```javascript
 // rollup.config.js
 
-import { analizePkg, pkgToConfigs } from "bundlib";
+import { configsFromPkg } from "bundlib";
 
 const dev = !process.env.production;
 
-export default async () => pkgToConfigs(
-  await analizePkg(process.cwd()),
+export default async () => configsFromPkg(
+  process.cwd(),
   dev,
 );
 ```
@@ -216,17 +216,18 @@ export default async () => pkgToConfigs(
 ### analizePkg
 
 ```typescript
-analizePkg(cwd: string, pkg?: PkgJson): Promise<AnalizedPkg>;
+function analizePkg(
+  cwd: string,
+  pkg: PkgJson = read(cwd + "/package.json"),
+): Promise<AnalizedPkg>;
 
 interface AnalizedPkg {
     cwd: string;
     pkg: PkgJson;
-    dependencies: {
-      runtime: string[],
-      peer: string[],
+    input: {
+      api: string;
+      bin: string;
     };
-    input: string;
-    binInput: string;
     output: {
       main: string | null;
       module: string | null;
@@ -235,6 +236,10 @@ interface AnalizedPkg {
       types: string | null;
     };
     sourcemap: boolean | "inline";
+    dependencies: {
+      runtime: string[],
+      peer: string[],
+    };
     browser: {
       format: "umd" | "iife" | "amd";
       name: string | null;
@@ -256,81 +261,19 @@ interface AnalizedPkg {
 }
 ```
 
-*Analizes* `package.json` *and return useful normalized information. If* `pkg` *not provided it will be read from the current working directory* `cwd`*.*
+*Analizes* `package.json` *and returns a* `Promise` *that resolves to useful normalized information. If* `pkg` *not provided it will be read from the current working directory* `cwd`*.*
 
-### pkgToConfigs
-
-```typescript
-pkgToConfigs(pkg: AnalizedPkg, dev?: boolean): RollupOptions[];
-```
-
-*Returns an array of Rollup configs from the* [`pkg: AnalizedPkg`](#analizepkg) *provided. This method does not checks for* `pkg` *integrity nor format, as it is intended to be used with the object resulting from* [`analizePkg`](#analizepkg)*.*
-
-### createOutput
+### configsFromPkg
 
 ```typescript
-createOutput(
-  format: "cjs" | "es" | "umd" | "iife" | "amd",
-  outputFile: string,
-  sourcemap: boolean | "inline",
-  esModule: boolean,
-  interop: boolean,
-  extra?: OutputExtra,
-): RollupOutputOptions;
+function configsFromPkg(
+  cwd: string,
+  dev: boolean = false,
+  pkg: PkgJson = read(cwd + "/package.json"),
+): Promise<RollupOptions[]>;
 ```
 
-*Creates Rollup output options. This method was intended for internal purposes but was exposed as it may be useful.*
-
-### createConfig
-
-```typescript
-createConfig(
-  inputFile: string,
-  outputOptions: RollupOutputOptions,
-  external: RollupExternalOption,
-  plugins: Array<RollupPlugin | null | false>,
-  extra?: ConfigExtra,
-): RollupOptions;
-```
-
-*Creates Rollup config object. This method was intended for internal purposes but was exposed as it may be useful.*
-
-### createModuleConfig
-
-```typescript
-createModuleConfig(
-  inputFile: string,
-  format: "cjs" | "es",
-  outputFile: string,
-  sourcemap: boolean | "inline",
-  esModule: boolean,
-  interop: boolean,
-  external: ExternalOption,
-  plugins: Array<Plugin | null | false>,
-): RollupOptions;
-```
-
-*Creates CommonJS or ESModule Rollup config object. This method was intended for internal purposes but was exposed as it may be useful.*
-
-### createBrowserConfig
-
-```typescript
-createBrowserConfig(
-  inputFile: string,
-  format: "umd" | "iife" | "amd",
-  outputFile: string,
-  sourcemap: boolean | "inline",
-  esModule: boolean,
-  interop: boolean,
-  plugins: Array<Plugin | null | false>,
-  name: string,
-  extend: boolean,
-  globals?: Record<string, string> | null,
-  id?: string | null,
-): RollupOptions;
-```
-
-*Creates browser Rollup config object. This method was intended for internal purposes but was exposed as it may be useful.*
+*Returns a* `Promise` *that resolves to an array of Rollup configs based on the content of* `package.json`*. If* `pkg` *not provided it will be read from the current working directory* `cwd`*.*
 
 ## Known Issues
 

@@ -8,6 +8,7 @@ import {
   AnalizedPkg,
   BrowserOptions,
   Dependencies,
+  InputFiles,
   MinifyOptions,
   ModuleOutputFields,
   OutputFiles,
@@ -116,8 +117,10 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     throw error("option binInput has to point to a typescript (.ts) file.");
   }
 
-  const input = resolve(cwd, pkgInput || "src/index.ts");
-  const binInput = resolve(cwd, pkgBinInput || "src-bin/index.ts");
+  const input: InputFiles = {
+    api: resolve(cwd, pkgInput || "src/index.ts"),
+    bin: resolve(cwd, pkgBinInput || "src-bin/index.ts"),
+  };
 
   const typesPath = pkgTypes || typings;
 
@@ -178,7 +181,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     equals: !!equalsFlag,
   };
 
-  return { cwd, pkg: resolvedPkg, input, binInput, output, sourcemap, dependencies, minify, browser, options, cache };
+  return { cwd, pkg: resolvedPkg, input, output, sourcemap, dependencies, minify, browser, options, cache };
 
 }
 

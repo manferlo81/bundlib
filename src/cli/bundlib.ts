@@ -1,4 +1,4 @@
-import { analizePkg, pkgToConfigs } from "../api";
+import { configsFromPkg } from "../api";
 
 import build from "./build";
 import { BuildCallbackObject, BundlibOptions } from "./types";
@@ -9,12 +9,10 @@ async function bundlib(
   { dev, watch }: BundlibOptions,
   callbacks: BuildCallbackObject,
 ): Promise<void> {
-
-  const pkg = await analizePkg(cwd);
-  const configs = pkgToConfigs(pkg, dev);
-
-  (watch ? watchBuild : build)(configs, callbacks);
-
+  (watch ? watchBuild : build)(
+    await configsFromPkg(cwd, dev),
+    callbacks,
+  );
 }
 
 export default bundlib;
