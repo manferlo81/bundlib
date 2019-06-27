@@ -15,7 +15,7 @@ import json from "rollup-plugin-json";
 import nodeResolve from "rollup-plugin-node-resolve";
 import stripShebang from "rollup-plugin-strip-shebang";
 import { terser } from "rollup-plugin-terser";
-import ts2 from "rollup-plugin-typescript2";
+import typescript2 from "rollup-plugin-typescript2";
 
 function pkgToConfigs(pkg: AnalizedPkg, dev?: boolean): RollupOptions[];
 function pkgToConfigs(
@@ -135,7 +135,7 @@ function pkgToConfigs(
       },
 
       browser && nodeResolve({
-        preferBuiltins: false,
+        preferBuiltins: !browser,
         extensions,
       }),
 
@@ -143,7 +143,7 @@ function pkgToConfigs(
         sourceMap: sourcemapBool,
       }),
 
-      ts2({
+      typescript2({
         include: tsInclude,
         cacheRoot,
         useTsconfigDeclarationDir: true,
