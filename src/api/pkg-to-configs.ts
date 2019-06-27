@@ -1,5 +1,5 @@
 import builtinModules from "builtin-modules";
-import { basename, dirname, extname, join as pathJoin, resolve } from "path";
+import { basename, dirname, extname, join as pathJoin, relative, resolve } from "path";
 import { Plugin, RollupOptions } from "rollup";
 
 import { createBrowserConfig, createModuleConfig } from "./create-config";
@@ -16,7 +16,7 @@ import nodeResolve from "rollup-plugin-node-resolve";
 import stripShebang from "rollup-plugin-strip-shebang";
 import { terser } from "rollup-plugin-terser";
 import ts2 from "rollup-plugin-typescript2";
-import mapId from "./plugins/map-id";
+import resolveId from "./resolve-id";
 
 function pkgToConfigs(pkg: AnalizedPkg, dev?: boolean): RollupOptions[];
 function pkgToConfigs(
@@ -74,6 +74,8 @@ function pkgToConfigs(
 
   const prod = !dev;
 
+  const buildApi = !!(esOutputFile || cjsOutputFile || browserOutputFile);
+
   const apiFolder = dirname(apiInput);
   const cliFolder = dirname(cliInput);
 
@@ -93,10 +95,12 @@ function pkgToConfigs(
 
   const configs: RollupOptions[] = [];
 
-  const modulePlugins = (mini: boolean, bin?: string): Array<Plugin | null | false> => {
+  function createPlugins(browser: boolean, mini: boolean, bin?: string): Array<Plugin | null | false> {
 
     const declarationDir = !configs.length && !bin && typesOutputDir;
-    const folderContent = bin ? cliFolderContent : apiFolderContent;
+    const include = buildApi
+      ? [bin ? cliFolderContent : apiFolderContent]
+      : [cliFolderContent, apiFolderContent];
     const cacheRoot = pathJoin(cacheFolder, "rpt2");
 
     let shebang: string;
@@ -108,24 +112,59 @@ function pkgToConfigs(
         sourcemap: sourcemapBool,
       }),
 
-      !!bin && mapId({
-        cwd,
-        map: {
-          [apiInput]: {
-            id: cwd,
-            external: true,
-          },
+      !!bin && buildApi && {
+
+        name: "api",
+
+        resolveId(moduleId, from) {
+
+          const resolved = resolveId(moduleId, cwd, from);
+
+          if (
+            resolved === apiInput ||
+            pathJoin(resolved, ".ts") === apiInput ||
+            pathJoin(resolved, "/index.ts") === apiInput
+          ) {
+            return {
+              id: relative(
+                dirname(bin),
+                cwd,
+              ),
+              external: true,
+              moduleSideEffects: false,
+            };
+          }
+
+          return null;
+
         },
+
+      },
+      // !!bin && buildApi && mapId({
+      //   cwd,
+      //   map: {
+      //     [apiInput]: {
+      //       id: cwd,
+      //       external: true,
+      //     },
+      //   },
+      // }),
+
+      browser && nodeResolve({
+        preferBuiltins: false,
+        extensions,
+      }),
+
+      browser && commonjs({
+        sourceMap: sourcemapBool,
       }),
 
       ts2({
-        include: folderContent,
+        include,
         cacheRoot,
         useTsconfigDeclarationDir: true,
         tsconfigDefaults: {
-          include: [
-            folderContent,
-          ],
+          include,
           exclude: [],
         },
         tsconfigOverride: {
@@ -175,21 +214,7 @@ function pkgToConfigs(
 
     ];
 
-  };
-
-  const browserPlugins = (mini: boolean) => [
-
-    nodeResolve({
-      preferBuiltins: false,
-      extensions,
-    }),
-    commonjs({
-      sourceMap: sourcemapBool,
-    }),
-
-    ...modulePlugins(mini),
-
-  ];
+  }
 
   const external = [
     ...builtinModules,
@@ -208,7 +233,7 @@ function pkgToConfigs(
         true,
         false,
         external,
-        modulePlugins(prod && !minify.module),
+        createPlugins(false, prod && !minify.module),
       ),
     );
 
@@ -223,7 +248,7 @@ function pkgToConfigs(
           true,
           false,
           external,
-          modulePlugins(true),
+          createPlugins(false, true),
         ),
       );
 
@@ -242,7 +267,7 @@ function pkgToConfigs(
         esModule,
         interop,
         external,
-        modulePlugins(prod && !minify.main),
+        createPlugins(false, prod && !minify.main),
       ),
     );
 
@@ -257,7 +282,7 @@ function pkgToConfigs(
           esModule,
           interop,
           external,
-          modulePlugins(true),
+          createPlugins(false, true),
         ),
       );
 
@@ -275,7 +300,7 @@ function pkgToConfigs(
         sourcemap,
         esModule,
         interop,
-        browserPlugins(prod && !minify.browser),
+        createPlugins(true, prod && !minify.browser),
         pkgName as string,
         extend,
         globals,
@@ -293,7 +318,7 @@ function pkgToConfigs(
           sourcemap,
           esModule,
           interop,
-          browserPlugins(true),
+          createPlugins(true, true),
           pkgName as string,
           extend,
           globals,
@@ -316,7 +341,7 @@ function pkgToConfigs(
         esModule,
         interop,
         external,
-        modulePlugins(prod, binaryOutputFile),
+        createPlugins(false, prod, binaryOutputFile),
       ),
     );
 
