@@ -7,10 +7,14 @@
   "bin": "bin/bundlib-cli.js",
   "types": "types/index.d.ts",
   "typings": "types/index.d.ts",
+  "bundlib": {
+    "input": "src/api/index.ts",
+    "binInput": "src/cli/index.ts"
+  },
   "scripts": {
-    "clean": "rm -rf .cache bin dist types coverage",
-    "dev": "ts-node -P ts-node-tsconfig.json src-bin -dw",
-    "build": "tslint src/**/*.ts && ts-node -P ts-node-tsconfig.json src-bin -d",
+    "clean": "rm -rf node_modules/.cache/** bin dist types coverage",
+    "dev": "ts-node -P ts-node-tsconfig.json src/cli -dw",
+    "build": "tslint src/**/*.ts && ts-node -P ts-node-tsconfig.json src/cli -d",
     "test": "jest --color",
     "preversion": "npm run clean && npm run build && npm test"
   },

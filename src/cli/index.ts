@@ -6,7 +6,7 @@ import fileSize from "filesize";
 import { relative } from "path";
 import prettyMs from "pretty-ms";
 
-import { version } from "../package.json";
+import { version } from "../../package.json";
 import bundlib from "./bundlib";
 import { log } from "./console";
 

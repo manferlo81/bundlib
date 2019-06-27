@@ -1,4 +1,4 @@
-import { analizePkg, pkgToConfigs } from "../src";
+import { analizePkg, pkgToConfigs } from "../api";
 
 import build from "./build";
 import { BuildCallbackObject, BundlibOptions } from "./types";

@@ -71,10 +71,13 @@ function pkgToConfigs(
   const prod = !dev;
 
   const apiFolder = dirname(apiInput);
+  const cliFolder = dirname(cliInput);
+
+  const apiFolderContent = resolve(apiFolder, "**/*.ts");
+  const cliFolderContent = resolve(cliFolder, "**/*.ts");
+
   const typesFilename = renamePre(basename(apiInput), "d");
   const sourcemapBool = !!sourcemap;
-
-  const configs: RollupOptions[] = [];
 
   let typesOutputDir = typesOutputFile;
   if (typesOutputDir && extname(typesOutputDir) === ".ts") {
@@ -84,11 +87,12 @@ function pkgToConfigs(
   const extensions = [".ts", ".js"];
   const exclude = /node_modules/;
 
+  const configs: RollupOptions[] = [];
+
   const modulePlugins = (mini: boolean, bin?: string): Array<Plugin | null | false> => {
 
     const declarationDir = !configs.length && !bin && typesOutputDir;
-    const srcFolderContent = resolve(apiFolder, "**/*.ts");
-
+    const folderContent = bin ? cliFolderContent : apiFolderContent;
     const cacheRoot = pathJoin(cacheFolder, "rpt2");
 
     let shebang: string;
@@ -111,12 +115,12 @@ function pkgToConfigs(
       }),
 
       ts2({
-        include: srcFolderContent,
+        include: folderContent,
         cacheRoot,
         useTsconfigDeclarationDir: true,
         tsconfigDefaults: {
           include: [
-            srcFolderContent,
+            folderContent,
           ],
           exclude: [],
         },
