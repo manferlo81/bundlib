@@ -50,7 +50,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
   }
 
   if (!isNull(bundlibOptions) && !isDictionary(bundlibOptions)) {
-    throw invalidPkgField("bundlib", "object");
+    throw invalidPkgField("bundlib", "Object");
   }
 
   const firstUnknownOption = bundlibOptions && getFirstUnknownOption(bundlibOptions);
