@@ -3,12 +3,13 @@
 ## 0.7.0
 *27-JUN-2019*
 
-* better errors
-* documentation improved
+* added support for CLI binary file
 * added `bin` option
 * added `format` option
 * deprecated `browser` option
-* added support for CLI binary file
+* `name` option default behavior
+* documentation improved
+* better errors
 
 ## 0.6.0
 *25-JUN-2019*

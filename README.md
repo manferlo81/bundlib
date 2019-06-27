@@ -121,9 +121,7 @@ npm i bundlib -D
 * *type:* `string`
 * *required for:* `IIFE` & `UMD` builds
 
-*The name to be used to expose your library to the global scope in a* `IIFE` or `UMD` *build.*
-
-*If not provided it will default to* `"name"` *field in* `package.json` *. If this last one doesn't exist the build process will throw.*
+*The name to be used to expose your library to the global scope in a* `IIFE` or `UMD` *build. If not provided it will default to the camelcased, unscoped* `"name"` *field in* `package.json` *or the camelcased directory name. If none of those can be obtained, it will throw at build time.*
 
 #### id
 

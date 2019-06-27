@@ -1,4 +1,5 @@
-import { extname, resolve } from "path";
+import camelcase from "camelcase";
+import { basename, extname, resolve } from "path";
 import readPkg from "read-pkg";
 
 import { BundlibOptions } from "./bundlib-options";
@@ -103,7 +104,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
   }
 
   if (!isNull(browserGlobals) && !isObject(browserGlobals)) {
-    throw invalidOption("globals", "Object | Array");
+    throw invalidOption("globals", "Object<string, string> | string[]");
   }
 
   if (!isNull(min) && !isValidMinOption(min)) {
@@ -142,8 +143,6 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     peer: peerDependencies ? Object.keys(peerDependencies) : [],
   };
 
-  const buildName = browserName || pkgName || null;
-
   const minify: MinifyOptions = Object.assign(
     { main: false, module: false, browser: false },
     min && (
@@ -154,6 +153,10 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
           : { [min]: true }
     ),
   );
+
+  const buildName = browserName || (
+    pkgName && camelcase(basename(pkgName))
+  ) || camelcase(basename(cwd)) || null;
 
   const globals = !browserGlobals
     ? null
@@ -177,7 +180,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     ? "inline"
     : (sourcemapOption !== false);
 
-  const cache = resolve(cwd, cacheOption || "node_modules/.cache");
+  const cache: string = resolve(cwd, cacheOption || "node_modules/.cache");
 
   const options: OutputOptions = {
     esModule: !!esModuleFlag,
