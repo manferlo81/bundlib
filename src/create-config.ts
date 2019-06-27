@@ -22,7 +22,7 @@ export function createConfig(
   extra?: ConfigExtra,
 ): RollupOptions {
 
-  const config: RollupOptions = {
+  return Object.assign({
 
     input,
     output,
@@ -30,11 +30,7 @@ export function createConfig(
 
     plugins: plugins.filter<Plugin>(Boolean as any),
 
-    ...extra,
-
-  };
-
-  return config;
+  }, extra);
 
 }
 
@@ -49,11 +45,15 @@ export function createModuleConfig(
   plugins: FilterablePlugins,
 ): RollupOptions {
 
-  const output = createOutput(format, file, sourcemap, esModule, interop);
-
   return createConfig(
     input,
-    output,
+    createOutput(
+      format,
+      file,
+      sourcemap,
+      esModule,
+      interop,
+    ),
     external,
     plugins,
   );
@@ -74,19 +74,21 @@ export function createBrowserConfig(
   id?: string | null,
 ) {
 
-  const output = createOutput(format, file, sourcemap, esModule, interop, {
-    name,
-    extend,
-    ...globals && { globals },
-    ...id && (format === "umd" || format === "amd") && { amd: { id } },
-  });
-
-  const external = globals ? Object.keys(globals) : [];
-
   return createConfig(
     input,
-    output,
-    external,
+    createOutput(
+      format,
+      file,
+      sourcemap,
+      esModule,
+      interop,
+      Object.assign(
+        { name, extend },
+        globals && { globals },
+        id && (format === "umd" || format === "amd") && { amd: { id } },
+      ),
+    ),
+    globals ? Object.keys(globals) : [],
     plugins,
   );
 

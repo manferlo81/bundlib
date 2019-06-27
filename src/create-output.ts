@@ -11,7 +11,7 @@ export function createOutput(
   extra?: OutputExtra,
 ): RollupOutputOptions {
 
-  const output: RollupOutputOptions = {
+  return Object.assign({
 
     file,
     format,
@@ -20,11 +20,7 @@ export function createOutput(
     esModule,
     interop,
 
-    ...extra,
-
-  };
-
-  return output;
+  }, extra);
 
 }
 

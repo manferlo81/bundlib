@@ -16,8 +16,7 @@ import {
 import resolve from "./resolve";
 import { isArray, isBool, isDictionary, isNull, isObject, isString, isStringOrNull } from "./type-check";
 import { RollupSourcemap } from "./types";
-import { isBrowserFormat } from "./validate-fmt";
-import { isValidMinOption } from "./validate-min";
+import { isBrowserFormat, isValidMinOption } from "./validate";
 import { getFirstUnknownOption } from "./validate-options";
 
 async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPkg> {
