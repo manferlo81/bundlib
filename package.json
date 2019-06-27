@@ -12,7 +12,7 @@
     "bin": "src/cli/index.ts"
   },
   "scripts": {
-    "clean": "rm -rf node_modules/.cache/** bin dist types coverage",
+    "clean": "rm -rf node_modules/.cache/bundlib node_modules/.cache/jest bin dist types coverage",
     "dev": "ts-node -P ts-node-tsconfig.json src/cli -dw",
     "build": "tslint src/**/*.ts && ts-node -P ts-node-tsconfig.json src/cli -d",
     "test": "jest --color",
