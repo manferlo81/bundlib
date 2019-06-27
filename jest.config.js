@@ -7,7 +7,7 @@ const config = {
   testEnvironment: "node",
   browser: false,
 
-  cacheDirectory: ".cache/jest",
+  cacheDirectory: "node_modules/.cache/jest",
 
   collectCoverage: true,
   collectCoverageFrom: [
