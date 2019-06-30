@@ -1,6 +1,4 @@
-// @ts-check
-
-const analize = require("../tools/analize");
+import analize from "../tools/analize";
 
 describe("extend option", () => {
 
@@ -8,7 +6,7 @@ describe("extend option", () => {
 
   test("should read extend option as set as boolean", async () => {
 
-    const analizeWithExtend = (extend) => analize(cwd, {
+    const analizeWithExtend = (extend: any) => analize(cwd, {
       bundlib: { extend },
     });
 

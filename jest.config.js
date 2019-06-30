@@ -1,7 +1,3 @@
-const { main } = require("./package.json");
-
-const CI = process.env.CI;
-
 const config = {
 
   testEnvironment: "node",
@@ -9,13 +5,15 @@ const config = {
 
   cacheDirectory: "node_modules/.cache/jest",
 
+  preset: "ts-jest",
+
   collectCoverage: true,
   collectCoverageFrom: [
-    main,
+    "src/api/**/*.ts",
   ],
   coverageDirectory: "coverage",
   coverageReporters: [
-    CI ? "json" : "lcov",
+    process.env.CI ? "json" : "lcov",
     "text",
     "text-summary",
   ],

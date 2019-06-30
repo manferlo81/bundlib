@@ -5,6 +5,7 @@
 ***30-JUN-2019***
 
 * dependencies updated
+* `ts-jest` for typescript test
 
 ## 0.7.1
 

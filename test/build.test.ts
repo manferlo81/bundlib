@@ -1,10 +1,7 @@
-// @ts-check
+import { rollup } from "rollup";
+import createConfigs from "./tools/create-configs";
 
-const { rollup } = require("rollup");
-const createConfigs = require("./tools/create-configs");
-
-// @ts-ignore
-const { dependencies } = require("../package.json");
+import { dependencies } from "../package.json";
 
 describe("build", () => {
 
@@ -59,7 +56,4 @@ describe("build", () => {
 
   }, 20000);
 
-
 });
-
-

@@ -1,6 +1,4 @@
-// @ts-check
-
-const analize = require("../tools/analize");
+import analize from "../tools/analize";
 
 describe("id option", () => {
 
@@ -17,8 +15,8 @@ describe("id option", () => {
     expect.assertions(invalidIdOptions.length);
 
     invalidIdOptions.forEach((id) => {
+      // @ts-ignore
       expect(analize(cwd, {
-        // @ts-ignore
         bundlib: { id },
       })).rejects.toThrow(TypeError);
     });

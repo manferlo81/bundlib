@@ -1,6 +1,5 @@
-// @ts-check
-
-const createConfigs = require("./tools/create-configs");
+import { OutputOptions } from "rollup";
+import createConfigs from "./tools/create-configs";
 
 describe("package to configs", () => {
 
@@ -30,7 +29,7 @@ describe("package to configs", () => {
 
     expect(configs).toHaveLength(1);
     const [esConfig] = configs;
-    expect(esConfig.output.format).toBe("es");
+    expect((esConfig.output as OutputOptions).format).toBe("es");
 
   });
 
@@ -84,7 +83,7 @@ describe("package to configs", () => {
 
     expect(output.format).toBe(format);
     expect(output.name).toBe(name);
-    expect(output.amd.id).toBe(id);
+    expect((output as any).amd.id).toBe(id);
 
   });
 
@@ -106,7 +105,7 @@ describe("package to configs", () => {
 
     expect(output.format).toBe(format);
     expect(output.name).toBe(name);
-    expect(output.amd.id).toBe(id);
+    expect((output as any).amd.id).toBe(id);
 
   });
 

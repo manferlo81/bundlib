@@ -1,7 +1,5 @@
-// @ts-check
-
-const { join: pathJoin } = require("path");
-const analize = require("./tools/analize");
+import { join as pathJoin } from "path";
+import analize from "./tools/analize";
 
 describe("read package.json", () => {
 
@@ -20,4 +18,3 @@ describe("read package.json", () => {
   });
 
 });
-

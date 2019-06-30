@@ -1,6 +1,4 @@
-// @ts-check
-
-const analize = require("../tools/analize");
+import analize from "../tools/analize";
 
 describe("globals option", () => {
 
@@ -17,8 +15,8 @@ describe("globals option", () => {
     expect.assertions(invalidGlobalsOptions.length);
 
     invalidGlobalsOptions.forEach((globals) => {
+      // @ts-ignore
       expect(analize(cwd, {
-        // @ts-ignore
         bundlib: { globals },
       })).rejects.toThrow(TypeError);
     });

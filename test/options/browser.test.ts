@@ -1,12 +1,10 @@
-// @ts-check
+import analize from "../tools/analize";
 
-const analize = require("../tools/analize");
-
-describe("format option", () => {
+describe("browser option", () => {
 
   const cwd = process.cwd();
 
-  test("should throw on invalid format option", () => {
+  test("should throw on invalid browser format option", () => {
 
     const invalidBrowserFormats = [
       1,
@@ -15,10 +13,10 @@ describe("format option", () => {
 
     expect.assertions(invalidBrowserFormats.length);
 
-    invalidBrowserFormats.forEach((format) => {
+    invalidBrowserFormats.forEach((browser) => {
+      // @ts-ignore
       expect(analize(cwd, {
-        // @ts-ignore
-        bundlib: { format },
+        bundlib: { browser },
       })).rejects.toThrow(TypeError);
     });
 
@@ -29,7 +27,7 @@ describe("format option", () => {
     const format = "iife";
 
     const analized = await analize(cwd, {
-      bundlib: { format },
+      bundlib: { browser: format },
     });
 
     expect(analized.browser.format).toBe(format);
@@ -41,7 +39,7 @@ describe("format option", () => {
     const format = "amd";
 
     const analized = await analize(cwd, {
-      bundlib: { format },
+      bundlib: { browser: format },
     });
 
     expect(analized.browser.format).toBe(format);
@@ -53,7 +51,7 @@ describe("format option", () => {
     const format = "umd";
 
     const analized = await analize(cwd, {
-      bundlib: { format },
+      bundlib: { browser: format },
     });
 
     expect(analized.browser.format).toBe(format);

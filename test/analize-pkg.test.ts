@@ -1,6 +1,4 @@
-// @ts-check
-
-const analize = require("./tools/analize");
+import analize from "./tools/analize";
 
 describe("analize", () => {
 
@@ -93,4 +91,3 @@ describe("analize", () => {
   });
 
 });
-

@@ -1,6 +1,4 @@
-// @ts-check
-
-const analize = require("../tools/analize");
+import analize from "../tools/analize";
 
 describe("sourcemap option", () => {
 
@@ -18,8 +16,8 @@ describe("sourcemap option", () => {
     expect.assertions(invalidSoucemaps.length);
 
     invalidSoucemaps.forEach((sourcemap) => {
+      // @ts-ignore
       expect(analize(cwd, {
-        // @ts-ignore
         bundlib: { sourcemap },
       })).rejects.toThrow(TypeError);
     });

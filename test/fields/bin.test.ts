@@ -1,6 +1,4 @@
-// @ts-check
-
-const analize = require("../tools/analize");
+import analize from "../tools/analize";
 
 describe("package.json bin field", () => {
 
@@ -10,7 +8,7 @@ describe("package.json bin field", () => {
 
     const invalidBrowserPaths = [
       1,
-      { "name": "value" },
+      { name: "value" },
     ];
 
     invalidBrowserPaths.forEach((bin) => {

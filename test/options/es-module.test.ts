@@ -1,6 +1,4 @@
-// @ts-check
-
-const analize = require("../tools/analize");
+import analize from "../tools/analize";
 
 describe("esModule option", () => {
 
@@ -8,7 +6,7 @@ describe("esModule option", () => {
 
   test("should read esModule option as set as boolean", async () => {
 
-    const analizeWithESModule = (esModule) => analize(cwd, {
+    const analizeWithESModule = (esModule?: any) => analize(cwd, {
       bundlib: { esModule },
     });
 

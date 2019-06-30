@@ -1,6 +1,4 @@
-// @ts-check
-
-const analize = require("../tools/analize");
+import analize from "../tools/analize";
 
 describe("equals option", () => {
 
@@ -8,7 +6,7 @@ describe("equals option", () => {
 
   test("should read equals option as set as boolean", async () => {
 
-    const analizeWithEquals = (equals) => analize(cwd, {
+    const analizeWithEquals = (equals: any) => analize(cwd, {
       bundlib: { equals },
     });
 

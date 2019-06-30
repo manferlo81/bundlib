@@ -1,6 +1,4 @@
-// @ts-check
-
-const analize = require("../tools/analize");
+import analize from "../tools/analize";
 
 describe("min option", () => {
 
@@ -17,8 +15,8 @@ describe("min option", () => {
     expect.assertions(invalidMinOptions.length);
 
     invalidMinOptions.forEach((min) => {
+      // @ts-ignore
       expect(analize(cwd, {
-        // @ts-ignore
         bundlib: { min },
       })).rejects.toThrow(TypeError);
     });
@@ -27,7 +25,7 @@ describe("min option", () => {
 
   test("should work with string min option", async () => {
 
-    const analizeWithStringMin = (min) => analize(cwd, {
+    const analizeWithStringMin = (min: "main" | "module" | "browser") => analize(cwd, {
       bundlib: { min },
     });
 

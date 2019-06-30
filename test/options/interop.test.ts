@@ -1,6 +1,4 @@
-// @ts-check
-
-const analize = require("../tools/analize");
+import analize from "../tools/analize";
 
 describe("interop option", () => {
 
@@ -8,7 +6,7 @@ describe("interop option", () => {
 
   test("should read interop option as set as boolean", async () => {
 
-    const analizeWithInterop = (interop) => analize(cwd, {
+    const analizeWithInterop = (interop: any) => analize(cwd, {
       bundlib: { interop },
     });
 

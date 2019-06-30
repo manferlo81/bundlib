@@ -1,6 +1,4 @@
-// @ts-check
-
-const analize = require("../tools/analize");
+import analize from "../tools/analize";
 
 describe("cache option", () => {
 
@@ -18,8 +16,8 @@ describe("cache option", () => {
     expect.assertions(invalidCacheOptions.length);
 
     invalidCacheOptions.forEach((cache) => {
+      // @ts-ignore
       expect(analize(cwd, {
-        // @ts-ignore
         bundlib: { cache },
       })).rejects.toThrow(TypeError);
     });

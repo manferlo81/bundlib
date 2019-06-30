@@ -1,6 +1,4 @@
-// @ts-check
-
-const analize = require("../tools/analize");
+import analize from "../tools/analize";
 
 describe("bin option", () => {
 
@@ -17,8 +15,8 @@ describe("bin option", () => {
     expect.assertions(invalidInputs.length);
 
     invalidInputs.forEach((bin) => {
+      // @ts-ignore
       expect(analize(cwd, {
-        // @ts-ignore
         bundlib: { bin },
       })).rejects.toThrow(TypeError);
     });
