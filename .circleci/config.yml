@@ -27,19 +27,11 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v2-deps-bundlib-{{ checksum "package.json" }}
-            - v2-deps-bundlib-
+            - v3-deps-bundlib-{{ checksum "package.json" }}
+            - v3-deps-bundlib-
       - run:
           name: Install dependencies
           command: npm install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v2-deps-bundlib-{{ checksum "package.json" }}
-      - restore_cache:
-          keys:
-            - v1-cache-bundlib-{{ checksum "test" }}
-            - v1-cache-bundlib-
       - run:
           name: Build
           command: npm run build
@@ -48,8 +40,8 @@ jobs:
           command: npm test
       - save_cache:
           paths:
-            - node_modules/.cache
-          key: v1-cache-bundlib-{{ checksum "test" }}
+            - node_modules
+          key: v3-deps-bundlib-{{ checksum "package.json" }}
       - persist_to_workspace:
           root: *working_directory
           paths: .
