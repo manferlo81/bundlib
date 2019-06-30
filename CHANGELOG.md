@@ -5,6 +5,7 @@
 ***30-JUN-2019***
 
 * external as function with cache
+* import package file as external
 
 ## 0.7.2
 
