@@ -6,13 +6,17 @@ import {
   RollupOptions,
 } from "rollup";
 
+type OutputExtraExcludeKeys = "file" | "format" | "sourcemap" | "esModule" | "interop";
+type ConfigExtraExcludeKeys = "input" | "output" | "external" | "plugins";
+
 export type OutputExtra = Omit<
   RollupOutputOptions,
-  "file" | "format" | "sourcemap" | "esModule" | "interop"
+  OutputExtraExcludeKeys
 >;
+
 export type ConfigExtra = Omit<
   RollupOptions,
-  "input" | "output" | "external" | "plugins"
+  ConfigExtraExcludeKeys
 >;
 
 export type RollupSourcemap = boolean | "inline";
@@ -24,7 +28,7 @@ export type BrowserBuildFormat = Extract<RollupModuleFormat, "iife" | "amd" | "u
 
 export type BundlibBuildFormat = ModuleBuildFormat | BrowserBuildFormat;
 
-export interface BundlibRollupOutputOptions extends RollupOutputOptions {
+export interface BundlibRollupOutputOptions extends RollupOutputOptions, Record<OutputExtraExcludeKeys, any> {
   file: string;
   format: BundlibBuildFormat;
   sourcemap: RollupSourcemap;
@@ -32,7 +36,7 @@ export interface BundlibRollupOutputOptions extends RollupOutputOptions {
   interop: boolean;
 }
 
-export interface BundlibRollupOptions extends RollupOptions {
+export interface BundlibRollupOptions extends RollupOptions, Record<ConfigExtraExcludeKeys, any> {
   input: string;
   output: BundlibRollupOutputOptions;
   external: IsExternal;

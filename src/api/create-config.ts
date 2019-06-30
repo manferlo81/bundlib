@@ -75,8 +75,8 @@ export function createBrowserConfig(
   plugins: FilterablePlugins,
   name: string,
   extend: boolean,
-  globals?: Record<string, string> | null,
-  id?: string | null,
+  globals: Record<string, string> | null,
+  id: string | null,
 ): BundlibRollupOptions {
 
   return createConfig(
