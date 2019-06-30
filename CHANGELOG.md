@@ -1,13 +1,21 @@
 # Bundlib Changelog
 
+## 0.7.2
+
+***30-JUN-2019***
+
+* dependencies updated
+
 ## 0.7.1
-*27-JUN-2019*
+
+***27-JUN-2019***
 
 * fixed cache folder
 * dependencies updated
 
 ## 0.7.0
-*27-JUN-2019*
+
+***27-JUN-2019***
 
 * added support for CLI binary file
 * added `bin` option
@@ -18,7 +26,8 @@
 * better errors
 
 ## 0.6.0
-*25-JUN-2019*
+
+***25-JUN-2019***
 
 * full api & cli makeover
 * removed deprecated options
@@ -29,40 +38,47 @@
 * dependencies updated
 
 ## 0.5.4
-*23-JUN-2019*
+
+***23-JUN-2019***
 
 * dependencies updated
 
 ## 0.5.3
-*22-JUN-2019*
+
+***22-JUN-2019***
 
 * dependencies updated
 
 ## 0.5.2
-*22-JUN-2019*
+
+***22-JUN-2019***
 
 * dependencies updated
 
 ## 0.5.1
-*07-JUN-2019*
+
+***07-JUN-2019***
 
 * removed version print
 
 ## 0.5.0
-*06-JUN-2019*
+
+***06-JUN-2019***
 
 * dependencies updated
 * refactoring
 
 ## 0.4.1
-*01-JUN-2019*
+
+***01-JUN-2019***
 
 * `min` option as boolean
 * improved documentation
 * refactoring
 
 ## 0.4.0
-*31-MAY-2019*
+
+***31-MAY-2019***
 
 * `min` option behavior changed
 * documented changes in `min` option behavior
@@ -70,7 +86,8 @@
 * dependencies updated
 
 ## 0.3.2
-*30-MAY-2019*
+
+***30-MAY-2019***
 
 * added `--silent` cli option
 * added `min` option
@@ -78,14 +95,16 @@
 * dependencies updated
 
 ## 0.3.1
-*25-MAY-2019*
+
+***25-MAY-2019***
 
 * fixed types export issue related to #7
 * improved documentation
 * refactoring
 
 ## 0.3.0
-*24-MAY-2019*
+
+***24-MAY-2019***
 
 * build cli tool from source code
 * deprecated `iife`, `amd` & `umd` options
@@ -95,10 +114,12 @@
 * refactoring
 
 ## 0.2.6
-*22-MAY-2019*
+
+***22-MAY-2019***
 
 ## 0.2.5
-*17-MAY-2019*
+
+***17-MAY-2019***
 
 * dependencies updated
 * documentation improved
@@ -108,13 +129,15 @@
 * code cleanup
 
 ## 0.2.4
-*30-APR-2019*
+
+***30-APR-2019***
 
 * added coverage badge
 * documentation improved
 
 ## 0.2.3
-*30-APR-2019*
+
+***30-APR-2019***
 
 * using `read-pkg`
 * using `builtin-modules`
@@ -124,23 +147,27 @@
 * upload coverage
 
 ## 0.2.2
-*25-APR-2019*
+
+***25-APR-2019***
 
 * dependencies updated
 * types refactoring
 
 ## 0.2.1
-*25-APR-2019*
+
+***25-APR-2019***
 
 * dependencies updated
 
 ## 0.2.0
-*25-APR-2019*
+
+***25-APR-2019***
 
 * analized package format refactoring
 
 ## 0.1.0
-*23-APR-2019*
+
+***23-APR-2019***
 
 * using ora
 * refactoring
@@ -148,13 +175,15 @@
 * added `equals` option
 
 ## 0.0.4
-*15-APR-2019*
+
+***15-APR-2019***
 
 * added greenkeeper
 * documentation improved
 
 ## 0.0.3
-*15-APR-2019*
+
+***15-APR-2019***
 
 * documentation improved
 * added tests
@@ -162,7 +191,8 @@
 * code linting
 
 ## 0.0.2
-*13-APR-2019*
+
+***13-APR-2019***
 
 * documentation improved
 
