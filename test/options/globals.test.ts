@@ -38,6 +38,22 @@ describe("globals option", () => {
 
   });
 
+  test("should ignore non strings with array globals option", async () => {
+
+    // @ts-ignore
+    const analized = await analize(cwd, {
+      bundlib: {
+        globals: ["module1", 1, "module2"],
+      },
+    });
+
+    expect(analized.browser.globals).toEqual({
+      module1: "module1",
+      module2: "module2",
+    });
+
+  });
+
   test("should work with object globals option", async () => {
 
     const globals = {
