@@ -1,7 +1,4 @@
-import {
-  IsExternal,
-  Plugin,
-} from "rollup";
+import { Plugin } from "rollup";
 
 import arrayToExternal from "./array-to-external";
 import createOutput from "./create-output";
@@ -23,15 +20,12 @@ export function createConfig<E extends ConfigExtra>(
   extra?: E,
 ): BundlibRollupOptions & E {
 
-  const external: IsExternal = !externalOption
-    ? () => false
-    : arrayToExternal(externalOption);
-
   return Object.assign({
 
     input,
     output,
-    external,
+
+    external: !externalOption ? () => false : arrayToExternal(externalOption),
 
     plugins: plugins.filter<Plugin>(Boolean as any),
 

@@ -22,7 +22,7 @@ import getInvalidOptions from "./validate-options";
 
 async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPkg> {
 
-  const resolvedPkg = pkg || await readPkg({ cwd, normalize: false });
+  const resolvedPkg: BundlibPkgJson = pkg || await readPkg({ cwd, normalize: false });
 
   if (!isDictionary(resolvedPkg)) {
     throw error("Invalid package.json content");
@@ -73,7 +73,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     globals: browserGlobals,
     min,
     cache: cacheOption,
-  } = (bundlibOptions || {}) as BundlibOptions;
+  } = bundlibOptions || {} as BundlibOptions;
 
   if (!isStringOrNull(pkgInput)) {
     throw invalidOption("input", "string");
