@@ -8,6 +8,7 @@
 * fixed: wrong name on `bin` option error
 * better types for config functions
 * `ts-jest` for typescript test
+* added `husky`
 
 ## 0.7.1
 
