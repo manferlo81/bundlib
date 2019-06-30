@@ -182,7 +182,7 @@ npm i bundlib -D
 bundlib [options]
 ```
 
-### Options
+### CLI Options
 
 *Bundlib has only three options...*
 
