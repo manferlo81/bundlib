@@ -15,7 +15,7 @@
     "clean": "rm -rf node_modules/.cache/bundlib node_modules/.cache/jest bin dist types coverage",
     "dev": "ts-node -P ts-node-tsconfig.json src/cli -dw",
     "build": "tslint src/**/*.ts && ts-node -P ts-node-tsconfig.json src/cli -d",
-    "test": "jest --color -w 4",
+    "test": "jest --color -w 3",
     "preversion": "npm run clean && npm run build && npm test"
   },
   "keywords": [
