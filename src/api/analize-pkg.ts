@@ -80,7 +80,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
   }
 
   if (!isStringOrNull(pkgBinInput)) {
-    throw invalidOption("binInput", "string");
+    throw invalidOption("bin", "string");
   }
 
   if (!isNull(sourcemapOption) && !isBool(sourcemapOption) && sourcemapOption !== "inline") {
