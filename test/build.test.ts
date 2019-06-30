@@ -9,7 +9,7 @@ describe("build", () => {
 
     const [config] = await createConfigs(process.cwd(), false, {
       main: "out/lib.cjs.js",
-      bundlib: { input: "src/api/index.ts" },
+      bundlib: { input: "src/api/analize-pkg.ts" },
       dependencies,
     });
 
@@ -26,6 +26,20 @@ describe("build", () => {
       bin: "out/lib.cjs.js",
       bundlib: { bin: "src/cli/index.ts" },
       dependencies,
+    });
+
+    const build = await rollup(config);
+    const { output: [{ code }] } = await build.generate(config.output);
+
+    expect(typeof code).toBe("string");
+
+  }, 20000);
+
+  test("should build a Browser module", async () => {
+
+    const [config] = await createConfigs(process.cwd(), false, {
+      browser: "out/lib.umd.js",
+      bundlib: { input: "src/api/validate.ts", globals: null },
     });
 
     const build = await rollup(config);

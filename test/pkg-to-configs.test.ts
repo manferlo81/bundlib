@@ -211,4 +211,31 @@ describe("package to configs", () => {
 
   });
 
+  test("should set partial module names as external", async () => {
+
+    const [config] = await createConfigs(cwd, true, {
+      main: "out/lib.js",
+      dependencies: {
+        lodash: "latest",
+      },
+    });
+
+    expect(config.external("lodash/is-array", "", false)).toBe(true);
+
+  });
+
+  test("should set external to none if globals is null", async () => {
+
+    const [config] = await createConfigs(cwd, true, {
+      browser: "out/lib.js",
+      bundlib: {
+        format: "amd",
+        globals: null,
+      },
+    });
+
+    expect(config.external.toString()).toMatch(/(?:=> false)|(?:return false)/);
+
+  });
+
 });

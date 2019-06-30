@@ -1,5 +1,5 @@
 import {
-  ExternalOption,
+  IsExternal,
   ModuleFormat as RollupModuleFormat,
   OutputOptions as RollupOutputOptions,
   Plugin,
@@ -35,6 +35,6 @@ export interface BundlibRollupOutputOptions extends RollupOutputOptions {
 export interface BundlibRollupOptions extends RollupOptions {
   input: string;
   output: BundlibRollupOutputOptions;
-  external: ExternalOption;
+  external: IsExternal;
   plugins: Plugin[];
 }

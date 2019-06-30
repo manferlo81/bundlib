@@ -1,8 +1,9 @@
 import {
-  ExternalOption,
+  IsExternal,
   Plugin,
 } from "rollup";
 
+import arrayToExternal from "./array-to-external";
 import createOutput from "./create-output";
 import {
   BrowserBuildFormat,
@@ -14,13 +15,17 @@ import {
   RollupSourcemap,
 } from "./types";
 
-export function createConfig(
+export function createConfig<E extends ConfigExtra>(
   input: string,
   output: BundlibRollupOutputOptions,
-  external: ExternalOption,
+  externalOption: string[] | null,
   plugins: FilterablePlugins,
-  extra?: ConfigExtra,
-): BundlibRollupOptions {
+  extra?: E,
+): BundlibRollupOptions & E {
+
+  const external: IsExternal = !externalOption
+    ? () => false
+    : arrayToExternal(externalOption);
 
   return Object.assign({
 
@@ -41,7 +46,7 @@ export function createModuleConfig(
   sourcemap: RollupSourcemap,
   esModule: boolean,
   interop: boolean,
-  external: ExternalOption,
+  external: string[] | null,
   plugins: FilterablePlugins,
 ): BundlibRollupOptions {
 
@@ -88,7 +93,7 @@ export function createBrowserConfig(
         id && (format === "umd" || format === "amd") && { amd: { id } },
       ),
     ),
-    globals ? Object.keys(globals) : [],
+    globals ? Object.keys(globals) : null,
     plugins,
   );
 

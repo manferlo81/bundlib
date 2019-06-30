@@ -1,13 +1,13 @@
 import { BundlibBuildFormat, BundlibRollupOutputOptions, OutputExtra, RollupSourcemap } from "./types";
 
-export function createOutput(
+export function createOutput<E extends OutputExtra>(
   format: BundlibBuildFormat,
   file: string,
   sourcemap: RollupSourcemap,
   esModule: boolean,
   interop: boolean,
-  extra?: OutputExtra,
-): BundlibRollupOutputOptions {
+  extra?: E,
+): BundlibRollupOutputOptions & E {
 
   return Object.assign({
 

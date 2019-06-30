@@ -69,4 +69,24 @@ describe("globals option", () => {
 
   });
 
+  test("should set globals to null if globals option null", async () => {
+
+    const analized = await analize(cwd, {
+      bundlib: { globals: null },
+    });
+
+    expect(analized.browser.globals).toBeNull();
+
+  });
+
+  test("should set globals to null if no globals option set", async () => {
+
+    const analized = await analize(cwd, {
+      bundlib: {},
+    });
+
+    expect(analized.browser.globals).toBeNull();
+
+  });
+
 });
