@@ -5,6 +5,8 @@
 ***30-JUN-2019***
 
 * dependencies updated
+* fixed: wrong name on `bin` option error
+* better types for config functions
 * `ts-jest` for typescript test
 
 ## 0.7.1
