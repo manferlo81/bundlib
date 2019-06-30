@@ -36,12 +36,20 @@ jobs:
           paths:
             - node_modules
           key: v2-deps-bundlib-{{ checksum "package.json" }}
+      - restore_cache:
+          keys:
+            - v1-cache-bundlib-{{ checksum "test" }}
+            - v1-cache-bundlib-
       - run:
           name: Build
           command: npm run build
       - run:
           name: Test
           command: npm test
+      - save_cache:
+          paths:
+            - node_modules/.cache
+          key: v1-cache-bundlib-{{ checksum "test" }}
       - persist_to_workspace:
           root: *working_directory
           paths: .
