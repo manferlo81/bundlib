@@ -1,5 +1,11 @@
 # Bundlib Changelog
 
+## 0.7.3
+
+***30-JUN-2019***
+
+* external as function with cache
+
 ## 0.7.2
 
 ***30-JUN-2019***

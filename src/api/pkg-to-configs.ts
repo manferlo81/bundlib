@@ -1,6 +1,6 @@
 import builtinModules from "builtin-modules";
 import { basename, dirname, extname, join as pathJoin, relative, resolve } from "path";
-import { Plugin } from "rollup";
+import { IsExternal, Plugin } from "rollup";
 
 import { createBrowserConfig, createModuleConfig } from "./create-config";
 import { AnalizedPkg } from "./pkg-analized";
@@ -201,11 +201,25 @@ function pkgToConfigs(
 
   }
 
-  const external = [
-    ...builtinModules,
-    ...runtimeDependencies,
-    ...peerDependencies,
-  ];
+  const externalModuleCache: Record<string, true> = {};
+
+  const isExternal: IsExternal = (source: string, importer: string, isResolved: boolean) => {
+    if (isResolved || source[0] === ".") {
+      return;
+    }
+    return externalModuleCache[source] || [builtinModules, runtimeDependencies, peerDependencies].some((deps) => (
+      deps.some((moduleName) => {
+        if (source === moduleName) {
+          return (externalModuleCache[source] = true);
+        }
+        const len = moduleName.length;
+        if (source.substr(0, len) === moduleName && source[len].match(/^[/\\]$/)) {
+          return (externalModuleCache[source] = true);
+        }
+        return false;
+      })
+    ));
+  };
 
   if (esOutputFile) {
 
@@ -217,7 +231,7 @@ function pkgToConfigs(
         sourcemap,
         true,
         false,
-        external,
+        isExternal,
         createPlugins(false, prod && !minify.module),
       ),
     );
@@ -232,7 +246,7 @@ function pkgToConfigs(
           sourcemap,
           true,
           false,
-          external,
+          isExternal,
           createPlugins(false, true),
         ),
       );
@@ -251,7 +265,7 @@ function pkgToConfigs(
         sourcemap,
         esModule,
         interop,
-        external,
+        isExternal,
         createPlugins(false, prod && !minify.main),
       ),
     );
@@ -266,7 +280,7 @@ function pkgToConfigs(
           sourcemap,
           esModule,
           interop,
-          external,
+          isExternal,
           createPlugins(false, true),
         ),
       );
@@ -325,7 +339,7 @@ function pkgToConfigs(
         sourcemap,
         esModule,
         interop,
-        external,
+        isExternal,
         createPlugins(false, prod, binaryOutputFile),
       ),
     );
