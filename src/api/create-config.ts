@@ -1,13 +1,13 @@
 import {
   ExternalOption,
-  OutputOptions as RollupOutputOptions,
   Plugin,
-  RollupOptions,
 } from "rollup";
 
 import createOutput from "./create-output";
 import {
   BrowserBuildFormat,
+  BundlibRollupOptions,
+  BundlibRollupOutputOptions,
   ConfigExtra,
   FilterablePlugins,
   ModuleBuildFormat,
@@ -16,11 +16,11 @@ import {
 
 export function createConfig(
   input: string,
-  output: RollupOutputOptions,
+  output: BundlibRollupOutputOptions,
   external: ExternalOption,
   plugins: FilterablePlugins,
   extra?: ConfigExtra,
-): RollupOptions {
+): BundlibRollupOptions {
 
   return Object.assign({
 
@@ -43,7 +43,7 @@ export function createModuleConfig(
   interop: boolean,
   external: ExternalOption,
   plugins: FilterablePlugins,
-): RollupOptions {
+): BundlibRollupOptions {
 
   return createConfig(
     input,
@@ -72,7 +72,7 @@ export function createBrowserConfig(
   extend: boolean,
   globals?: Record<string, string> | null,
   id?: string | null,
-) {
+): BundlibRollupOptions {
 
   return createConfig(
     input,

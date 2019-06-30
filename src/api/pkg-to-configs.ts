@@ -1,6 +1,6 @@
 import builtinModules from "builtin-modules";
 import { basename, dirname, extname, join as pathJoin, relative, resolve } from "path";
-import { Plugin, RollupOptions } from "rollup";
+import { Plugin } from "rollup";
 
 import { createBrowserConfig, createModuleConfig } from "./create-config";
 import { AnalizedPkg } from "./pkg-analized";
@@ -16,8 +16,9 @@ import nodeResolve from "rollup-plugin-node-resolve";
 import stripShebang from "rollup-plugin-strip-shebang";
 import { terser } from "rollup-plugin-terser";
 import typescript2 from "rollup-plugin-typescript2";
+import { BundlibRollupOptions } from "./types";
 
-function pkgToConfigs(pkg: AnalizedPkg, dev?: boolean): RollupOptions[];
+function pkgToConfigs(pkg: AnalizedPkg, dev?: boolean): BundlibRollupOptions[];
 function pkgToConfigs(
   {
     cwd,
@@ -31,7 +32,7 @@ function pkgToConfigs(
     cache: cacheFolder,
   }: AnalizedPkg,
   dev?: boolean,
-): RollupOptions[] {
+): BundlibRollupOptions[] {
 
   const {
     api: apiInput,
@@ -88,7 +89,7 @@ function pkgToConfigs(
   const extensions = [".ts", ".js"];
   const exclude = /node_modules/;
 
-  const configs: RollupOptions[] = [];
+  const configs: BundlibRollupOptions[] = [];
 
   function createPlugins(browser: boolean, mini: boolean, bin?: string): Array<Plugin | null | false> {
 

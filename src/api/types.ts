@@ -1,4 +1,5 @@
 import {
+  ExternalOption,
   ModuleFormat as RollupModuleFormat,
   OutputOptions as RollupOutputOptions,
   Plugin,
@@ -22,3 +23,18 @@ export type ModuleBuildFormat = Extract<RollupModuleFormat, "cjs" | "es">;
 export type BrowserBuildFormat = Extract<RollupModuleFormat, "iife" | "amd" | "umd">;
 
 export type BundlibBuildFormat = ModuleBuildFormat | BrowserBuildFormat;
+
+export interface BundlibRollupOutputOptions extends RollupOutputOptions {
+  file: string;
+  format: BundlibBuildFormat;
+  sourcemap: RollupSourcemap;
+  esModule: boolean;
+  interop: boolean;
+}
+
+export interface BundlibRollupOptions extends RollupOptions {
+  input: string;
+  output: BundlibRollupOutputOptions;
+  external: ExternalOption;
+  plugins: Plugin[];
+}
