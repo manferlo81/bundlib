@@ -245,8 +245,8 @@ interface AnalizedPkg {
     };
     sourcemap: boolean | "inline";
     dependencies: {
-      runtime: string[],
-      peer: string[],
+      runtime: string[] | null,
+      peer: string[] | null,
     };
     browser: {
       format: "umd" | "iife" | "amd";

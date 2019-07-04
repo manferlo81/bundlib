@@ -131,8 +131,8 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
   };
 
   const dependencies: Dependencies = {
-    runtime: runtimeDependencies ? Object.keys(runtimeDependencies) : [],
-    peer: peerDependencies ? Object.keys(peerDependencies) : [],
+    runtime: runtimeDependencies ? Object.keys(runtimeDependencies) : null,
+    peer: peerDependencies ? Object.keys(peerDependencies) : null,
   };
 
   const minify: MinifyOptions = Object.assign(

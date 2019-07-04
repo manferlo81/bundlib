@@ -63,8 +63,8 @@ function pkgToConfigs(
   }
 
   const {
-    runtime: runtimeDependencies,
-    peer: peerDependencies,
+    runtime: runtimeDeps,
+    peer: peerDeps,
   } = dependencies;
 
   const {
@@ -215,11 +215,12 @@ function pkgToConfigs(
 
   }
 
-  const external = [
-    ...builtinModules,
-    ...runtimeDependencies,
-    ...peerDependencies,
-  ];
+  const external = [...[runtimeDeps, peerDeps].reduce<string[]>((externalDeps, deps) => {
+    if (deps) {
+      externalDeps.push(...deps);
+    }
+    return externalDeps;
+  }, []), ...builtinModules];
 
   if (esOutputFile) {
 
