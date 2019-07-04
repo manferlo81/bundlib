@@ -247,6 +247,7 @@ interface AnalizedPkg {
     dependencies: {
       runtime: string[] | null,
       peer: string[] | null,
+      optional: string[] | null,
     };
     browser: {
       format: "umd" | "iife" | "amd";

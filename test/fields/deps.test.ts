@@ -4,7 +4,7 @@ describe("package.json dependencies", () => {
 
   const cwd = process.cwd();
 
-  test("should read dependencies and peerDependencies", async () => {
+  test("should read runtime, peer & optional dependencies", async () => {
 
     const analized = await analize(cwd, {
       dependencies: {
@@ -13,12 +13,16 @@ describe("package.json dependencies", () => {
       peerDependencies: {
         "bundelib-dep2": "1.0.0",
       },
+      optionalDependencies: {
+        "bundelib-dep3": "1.0.0",
+      },
     });
 
-    const { runtime, peer } = analized.dependencies;
+    const { runtime, peer, optional } = analized.dependencies;
 
-    expect(runtime).toContain("bundelib-dep1");
-    expect(peer).toContain("bundelib-dep2");
+    expect(runtime).toEqual(["bundelib-dep1"]);
+    expect(peer).toEqual(["bundelib-dep2"]);
+    expect(optional).toEqual(["bundelib-dep3"]);
 
   });
 

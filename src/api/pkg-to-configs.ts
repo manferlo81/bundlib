@@ -65,6 +65,7 @@ function pkgToConfigs(
   const {
     runtime: runtimeDeps,
     peer: peerDeps,
+    optional: optionalDeps,
   } = dependencies;
 
   const {
@@ -215,7 +216,7 @@ function pkgToConfigs(
 
   }
 
-  const external = [...[runtimeDeps, peerDeps].reduce<string[]>((externalDeps, deps) => {
+  const external = [...[runtimeDeps, peerDeps, optionalDeps].reduce<string[]>((externalDeps, deps) => {
     if (deps) {
       externalDeps.push(...deps);
     }

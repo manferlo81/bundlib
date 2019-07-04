@@ -6,7 +6,7 @@ export type OutputFields = ModuleOutputFields | "bin" | "types";
 
 export type InputFiles = Record<"api" | "bin", string>;
 export type OutputFiles = Record<OutputFields, string | null>;
-export type Dependencies = Record<"runtime" | "peer", readonly string[] | null>;
+export type Dependencies = Record<"runtime" | "peer" | "optional", readonly string[] | null>;
 export type MinifyOptions = Record<ModuleOutputFields, boolean>;
 
 export interface BrowserOptions {

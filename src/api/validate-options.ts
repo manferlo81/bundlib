@@ -1,7 +1,8 @@
 import { OptionName } from "./bundlib-options";
+import keys from "./obj-keys";
 
 function getInvalidOptions(options: Record<string, any>): string[] {
-  return Object.keys(options as Record<OptionName, any>).filter((name) => (
+  return keys(options as Record<OptionName, any>).filter((name) => (
     name !== "input" &&
     name !== "bin" &&
     name !== "extend" &&

@@ -68,6 +68,7 @@ describe("analize", () => {
     expect(dependencies).toEqual({
       runtime: null,
       peer: null,
+      optional: null,
     });
     expect(browser).toEqual({
       format: "umd",

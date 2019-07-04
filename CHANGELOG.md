@@ -5,6 +5,7 @@
 ***05-JUL-2019***
 
 * `configsFromPkg` throws on non `*.ts` input instead of `analizePkg`
+* `optionalDependencies` as external
 * analized dependencies as null if not present
 * dependencies updated
 

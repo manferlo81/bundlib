@@ -4,6 +4,7 @@ import readPkg from "read-pkg";
 
 import { BundlibOptions } from "./bundlib-options";
 import { error, invalidOption, invalidPkgField } from "./errors";
+import keys from "./obj-keys";
 import { BundlibPkgJson } from "./pkg";
 import {
   AnalizedPkg,
@@ -38,6 +39,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     typings,
     dependencies: runtimeDependencies,
     peerDependencies,
+    optionalDependencies,
     bundlib: bundlibOptions,
   } = resolvedPkg;
 
@@ -131,8 +133,9 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
   };
 
   const dependencies: Dependencies = {
-    runtime: runtimeDependencies ? Object.keys(runtimeDependencies) : null,
-    peer: peerDependencies ? Object.keys(peerDependencies) : null,
+    runtime: runtimeDependencies ? keys(runtimeDependencies) : null,
+    peer: peerDependencies ? keys(peerDependencies) : null,
+    optional: optionalDependencies ? keys(optionalDependencies) : null,
   };
 
   const minify: MinifyOptions = Object.assign(
