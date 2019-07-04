@@ -215,7 +215,7 @@ import { configsFromPkg } from "bundlib";
 
 const dev = !process.env.production;
 
-export default async () => configsFromPkg(
+export default () => configsFromPkg(
   process.cwd(),
   dev,
 );
@@ -297,7 +297,7 @@ function configsFromPkg(
 * [x] *Creates an browser build based on the* `"browser"` *field in* `package.json` *(only if* `"browser"` *fields is a* `string`*)*
 * [x] *Creates an CLI binary build based on the* `"bin"` *field in* `package.json` *(only if* `"bin"` *fields is a* `string`*)*
 * [x] *Exports types declarations based on the* `"types"` *or* `"typings"` *field in your* `package.json`
-* [x] *Sets* `dependencies` *and* `peerDependencies` *as external for* `CommonJS`*,* `ES Modules` *and* `Bynary` *module.*
+* [x] *Sets* `dependencies`*,* `peerDependencies` *and `optionalDependencies` *as external for* `CommonJS`*,* `ES Modules` *and* `Bynary` *module.*
 * [x] *Importing an internal file from a package* `Ex: lodash/core` *will be treated as external if* `lodash` *is included in your* `dependencies` *or* `peerDependencies`*. Requires version* `>=0.7.3`*.*
 * [x] *Transforms* `async/await` *using [Babel](https://github.com/babel/babel) and [babel-plugin-transform-async-to-promises](https://github.com/rpetrich/babel-plugin-transform-async-to-promises) for ES5 support*
 * [x] *Transforms using [Buble](https://github.com/bublejs/buble)*
