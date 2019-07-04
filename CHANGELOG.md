@@ -6,6 +6,7 @@
 
 * `configsFromPkg` throws on non `*.ts` input instead of `analizePkg`
 * `optionalDependencies` as external
+* `jsnext:main` field as `module` field fallback
 * analized dependencies as null if not present
 * dependencies updated
 

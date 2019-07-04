@@ -32,7 +32,8 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
   const {
     name: pkgName,
     main: cjsModuleFile,
-    module: esModuleFile,
+    module: esModuleStFile,
+    "jsnext:main": esModuleFbFile,
     browser: browserFile,
     bin: binFile,
     types: pkgTypes,
@@ -122,6 +123,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     bin: resolve(cwd, pkgBinInput || "src-bin/index.ts"),
   };
 
+  const esModuleFile = esModuleStFile || esModuleFbFile;
   const typesPath = pkgTypes || typings;
 
   const output: OutputFiles = {
