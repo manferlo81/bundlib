@@ -23,14 +23,6 @@ describe("input option", () => {
 
   });
 
-  test("should throw on non typescript module input option", () => {
-
-    expect(analize(cwd, {
-      bundlib: { input: "index.js" },
-    })).rejects.toThrow(TypeError);
-
-  });
-
   test("should read input option", async () => {
 
     const analized = await analize(cwd, {

@@ -1,5 +1,5 @@
 import camelcase from "camelcase";
-import { basename, extname, resolve } from "path";
+import { basename, resolve } from "path";
 import readPkg from "read-pkg";
 
 import { BundlibOptions } from "./bundlib-options";
@@ -113,14 +113,6 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   if (!isStringOrNull(cacheOption)) {
     throw invalidOption("cache", "string");
-  }
-
-  if (pkgInput && extname(pkgInput) !== ".ts") {
-    throw error("option input has to point to a typescript (.ts) file.");
-  }
-
-  if (pkgBinInput && extname(pkgBinInput) !== ".ts") {
-    throw error("option binInput has to point to a typescript (.ts) file.");
   }
 
   const input: InputFiles = {

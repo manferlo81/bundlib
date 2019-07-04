@@ -16,6 +16,7 @@ import nodeResolve from "rollup-plugin-node-resolve";
 import stripShebang from "rollup-plugin-strip-shebang";
 import { terser } from "rollup-plugin-terser";
 import typescript2 from "rollup-plugin-typescript2";
+import { error } from "./errors";
 import { BundlibRollupOptions } from "./types";
 
 function pkgToConfigs(pkg: AnalizedPkg, dev?: boolean): BundlibRollupOptions[];
@@ -36,7 +37,7 @@ function pkgToConfigs(
 
   const {
     api: apiInput,
-    bin: cliInput,
+    bin: binInput,
   } = inputObject;
 
   const {
@@ -46,6 +47,20 @@ function pkgToConfigs(
     bin: binaryOutputFile,
     types: typesOutputFile,
   } = output;
+
+  if (
+    (cjsOutputFile || esOutputFile || browserOutputFile) &&
+    extname(apiInput) !== ".ts"
+  ) {
+    throw error("Module input has to point to a typescript (.ts) file.");
+  }
+
+  if (
+    binaryOutputFile &&
+    extname(binInput) !== ".ts"
+  ) {
+    throw error("Binary input has to point to a typescript (.ts) file.");
+  }
 
   const {
     runtime: runtimeDependencies,
@@ -67,9 +82,8 @@ function pkgToConfigs(
   } = browserOptions;
 
   const nameNeeded = browserOutputFile && (browserFormat === "iife" || browserFormat === "umd");
-
   if (nameNeeded && !pkgName) {
-    throw new Error("name option is required for IIFE and UMD builds");
+    throw error("name option is required for IIFE and UMD builds");
   }
 
   const prod = !dev;
@@ -319,7 +333,7 @@ function pkgToConfigs(
 
     configs.push(
       createModuleConfig(
-        cliInput,
+        binInput,
         "cjs",
         binaryOutputFile,
         sourcemap,

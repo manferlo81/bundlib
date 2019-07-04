@@ -5,6 +5,24 @@ describe("package to configs", () => {
 
   const cwd = process.cwd();
 
+  test("should throw on non typescript api input", () => {
+
+    return expect(createConfigs("", true, {
+      main: "out/lib.js",
+      bundlib: { input: "src/index.js" },
+    })).rejects.toThrow();
+
+  });
+
+  test("should throw on non typescript binary input", () => {
+
+    return expect(createConfigs("", true, {
+      bin: "bin/lib.js",
+      bundlib: { bin: "src/index.js" },
+    })).rejects.toThrow();
+
+  });
+
   test("should throw if name required and not provided", () => {
 
     return expect(createConfigs("", false, {
