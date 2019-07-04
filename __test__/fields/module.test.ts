@@ -12,4 +12,12 @@ describe("package.json main field", () => {
 
   });
 
+  test("should fallback to jsnext:main field", async () => {
+
+    const analized = await analize(cwd, { "jsnext:main": "out/lib.js" });
+
+    expect(analized.output.module).toMatch(/out[\\/]lib\.js$/);
+
+  });
+
 });

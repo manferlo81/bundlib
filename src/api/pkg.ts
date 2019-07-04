@@ -1,6 +1,10 @@
 import { PackageJson } from "read-pkg";
 import { BundlibOptions } from "./bundlib-options";
 
-export interface BundlibPkgJson extends PackageJson {
+interface JSNextLegacyPkgJson extends PackageJson {
+  "jsnext:main"?: string;
+}
+
+export interface BundlibPkgJson extends JSNextLegacyPkgJson {
   bundlib?: BundlibOptions;
 }

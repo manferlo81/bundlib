@@ -23,14 +23,6 @@ describe("bin option", () => {
 
   });
 
-  test("should throw on non typescript binary input option", () => {
-
-    return expect(analize(cwd, {
-      bundlib: { bin: "index.js" },
-    })).rejects.toThrow(TypeError);
-
-  });
-
   test("should read bin option", async () => {
 
     const analized = await analize(cwd, {

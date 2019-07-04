@@ -1,5 +1,15 @@
 # Bundlib Changelog
 
+## 0.8.0
+
+***05-JUL-2019***
+
+* `configsFromPkg` throws on non `*.ts` input instead of `analizePkg`
+* `optionalDependencies` as external
+* `jsnext:main` field as `module` field fallback
+* analized dependencies as null if not present
+* dependencies updated
+
 ## 0.7.3
 
 ***30-JUN-2019***

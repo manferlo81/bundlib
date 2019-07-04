@@ -66,8 +66,9 @@ describe("analize", () => {
     });
     expect(sourcemap).toBe(true);
     expect(dependencies).toEqual({
-      runtime: expect.any(Array),
-      peer: expect.any(Array),
+      runtime: null,
+      peer: null,
+      optional: null,
     });
     expect(browser).toEqual({
       format: "umd",

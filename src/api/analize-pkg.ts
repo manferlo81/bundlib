@@ -1,9 +1,10 @@
 import camelcase from "camelcase";
-import { basename, extname, resolve } from "path";
+import { basename, resolve } from "path";
 import readPkg from "read-pkg";
 
 import { BundlibOptions } from "./bundlib-options";
 import { error, invalidOption, invalidPkgField } from "./errors";
+import keys from "./obj-keys";
 import { BundlibPkgJson } from "./pkg";
 import {
   AnalizedPkg,
@@ -31,13 +32,15 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
   const {
     name: pkgName,
     main: cjsModuleFile,
-    module: esModuleFile,
+    module: esModuleStFile,
+    "jsnext:main": esModuleFbFile,
     browser: browserFile,
     bin: binFile,
     types: pkgTypes,
     typings,
     dependencies: runtimeDependencies,
     peerDependencies,
+    optionalDependencies,
     bundlib: bundlibOptions,
   } = resolvedPkg;
 
@@ -115,19 +118,12 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     throw invalidOption("cache", "string");
   }
 
-  if (pkgInput && extname(pkgInput) !== ".ts") {
-    throw error("option input has to point to a typescript (.ts) file.");
-  }
-
-  if (pkgBinInput && extname(pkgBinInput) !== ".ts") {
-    throw error("option binInput has to point to a typescript (.ts) file.");
-  }
-
   const input: InputFiles = {
     api: resolve(cwd, pkgInput || "src/index.ts"),
     bin: resolve(cwd, pkgBinInput || "src-bin/index.ts"),
   };
 
+  const esModuleFile = esModuleStFile || esModuleFbFile;
   const typesPath = pkgTypes || typings;
 
   const output: OutputFiles = {
@@ -139,8 +135,9 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
   };
 
   const dependencies: Dependencies = {
-    runtime: runtimeDependencies ? Object.keys(runtimeDependencies) : [],
-    peer: peerDependencies ? Object.keys(peerDependencies) : [],
+    runtime: runtimeDependencies ? keys(runtimeDependencies) : null,
+    peer: peerDependencies ? keys(peerDependencies) : null,
+    optional: optionalDependencies ? keys(optionalDependencies) : null,
   };
 
   const minify: MinifyOptions = Object.assign(
