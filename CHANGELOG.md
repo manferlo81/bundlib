@@ -5,6 +5,7 @@
 ***05-JUL-2019***
 
 * `configsFromPkg` throws on non `*.ts` input instead of `analizePkg`
+* dependencies updated
 
 ## 0.7.3
 
