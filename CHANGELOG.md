@@ -1,5 +1,11 @@
 # Bundlib Changelog
 
+## 0.8.1
+
+***05-JUL-2019***
+
+* applied `snyk` patch for `lodash`
+
 ## 0.8.0
 
 ***05-JUL-2019***
