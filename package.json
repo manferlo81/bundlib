@@ -16,9 +16,7 @@
     "dev": "ts-node -P ts-node-tsconfig.json src/cli -dw",
     "build": "tslint src/**/*.ts && ts-node -P ts-node-tsconfig.json src/cli -d",
     "test": "jest --color -w 3",
-    "preversion": "npm run clean && npm run build && npm test",
-    "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect"
+    "preversion": "npm run clean && npm run build && npm test"
   },
   "keywords": [
     "library",
@@ -49,7 +47,6 @@
     "rollup-plugin-strip-shebang": "^1.2.3",
     "rollup-plugin-terser": "^5.1.0",
     "rollup-plugin-typescript2": "^0.21.2",
-    "snyk": "^1.192.0",
     "typescript": "^3.5.2"
   },
   "devDependencies": {
