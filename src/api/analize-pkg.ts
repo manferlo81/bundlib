@@ -1,10 +1,11 @@
-import camelcase from "camelcase";
-import { basename, resolve } from "path";
 import readPkg from "read-pkg";
 
 import { BundlibOptions } from "./bundlib-options";
+import dependencyNames from "./dependencies";
 import { error, invalidOption, invalidPkgField } from "./errors";
-import keys from "./obj-keys";
+import normalizeBuildName from "./norm-build-name";
+import normalizeGlobals from "./norm-globals";
+import normalizeMinOption from "./norm-min";
 import { BundlibPkgJson } from "./pkg";
 import {
   AnalizedPkg,
@@ -12,11 +13,11 @@ import {
   Dependencies,
   InputFiles,
   MinifyOptions,
-  ModuleOutputFields,
   OutputFiles,
   OutputOptions,
 } from "./pkg-analized";
-import { isArray, isBool, isDictionary, isNull, isObject, isString, isStringOrNull } from "./type-check";
+import resolve from "./resolve";
+import { isBool, isDictionary, isNull, isObject, isStringOrNull } from "./type-check";
 import { RollupSourcemap } from "./types";
 import { isBrowserFormat, isValidMinOption } from "./validate";
 import getInvalidOptions from "./validate-options";
@@ -58,7 +59,8 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   const invalidOptions = bundlibOptions && getInvalidOptions(bundlibOptions);
   if (invalidOptions && invalidOptions.length) {
-    throw error(`Unknown options found: (${invalidOptions.map((name) => `"${name}"`).join(", ")})`);
+    const optionNames = invalidOptions.map((name) => `"${name}"`).join(", ");
+    throw error(`Unknown options found: (${optionNames})`);
   }
 
   const {
@@ -69,7 +71,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     interop: interopFlag,
     extend: extendFlag,
     equals: equalsFlag,
-    browser: browserFormatOld,
+    browser: browserDeprecatedFormat,
     format: browserFormat,
     name: browserName,
     id: amdId,
@@ -94,7 +96,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     throw invalidOption("format", '"amd" | "iife" | "amd"');
   }
 
-  if (!isNull(browserFormatOld) && !isBrowserFormat(browserFormatOld)) {
+  if (!isNull(browserDeprecatedFormat) && !isBrowserFormat(browserDeprecatedFormat)) {
     throw invalidOption("browser", '"amd" | "iife" | "amd"');
   }
 
@@ -127,47 +129,26 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
   const typesPath = pkgTypes || typings;
 
   const output: OutputFiles = {
-    main: cjsModuleFile ? resolve(cwd, cjsModuleFile) : null,
-    module: esModuleFile ? resolve(cwd, esModuleFile) : null,
-    browser: browserFile ? resolve(cwd, browserFile) : null,
-    bin: binFile ? resolve(cwd, binFile) : null,
-    types: typesPath ? resolve(cwd, typesPath) : null,
+    main: resolve(cwd, cjsModuleFile),
+    module: resolve(cwd, esModuleFile),
+    browser: resolve(cwd, browserFile),
+    bin: resolve(cwd, binFile),
+    types: resolve(cwd, typesPath),
   };
 
   const dependencies: Dependencies = {
-    runtime: runtimeDependencies ? keys(runtimeDependencies) : null,
-    peer: peerDependencies ? keys(peerDependencies) : null,
-    optional: optionalDependencies ? keys(optionalDependencies) : null,
+    runtime: dependencyNames(runtimeDependencies),
+    peer: dependencyNames(peerDependencies),
+    optional: dependencyNames(optionalDependencies),
   };
 
-  const minify: MinifyOptions = Object.assign(
-    { main: false, module: false, browser: false },
-    min && (
-      min === true
-        ? { main: true, module: true, browser: true }
-        : isArray(min)
-          ? min.reduce((result, value) => (result[value] = true, result), {} as Record<ModuleOutputFields, true>)
-          : { [min]: true }
-    ),
-  );
+  const minify: MinifyOptions = normalizeMinOption(min);
 
-  const buildName = browserName || (
-    pkgName && camelcase(basename(pkgName))
-  ) || camelcase(basename(cwd)) || null;
-
-  const globals = !browserGlobals
-    ? null
-    : isArray(browserGlobals)
-      ? browserGlobals.reduce<Record<string, string>>((result, value) => {
-        if (isString(value)) {
-          result[value] = value;
-        }
-        return result;
-      }, {})
-      : browserGlobals as Record<string, string>;
+  const buildName = normalizeBuildName(cwd, browserName, pkgName);
+  const globals = normalizeGlobals(browserGlobals);
 
   const browser: BrowserOptions = {
-    format: browserFormat || browserFormatOld || "umd",
+    format: browserFormat || browserDeprecatedFormat || "umd",
     name: buildName,
     id: amdId || null,
     globals,

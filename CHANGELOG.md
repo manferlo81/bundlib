@@ -1,5 +1,11 @@
 # Bundlib Changelog
 
+## 0.8.2
+
+***05-JUL-2019***
+
+* code cleanup
+
 ## 0.8.1
 
 ***05-JUL-2019***
