@@ -5,6 +5,7 @@
 ***05-JUL-2019***
 
 * code cleanup
+* removed `snyk` patch for `lodash`
 
 ## 0.8.1
 
