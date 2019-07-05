@@ -229,12 +229,62 @@ describe("package to configs", () => {
 
   });
 
+  test("should set dependencies as external", async () => {
+
+    const [config] = await createConfigs(cwd, true, {
+      main: "out/lib.js",
+      dependencies: {
+        lodash: "*",
+      },
+    });
+
+    expect(config.external("lodash", "", false)).toBe(true);
+
+  });
+
+  test("should set peerDependencies as external", async () => {
+
+    const [config] = await createConfigs(cwd, true, {
+      main: "out/lib.js",
+      peerDependencies: {
+        lodash: "*",
+      },
+    });
+
+    expect(config.external("lodash", "", false)).toBe(true);
+
+  });
+
+  test("should set optionalDependencies as external", async () => {
+
+    const [config] = await createConfigs(cwd, true, {
+      main: "out/lib.js",
+      optionalDependencies: {
+        lodash: "*",
+      },
+    });
+
+    expect(config.external("lodash", "", false)).toBe(true);
+
+  });
+
+  test("should set builtin modules as external", async () => {
+
+    const [config] = await createConfigs(cwd, true, {
+      main: "out/lib.js",
+    });
+
+    expect(config.external("path", "", false)).toBe(true);
+    expect(config.external("fs", "", false)).toBe(true);
+
+  });
+
   test("should set partial module names as external", async () => {
 
     const [config] = await createConfigs(cwd, true, {
       main: "out/lib.js",
       dependencies: {
-        lodash: "latest",
+        lodash: "*",
       },
     });
 
