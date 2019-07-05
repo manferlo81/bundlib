@@ -1,11 +1,12 @@
 import readPkg from "read-pkg";
 
 import { BundlibOptions } from "./bundlib-options";
-import depNames from "./dep-names";
 import { error, invalidOption, invalidPkgField } from "./errors";
-import normalizeBuildName from "./norm-build-name";
-import normalizeGlobals from "./norm-globals";
-import normalizeMinOption from "./norm-min";
+import keysOrNull from "./keys-or-null";
+import { isBrowserFormat } from "./option-format";
+import { isValidGlobals, normalizeGlobals } from "./option-globals";
+import { isValidMinOption, normalizeMin } from "./option-min";
+import normalizeBuildName from "./option-name";
 import { BundlibPkgJson } from "./pkg";
 import {
   AnalizedPkg,
@@ -17,9 +18,8 @@ import {
   OutputOptions,
 } from "./pkg-analized";
 import resolve from "./resolve";
-import { isBool, isDictionary, isNull, isObject, isStringOrNull } from "./type-check";
+import { isBool, isDictionary, isDictionaryOrNull, isNull, isStringOrNull } from "./type-check";
 import { RollupSourcemap } from "./types";
-import { isBrowserFormat, isValidMinOption } from "./validate";
 import getInvalidOptions from "./validate-options";
 
 async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPkg> {
@@ -45,6 +45,18 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     bundlib: bundlibOptions,
   } = resolvedPkg;
 
+  if (!isStringOrNull(cjsModuleFile)) {
+    throw invalidPkgField("main", "string");
+  }
+
+  if (!isStringOrNull(esModuleStFile)) {
+    throw invalidPkgField("module", "string");
+  }
+
+  if (!isStringOrNull(esModuleFbFile) && !esModuleStFile) {
+    throw invalidPkgField("jsnext:main", "string");
+  }
+
   if (!isStringOrNull(browserFile)) {
     throw invalidPkgField("browser", "string");
   }
@@ -53,8 +65,20 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     throw invalidPkgField("bin", "string");
   }
 
-  if (!isNull(bundlibOptions) && !isDictionary(bundlibOptions)) {
+  if (!isDictionaryOrNull(bundlibOptions)) {
     throw invalidPkgField("bundlib", "Object");
+  }
+
+  if (!isDictionaryOrNull(runtimeDependencies)) {
+    throw invalidPkgField("dependencies", "Object");
+  }
+
+  if (!isDictionaryOrNull(peerDependencies)) {
+    throw invalidPkgField("peerDependencies", "Object");
+  }
+
+  if (!isDictionaryOrNull(optionalDependencies)) {
+    throw invalidPkgField("optionalDependencies", "Object");
   }
 
   const invalidOptions = bundlibOptions && getInvalidOptions(bundlibOptions);
@@ -108,11 +132,11 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     throw invalidOption("id", "string");
   }
 
-  if (!isNull(browserGlobals) && !isObject(browserGlobals)) {
+  if (!isValidGlobals(browserGlobals)) {
     throw invalidOption("globals", "Object<string, string> | string[]");
   }
 
-  if (!isNull(min) && !isValidMinOption(min)) {
+  if (!isValidMinOption(min)) {
     throw invalidOption("min", 'boolean | "main" | "module" | "browser" | Array<"main" | "module" | "browser">');
   }
 
@@ -137,12 +161,12 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
   };
 
   const dependencies: Dependencies = {
-    runtime: depNames(runtimeDependencies),
-    peer: depNames(peerDependencies),
-    optional: depNames(optionalDependencies),
+    runtime: keysOrNull(runtimeDependencies),
+    peer: keysOrNull(peerDependencies),
+    optional: keysOrNull(optionalDependencies),
   };
 
-  const minify: MinifyOptions = normalizeMinOption(min);
+  const minify: MinifyOptions = normalizeMin(min);
 
   const buildName = normalizeBuildName(cwd, browserName, pkgName);
   const globals = normalizeGlobals(browserGlobals);

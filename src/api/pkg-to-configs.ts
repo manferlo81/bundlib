@@ -3,10 +3,6 @@ import { union } from "lodash";
 import { basename, dirname, extname, join as pathJoin, relative, resolve } from "path";
 import { Plugin } from "rollup";
 
-import { createBrowserConfig, createModuleConfig } from "./create-config";
-import { AnalizedPkg } from "./pkg-analized";
-import { renameMin, renamePre } from "./rename";
-
 import addShebang from "rollup-plugin-add-shebang";
 import babel from "rollup-plugin-babel";
 import buble from "rollup-plugin-buble";
@@ -17,7 +13,11 @@ import nodeResolve from "rollup-plugin-node-resolve";
 import stripShebang from "rollup-plugin-strip-shebang";
 import { terser } from "rollup-plugin-terser";
 import typescript2 from "rollup-plugin-typescript2";
+
+import { createBrowserConfig, createModuleConfig } from "./create-config";
 import { error } from "./errors";
+import { AnalizedPkg } from "./pkg-analized";
+import { renameMin, renamePre } from "./rename";
 import { BundlibRollupOptions } from "./types";
 
 function pkgToConfigs(pkg: AnalizedPkg, dev?: boolean): BundlibRollupOptions[];

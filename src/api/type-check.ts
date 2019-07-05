@@ -20,6 +20,10 @@ export function isDictionary<T = any>(value: any): value is Record<string | symb
   return isObject(value) && !isArray(value);
 }
 
-export function isStringOrNull(value: any): value is (string | null) {
+export function isStringOrNull(value: any): value is (string | null | undefined) {
   return isNull(value) || isString(value);
+}
+
+export function isDictionaryOrNull<T = any>(value: any): value is (Record<string | symbol, T> | null | undefined) {
+  return isNull(value) || isDictionary<T>(value);
 }

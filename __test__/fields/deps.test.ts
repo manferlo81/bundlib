@@ -4,6 +4,27 @@ describe("package.json dependencies", () => {
 
   const cwd = process.cwd();
 
+  test("should throw on invalid runtime dependencies", () => {
+
+    // @ts-ignore
+    return expect(analize(cwd, { dependencies: 100 })).rejects.toThrow(TypeError);
+
+  });
+
+  test("should throw on invalid peer dependencies", () => {
+
+    // @ts-ignore
+    return expect(analize(cwd, { peerDependencies: 100 })).rejects.toThrow(TypeError);
+
+  });
+
+  test("should throw on invalid optionalDependencies dependencies", () => {
+
+    // @ts-ignore
+    return expect(analize(cwd, { optionalDependencies: 100 })).rejects.toThrow(TypeError);
+
+  });
+
   test("should read runtime, peer & optional dependencies", async () => {
 
     const analized = await analize(cwd, {

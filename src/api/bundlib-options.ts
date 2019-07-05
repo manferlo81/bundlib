@@ -1,24 +1,27 @@
 import { FlagField, ModuleOutputFields } from "./pkg-analized";
 import { BrowserBuildFormat, RollupSourcemap } from "./types";
 
+export type Nullable<T> = T | null | undefined;
+
 export interface BundlibPkgInputOptions {
-  input?: string | null;
-  bin?: string | null;
+  input?: Nullable<string>;
+  bin?: Nullable<string>;
 }
 
-export type BundlibPkgFlagOptions = Partial<Record<FlagField, boolean | null>>;
+export type BundlibPkgFlagOptions = Partial<Record<FlagField, Nullable<boolean>>>;
 
-export type MinOption = ModuleOutputFields | ModuleOutputFields[] | boolean | null;
+export type GlobalsOptions = Nullable<Record<string, string> | string[]>;
+export type MinOption = Nullable<ModuleOutputFields | ModuleOutputFields[] | boolean>;
 
 export interface BundlibPkgOtherOptions {
-  sourcemap?: RollupSourcemap | null;
-  browser?: BrowserBuildFormat | null;
-  format?: BrowserBuildFormat | null;
-  name?: string | null;
-  id?: string | null;
-  globals?: Record<string, string> | string[] | null;
+  sourcemap?: Nullable<RollupSourcemap>;
+  browser?: Nullable<BrowserBuildFormat>;
+  format?: Nullable<BrowserBuildFormat>;
+  name?: Nullable<string>;
+  id?: Nullable<string>;
+  globals?: GlobalsOptions;
   min?: MinOption;
-  cache?: string | null;
+  cache?: Nullable<string>;
 }
 
 export type BundlibOptions =

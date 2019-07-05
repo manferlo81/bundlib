@@ -2,7 +2,7 @@ import { Plugin } from "rollup";
 
 import arrayToExternal from "./array-to-external";
 import createOutput from "./create-output";
-import depNames from "./dep-names";
+import keysOrNull from "./keys-or-null";
 import {
   BrowserBuildFormat,
   BundlibRollupOptions,
@@ -88,7 +88,7 @@ export function createBrowserConfig(
         id && (format === "umd" || format === "amd") && { amd: { id } },
       ),
     ),
-    depNames(globals),
+    keysOrNull(globals),
     plugins,
   );
 

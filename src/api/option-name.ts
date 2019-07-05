@@ -1,10 +1,11 @@
 import camelcase from "camelcase";
 import { basename } from "path";
+import { Nullable } from "./bundlib-options";
 
 function normalizeBuildName(
   cwd: string,
-  nameOption: string | null,
-  pkgName: string | null | undefined,
+  nameOption: Nullable<string>,
+  pkgName: Nullable<string>,
 ): string | null {
   return nameOption || (
     pkgName && camelcase(basename(pkgName))

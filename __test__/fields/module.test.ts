@@ -4,6 +4,20 @@ describe("package.json main field", () => {
 
   const cwd = process.cwd();
 
+  test("should throw on non string module field", () => {
+
+    // @ts-ignore
+    expect(analize(cwd, { module: 100 })).rejects.toThrow(TypeError);
+
+  });
+
+  test("should throw on non string jsnext:main field", () => {
+
+    // @ts-ignore
+    expect(analize(cwd, { "jsnext:main": 100 })).rejects.toThrow(TypeError);
+
+  });
+
   test("should read module field", async () => {
 
     const analized = await analize(cwd, { module: "out/lib.js" });

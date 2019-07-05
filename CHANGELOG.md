@@ -2,10 +2,12 @@
 
 ## 0.8.2
 
-***05-JUL-2019***
+***06-JUL-2019***
 
 * code cleanup
 * removed `snyk` patch for `lodash`
+* better validation & type check for `package.json` fields
+* better validation & type check for options
 
 ## 0.8.1
 
