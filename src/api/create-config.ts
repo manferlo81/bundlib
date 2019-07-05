@@ -1,6 +1,7 @@
 import { Plugin } from "rollup";
 
 import arrayToExternal from "./array-to-external";
+import { Nullable } from "./bundlib-options";
 import createOutput from "./create-output";
 import keysOrNull from "./keys-or-null";
 import {
@@ -16,7 +17,7 @@ import {
 export function createConfig<E extends ConfigExtra>(
   input: string,
   output: BundlibRollupOutputOptions,
-  externalOption: string[] | null,
+  externalOption: Nullable<string[]>,
   plugins: FilterablePlugins,
   extra?: E,
 ): BundlibRollupOptions & E {
@@ -41,7 +42,7 @@ export function createModuleConfig(
   sourcemap: RollupSourcemap,
   esModule: boolean,
   interop: boolean,
-  external: string[] | null,
+  external: Nullable<string[]>,
   plugins: FilterablePlugins,
 ): BundlibRollupOptions {
 
@@ -70,8 +71,8 @@ export function createBrowserConfig(
   plugins: FilterablePlugins,
   name: string,
   extend: boolean,
-  globals: Record<string, string> | null,
-  id: string | null,
+  globals: Nullable<Record<string, string>>,
+  id: Nullable<string>,
 ): BundlibRollupOptions {
 
   return createConfig(
