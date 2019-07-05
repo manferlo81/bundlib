@@ -1,7 +1,7 @@
 import readPkg from "read-pkg";
 
 import { BundlibOptions } from "./bundlib-options";
-import dependencyNames from "./dependencies";
+import depNames from "./dep-names";
 import { error, invalidOption, invalidPkgField } from "./errors";
 import normalizeBuildName from "./norm-build-name";
 import normalizeGlobals from "./norm-globals";
@@ -137,9 +137,9 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
   };
 
   const dependencies: Dependencies = {
-    runtime: dependencyNames(runtimeDependencies),
-    peer: dependencyNames(peerDependencies),
-    optional: dependencyNames(optionalDependencies),
+    runtime: depNames(runtimeDependencies),
+    peer: depNames(peerDependencies),
+    optional: depNames(optionalDependencies),
   };
 
   const minify: MinifyOptions = normalizeMinOption(min);

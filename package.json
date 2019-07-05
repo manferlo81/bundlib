@@ -35,6 +35,7 @@
     "chalk": "^2.4.2",
     "commander": "^2.20.0",
     "filesize": "^4.1.2",
+    "lodash": "^4.17.11",
     "pretty-ms": "^5.0.0",
     "read-pkg": "^5.1.1",
     "rollup": "^1.16.6",
@@ -48,12 +49,13 @@
     "rollup-plugin-strip-shebang": "^1.2.3",
     "rollup-plugin-terser": "^5.1.0",
     "rollup-plugin-typescript2": "^0.21.2",
-    "typescript": "^3.5.2",
-    "snyk": "^1.192.0"
+    "snyk": "^1.192.0",
+    "typescript": "^3.5.2"
   },
   "devDependencies": {
     "@types/filesize": "^4.1.0",
     "@types/jest": "^24.0.15",
+    "@types/lodash": "^4.14.135",
     "@types/node": "^12.0.12",
     "@types/rollup-plugin-buble": "^0.19.1",
     "@types/rollup-plugin-json": "^3.0.2",

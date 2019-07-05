@@ -1,4 +1,5 @@
 import builtinModules from "builtin-modules";
+import { union } from "lodash";
 import { basename, dirname, extname, join as pathJoin, relative, resolve } from "path";
 import { Plugin } from "rollup";
 
@@ -100,6 +101,8 @@ function pkgToConfigs(
   if (typesOutputDir && extname(typesOutputDir) === ".ts") {
     typesOutputDir = dirname(typesOutputDir);
   }
+
+  const external = union(runtimeDeps, peerDeps, optionalDeps, builtinModules);
 
   const extensions = [".ts", ".js"];
   const exclude = /node_modules/;
@@ -215,13 +218,6 @@ function pkgToConfigs(
     ];
 
   }
-
-  const external = [...[runtimeDeps, peerDeps, optionalDeps].reduce<string[]>((externalDeps, deps) => {
-    if (deps) {
-      externalDeps.push(...deps);
-    }
-    return externalDeps;
-  }, []), ...builtinModules];
 
   if (esOutputFile) {
 

@@ -12,7 +12,7 @@ function normalizeGlobals(
         }
         return result;
       }, {})
-      : browserGlobals as Record<string, string>;
+      : browserGlobals;
 }
 
 export default normalizeGlobals;
