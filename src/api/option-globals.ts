@@ -1,5 +1,6 @@
 import { GlobalsOptions } from "./bundlib-options";
 import keys from "./obj-keys";
+import setProp from "./set-prop";
 import { isArray, isNull, isObject, isString } from "./type-check";
 
 export function isValidGlobals(value: any): value is GlobalsOptions {
@@ -11,12 +12,7 @@ export function isValidGlobals(value: any): value is GlobalsOptions {
 }
 
 export function normalizeGlobals(globals: GlobalsOptions): Record<string, string> | null {
-  return !globals
-    ? null
-    : isArray(globals)
-      ? globals.reduce<Record<string, string>>((result, value) => {
-        result[value] = value;
-        return result;
-      }, {})
+  return !globals ? null
+    : isArray(globals) ? globals.reduce<Record<string, string>>((result, value) => setProp(value, value, result), {})
       : globals;
 }

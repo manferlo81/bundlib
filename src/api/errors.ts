@@ -9,3 +9,7 @@ export function invalidPkgField(field: string, type: string): TypeError {
 export function invalidOption(option: string, type: string): TypeError {
   return error(`Invalid "${option}" option. It has to be ${type}`);
 }
+
+export function noTsInput(desc: string) {
+  return error(`${desc} input has to point to a typescript (.ts) file.`);
+}

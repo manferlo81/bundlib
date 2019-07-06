@@ -15,7 +15,7 @@ import { terser } from "rollup-plugin-terser";
 import typescript2 from "rollup-plugin-typescript2";
 
 import { createBrowserConfig, createModuleConfig } from "./create-config";
-import { error } from "./errors";
+import { error, noTsInput } from "./errors";
 import { AnalizedPkg } from "./pkg-analized";
 import { renameMin, renamePre } from "./rename";
 import { BundlibRollupOptions } from "./types";
@@ -53,14 +53,14 @@ function pkgToConfigs(
     (cjsOutputFile || esOutputFile || browserOutputFile) &&
     extname(apiInput) !== ".ts"
   ) {
-    throw error("Module input has to point to a typescript (.ts) file.");
+    throw noTsInput("Module");
   }
 
   if (
     binaryOutputFile &&
     extname(binInput) !== ".ts"
   ) {
-    throw error("Binary input has to point to a typescript (.ts) file.");
+    throw noTsInput("Binary");
   }
 
   const {

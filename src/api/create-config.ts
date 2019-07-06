@@ -11,27 +11,43 @@ import {
   ConfigExtra,
   FilterablePlugins,
   ModuleBuildFormat,
+  OutputExtra,
   RollupSourcemap,
 } from "./types";
 
+export function createConfig(
+  input: string,
+  output: BundlibRollupOutputOptions,
+  externalOption: Nullable<string[]>,
+  plugins: FilterablePlugins,
+): BundlibRollupOptions;
 export function createConfig<E extends ConfigExtra>(
   input: string,
   output: BundlibRollupOutputOptions,
   externalOption: Nullable<string[]>,
   plugins: FilterablePlugins,
-  extra?: E,
-): BundlibRollupOptions & E {
+  extra: E,
+): BundlibRollupOptions & E;
+export function createConfig(
+  input: string,
+  output: BundlibRollupOutputOptions,
+  external: Nullable<string[]>,
+  plugins: FilterablePlugins,
+  extra?: ConfigExtra,
+): BundlibRollupOptions {
 
-  return Object.assign({
+  const options = {
 
     input,
     output,
 
-    external: !externalOption ? () => false : arrayToExternal(externalOption),
+    external: !external ? () => false : arrayToExternal(external),
 
     plugins: plugins.filter<Plugin>(Boolean as any),
 
-  }, extra);
+  };
+
+  return extra ? Object.assign(options, extra) : options;
 
 }
 
@@ -75,6 +91,18 @@ export function createBrowserConfig(
   id: Nullable<string>,
 ): BundlibRollupOptions {
 
+  const extra: OutputExtra = { name, extend };
+
+  if (globals) {
+    extra.globals = globals;
+  }
+
+  if (id && (format === "umd" || format === "amd")) {
+    extra.amd = {
+      id,
+    };
+  }
+
   return createConfig(
     input,
     createOutput(
@@ -83,11 +111,7 @@ export function createBrowserConfig(
       sourcemap,
       esModule,
       interop,
-      Object.assign(
-        { name, extend },
-        globals && { globals },
-        id && (format === "umd" || format === "amd") && { amd: { id } },
-      ),
+      extra,
     ),
     keysOrNull(globals),
     plugins,

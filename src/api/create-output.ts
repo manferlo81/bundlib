@@ -1,15 +1,30 @@
 import { BundlibBuildFormat, BundlibRollupOutputOptions, OutputExtra, RollupSourcemap } from "./types";
 
+export function createOutput(
+  format: BundlibBuildFormat,
+  file: string,
+  sourcemap: RollupSourcemap,
+  esModule: boolean,
+  interop: boolean,
+): BundlibRollupOutputOptions;
 export function createOutput<E extends OutputExtra>(
   format: BundlibBuildFormat,
   file: string,
   sourcemap: RollupSourcemap,
   esModule: boolean,
   interop: boolean,
-  extra?: E,
-): BundlibRollupOutputOptions & E {
+  extra: E,
+): BundlibRollupOutputOptions & E;
+export function createOutput(
+  format: BundlibBuildFormat,
+  file: string,
+  sourcemap: RollupSourcemap,
+  esModule: boolean,
+  interop: boolean,
+  extra?: OutputExtra,
+): BundlibRollupOutputOptions {
 
-  return Object.assign({
+  const options = {
 
     file,
     format,
@@ -18,7 +33,9 @@ export function createOutput<E extends OutputExtra>(
     esModule,
     interop,
 
-  }, extra);
+  };
+
+  return extra ? Object.assign(options, extra) : options;
 
 }
 

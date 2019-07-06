@@ -1,5 +1,11 @@
 # Bundlib Changelog
 
+## 0.8.3
+
+***07-JUL-2019***
+
+* refactoring
+
 ## 0.8.2
 
 ***06-JUL-2019***
