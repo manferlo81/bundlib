@@ -1,5 +1,11 @@
 # Bundlib Changelog
 
+## 0.8.5
+
+***08-JUL-2019***
+
+* print project name & version
+
 ## 0.8.4
 
 ***07-JUL-2019***

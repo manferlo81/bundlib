@@ -5,8 +5,11 @@ import program from "commander";
 import fileSize from "filesize";
 import { relative } from "path";
 import prettyMs from "pretty-ms";
+import readPkg from "read-pkg";
 
 import { version } from "../../package.json";
+import { BundlibPkgJson } from "../api/pkg";
+
 import bundlib from "./bundlib";
 import { log, logError } from "./console";
 import { BuildCallbackObject } from "./types.js";
@@ -16,6 +19,8 @@ async function action() {
   const cwd = process.cwd();
   const { dev, watch, silent } = program;
 
+  let pkg: BundlibPkgJson | undefined;
+
   if (!silent) {
     const msgVersion = chalk.green.bold(`Bundlib v${version}`);
     const msgReading = chalk.cyan.bold("reading package.json...");
@@ -23,6 +28,23 @@ async function action() {
 `);
     log(`${msgReading}
 `);
+
+    pkg = await readPkg({
+      cwd,
+      normalize: false,
+    });
+
+    const { name, version: ver } = pkg;
+
+    if (name && ver) {
+
+      const proj = chalk.green.bold(`${name} v${ver}`);
+
+      log(`${proj}
+`);
+
+    }
+
   }
 
   let buildIndex = 0;
@@ -80,7 +102,7 @@ ${msgWait}`);
   }
 
   try {
-    await bundlib(cwd, { dev, watch }, callbacks);
+    await bundlib(cwd, { dev, watch }, callbacks, pkg);
   } catch (err) {
     logError(err);
   }

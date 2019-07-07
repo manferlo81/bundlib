@@ -1,4 +1,4 @@
-import { configsFromPkg } from "../api";
+import { BundlibPkgJson, configsFromPkg } from "../api";
 
 import build from "./build";
 import { BuildCallbackObject, BundlibOptions } from "./types";
@@ -8,9 +8,10 @@ async function bundlib(
   cwd: string,
   { dev, watch }: BundlibOptions,
   callbacks: BuildCallbackObject,
+  pkg?: BundlibPkgJson,
 ): Promise<void> {
   (watch ? watchBuild : build)(
-    await configsFromPkg(cwd, dev),
+    await configsFromPkg(cwd, dev, pkg),
     callbacks,
   );
 }
