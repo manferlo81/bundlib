@@ -16,11 +16,6 @@ export type OutputExtra = Omit<
   OutputExtraExcludeKeys
 >;
 
-export type ConfigExtra = Omit<
-  RollupOptions,
-  ConfigExtraExcludeKeys
->;
-
 export type RollupSourcemap = boolean | "inline";
 
 export type FilterablePlugins = Array<Nullable<Plugin | false>>;

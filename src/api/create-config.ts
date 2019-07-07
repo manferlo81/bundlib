@@ -8,7 +8,6 @@ import {
   BrowserBuildFormat,
   BundlibRollupOptions,
   BundlibRollupOutputOptions,
-  ConfigExtra,
   FilterablePlugins,
   ModuleBuildFormat,
   OutputExtra,
@@ -21,25 +20,9 @@ export function createConfig(
   external: Nullable<string[]>,
   plugins: FilterablePlugins,
   chokidar: boolean | RollupWatchOptions,
-): BundlibRollupOptions;
-export function createConfig<E extends ConfigExtra>(
-  input: string,
-  output: BundlibRollupOutputOptions,
-  external: Nullable<string[]>,
-  plugins: FilterablePlugins,
-  chokidar: boolean | RollupWatchOptions,
-  extra: E,
-): BundlibRollupOptions & E;
-export function createConfig(
-  input: string,
-  output: BundlibRollupOutputOptions,
-  external: Nullable<string[]>,
-  plugins: FilterablePlugins,
-  chokidar: boolean | RollupWatchOptions,
-  extra?: ConfigExtra,
 ): BundlibRollupOptions {
 
-  const options = {
+  return {
 
     input,
     output,
@@ -54,8 +37,6 @@ export function createConfig(
     },
 
   };
-
-  return extra ? Object.assign(options, extra) : options;
 
 }
 
