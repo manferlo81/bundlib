@@ -4,7 +4,9 @@ import {
   OutputOptions as RollupOutputOptions,
   Plugin,
   RollupOptions,
+  WatcherOptions as RollupWatcherOptions,
 } from "rollup";
+import { Nullable } from "./bundlib-options";
 
 type OutputExtraExcludeKeys = "file" | "format" | "sourcemap" | "esModule" | "interop";
 type ConfigExtraExcludeKeys = "input" | "output" | "external" | "plugins";
@@ -21,7 +23,7 @@ export type ConfigExtra = Omit<
 
 export type RollupSourcemap = boolean | "inline";
 
-export type FilterablePlugins = Array<Plugin | null | undefined | false>;
+export type FilterablePlugins = Array<Nullable<Plugin | false>>;
 
 export type ModuleBuildFormat = Extract<RollupModuleFormat, "cjs" | "es">;
 export type BrowserBuildFormat = Extract<RollupModuleFormat, "iife" | "amd" | "umd">;
@@ -41,4 +43,5 @@ export interface BundlibRollupOptions extends RollupOptions, Record<ConfigExtraE
   output: BundlibRollupOutputOptions;
   external: IsExternal;
   plugins: Plugin[];
+  watch: RollupWatcherOptions;
 }

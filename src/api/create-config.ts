@@ -18,13 +18,13 @@ import {
 export function createConfig(
   input: string,
   output: BundlibRollupOutputOptions,
-  externalOption: Nullable<string[]>,
+  external: Nullable<string[]>,
   plugins: FilterablePlugins,
 ): BundlibRollupOptions;
 export function createConfig<E extends ConfigExtra>(
   input: string,
   output: BundlibRollupOutputOptions,
-  externalOption: Nullable<string[]>,
+  external: Nullable<string[]>,
   plugins: FilterablePlugins,
   extra: E,
 ): BundlibRollupOptions & E;
@@ -44,6 +44,11 @@ export function createConfig(
     external: !external ? () => false : arrayToExternal(external),
 
     plugins: plugins.filter<Plugin>(Boolean as any),
+
+    watch: {
+      chokidar: true,
+      exclude: ["node_modules/**"],
+    },
 
   };
 
