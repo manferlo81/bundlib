@@ -25,9 +25,11 @@ async function action() {
   const { dev, watch, silent } = program;
 
   if (!silent) {
-    log(`${chalk.green.bold(`Bundlib v${version}`)}
+    const msgHead = chalk.green.bold(`Bundlib v${version}`);
+    const msgReading = chalk.cyan.bold("reading package.json...");
+    log(`${msgHead}
 `);
-    log(`${chalk.cyan.bold("reading package.json...")}
+    log(`${msgReading}
 `);
   }
 
@@ -44,17 +46,12 @@ async function action() {
       ...!silent && {
 
         buildEnd(filename, size, duration) {
-          log(
-            `${
-            chalk.green.inverse.bold(" built ")
-            } ${
-            chalk.yellow.bold(relative(cwd, filename))
-            } ( ${
-            chalk.magenta.bold(fileSize(size))
-            } ${chalk.cyan("in")} ${
-            chalk.magenta.bold(prettyMs(duration, { secondsDecimalDigits: 2 }))
-            } )`,
-          );
+          const colorTag = chalk.green.inverse.bold(" built ");
+          const colorFilename = chalk.yellow.bold(relative(cwd, filename));
+          const colorSize = chalk.magenta.bold(fileSize(size));
+          const colorIn = chalk.cyan("in");
+          const colorTime = chalk.magenta.bold(prettyMs(duration, { secondsDecimalDigits: 2 }));
+          log(`${colorTag} ${colorFilename} ( ${colorSize} ${colorIn} ${colorTime} )`);
         },
 
         error(err) {
@@ -65,15 +62,17 @@ async function action() {
 
           start() {
             if (buildIndex) {
-              log(`${chalk.cyan("rebuilding...")}
+              const msgRebuild = chalk.cyan("rebuilding...");
+              log(`${msgRebuild}
 `);
             }
             buildIndex++;
           },
 
           end() {
+            const msgWait = chalk.cyan("waiting for changes...");
             log(`
-${chalk.cyan("waiting for changes...")}`);
+${msgWait}`);
           },
 
         },
