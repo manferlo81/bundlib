@@ -9,7 +9,7 @@ import {
 import { Nullable } from "./bundlib-options";
 
 type OutputExtraExcludeKeys = "file" | "format" | "sourcemap" | "esModule" | "interop";
-type ConfigExtraExcludeKeys = "input" | "output" | "external" | "plugins";
+type ConfigExtraExcludeKeys = "input" | "output" | "external" | "plugins" | "watch";
 
 export type OutputExtra = Omit<
   RollupOutputOptions,

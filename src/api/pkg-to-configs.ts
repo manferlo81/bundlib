@@ -231,6 +231,7 @@ function pkgToConfigs(
         false,
         external,
         createPlugins(false, prod && !minify.module),
+        true,
       ),
     );
 
@@ -246,6 +247,7 @@ function pkgToConfigs(
           false,
           external,
           createPlugins(false, true),
+          true,
         ),
       );
 
@@ -265,6 +267,7 @@ function pkgToConfigs(
         interop,
         external,
         createPlugins(false, prod && !minify.main),
+        true,
       ),
     );
 
@@ -280,6 +283,7 @@ function pkgToConfigs(
           interop,
           external,
           createPlugins(false, true),
+          true,
         ),
       );
 
@@ -298,6 +302,7 @@ function pkgToConfigs(
         esModule,
         interop,
         createPlugins(true, prod && !minify.browser),
+        true,
         pkgName as string,
         extend,
         globals,
@@ -316,6 +321,7 @@ function pkgToConfigs(
           esModule,
           interop,
           createPlugins(true, true),
+          true,
           pkgName as string,
           extend,
           globals,
@@ -339,6 +345,7 @@ function pkgToConfigs(
         interop,
         external,
         createPlugins(false, prod, binaryOutputFile),
+        true,
       ),
     );
 
