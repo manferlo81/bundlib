@@ -83,11 +83,11 @@ export function createBrowserConfig(
   id: Nullable<string>,
 ): BundlibRollupOptions {
 
-  const extra: OutputExtra = { name, extend };
-
-  if (globals) {
-    extra.globals = globals;
-  }
+  const extra: OutputExtra = {
+    name,
+    extend,
+    globals: globals || {},
+  };
 
   if (id && (format === "umd" || format === "amd")) {
     extra.amd = {

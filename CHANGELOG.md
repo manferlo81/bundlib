@@ -1,5 +1,11 @@
 # Bundlib Changelog
 
+## 0.8.4
+
+***07-JUL-2019***
+
+* fixed: issue with globals when building for browser
+
 ## 0.8.3
 
 ***07-JUL-2019***
