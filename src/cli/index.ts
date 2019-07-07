@@ -8,16 +8,8 @@ import prettyMs from "pretty-ms";
 
 import { version } from "../../package.json";
 import bundlib from "./bundlib";
-import { log } from "./console";
-
-function logError(err: Error) {
-  if (err.stack) {
-    // tslint:disable-next-line: no-console
-    console.error(err.stack);
-  }
-  // tslint:disable-next-line: no-console
-  console.error(`${chalk.bgRed.bold(" error ")} ${err.message || err}`);
-}
+import { log, logError } from "./console";
+import { BuildCallbackObject } from "./types.js";
 
 async function action() {
 
@@ -25,9 +17,9 @@ async function action() {
   const { dev, watch, silent } = program;
 
   if (!silent) {
-    const msgHead = chalk.green.bold(`Bundlib v${version}`);
+    const msgVersion = chalk.green.bold(`Bundlib v${version}`);
     const msgReading = chalk.cyan.bold("reading package.json...");
-    log(`${msgHead}
+    log(`${msgVersion}
 `);
     log(`${msgReading}
 `);
@@ -35,57 +27,64 @@ async function action() {
 
   let buildIndex = 0;
 
-  try {
+  const callbacks: BuildCallbackObject = {
 
-    await bundlib(cwd, { dev, watch }, {
+    error(err) {
+      logError(err);
+    },
+
+  };
+
+  if (!silent) {
+
+    Object.assign(callbacks, {
+
+      buildEnd(filename, size, duration) {
+        const colorTag = chalk.green.inverse.bold(" built ");
+        const colorFilename = chalk.yellow.bold(relative(cwd, filename));
+        const colorSize = chalk.magenta.bold(fileSize(size));
+        const colorIn = chalk.cyan("in");
+        const colorTime = chalk.magenta.bold(prettyMs(duration, { secondsDecimalDigits: 2 }));
+        log(`${colorTag} ${colorFilename} ( ${colorSize} ${colorIn} ${colorTime} )`);
+      },
 
       error(err) {
         logError(err);
       },
 
-      ...!silent && {
+    } as BuildCallbackObject);
 
-        buildEnd(filename, size, duration) {
-          const colorTag = chalk.green.inverse.bold(" built ");
-          const colorFilename = chalk.yellow.bold(relative(cwd, filename));
-          const colorSize = chalk.magenta.bold(fileSize(size));
-          const colorIn = chalk.cyan("in");
-          const colorTime = chalk.magenta.bold(prettyMs(duration, { secondsDecimalDigits: 2 }));
-          log(`${colorTag} ${colorFilename} ( ${colorSize} ${colorIn} ${colorTime} )`);
-        },
+    if (watch) {
 
-        error(err) {
-          logError(err);
-        },
+      Object.assign(callbacks, {
 
-        ...watch && {
-
-          start() {
-            if (buildIndex) {
-              const msgRebuild = chalk.cyan("rebuilding...");
-              log(`${msgRebuild}
+        start() {
+          if (buildIndex) {
+            const msgRebuild = chalk.cyan("rebuilding...");
+            log(`${msgRebuild}
 `);
-            }
-            buildIndex++;
-          },
-
-          end() {
-            const msgWait = chalk.cyan("waiting for changes...");
-            log(`
-${msgWait}`);
-          },
-
+          }
+          buildIndex++;
         },
 
-      },
+        end() {
+          const msgWait = chalk.cyan("waiting for changes...");
+          log(`
+${msgWait}`);
+        },
 
-    });
+      } as BuildCallbackObject);
 
-  } catch (err) {
-
-    logError(err);
+    }
 
   }
+
+  try {
+    await bundlib(cwd, { dev, watch }, callbacks);
+  } catch (err) {
+    logError(err);
+  }
+
 }
 
 program
