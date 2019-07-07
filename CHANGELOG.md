@@ -6,6 +6,7 @@
 
 * refactoring
 * build with cache
+* dependencies updated
 
 ## 0.8.2
 
