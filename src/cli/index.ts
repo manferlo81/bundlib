@@ -38,9 +38,10 @@ async function action() {
 
     if (name && ver) {
 
-      const proj = chalk.green.bold(`${name} v${ver}`);
+      const msgBuilding = chalk.green.bold("building:");
+      const projInfo = chalk.yellow.bold(`${name} v${ver}`);
 
-      log(`${proj}
+      log(`${msgBuilding} ${projInfo}
 `);
 
     }
@@ -62,7 +63,7 @@ async function action() {
     Object.assign(callbacks, {
 
       buildEnd(filename, size, duration) {
-        const colorTag = chalk.green.inverse.bold(" built ");
+        const colorTag = chalk.green.bold.inverse(" built ");
         const colorFilename = chalk.yellow.bold(relative(cwd, filename));
         const colorSize = chalk.magenta.bold(fileSize(size));
         const colorIn = chalk.cyan("in");
