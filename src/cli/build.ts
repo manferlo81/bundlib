@@ -10,10 +10,14 @@ function build(configs: RollupOptions[], callbacks: BuildCallbackObject): void {
     callbacks.start();
   }
 
+  const cache: Record<string, object | undefined> = {};
+
   oneByOne(configs, async (config, next, index) => {
 
     const { input, output: outputOptions } = config as { input: string, output: OutputOptions };
     const { file: output } = outputOptions as { file: string };
+
+    config.cache = cache[input];
 
     if (callbacks.buildStart) {
       callbacks.buildStart(input, output);
@@ -24,6 +28,7 @@ function build(configs: RollupOptions[], callbacks: BuildCallbackObject): void {
       const currentTime = Date.now();
 
       const buildResult = await rollup(config);
+      config.cache = cache[input] = buildResult.cache;
       await buildResult.write(outputOptions);
 
       const { size } = statSync(output);

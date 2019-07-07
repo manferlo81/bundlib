@@ -5,6 +5,7 @@
 ***07-JUL-2019***
 
 * refactoring
+* build with cache
 
 ## 0.8.2
 
