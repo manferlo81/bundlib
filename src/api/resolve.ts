@@ -1,5 +1,5 @@
 import { resolve as pathResolve } from "path";
-import { Nullable } from "./bundlib-options";
+import { Nullable } from "./types";
 
 function resolve(cwd: string, filepath: Nullable<"">): null;
 function resolve(cwd: string, filepath: string): string;

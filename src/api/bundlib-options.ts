@@ -1,7 +1,5 @@
 import { ModuleOutputFields } from "./pkg-analized";
-import { BrowserBuildFormat, RollupSourcemap } from "./types";
-
-export type Nullable<T> = T | null | undefined;
+import { BrowserBuildFormat, Nullable, RollupSourcemap } from "./types";
 
 export type GlobalsOptions = Nullable<Record<string, string> | string[]>;
 export type MinOption = Nullable<ModuleOutputFields | ModuleOutputFields[] | boolean>;
