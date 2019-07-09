@@ -1,6 +1,6 @@
 import readPkg from "read-pkg";
 
-import { BundlibOptions } from "./bundlib-options";
+import { BundlibOptions10 } from "./bundlib-options";
 import { error, invalidOption, invalidPkgField } from "./errors";
 import keysOrNull from "./keys-or-null";
 import { isBrowserFormat } from "./option-format";
@@ -101,7 +101,10 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     globals: browserGlobals,
     min,
     cache: cacheOption,
-  } = bundlibOptions || {} as BundlibOptions;
+    // main: mainOptions10,
+    // module: moduleOptions10,
+    // browser: browserOptions10,
+  } = bundlibOptions || {} as BundlibOptions10;
 
   if (!isStringOrNull(pkgInput)) {
     throw invalidOption("input", "string");

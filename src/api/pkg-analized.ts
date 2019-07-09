@@ -1,3 +1,4 @@
+import { Nullable } from "./bundlib-options";
 import { BundlibPkgJson } from "./pkg";
 import { BrowserBuildFormat, RollupSourcemap } from "./types";
 
@@ -30,5 +31,37 @@ export interface AnalizedPkg {
   browser: BrowserOptions;
   minify: MinifyOptions;
   options: OutputOptions;
+  cache: string;
+}
+
+// version 0.10 types
+
+export interface ESModuleBuildInfo {
+  file: string;
+  sourcemap: RollupSourcemap;
+  min: boolean;
+}
+
+export interface NonESModuleBuildInfo extends ESModuleBuildInfo {
+  esModule: boolean;
+  interop: boolean;
+}
+
+export interface CommonJSBuildInfo extends NonESModuleBuildInfo {
+  equals: boolean;
+}
+
+export interface BrowserBuildInfo extends NonESModuleBuildInfo {
+  format: BrowserBuildFormat;
+}
+
+export interface PkgAnalized10 {
+  cwd: string;
+  pkg: BundlibPkgJson;
+  input: InputFiles;
+  main: Nullable<CommonJSBuildInfo>;
+  module: Nullable<ESModuleBuildInfo>;
+  browser: Nullable<BrowserBuildInfo>;
+  dependencies: Dependencies;
   cache: string;
 }
