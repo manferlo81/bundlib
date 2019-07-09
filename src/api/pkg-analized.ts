@@ -1,5 +1,5 @@
-import { Nullable } from "./bundlib-options";
 import { BundlibPkgJson } from "./pkg";
+import { Nullable } from "./types";
 import { BrowserBuildFormat, RollupSourcemap } from "./types";
 
 export type ModuleOutputFields = "main" | "module" | "browser";

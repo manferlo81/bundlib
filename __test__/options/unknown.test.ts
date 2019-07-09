@@ -10,7 +10,6 @@ describe("unknown options", () => {
       "iife",
       "amd",
       "umd",
-      "browser",
       "option1",
       "option2",
     ];
