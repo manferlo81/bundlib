@@ -105,16 +105,6 @@ npm i bundlib -D
 
 *Defines the format to be used for the* `browser` *build.*
 
-#### browser
-
-* *deprecated in* `v0.7.0` *use* [`format`](#format) *option instead*
-* *added in* `v0.3.0`
-* *used in:* `Browser` build
-* *type:* `"iife"` | `"amd"` | `"umd"`
-* *defaults to* `"umd"`
-
-*This option has been deprecated in favor of the* `format` *option, use* `format` *instead.*
-
 #### name
 
 * *used in:* `IIFE` & `UMD` builds
