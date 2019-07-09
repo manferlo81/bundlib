@@ -70,7 +70,7 @@ describe("package to configs", () => {
 
     const configs = await createConfigs(cwd, true, {
       browser: "out/lib.iife.js",
-      bundlib: { browser: format, name, globals: {} },
+      bundlib: { format, name, globals: {} },
     });
 
     expect(configs).toHaveLength(1);
@@ -91,7 +91,7 @@ describe("package to configs", () => {
 
     const configs = await createConfigs(cwd, true, {
       browser: "out/lib.js",
-      bundlib: { browser: format, name, id, globals: {} },
+      bundlib: { format, name, id, globals: {} },
     });
 
     expect(configs).toHaveLength(1);
@@ -113,7 +113,7 @@ describe("package to configs", () => {
 
     const configs = await createConfigs(cwd, true, {
       browser: "out/lib.js",
-      bundlib: { browser: format, name, id, globals: {} },
+      bundlib: { format, name, id, globals: {} },
     });
 
     expect(configs).toHaveLength(1);
