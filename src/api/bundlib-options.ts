@@ -38,12 +38,15 @@ export interface TopLevelCommonJSOptions10 {
   equals?: Nullable<boolean>;
 }
 
-export interface TopLevelBrowserOptions10 {
+export interface TopLevelCommonJSOptions10000 {
+  extend?: Nullable<boolean>;
+}
+
+export interface TopLevelBrowserOptions10 extends TopLevelCommonJSOptions10000 {
   format?: Nullable<BrowserBuildFormat>;
   name?: Nullable<string>;
   id?: Nullable<string>;
   globals?: GlobalsOptions;
-  extend?: Nullable<boolean>;
 }
 
 export interface ESModuleBuildOptions10 extends

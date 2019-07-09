@@ -1,5 +1,4 @@
 import { BundlibPkgJson } from "./pkg";
-import { Nullable } from "./types";
 import { BrowserBuildFormat, RollupSourcemap } from "./types";
 
 export type ModuleOutputFields = "main" | "module" | "browser";
@@ -22,16 +21,11 @@ export type FlagField = "extend" | "esModule" | "interop" | "equals";
 export type OutputOptions = Record<FlagField, boolean>;
 
 export interface AnalizedPkg {
-  cwd: string;
-  pkg: BundlibPkgJson;
-  input: InputFiles;
   output: OutputFiles;
   sourcemap: RollupSourcemap;
-  dependencies: Dependencies;
   browser: BrowserOptions;
   minify: MinifyOptions;
   options: OutputOptions;
-  cache: string;
 }
 
 // version 0.10 types
@@ -39,29 +33,32 @@ export interface AnalizedPkg {
 export interface ESModuleBuildInfo {
   file: string;
   sourcemap: RollupSourcemap;
-  min: boolean;
+  min?: boolean;
 }
 
-export interface NonESModuleBuildInfo extends ESModuleBuildInfo {
+export interface ModuleBuildInfo extends ESModuleBuildInfo {
   esModule: boolean;
   interop: boolean;
 }
 
-export interface CommonJSBuildInfo extends NonESModuleBuildInfo {
+export interface CommonJSBuildInfo extends ModuleBuildInfo {
   equals: boolean;
 }
 
-export interface BrowserBuildInfo extends NonESModuleBuildInfo {
+export interface BrowserBuildInfo extends ModuleBuildInfo {
+  name: string | null;
   format: BrowserBuildFormat;
+  extend: boolean;
 }
 
 export interface PkgAnalized10 {
   cwd: string;
   pkg: BundlibPkgJson;
   input: InputFiles;
-  main: Nullable<CommonJSBuildInfo>;
-  module: Nullable<ESModuleBuildInfo>;
-  browser: Nullable<BrowserBuildInfo>;
+  main: CommonJSBuildInfo | null;
+  module: ESModuleBuildInfo | null;
+  browser: BrowserBuildInfo | null;
   dependencies: Dependencies;
   cache: string;
+  legacy: AnalizedPkg;
 }

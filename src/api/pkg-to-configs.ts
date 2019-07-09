@@ -16,23 +16,25 @@ import typescript2 from "rollup-plugin-typescript2";
 
 import { createBrowserConfig, createModuleConfig } from "./create-config";
 import { error, noTsInput } from "./errors";
-import { AnalizedPkg } from "./pkg-analized";
+import { PkgAnalized10 } from "./pkg-analized";
 import { renameMin, renamePre } from "./rename";
 import { BundlibRollupOptions } from "./types";
 
-function pkgToConfigs(pkg: AnalizedPkg, dev?: boolean): BundlibRollupOptions[];
+function pkgToConfigs(pkg: PkgAnalized10, dev?: boolean): BundlibRollupOptions[];
 function pkgToConfigs(
   {
     cwd,
     input: inputObject,
-    output,
-    sourcemap,
-    minify,
     dependencies,
-    browser: browserOptions,
-    options,
     cache: cacheFolder,
-  }: AnalizedPkg,
+    legacy: {
+      output,
+      sourcemap,
+      minify,
+      browser: browserOptions,
+      options,
+    },
+  }: PkgAnalized10,
   dev?: boolean,
 ): BundlibRollupOptions[] {
 
