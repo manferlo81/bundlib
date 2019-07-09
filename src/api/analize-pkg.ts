@@ -1,8 +1,10 @@
+
 import readPkg from "read-pkg";
 
 import { BundlibOptions10 } from "./bundlib-options";
 import { error, invalidOption, invalidPkgField } from "./errors";
 import keysOrNull from "./keys-or-null";
+import keys from "./obj-keys";
 import { isBrowserFormat } from "./option-format";
 import { isValidGlobals, normalizeGlobals } from "./option-globals";
 import { isValidMinOption, normalizeMin } from "./option-min";
@@ -18,9 +20,9 @@ import {
   OutputOptions,
 } from "./pkg-analized";
 import resolve from "./resolve";
-import { isBool, isDictionary, isDictionaryOrNull, isNull, isStringOrNull } from "./type-check";
+import { isBool, isDictionary, isDictionaryOrNull, isNull, isString, isStringOrNull } from "./type-check";
 import { RollupSourcemap } from "./types";
-import getInvalidOptions from "./validate-options";
+import { getInvalidOptions, invalidKeys } from "./validate-options";
 
 async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPkg> {
 
@@ -89,7 +91,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   const {
     input: pkgInput,
-    bin: pkgBinInput,
+    // bin: pkgBinInput,
     sourcemap: sourcemapOption,
     esModule: esModuleFlag,
     interop: interopFlag,
@@ -104,14 +106,17 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     // main: mainOptions10,
     // module: moduleOptions10,
     // browser: browserOptions10,
+    bin: binaryOptions10,
   } = bundlibOptions || {} as BundlibOptions10;
 
-  if (!isStringOrNull(pkgInput)) {
-    throw invalidOption("input", "string");
-  }
-
-  if (!isStringOrNull(pkgBinInput)) {
-    throw invalidOption("bin", "string");
+  if (
+    !isNull(pkgInput) && !isString(pkgInput) && !(
+      isDictionary(pkgInput) && !invalidKeys(pkgInput, ["api", "bin"]) && keys(pkgInput).every((key) => (
+        isString(pkgInput[key])
+      ))
+    )
+  ) {
+    throw invalidOption("input", "string | { api?: string, bin?: string }");
   }
 
   if (!isNull(sourcemapOption) && !isBool(sourcemapOption) && sourcemapOption !== "inline") {
@@ -142,9 +147,30 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     throw invalidOption("cache", "string");
   }
 
+  if (
+    !isNull(binaryOptions10) && !isString(binaryOptions10) && (binaryOptions10 !== false) && !(
+      isDictionary(binaryOptions10) && !invalidKeys(binaryOptions10, [
+        "sourcemap",
+        "esModule",
+        "interop",
+        "min",
+      ])
+    )
+  ) {
+    throw invalidOption("bin", 'string | false | { sourcemap?: string | "inline", esModule?, interop?, min? }');
+  }
+
+  const apiInput = isStringOrNull(pkgInput) ? pkgInput : pkgInput.api;
+  let binInput = isStringOrNull(pkgInput) ? null : pkgInput.bin;
+
+  // falling back to "bin" option is "string" but this behavior will change in the future
+  if (isString(binaryOptions10) && !binInput) {
+    binInput = binaryOptions10;
+  }
+
   const input: InputFiles = {
-    api: resolve(cwd, pkgInput || "src/index.ts"),
-    bin: resolve(cwd, pkgBinInput || "src-bin/index.ts"),
+    api: resolve(cwd, apiInput || "src/index.ts"),
+    bin: resolve(cwd, binInput || "src-bin/index.ts"),
   };
 
   const esModuleFile = esModuleStFile || esModuleFbFile;

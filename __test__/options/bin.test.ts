@@ -9,7 +9,7 @@ describe("bin option", () => {
     const invalidInputs = [
       1,
       true,
-      false,
+      { invalid: 100 },
     ];
 
     expect.assertions(invalidInputs.length);
@@ -23,7 +23,7 @@ describe("bin option", () => {
 
   });
 
-  test("should read bin option", async () => {
+  test("should read legacy binary input file bin option", async () => {
 
     const analized = await analize(cwd, {
       bundlib: { bin: "src-bin/main.ts" },
