@@ -4,10 +4,11 @@ import { Nullable } from "./types";
 
 function normalizeBuildName(
   cwd: string,
+  browserName: Nullable<string>,
   nameOption: Nullable<string>,
   pkgName: Nullable<string>,
 ): string | null {
-  return nameOption || (
+  return browserName || nameOption || (
     pkgName && camelcase(basename(pkgName))
   ) || camelcase(basename(cwd)) || null;
 }

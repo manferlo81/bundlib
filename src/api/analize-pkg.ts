@@ -5,26 +5,31 @@ import { BundlibOptions10 } from "./bundlib-options";
 import { error, invalidOption, invalidPkgField } from "./errors";
 import keysOrNull from "./keys-or-null";
 import keys from "./obj-keys";
+import { normalizeBuildFlag } from "./option-flag";
 import { isBrowserFormat } from "./option-format";
 import { isValidGlobals, normalizeGlobals } from "./option-globals";
 import { isValidMinOption, normalizeMin } from "./option-min";
 import normalizeBuildName from "./option-name";
+import { normalizeBuildSourcemap, normalizeSourcemap } from "./options-sourcemap";
 import { BundlibPkgJson } from "./pkg";
 import {
   AnalizedPkg,
+  BrowserBuildInfo,
   BrowserOptions,
+  CommonJSBuildInfo,
   Dependencies,
+  ESModuleBuildInfo,
   InputFiles,
   MinifyOptions,
   OutputFiles,
   OutputOptions,
+  PkgAnalized10,
 } from "./pkg-analized";
 import resolve from "./resolve";
 import { isBool, isDictionary, isDictionaryOrNull, isNull, isString, isStringOrNull } from "./type-check";
-import { RollupSourcemap } from "./types";
 import { getInvalidOptions, invalidKeys } from "./validate-options";
 
-async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPkg> {
+async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalized10> {
 
   const resolvedPkg: BundlibPkgJson = pkg || await readPkg({ cwd, normalize: false });
 
@@ -34,36 +39,36 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   const {
     name: pkgName,
-    main: cjsModuleFile,
-    module: esModuleStFile,
-    "jsnext:main": esModuleFbFile,
-    browser: browserFile,
-    bin: binFile,
+    main: pkgMain,
+    module: pkgModule,
+    "jsnext:main": pkgJsNextMain,
+    browser: pkgBrowser,
+    bin: pkgBin,
     types: pkgTypes,
-    typings,
+    typings: pkgTypings,
     dependencies: runtimeDependencies,
     peerDependencies,
     optionalDependencies,
     bundlib: bundlibOptions,
   } = resolvedPkg;
 
-  if (!isStringOrNull(cjsModuleFile)) {
+  if (!isStringOrNull(pkgMain)) {
     throw invalidPkgField("main", "string");
   }
 
-  if (!isStringOrNull(esModuleStFile)) {
+  if (!isStringOrNull(pkgModule)) {
     throw invalidPkgField("module", "string");
   }
 
-  if (!isStringOrNull(esModuleFbFile) && !esModuleStFile) {
+  if (!isStringOrNull(pkgJsNextMain) && !pkgModule) {
     throw invalidPkgField("jsnext:main", "string");
   }
 
-  if (!isStringOrNull(browserFile)) {
+  if (!isStringOrNull(pkgBrowser)) {
     throw invalidPkgField("browser", "string");
   }
 
-  if (!isStringOrNull(binFile)) {
+  if (!isStringOrNull(pkgBin)) {
     throw invalidPkgField("bin", "string");
   }
 
@@ -103,9 +108,9 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     globals: browserGlobals,
     min,
     cache: cacheOption,
-    // main: mainOptions10,
-    // module: moduleOptions10,
-    // browser: browserOptions10,
+    main: mainOptions10,
+    module: moduleOptions10,
+    browser: browserOptions10,
     bin: binaryOptions10,
   } = bundlibOptions || {} as BundlibOptions10;
 
@@ -148,6 +153,54 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
   }
 
   if (
+    !isNull(mainOptions10) && (mainOptions10 !== false) && !(
+      isDictionary(mainOptions10) && !invalidKeys(mainOptions10, [
+        "sourcemap",
+        "esModule",
+        "interop",
+        "min",
+        "equals",
+      ])
+    )
+  ) {
+    throw invalidOption("main", 'false | { sourcemap?: boolean | "inline", equals?, esModule?, interop?, min? }');
+  }
+
+  if (
+    !isNull(moduleOptions10) && (moduleOptions10 !== false) && !(
+      isDictionary(moduleOptions10) && !invalidKeys(moduleOptions10, [
+        "sourcemap",
+        "min",
+      ])
+    )
+  ) {
+    throw invalidOption("module", 'false | { sourcemap?: boolean | "inline", min? }');
+  }
+
+  if (
+    !isNull(browserOptions10) && (browserOptions10 !== false) && !(
+      isDictionary(browserOptions10) && !invalidKeys(browserOptions10, [
+        "sourcemap",
+        "esModule",
+        "interop",
+        "min",
+        "format",
+        "name",
+        "id",
+        "globals",
+        "extend",
+      ]) &&
+      isBrowserFormat(browserOptions10.format) &&
+      (["name", "id"] as Array<keyof typeof browserOptions10>).every((key) => (
+        isStringOrNull(browserOptions10[key])
+      )),
+      isValidGlobals(browserOptions10.globals)
+    )
+  ) {
+    throw invalidOption("browser", 'false | { sourcemap?: boolean | "inline", esModule?, interop?, min? }');
+  }
+
+  if (
     !isNull(binaryOptions10) && !isString(binaryOptions10) && (binaryOptions10 !== false) && !(
       isDictionary(binaryOptions10) && !invalidKeys(binaryOptions10, [
         "sourcemap",
@@ -157,8 +210,13 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
       ])
     )
   ) {
-    throw invalidOption("bin", 'string | false | { sourcemap?: string | "inline", esModule?, interop?, min? }');
+    throw invalidOption("bin", 'string | false | { sourcemap?: boolean | "inline", esModule?, interop?, min? }');
   }
+
+  const esModuleFile = pkgModule || pkgJsNextMain;
+  const typesPath = pkgTypes || pkgTypings;
+
+  // input
 
   const apiInput = isStringOrNull(pkgInput) ? pkgInput : pkgInput.api;
   let binInput = isStringOrNull(pkgInput) ? null : pkgInput.bin;
@@ -173,14 +231,62 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     bin: resolve(cwd, binInput || "src-bin/index.ts"),
   };
 
-  const esModuleFile = esModuleStFile || esModuleFbFile;
-  const typesPath = pkgTypes || typings;
+  const globalSourcemap = normalizeSourcemap(sourcemapOption);
+
+  // main
+
+  const mainOutput: CommonJSBuildInfo | null = (mainOptions10 === false || !pkgMain) ? null : {
+    file: resolve(cwd, pkgMain),
+    sourcemap: normalizeBuildSourcemap(
+      mainOptions10,
+      globalSourcemap,
+    ),
+    esModule: normalizeBuildFlag(mainOptions10, "esModule", !!esModuleFlag),
+    interop: normalizeBuildFlag(mainOptions10, "interop", !!interopFlag),
+    equals: normalizeBuildFlag(mainOptions10, "equals", !!equalsFlag),
+  };
+
+  // module
+
+  const moduleOutput: ESModuleBuildInfo | null = (moduleOptions10 === false || !esModuleFile) ? null : {
+    file: resolve(cwd, esModuleFile),
+    sourcemap: normalizeBuildSourcemap(
+      moduleOptions10,
+      globalSourcemap,
+    ),
+  };
+
+  // browser
+
+  const format = browserFormat || "umd";
+
+  const buildName = normalizeBuildName(
+    cwd,
+    browserOptions10 ? browserOptions10.name : null,
+    browserName,
+    pkgName,
+  );
+
+  const browserOutput: BrowserBuildInfo | null = (browserOptions10 === false || !pkgBrowser) ? null : {
+    file: resolve(cwd, pkgBrowser),
+    sourcemap: normalizeBuildSourcemap(
+      browserOptions10,
+      globalSourcemap,
+    ),
+    esModule: normalizeBuildFlag(browserOptions10, "esModule", !!esModuleFlag),
+    interop: normalizeBuildFlag(browserOptions10, "interop", !!interopFlag),
+    format,
+    name: buildName,
+    extend: normalizeBuildFlag(browserOptions10, "extend", !!extendFlag),
+  };
+
+  //
 
   const output: OutputFiles = {
-    main: resolve(cwd, cjsModuleFile),
+    main: resolve(cwd, pkgMain),
     module: resolve(cwd, esModuleFile),
-    browser: resolve(cwd, browserFile),
-    bin: resolve(cwd, binFile),
+    browser: resolve(cwd, pkgBrowser),
+    bin: resolve(cwd, pkgBin),
     types: resolve(cwd, typesPath),
   };
 
@@ -192,7 +298,6 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   const minify: MinifyOptions = normalizeMin(min);
 
-  const buildName = normalizeBuildName(cwd, browserName, pkgName);
   const globals = normalizeGlobals(browserGlobals);
 
   const browser: BrowserOptions = {
@@ -201,10 +306,6 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     id: amdId || null,
     globals,
   };
-
-  const sourcemap: RollupSourcemap = sourcemapOption === "inline"
-    ? "inline"
-    : (sourcemapOption !== false);
 
   const cache: string = resolve(cwd, cacheOption || "node_modules/.cache/bundlib");
 
@@ -215,7 +316,19 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     equals: !!equalsFlag,
   };
 
-  return { cwd, pkg: resolvedPkg, input, output, sourcemap, dependencies, minify, browser, options, cache };
+  const legacy: AnalizedPkg = { output, sourcemap: globalSourcemap, minify, browser, options };
+
+  return {
+    cwd,
+    pkg: resolvedPkg,
+    input,
+    main: mainOutput,
+    module: moduleOutput,
+    browser: browserOutput,
+    dependencies,
+    cache,
+    legacy,
+  };
 
 }
 

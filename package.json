@@ -8,8 +8,10 @@
   "types": "types/index.d.ts",
   "typings": "types/index.d.ts",
   "bundlib": {
-    "input": "src/api/index.ts",
-    "bin": "src/cli/index.ts",
+    "input": {
+      "api": "src/api/index.ts",
+      "bin": "src/cli/index.ts"
+    },
     "esModule": true,
     "interop": true
   },
