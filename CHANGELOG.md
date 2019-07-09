@@ -1,11 +1,12 @@
 # Bundlib Changelog
 
-## 0.8.6
+## 0.9.0
 
 ***09-JUL-2019***
 
 * reformat project name & version message
 * dependencies updated
+* removed `browser` option
 
 ## 0.8.5
 

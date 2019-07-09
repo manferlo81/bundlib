@@ -95,7 +95,6 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
     interop: interopFlag,
     extend: extendFlag,
     equals: equalsFlag,
-    browser: browserDeprecatedFormat,
     format: browserFormat,
     name: browserName,
     id: amdId,
@@ -118,10 +117,6 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
 
   if (!isNull(browserFormat) && !isBrowserFormat(browserFormat)) {
     throw invalidOption("format", '"amd" | "iife" | "amd"');
-  }
-
-  if (!isNull(browserDeprecatedFormat) && !isBrowserFormat(browserDeprecatedFormat)) {
-    throw invalidOption("browser", '"amd" | "iife" | "amd"');
   }
 
   if (!isStringOrNull(browserName)) {
@@ -172,7 +167,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<AnalizedPk
   const globals = normalizeGlobals(browserGlobals);
 
   const browser: BrowserOptions = {
-    format: browserFormat || browserDeprecatedFormat || "umd",
+    format: browserFormat || "umd",
     name: buildName,
     id: amdId || null,
     globals,

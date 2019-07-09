@@ -10,7 +10,6 @@ function getInvalidOptions(options: Record<string, any>): string[] {
     name !== "interop" &&
     name !== "equals" &&
     name !== "sourcemap" &&
-    name !== "browser" &&
     name !== "format" &&
     name !== "name" &&
     name !== "id" &&

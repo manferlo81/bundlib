@@ -15,7 +15,6 @@ export type MinOption = Nullable<ModuleOutputFields | ModuleOutputFields[] | boo
 
 export interface BundlibPkgOtherOptions {
   sourcemap?: Nullable<RollupSourcemap>;
-  browser?: Nullable<BrowserBuildFormat>;
   format?: Nullable<BrowserBuildFormat>;
   name?: Nullable<string>;
   id?: Nullable<string>;
