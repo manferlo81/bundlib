@@ -2,9 +2,10 @@
 
 ## 0.8.6
 
-***08-JUL-2019***
+***09-JUL-2019***
 
 * reformat project name & version message
+* dependencies updated
 
 ## 0.8.5
 
