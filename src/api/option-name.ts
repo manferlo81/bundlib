@@ -1,6 +1,6 @@
 import camelcase from "camelcase";
 import { basename } from "path";
-import { Nullable } from "./bundlib-options";
+import { Nullable } from "./types";
 
 function normalizeBuildName(
   cwd: string,

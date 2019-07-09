@@ -1,7 +1,6 @@
-import { Plugin, WatchOptions as RollupWatchOptions } from "rollup";
+import { OutputOptions as RollupOutputOptions, Plugin, WatchOptions as RollupWatchOptions } from "rollup";
 
 import arrayToExternal from "./array-to-external";
-import { Nullable } from "./bundlib-options";
 import createOutput from "./create-output";
 import keysOrNull from "./keys-or-null";
 import {
@@ -10,7 +9,7 @@ import {
   BundlibRollupOutputOptions,
   FilterablePlugins,
   ModuleBuildFormat,
-  OutputExtra,
+  Nullable,
   RollupSourcemap,
 } from "./types";
 
@@ -83,7 +82,7 @@ export function createBrowserConfig(
   id: Nullable<string>,
 ): BundlibRollupOptions {
 
-  const extra: OutputExtra = {
+  const extra: RollupOutputOptions = {
     name,
     extend,
     globals: globals || {},

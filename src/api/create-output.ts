@@ -1,4 +1,5 @@
-import { BundlibBuildFormat, BundlibRollupOutputOptions, OutputExtra, RollupSourcemap } from "./types";
+import { OutputOptions as RollupOutputOptions } from "rollup";
+import { BundlibBuildFormat, BundlibRollupOutputOptions, RollupSourcemap } from "./types";
 
 export function createOutput(
   format: BundlibBuildFormat,
@@ -7,7 +8,7 @@ export function createOutput(
   esModule: boolean,
   interop: boolean,
 ): BundlibRollupOutputOptions;
-export function createOutput<E extends OutputExtra>(
+export function createOutput<E extends RollupOutputOptions>(
   format: BundlibBuildFormat,
   file: string,
   sourcemap: RollupSourcemap,
@@ -21,7 +22,7 @@ export function createOutput(
   sourcemap: RollupSourcemap,
   esModule: boolean,
   interop: boolean,
-  extra?: OutputExtra,
+  extra?: RollupOutputOptions,
 ): BundlibRollupOutputOptions {
 
   const options = {
