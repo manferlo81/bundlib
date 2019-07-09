@@ -9,7 +9,9 @@
   "typings": "types/index.d.ts",
   "bundlib": {
     "input": "src/api/index.ts",
-    "bin": "src/cli/index.ts"
+    "bin": "src/cli/index.ts",
+    "esModule": true,
+    "interop": true
   },
   "scripts": {
     "clean": "rm -rf node_modules/.cache/bundlib node_modules/.cache/jest bin dist types coverage",
