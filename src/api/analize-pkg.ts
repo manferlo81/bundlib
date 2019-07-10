@@ -191,7 +191,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
       isBrowserFormat(browserOptions10.format) &&
       (["name", "id"] as Array<keyof typeof browserOptions10>).every((key) => (
         isStringOrNull(browserOptions10[key])
-      )),
+      )) &&
       isValidGlobals(browserOptions10.globals)
     )
   ) {
