@@ -272,18 +272,20 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
     extend: normalizeBuildFlag(browserOptions10, "extend", !!extendFlag),
   };
 
+  const binaryNormOptions10 = isString(binaryOptions10) ? null : binaryOptions10;
+
   const binaryOutput: BinaryBuildInfo | null = (
-    binaryOptions10 === false || isString(binaryOptions10) || !pkgBin
+    binaryNormOptions10 === false || !pkgBin
   )
     ? null : {
       file: resolve(cwd, pkgBin),
       sourcemap: normalizeBuildSourcemap(
-        binaryOptions10,
+        binaryNormOptions10,
         globalSourcemap,
       ),
-      esModule: normalizeBuildFlag(binaryOptions10, "esModule", !!esModuleFlag),
-      interop: normalizeBuildFlag(binaryOptions10, "interop", !!interopFlag),
-      min: normalizeBuildMin(binaryOptions10, "bin", globalMin),
+      esModule: normalizeBuildFlag(binaryNormOptions10, "esModule", !!esModuleFlag),
+      interop: normalizeBuildFlag(binaryNormOptions10, "interop", !!interopFlag),
+      min: normalizeBuildMin(binaryNormOptions10, "bin", globalMin),
     };
 
   const output10: OutputFiles10 = {
