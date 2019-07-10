@@ -27,10 +27,11 @@ describe("format option", () => {
     const format = "iife";
 
     const analized = await analize(cwd, {
+      browser: "out/lib.js",
       bundlib: { format },
     });
 
-    expect(analized.browser.format).toBe(format);
+    expect(analized.output.browser ? analized.output.browser.format : null).toBe(format);
 
   });
 
@@ -39,10 +40,11 @@ describe("format option", () => {
     const format = "amd";
 
     const analized = await analize(cwd, {
+      browser: "out/lib.js",
       bundlib: { format },
     });
 
-    expect(analized.browser.format).toBe(format);
+    expect(analized.output.browser ? analized.output.browser.format : null).toBe(format);
 
   });
 
@@ -51,18 +53,21 @@ describe("format option", () => {
     const format = "umd";
 
     const analized = await analize(cwd, {
+      browser: "out/lib.js",
       bundlib: { format },
     });
 
-    expect(analized.browser.format).toBe(format);
+    expect(analized.output.browser ? analized.output.browser.format : null).toBe(format);
 
   });
 
   test("should default to umd in no browser format provided", async () => {
 
-    const analized = await analize(cwd, {});
+    const analized = await analize(cwd, {
+      browser: "out/lib.js",
+    });
 
-    expect(analized.browser.format).toBe("umd");
+    expect(analized.output.browser ? analized.output.browser.format : null).toBe("umd");
 
   });
 

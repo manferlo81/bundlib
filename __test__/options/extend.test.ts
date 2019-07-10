@@ -4,23 +4,44 @@ describe("extend option", () => {
 
   const cwd = process.cwd();
 
-  test("should read extend option as set as boolean", async () => {
+  const analizeWithExtend = (extend: any) => analize(cwd, {
+    browser: "out/lib.js",
+    bundlib: { extend },
+  });
 
-    const analizeWithExtend = (extend: any) => analize(cwd, {
-      bundlib: { extend },
-    });
+  test("should read truthy extend option as set as boolean", async () => {
 
-    const analizedWithTrue = await analizeWithExtend(true);
-    expect(analizedWithTrue.options.extend).toBe(true);
+    const analized = await analizeWithExtend(1);
 
-    const analizedWithFalse = await analizeWithExtend(false);
-    expect(analizedWithFalse.options.extend).toBe(false);
+    expect(analized.output.browser ? analized.output.browser.extend : null)
+      .toBe(true);
 
-    const analizedWithTruthy = await analizeWithExtend(1);
-    expect(analizedWithTruthy.options.extend).toBe(true);
+  });
 
-    const analizedWithFalsy = await analizeWithExtend(0);
-    expect(analizedWithFalsy.options.extend).toBe(false);
+  test("should read falsy extend option as set as boolean", async () => {
+
+    const analized = await analizeWithExtend(0);
+
+    expect(analized.output.browser ? analized.output.browser.extend : null)
+      .toBe(false);
+
+  });
+
+  test("should read true extend option as set as boolean", async () => {
+
+    const analized = await analizeWithExtend(true);
+
+    expect(analized.output.browser ? analized.output.browser.extend : null)
+      .toBe(true);
+
+  });
+
+  test("should read false extend option as set as boolean", async () => {
+
+    const analized = await analizeWithExtend(false);
+
+    expect(analized.output.browser ? analized.output.browser.extend : null)
+      .toBe(false);
 
   });
 

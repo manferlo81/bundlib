@@ -32,7 +32,8 @@ describe("id option", () => {
       bundlib: { name: "lib", id },
     });
 
-    expect(analized.browser.id).toBe(id);
+    expect(analized.output.browser ? analized.output.browser.id : null)
+      .toBe(id);
 
   });
 
@@ -43,7 +44,8 @@ describe("id option", () => {
       bundlib: { name: "lib" },
     });
 
-    expect(analized.browser.id).toBeNull();
+    expect(analized.output.browser ? analized.output.browser.id : false)
+      .toBeNull();
 
   });
 
