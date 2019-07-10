@@ -4,6 +4,10 @@ describe("cache option", () => {
 
   const cwd = process.cwd();
 
+  const analizeWithCache = (cache: any) => analize(cwd, {
+    bundlib: { cache },
+  });
+
   test("should throw on invalid cache option", () => {
 
     const invalidCacheOptions = [
@@ -16,10 +20,10 @@ describe("cache option", () => {
     expect.assertions(invalidCacheOptions.length);
 
     invalidCacheOptions.forEach((cache) => {
-      // @ts-ignore
-      expect(analize(cwd, {
-        bundlib: { cache },
-      })).rejects.toThrow(TypeError);
+      expect(
+        analizeWithCache(cache),
+      ).rejects
+        .toThrow(TypeError);
     });
 
   });
@@ -28,9 +32,7 @@ describe("cache option", () => {
 
     const cache = "cache-folder";
 
-    const analized = await analize(cwd, {
-      bundlib: { cache },
-    });
+    const analized = await analizeWithCache(cache);
 
     expect(analized.cache).toMatch(new RegExp("[/\\\\]" + cache + "$"));
 
