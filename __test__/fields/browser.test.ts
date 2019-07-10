@@ -22,7 +22,7 @@ describe("package.json browser field", () => {
 
     const analized = await analize(cwd, { browser: "out/lib.js" });
 
-    expect(analized.output.browser).toMatch(/out[\\/]lib\.js$/);
+    expect(analized.output.browser ? analized.output.browser.file : null).toMatch(/out[\\/]lib\.js$/);
 
   });
 

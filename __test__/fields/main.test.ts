@@ -15,7 +15,7 @@ describe("package.json main field", () => {
 
     const analized = await analize(cwd, { main: "out/lib.js" });
 
-    expect(analized.output.main).toMatch(/out[\\/]lib\.js$/);
+    expect(analized.output.main ? analized.output.main.file : null).toMatch(/out[\\/]lib\.js$/);
 
   });
 
