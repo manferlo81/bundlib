@@ -42,7 +42,7 @@ function pkgToConfigs(
     module: esOutputInfo,
     browser: browserOutputInfo,
     bin: binaryOutputInfo,
-    types: typesOutputFile,
+    types: typesOutputInfo,
   } = output10;
 
   if (
@@ -81,7 +81,7 @@ function pkgToConfigs(
 
   const typesFilename = renamePre(basename(apiInput), "d");
 
-  let typesOutputDir = typesOutputFile;
+  let typesOutputDir = typesOutputInfo ? typesOutputInfo.path : null;
   if (typesOutputDir && extname(typesOutputDir) === ".ts") {
     typesOutputDir = dirname(typesOutputDir);
   }
@@ -169,7 +169,7 @@ function pkgToConfigs(
 
       json() as Plugin,
 
-      declarationDir && cjsOutputInfo && cjsOutputInfo.equals && exportEquals({
+      declarationDir && typesOutputInfo && typesOutputInfo.equals && exportEquals({
         file: resolve(cwd, pathJoin(declarationDir, typesFilename)),
       }),
 

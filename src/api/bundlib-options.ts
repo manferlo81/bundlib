@@ -53,16 +53,16 @@ export interface ESModuleBuildOptions10 extends
   SourceMapOptions, SingleMinOptions {
 }
 
-export interface BinaryBuildOptions10 extends
-  TopLevelNonESModuleOptions10, SingleMinOptions {
-}
-
 export interface CommonJSBuildOptions10 extends
-  BinaryBuildOptions10, TopLevelCommonJSOptions10 {
+  TopLevelNonESModuleOptions10, SingleMinOptions {
 }
 
 export interface BrowserBuildOptions10 extends
   TopLevelNonESModuleOptions10, SingleMinOptions, TopLevelBrowserOptions10 {
+}
+
+export interface TypesOptions10 {
+  equals?: Nullable<boolean>;
 }
 
 export interface BundlibOptions10 extends
@@ -71,6 +71,6 @@ export interface BundlibOptions10 extends
   main?: Nullable<CommonJSBuildOptions10 | false>;
   module?: Nullable<ESModuleBuildOptions10 | false>;
   browser?: Nullable<BrowserBuildOptions10 | false>;
-  bin?: Nullable<BinaryBuildOptions10 | string | false>;
-  types?: Nullable<false>;
+  bin?: Nullable<CommonJSBuildOptions10 | string | false>;
+  types?: Nullable<TypesOptions10>;
 }

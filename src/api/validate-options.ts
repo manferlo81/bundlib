@@ -9,7 +9,6 @@ export function invalidKeys(object: Record<string, any>, list: string[]): string
 export function getInvalidOptions(options: Record<string, any>): string[] | null {
   return invalidKeys(options, [
     "input",
-    "bin",
     "extend",
     "esModule",
     "interop",
@@ -24,6 +23,8 @@ export function getInvalidOptions(options: Record<string, any>): string[] | null
     "main",
     "module",
     "browser",
+    "bin",
+    "types",
   ] as Array<keyof BundlibOptions10>);
   // return keys(options as Record<keyof BundlibOptions10, any>).filter((name) => (
   //   name !== "input" &&
