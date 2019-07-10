@@ -1,12 +1,9 @@
-import { ModuleOptions, TopLevelCommonJSOptions10, TopLevelCommonJSOptions10000 } from "./bundlib-options";
 import { isNull } from "./type-check";
 import { Nullable } from "./types";
 
-type BuildObjectWithFlags = TopLevelCommonJSOptions10 & ModuleOptions & TopLevelCommonJSOptions10000;
-
-export function normalizeBuildFlag(
-  build: Nullable<BuildObjectWithFlags>,
-  key: keyof BuildObjectWithFlags,
+export function normalizeBuildFlag<K extends string>(
+  build: Nullable<Partial<Record<K, any>>>,
+  key: K,
   def: boolean,
 ): boolean {
   return !build || isNull(build[key]) ? def : !!build[key];
