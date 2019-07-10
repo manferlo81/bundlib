@@ -22,7 +22,7 @@ describe("package.json bin field", () => {
 
     const analized = await analize(cwd, { bin: "bin/cli.js" });
 
-    expect(analized.output.bin).toMatch(/bin[\\/]cli\.js$/);
+    expect(analized.output.bin ? analized.output.bin.file : null).toMatch(/bin[\\/]cli\.js$/);
 
   });
 

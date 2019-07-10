@@ -1,3 +1,4 @@
+import { ESModuleBuildInfo } from "../../src/api/pkg-analized";
 import analize from "../tools/analize";
 
 describe("package.json main field", () => {
@@ -22,7 +23,7 @@ describe("package.json main field", () => {
 
     const analized = await analize(cwd, { module: "out/lib.js" });
 
-    expect(analized.output.module).toMatch(/out[\\/]lib\.js$/);
+    expect((analized.output.module as ESModuleBuildInfo).file).toMatch(/out[\\/]lib\.js$/);
 
   });
 
@@ -30,7 +31,7 @@ describe("package.json main field", () => {
 
     const analized = await analize(cwd, { "jsnext:main": "out/lib.js" });
 
-    expect(analized.output.module).toMatch(/out[\\/]lib\.js$/);
+    expect((analized.output.module as ESModuleBuildInfo).file).toMatch(/out[\\/]lib\.js$/);
 
   });
 
