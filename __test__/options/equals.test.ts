@@ -5,20 +5,20 @@ describe("equals option", () => {
   const cwd = process.cwd();
 
   const analizeWithEquals = (equals: any) => analize(cwd, {
-    main: "out/lib.js",
+    types: "index.d.ts",
     bundlib: { equals },
   });
 
   const analizeWithBuildEquals = (equals: any) => analize(cwd, {
-    main: "out/lib.js",
-    bundlib: { main: { equals } },
+    types: "index.d.ts",
+    bundlib: { types: { equals } },
   });
 
   test("should read truthy equals option as set as boolean", async () => {
 
     const analized = await analizeWithEquals(1);
 
-    expect(analized.output.main ? analized.output.main.equals : null)
+    expect(analized.output.types ? analized.output.types.equals : null)
       .toBe(true);
 
   });
@@ -27,7 +27,7 @@ describe("equals option", () => {
 
     const analized = await analizeWithEquals(0);
 
-    expect(analized.output.main ? analized.output.main.equals : null)
+    expect(analized.output.types ? analized.output.types.equals : null)
       .toBe(false);
 
   });
@@ -36,7 +36,7 @@ describe("equals option", () => {
 
     const analized = await analizeWithEquals(true);
 
-    expect(analized.output.main ? analized.output.main.equals : null)
+    expect(analized.output.types ? analized.output.types.equals : null)
       .toBe(true);
 
   });
@@ -45,7 +45,7 @@ describe("equals option", () => {
 
     const analized = await analizeWithEquals(false);
 
-    expect(analized.output.main ? analized.output.main.equals : null)
+    expect(analized.output.types ? analized.output.types.equals : null)
       .toBe(false);
 
   });
@@ -54,7 +54,7 @@ describe("equals option", () => {
 
     const analized = await analizeWithBuildEquals(1);
 
-    expect(analized.output.main ? analized.output.main.equals : null)
+    expect(analized.output.types ? analized.output.types.equals : null)
       .toBe(true);
 
   });
@@ -63,7 +63,7 @@ describe("equals option", () => {
 
     const analized = await analizeWithBuildEquals(0);
 
-    expect(analized.output.main ? analized.output.main.equals : null)
+    expect(analized.output.types ? analized.output.types.equals : null)
       .toBe(false);
 
   });
@@ -72,7 +72,7 @@ describe("equals option", () => {
 
     const analized = await analizeWithBuildEquals(true);
 
-    expect(analized.output.main ? analized.output.main.equals : null)
+    expect(analized.output.types ? analized.output.types.equals : null)
       .toBe(true);
 
   });
@@ -81,7 +81,7 @@ describe("equals option", () => {
 
     const analized = await analizeWithBuildEquals(false);
 
-    expect(analized.output.main ? analized.output.main.equals : null)
+    expect(analized.output.types ? analized.output.types.equals : null)
       .toBe(false);
 
   });
