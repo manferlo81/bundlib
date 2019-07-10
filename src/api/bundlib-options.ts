@@ -72,4 +72,5 @@ export interface BundlibOptions10 extends
   module?: Nullable<ESModuleBuildOptions10 | false>;
   browser?: Nullable<BrowserBuildOptions10 | false>;
   bin?: Nullable<BinaryBuildOptions10 | string | false>;
+  types?: Nullable<false>;
 }

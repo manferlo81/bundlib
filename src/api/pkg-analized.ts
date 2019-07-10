@@ -22,9 +22,9 @@ export type FlagField = "extend" | "esModule" | "interop" | "equals";
 export type OutputOptions = Record<FlagField, boolean>;
 
 export interface AnalizedPkg {
-  output: OutputFiles;
-  sourcemap: RollupSourcemap;
-  browser: BrowserOptions;
+  // output: OutputFiles;
+  // sourcemap: RollupSourcemap;
+  // browser: BrowserOptions;
   minify: MinifyOptions;
   options: OutputOptions;
 }
@@ -69,5 +69,4 @@ export interface PkgAnalized10 {
   output: OutputFiles10;
   dependencies: Dependencies;
   cache: string;
-  legacy: AnalizedPkg;
 }
