@@ -1,8 +1,8 @@
-import { ModuleOutputFields } from "./pkg-analized";
+import { MinifiableFields } from "./pkg-analized";
 import { BrowserBuildFormat, Nullable, RollupSourcemap } from "./types";
 
 export type GlobalsOptions = Nullable<Record<string, string> | string[]>;
-export type MinOption = Nullable<ModuleOutputFields | ModuleOutputFields[] | boolean>;
+export type MinOption = Nullable<MinifiableFields | MinifiableFields[] | boolean>;
 
 // version 0.10 types
 
