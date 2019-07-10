@@ -37,16 +37,12 @@ export interface ESModuleBuildInfo {
   min: boolean;
 }
 
-export interface BinaryBuildInfo extends ESModuleBuildInfo {
+export interface CommonJSBuildInfo extends ESModuleBuildInfo {
   esModule: boolean;
   interop: boolean;
 }
 
-export interface CommonJSBuildInfo extends BinaryBuildInfo {
-  equals: boolean;
-}
-
-export interface BrowserBuildInfo extends BinaryBuildInfo {
+export interface BrowserBuildInfo extends CommonJSBuildInfo {
   format: BrowserBuildFormat;
   name: string | null;
   id: string | null;
@@ -54,12 +50,17 @@ export interface BrowserBuildInfo extends BinaryBuildInfo {
   extend: boolean;
 }
 
+export interface TypesBuildInfo {
+  path: string;
+  equals: boolean;
+}
+
 export interface OutputFiles10 {
   main: CommonJSBuildInfo | null;
   module: ESModuleBuildInfo | null;
   browser: BrowserBuildInfo | null;
-  bin: BinaryBuildInfo | null;
-  types: string | null;
+  bin: CommonJSBuildInfo | null;
+  types: TypesBuildInfo | null;
 }
 
 export interface PkgAnalized10 {
