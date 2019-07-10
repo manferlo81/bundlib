@@ -13,18 +13,14 @@ import normalizeBuildName from "./option-name";
 import { normalizeBuildSourcemap, normalizeSourcemap } from "./options-sourcemap";
 import { BundlibPkgJson } from "./pkg";
 import {
-  AnalizedPkg,
   BinaryBuildInfo,
   BrowserBuildInfo,
-  BrowserOptions,
   CommonJSBuildInfo,
   Dependencies,
   ESModuleBuildInfo,
   InputFiles,
   MinifyOptions,
-  OutputFiles,
   OutputFiles10,
-  OutputOptions,
   PkgAnalized10,
 } from "./pkg-analized";
 import resolve from "./resolve";
@@ -47,7 +43,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
     browser: pkgBrowser,
     bin: pkgBin,
     types: pkgTypes,
-    typings: pkgTypings,
+    typings,
     dependencies: runtimeDependencies,
     peerDependencies,
     optionalDependencies,
@@ -91,14 +87,13 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
   }
 
   const invalidOptions = bundlibOptions && getInvalidOptions(bundlibOptions);
-  if (invalidOptions && invalidOptions.length) {
+  if (invalidOptions) {
     const optionNames = invalidOptions.map((name) => `"${name}"`).join(", ");
     throw error(`Unknown options found: (${optionNames})`);
   }
 
   const {
     input: pkgInput,
-    // bin: pkgBinInput,
     sourcemap: sourcemapOption,
     esModule: esModuleFlag,
     interop: interopFlag,
@@ -114,6 +109,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
     module: moduleOptions10,
     browser: browserOptions10,
     bin: binaryOptions10,
+    types: generateTypes10,
   } = bundlibOptions || {} as BundlibOptions10;
 
   if (
@@ -216,9 +212,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
   }
 
   const esModuleFile = pkgModule || pkgJsNextMain;
-  const typesPath = pkgTypes || pkgTypings;
-
-  // input
+  const typesPath = pkgTypes || typings;
 
   const apiInput = isStringOrNull(pkgInput) ? pkgInput : pkgInput.api;
   let binInput = isStringOrNull(pkgInput) ? null : pkgInput.bin;
@@ -236,8 +230,6 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
   const globalSourcemap = normalizeSourcemap(sourcemapOption);
   const globalMin: MinifyOptions = normalizeMin(min);
 
-  // main
-
   const mainOutput: CommonJSBuildInfo | null = (mainOptions10 === false || !pkgMain) ? null : {
     file: resolve(cwd, pkgMain),
     sourcemap: normalizeBuildSourcemap(
@@ -250,8 +242,6 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
     min: normalizeBuildMin(mainOptions10, "main", globalMin),
   };
 
-  // module
-
   const moduleOutput: ESModuleBuildInfo | null = (moduleOptions10 === false || !esModuleFile) ? null : {
     file: resolve(cwd, esModuleFile),
     sourcemap: normalizeBuildSourcemap(
@@ -260,17 +250,6 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
     ),
     min: normalizeBuildMin(moduleOptions10, "main", globalMin),
   };
-
-  // browser
-
-  const format = browserFormat || "umd";
-
-  const buildName = normalizeBuildName(
-    cwd,
-    browserOptions10 ? browserOptions10.name : null,
-    browserName,
-    pkgName,
-  );
 
   const browserOutput: BrowserBuildInfo | null = (browserOptions10 === false || !pkgBrowser) ? null : {
     file: resolve(cwd, pkgBrowser),
@@ -281,17 +260,22 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
     esModule: normalizeBuildFlag(browserOptions10, "esModule", !!esModuleFlag),
     interop: normalizeBuildFlag(browserOptions10, "interop", !!interopFlag),
     min: normalizeBuildMin(browserOptions10, "main", globalMin),
-    format,
-    name: buildName,
+    format: browserOptions10 && !isNull(browserOptions10.format) ? browserOptions10.format : (browserFormat || "umd"),
+    name: normalizeBuildName(
+      cwd,
+      browserOptions10 ? browserOptions10.name : null,
+      browserName,
+      pkgName,
+    ),
     id: amdId || null,
     globals: normalizeGlobals(browserGlobals),
     extend: normalizeBuildFlag(browserOptions10, "extend", !!extendFlag),
   };
 
-  // Binary
-
-  const binaryOutput: BinaryBuildInfo | null =
-    (binaryOptions10 === false || isString(binaryOptions10) || !pkgBin) ? null : {
+  const binaryOutput: BinaryBuildInfo | null = (
+    binaryOptions10 === false || isString(binaryOptions10) || !pkgBin
+  )
+    ? null : {
       file: resolve(cwd, pkgBin),
       sourcemap: normalizeBuildSourcemap(
         binaryOptions10,
@@ -302,22 +286,12 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
       min: normalizeBuildMin(binaryOptions10, "bin", globalMin),
     };
 
-  //
-
   const output10: OutputFiles10 = {
     main: mainOutput,
     module: moduleOutput,
     browser: browserOutput,
     bin: binaryOutput,
-    types: resolve(cwd, typesPath),
-  };
-
-  const output: OutputFiles = {
-    main: resolve(cwd, pkgMain),
-    module: resolve(cwd, esModuleFile),
-    browser: resolve(cwd, pkgBrowser),
-    bin: resolve(cwd, pkgBin),
-    types: resolve(cwd, typesPath),
+    types: (generateTypes10 === false) ? null : resolve(cwd, typesPath),
   };
 
   const dependencies: Dependencies = {
@@ -326,25 +300,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
     optional: keysOrNull(optionalDependencies),
   };
 
-  const globals = normalizeGlobals(browserGlobals);
-
-  const browser: BrowserOptions = {
-    format: browserFormat || "umd",
-    name: buildName,
-    id: amdId || null,
-    globals,
-  };
-
   const cache: string = resolve(cwd, cacheOption || "node_modules/.cache/bundlib");
-
-  const options: OutputOptions = {
-    esModule: !!esModuleFlag,
-    interop: !!interopFlag,
-    extend: !!extendFlag,
-    equals: !!equalsFlag,
-  };
-
-  const legacy: AnalizedPkg = { output, sourcemap: globalSourcemap, minify: globalMin, browser, options };
 
   return {
     cwd,
@@ -353,7 +309,6 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
     output: output10,
     dependencies,
     cache,
-    legacy,
   };
 
 }

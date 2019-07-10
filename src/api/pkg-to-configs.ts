@@ -18,7 +18,7 @@ import { createBrowserConfig, createModuleConfig } from "./create-config";
 import { error, noTsInput } from "./errors";
 import { PkgAnalized10 } from "./pkg-analized";
 import { renameMin, renamePre } from "./rename";
-import { BundlibRollupOptions } from "./types";
+import { BundlibRollupOptions, FilterablePlugins } from "./types";
 
 function pkgToConfigs(pkg: PkgAnalized10, dev?: boolean): BundlibRollupOptions[];
 function pkgToConfigs(
@@ -27,13 +27,7 @@ function pkgToConfigs(
     input: inputObject,
     dependencies,
     cache: cacheFolder,
-    legacy: {
-      output,
-      sourcemap,
-      minify,
-      browser: browserOptions,
-      options,
-    },
+    output: output10,
   }: PkgAnalized10,
   dev?: boolean,
 ): BundlibRollupOptions[] {
@@ -44,22 +38,22 @@ function pkgToConfigs(
   } = inputObject;
 
   const {
-    main: cjsOutputFile,
-    module: esOutputFile,
-    browser: browserOutputFile,
-    bin: binaryOutputFile,
+    main: cjsOutputInfo,
+    module: esOutputInfo,
+    browser: browserOutputInfo,
+    bin: binaryOutputInfo,
     types: typesOutputFile,
-  } = output;
+  } = output10;
 
   if (
-    (cjsOutputFile || esOutputFile || browserOutputFile) &&
+    (cjsOutputInfo || esOutputInfo || browserOutputInfo) &&
     extname(apiInput) !== ".ts"
   ) {
     throw noTsInput("Module");
   }
 
   if (
-    binaryOutputFile &&
+    binaryOutputInfo &&
     extname(binInput) !== ".ts"
   ) {
     throw noTsInput("Binary");
@@ -71,33 +65,21 @@ function pkgToConfigs(
     optional: optionalDeps,
   } = dependencies;
 
-  const {
-    esModule,
-    interop,
-    extend,
-    equals,
-  } = options;
-
-  const {
-    format: browserFormat,
-    name: pkgName,
-    id,
-    globals,
-  } = browserOptions;
-
-  const nameNeeded = browserOutputFile && (browserFormat === "iife" || browserFormat === "umd");
-  if (nameNeeded && !pkgName) {
+  if (
+    browserOutputInfo &&
+    (browserOutputInfo.format === "iife" || browserOutputInfo.format === "umd") &&
+    !browserOutputInfo.name
+  ) {
     throw error("name option is required for IIFE and UMD builds");
   }
 
-  const prod = !dev;
+  const production = !dev;
 
   const apiFolder = dirname(apiInput);
   const apiFolderContent = resolve(apiFolder, "**/*.ts");
   const cwdFolderContent = resolve(cwd, "**/*.ts");
 
   const typesFilename = renamePre(basename(apiInput), "d");
-  const sourcemapBool = !!sourcemap;
 
   let typesOutputDir = typesOutputFile;
   if (typesOutputDir && extname(typesOutputDir) === ".ts") {
@@ -111,7 +93,7 @@ function pkgToConfigs(
 
   const configs: BundlibRollupOptions[] = [];
 
-  function createPlugins(browser: boolean, mini: boolean, bin?: string): Array<Plugin | null | false> {
+  function createPlugins(browser: boolean, mini: boolean, sourcemapBool: boolean, bin?: string): FilterablePlugins {
 
     const declarationDir = !configs.length && !bin && typesOutputDir;
     const tsInclude = bin ? [cwdFolderContent] : [apiFolderContent];
@@ -121,12 +103,12 @@ function pkgToConfigs(
 
     return [
 
-      !!bin && stripShebang({
+      bin && stripShebang({
         capture: (shebangFromFile) => shebang = shebangFromFile,
         sourcemap: sourcemapBool,
       }),
 
-      !!bin && !!cjsOutputFile && {
+      bin && cjsOutputInfo && {
 
         name: "api",
 
@@ -187,7 +169,7 @@ function pkgToConfigs(
 
       json() as Plugin,
 
-      !!declarationDir && equals && exportEquals({
+      declarationDir && cjsOutputInfo && cjsOutputInfo.equals && exportEquals({
         file: resolve(cwd, pathJoin(declarationDir, typesFilename)),
       }),
 
@@ -206,7 +188,7 @@ function pkgToConfigs(
         objectAssign: true,
       }) as Plugin,
 
-      !!bin && addShebang({
+      bin && addShebang({
         include: bin,
         shebang: () => shebang,
       }),
@@ -221,34 +203,34 @@ function pkgToConfigs(
 
   }
 
-  if (esOutputFile) {
+  if (esOutputInfo) {
 
     configs.push(
       createModuleConfig(
         apiInput,
         "es",
-        esOutputFile,
-        sourcemap,
+        esOutputInfo.file,
+        esOutputInfo.sourcemap,
         true,
         false,
         external,
-        createPlugins(false, prod && !minify.module),
+        createPlugins(false, production && !esOutputInfo.min, !!esOutputInfo.sourcemap),
         true,
       ),
     );
 
-    if (minify.module) {
+    if (esOutputInfo.min) {
 
       configs.push(
         createModuleConfig(
           apiInput,
           "es",
-          renameMin(esOutputFile),
-          sourcemap,
+          renameMin(esOutputInfo.file),
+          esOutputInfo.sourcemap,
           true,
           false,
           external,
-          createPlugins(false, true),
+          createPlugins(false, true, !!esOutputInfo.sourcemap),
           true,
         ),
       );
@@ -257,34 +239,34 @@ function pkgToConfigs(
 
   }
 
-  if (cjsOutputFile) {
+  if (cjsOutputInfo) {
 
     configs.push(
       createModuleConfig(
         apiInput,
         "cjs",
-        cjsOutputFile,
-        sourcemap,
-        esModule,
-        interop,
+        cjsOutputInfo.file,
+        cjsOutputInfo.sourcemap,
+        cjsOutputInfo.esModule,
+        cjsOutputInfo.interop,
         external,
-        createPlugins(false, prod && !minify.main),
+        createPlugins(false, production && !cjsOutputInfo.min, !!cjsOutputInfo.sourcemap),
         true,
       ),
     );
 
-    if (minify.main) {
+    if (cjsOutputInfo.min) {
 
       configs.push(
         createModuleConfig(
           apiInput,
           "cjs",
-          renameMin(cjsOutputFile),
-          sourcemap,
-          esModule,
-          interop,
+          renameMin(cjsOutputInfo.file),
+          cjsOutputInfo.sourcemap,
+          cjsOutputInfo.esModule,
+          cjsOutputInfo.interop,
           external,
-          createPlugins(false, true),
+          createPlugins(false, true, !!cjsOutputInfo.sourcemap),
           true,
         ),
       );
@@ -293,41 +275,41 @@ function pkgToConfigs(
 
   }
 
-  if (browserOutputFile) {
+  if (browserOutputInfo) {
 
     configs.push(
       createBrowserConfig(
         apiInput,
-        browserFormat,
-        browserOutputFile,
-        sourcemap,
-        esModule,
-        interop,
-        createPlugins(true, prod && !minify.browser),
+        browserOutputInfo.format,
+        browserOutputInfo.file,
+        browserOutputInfo.sourcemap,
+        browserOutputInfo.esModule,
+        browserOutputInfo.interop,
+        createPlugins(true, production && !browserOutputInfo.min, !!browserOutputInfo.sourcemap),
         true,
-        pkgName as string,
-        extend,
-        globals,
-        id,
+        browserOutputInfo.name as string,
+        browserOutputInfo.extend,
+        browserOutputInfo.globals,
+        browserOutputInfo.id,
       ),
     );
 
-    if (minify.browser) {
+    if (browserOutputInfo.min) {
 
       configs.push(
         createBrowserConfig(
           apiInput,
-          browserFormat,
-          renameMin(browserOutputFile),
-          sourcemap,
-          esModule,
-          interop,
-          createPlugins(true, true),
+          browserOutputInfo.format,
+          renameMin(browserOutputInfo.file),
+          browserOutputInfo.sourcemap,
+          browserOutputInfo.esModule,
+          browserOutputInfo.interop,
+          createPlugins(true, true, !!browserOutputInfo.sourcemap),
           true,
-          pkgName as string,
-          extend,
-          globals,
-          id,
+          browserOutputInfo.name as string,
+          browserOutputInfo.extend,
+          browserOutputInfo.globals,
+          browserOutputInfo.id,
         ),
       );
 
@@ -335,18 +317,18 @@ function pkgToConfigs(
 
   }
 
-  if (binaryOutputFile) {
+  if (binaryOutputInfo) {
 
     configs.push(
       createModuleConfig(
         binInput,
         "cjs",
-        binaryOutputFile,
-        sourcemap,
-        esModule,
-        interop,
+        binaryOutputInfo.file,
+        binaryOutputInfo.sourcemap,
+        binaryOutputInfo.esModule,
+        binaryOutputInfo.interop,
         external,
-        createPlugins(false, prod, binaryOutputFile),
+        createPlugins(false, production, !!binaryOutputInfo.sourcemap, binaryOutputInfo.file),
         true,
       ),
     );
