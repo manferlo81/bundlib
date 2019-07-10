@@ -26,15 +26,17 @@ describe("globals option", () => {
   test("should work with array globals option", async () => {
 
     const analized = await analize(cwd, {
+      browser: "out/lib.js",
       bundlib: {
         globals: ["module1", "module2"],
       },
     });
 
-    expect(analized.browser.globals).toEqual({
-      module1: "module1",
-      module2: "module2",
-    });
+    expect(analized.output.browser ? analized.output.browser.globals : null)
+      .toEqual({
+        module1: "module1",
+        module2: "module2",
+      });
 
   });
 
@@ -46,30 +48,36 @@ describe("globals option", () => {
     };
 
     const analized = await analize(cwd, {
+      browser: "out/lib.js",
       bundlib: { globals },
     });
 
-    expect(analized.browser.globals).toEqual(globals);
+    expect(analized.output.browser ? analized.output.browser.globals : null)
+      .toEqual(globals);
 
   });
 
   test("should set globals to null if globals option null", async () => {
 
     const analized = await analize(cwd, {
+      browser: "out/lib.js",
       bundlib: { globals: null },
     });
 
-    expect(analized.browser.globals).toBeNull();
+    expect(analized.output.browser ? analized.output.browser.globals : false)
+      .toBeNull();
 
   });
 
   test("should set globals to null if no globals option set", async () => {
 
     const analized = await analize(cwd, {
+      browser: "out/lib.js",
       bundlib: {},
     });
 
-    expect(analized.browser.globals).toBeNull();
+    expect(analized.output.browser ? analized.output.browser.globals : false)
+      .toBeNull();
 
   });
 

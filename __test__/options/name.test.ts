@@ -33,7 +33,8 @@ describe("name option", () => {
       bundlib: { name },
     });
 
-    expect(analized.browser.name).toBe(name);
+    expect(analized.output.browser ? analized.output.browser.name : null)
+      .toBe(name);
 
   });
 
@@ -46,7 +47,8 @@ describe("name option", () => {
       browser: "out/lib.umd.js",
     });
 
-    expect(analized.browser.name).toBe("pkgName");
+    expect(analized.output.browser ? analized.output.browser.name : null)
+      .toBe("pkgName");
 
   });
 

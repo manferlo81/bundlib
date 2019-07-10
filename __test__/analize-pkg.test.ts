@@ -45,11 +45,7 @@ describe("analize", () => {
     const {
       input,
       output,
-      sourcemap,
       dependencies,
-      browser,
-      minify,
-      options,
       cache,
     } = await analize(cwd, pkg);
 
@@ -64,28 +60,10 @@ describe("analize", () => {
       bin: null,
       types: null,
     });
-    expect(sourcemap).toBe(true);
     expect(dependencies).toEqual({
       runtime: null,
       peer: null,
       optional: null,
-    });
-    expect(browser).toEqual({
-      format: "umd",
-      name: "lib",
-      id: null,
-      globals: null,
-    });
-    expect(minify).toEqual({
-      main: false,
-      module: false,
-      browser: false,
-    });
-    expect(options).toEqual({
-      extend: false,
-      esModule: false,
-      interop: false,
-      equals: false,
     });
     expect(typeof cache).toBe("string");
 

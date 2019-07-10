@@ -4,6 +4,14 @@ describe("min option", () => {
 
   const cwd = process.cwd();
 
+  const analizeWithMin = (min: any) => analize(cwd, {
+    main: "lib.js",
+    module: "lib.js",
+    browser: "lib.js",
+    bin: "lib.js",
+    bundlib: { min },
+  });
+
   test("should throw on invalid min option", () => {
 
     const invalidMinOptions = [
@@ -23,62 +31,48 @@ describe("min option", () => {
 
   });
 
-  test("should work with string min option", async () => {
+  test("should work with string main min option", async () => {
 
-    const analizeWithStringMin = (min: "main" | "module" | "browser") => analize(cwd, {
-      bundlib: { min },
-    });
+    const analized = await analizeWithMin("main");
 
-    const analizedWithMain = await analizeWithStringMin("main");
-    expect(analizedWithMain.minify).toEqual({
-      main: true,
-      module: false,
-      browser: false,
-    });
-
-    const analizedWithModule = await analizeWithStringMin("module");
-    expect(analizedWithModule.minify).toEqual({
-      main: false,
-      module: true,
-      browser: false,
-    });
-
-    const analizedWithBrowser = await analizeWithStringMin("browser");
-    expect(analizedWithBrowser.minify).toEqual({
-      main: false,
-      module: false,
-      browser: true,
-    });
+    expect(analized.output.main ? analized.output.main.min : null)
+      .toEqual(true);
+    expect(analized.output.module ? analized.output.module.min : null)
+      .toEqual(false);
+    expect(analized.output.browser ? analized.output.browser.min : null)
+      .toEqual(false);
+    expect(analized.output.bin ? analized.output.bin.min : null)
+      .toEqual(false);
 
   });
 
   test("should work with array min option", async () => {
 
-    const analized = await analize(cwd, {
-      bundlib: {
-        min: ["main", "module", "browser"],
-      },
-    });
+    const analized = await analizeWithMin(["module", "bin"]);
 
-    expect(analized.minify).toEqual({
-      main: true,
-      module: true,
-      browser: true,
-    });
+    expect(analized.output.main ? analized.output.main.min : null)
+      .toEqual(false);
+    expect(analized.output.module ? analized.output.module.min : null)
+      .toEqual(true);
+    expect(analized.output.browser ? analized.output.browser.min : null)
+      .toEqual(false);
+    expect(analized.output.bin ? analized.output.bin.min : null)
+      .toEqual(true);
 
   });
 
   test("should work with true as min option", async () => {
 
-    const analized = await analize(cwd, {
-      bundlib: { min: true },
-    });
+    const analized = await analizeWithMin(true);
 
-    expect(analized.minify).toEqual({
-      main: true,
-      module: true,
-      browser: true,
-    });
+    expect(analized.output.main ? analized.output.main.min : null)
+      .toEqual(true);
+    expect(analized.output.module ? analized.output.module.min : null)
+      .toEqual(true);
+    expect(analized.output.browser ? analized.output.browser.min : null)
+      .toEqual(true);
+    expect(analized.output.bin ? analized.output.bin.min : null)
+      .toEqual(true);
 
   });
 
