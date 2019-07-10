@@ -1,4 +1,5 @@
 
+import { resolve } from "path";
 import readPkg from "read-pkg";
 
 import { BundlibOptions10 } from "./bundlib-options";
@@ -23,7 +24,6 @@ import {
   PkgAnalized,
   TypesBuildInfo,
 } from "./pkg-analized";
-import resolve from "./resolve";
 import { isBool, isDictionary, isDictionaryOrNull, isNull, isString, isStringOrNull } from "./type-check";
 import { getInvalidOptions, invalidKeys } from "./validate-options";
 
