@@ -6,7 +6,7 @@ import { Nullable } from "./types";
 
 export function isOutputField(value: any): value is MinifiableFields {
   return !!value && (
-    value === "main" || value === "module" || value === "browser" || value === "min"
+    value === "main" || value === "module" || value === "browser" || value === "bin"
   );
 }
 

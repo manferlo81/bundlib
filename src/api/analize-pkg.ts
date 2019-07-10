@@ -248,7 +248,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
       moduleOptions10,
       globalSourcemap,
     ),
-    min: normalizeBuildMin(moduleOptions10, "main", globalMin),
+    min: normalizeBuildMin(moduleOptions10, "module", globalMin),
   };
 
   const browserOutput: BrowserBuildInfo | null = (browserOptions10 === false || !pkgBrowser) ? null : {
@@ -259,7 +259,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
     ),
     esModule: normalizeBuildFlag(browserOptions10, "esModule", !!esModuleFlag),
     interop: normalizeBuildFlag(browserOptions10, "interop", !!interopFlag),
-    min: normalizeBuildMin(browserOptions10, "main", globalMin),
+    min: normalizeBuildMin(browserOptions10, "browser", globalMin),
     format: browserOptions10 && !isNull(browserOptions10.format) ? browserOptions10.format : (browserFormat || "umd"),
     name: normalizeBuildName(
       cwd,
