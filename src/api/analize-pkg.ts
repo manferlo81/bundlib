@@ -17,17 +17,17 @@ import {
   CommonJSBuildInfo,
   Dependencies,
   ESModuleBuildInfo,
-  InputFiles,
+  InputOptions,
   MinifyOptions,
-  OutputFiles10,
-  PkgAnalized10,
+  OutputOptions,
+  PkgAnalized,
   TypesBuildInfo,
 } from "./pkg-analized";
 import resolve from "./resolve";
 import { isBool, isDictionary, isDictionaryOrNull, isNull, isString, isStringOrNull } from "./type-check";
 import { getInvalidOptions, invalidKeys } from "./validate-options";
 
-async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalized10> {
+async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalized> {
 
   const resolvedPkg: BundlibPkgJson = pkg || await readPkg({ cwd, normalize: false });
 
@@ -231,7 +231,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
     binInput = binaryOptions10;
   }
 
-  const input: InputFiles = {
+  const input: InputOptions = {
     api: resolve(cwd, apiInput || "src/index.ts"),
     bin: resolve(cwd, binInput || "src-bin/index.ts"),
   };
@@ -302,7 +302,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
       equals: normalizeBuildFlag(generateTypes10, "equals", !!equalsFlag),
     };
 
-  const output10: OutputFiles10 = {
+  const output10: OutputOptions = {
     main: mainOutput,
     module: moduleOutput,
     browser: browserOutput,

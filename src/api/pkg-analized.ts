@@ -1,35 +1,10 @@
 import { BundlibPkgJson } from "./pkg";
 import { BrowserBuildFormat, RollupSourcemap } from "./types";
 
-export type ModuleOutputFields = "main" | "module" | "browser";
-export type MinifiableFields = ModuleOutputFields | "bin";
-export type OutputFields = ModuleOutputFields | "bin" | "types";
-
-export type InputFiles = Record<"api" | "bin", string>;
-export type OutputFiles = Record<OutputFields, string | null>;
-export type Dependencies = Record<"runtime" | "peer" | "optional", string[] | null>;
+export type MinifiableFields = "main" | "module" | "browser" | "bin";
 export type MinifyOptions = Record<MinifiableFields, boolean>;
 
-export interface BrowserOptions {
-  format: BrowserBuildFormat;
-  name: string | null;
-  id: string | null;
-  globals: Record<string, string> | null;
-}
-
-export type FlagField = "extend" | "esModule" | "interop" | "equals";
-
-export type OutputOptions = Record<FlagField, boolean>;
-
-export interface AnalizedPkg {
-  // output: OutputFiles;
-  // sourcemap: RollupSourcemap;
-  // browser: BrowserOptions;
-  minify: MinifyOptions;
-  options: OutputOptions;
-}
-
-// version 0.10 types
+export type InputOptions = Record<"api" | "bin", string>;
 
 export interface ESModuleBuildInfo {
   file: string;
@@ -55,7 +30,7 @@ export interface TypesBuildInfo {
   equals: boolean;
 }
 
-export interface OutputFiles10 {
+export interface OutputOptions {
   main: CommonJSBuildInfo | null;
   module: ESModuleBuildInfo | null;
   browser: BrowserBuildInfo | null;
@@ -63,11 +38,13 @@ export interface OutputFiles10 {
   types: TypesBuildInfo | null;
 }
 
-export interface PkgAnalized10 {
+export type Dependencies = Record<"runtime" | "peer" | "optional", string[] | null>;
+
+export interface PkgAnalized {
   cwd: string;
   pkg: BundlibPkgJson;
-  input: InputFiles;
-  output: OutputFiles10;
+  input: InputOptions;
+  output: OutputOptions;
   dependencies: Dependencies;
   cache: string;
 }
