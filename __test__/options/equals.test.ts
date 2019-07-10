@@ -11,7 +11,7 @@ describe("equals option", () => {
 
   const analizeWithBuildEquals = (equals: any) => analize(cwd, {
     types: "index.d.ts",
-    bundlib: { types: { equals } },
+    bundlib: { equals: !equals, types: { equals } },
   });
 
   test("should read truthy equals option as set as boolean", async () => {
@@ -50,7 +50,7 @@ describe("equals option", () => {
 
   });
 
-  test("should read per build truthy equals option as set as boolean", async () => {
+  test("should read truthy per-build equals option as set as boolean", async () => {
 
     const analized = await analizeWithBuildEquals(1);
 
@@ -59,7 +59,7 @@ describe("equals option", () => {
 
   });
 
-  test("should read per build falsy equals option as set as boolean", async () => {
+  test("should read falsy per-build equals option as set as boolean", async () => {
 
     const analized = await analizeWithBuildEquals(0);
 
@@ -68,7 +68,7 @@ describe("equals option", () => {
 
   });
 
-  test("should read per build true equals option as set as boolean", async () => {
+  test("should read true per-build equals option as set as boolean", async () => {
 
     const analized = await analizeWithBuildEquals(true);
 
@@ -77,7 +77,7 @@ describe("equals option", () => {
 
   });
 
-  test("should read per build false equals option as set as boolean", async () => {
+  test("should read false per-build equals option as set as boolean", async () => {
 
     const analized = await analizeWithBuildEquals(false);
 
