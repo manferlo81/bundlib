@@ -5,6 +5,14 @@
 ***11-JUL-2019***
 
 * dependencies updated
+* added `main` option
+* added `module` option
+* added `types` option
+* re-added `browser` option with different functionality
+* `input` option additional functionalities
+* `bin` option additional functionalities
+* `bin` option old functionality deprecated
+* `analizePkg` returns a totally different object
 
 ## 0.9.0
 
