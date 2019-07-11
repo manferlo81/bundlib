@@ -4,40 +4,6 @@ describe("analize", () => {
 
   const cwd = process.cwd();
 
-  test("should throw on invalid package.json", () => {
-
-    const invalidPkg = [
-      1,
-      "string",
-      [],
-      true,
-    ];
-
-    expect.assertions(invalidPkg.length);
-
-    invalidPkg.forEach((pkg) => {
-      expect(
-        // @ts-ignore
-        analize(cwd, pkg),
-      ).rejects
-        .toThrow(TypeError);
-    });
-
-  });
-
-  test("should read and analize package.json if not provided", async () => {
-
-    const analized = await analize(cwd);
-
-    expect(typeof analized)
-      .toBe("object");
-    expect(analized.cwd)
-      .toBe(cwd);
-    expect(typeof analized.pkg)
-      .toBe("object");
-
-  });
-
   test("should analize provided package.json", async () => {
 
     const pkg = { name: "lib" };
