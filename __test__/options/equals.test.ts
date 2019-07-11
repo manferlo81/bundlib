@@ -86,4 +86,16 @@ describe("equals option", () => {
 
   });
 
+  test("should read per-build equals option over top-level one", async () => {
+
+    const { output: { types } } = await analize(cwd, {
+      types: "index.d.ts",
+      bundlib: { equals: true, types: { equals: false } },
+    });
+
+    expect(types ? types.equals : null)
+      .toBe(false);
+
+  });
+
 });

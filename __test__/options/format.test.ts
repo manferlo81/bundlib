@@ -106,7 +106,7 @@ describe("format option", () => {
 
   });
 
-  test("should read build browser format over global one", async () => {
+  test("should read per-build browser format over top-level one", async () => {
 
     const { output: { browser } } = await analize(cwd, {
       browser: "out/lib.js",

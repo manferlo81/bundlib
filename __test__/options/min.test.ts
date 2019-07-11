@@ -148,4 +148,31 @@ describe("min option", () => {
 
   });
 
+  test("should read per-build min option over top-level one", async () => {
+
+    const { output: { main, module: moduleOut, browser, bin } } = await analize(cwd, {
+      main: "main.js",
+      module: "main.js",
+      browser: "main.js",
+      bin: "main.js",
+      bundlib: {
+        min: true,
+        main: { min: false },
+        module: { min: false },
+        browser: { min: false },
+        bin: { min: false },
+      },
+    });
+
+    expect(main ? main.min : null)
+      .toEqual(false);
+    expect(moduleOut ? moduleOut.min : null)
+      .toEqual(false);
+    expect(browser ? browser.min : null)
+      .toEqual(false);
+    expect(bin ? bin.min : null)
+      .toEqual(false);
+
+  });
+
 });

@@ -122,4 +122,27 @@ describe("esModule option", () => {
 
   });
 
+  test("should read per-build esModule option over top-level one", async () => {
+
+    const { output: { main, browser, bin } } = await analize(cwd, {
+      main: "main.js",
+      browser: "browser.js",
+      bin: "bin.js",
+      bundlib: {
+        esModule: true,
+        main: { esModule: false },
+        browser: { esModule: false },
+        bin: { esModule: false },
+      },
+    });
+
+    expect(main ? main.esModule : null)
+      .toBe(false);
+    expect(browser ? browser.esModule : null)
+      .toBe(false);
+    expect(bin ? bin.esModule : null)
+      .toBe(false);
+
+  });
+
 });

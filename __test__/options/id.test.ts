@@ -52,4 +52,19 @@ describe("id option", () => {
 
   });
 
+  test("should read per-build id option over top-level one", async () => {
+
+    const { output: { browser } } = await analize(cwd, {
+      browser: "browser.js",
+      bundlib: {
+        id: "top-level",
+        browser: { id: "per-build" },
+      },
+    });
+
+    expect(browser ? browser.id : null)
+      .toBe("per-build");
+
+  });
+
 });
