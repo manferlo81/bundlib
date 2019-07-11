@@ -45,11 +45,21 @@ jobs:
           root: *working_directory
           paths: .
 
-  build_pkg:
+  upload_coverage:
     executor: node
     steps:
-      - attach_workspace: &attach_workspace
-          at: *working_directory
+      - attach_workspace: *attach_workspace
+      - codecov/upload:
+          file: coverage/*.json
+      - save_cache:
+          paths:
+            - node_modules
+          key: v4-deps-bundlib-{{ checksum "package.json" }}
+
+  build_and_publish:
+    executor: node
+    steps:
+      - attach_workspace: *attach_workspace
       - run:
           name: Build
           command: npm run build
@@ -57,21 +67,6 @@ jobs:
           paths:
             - node_modules
           key: v4-deps-bundlib-{{ checksum "package.json" }}
-      - persist_to_workspace:
-          root: *working_directory
-          paths: .
-
-  upload_coverage:
-    executor: node
-    steps:
-      - attach_workspace: *attach_workspace
-      - codecov/upload:
-          file: coverage/*.json
-
-  publish_pkg:
-    executor: node
-    steps:
-      - attach_workspace: *attach_workspace
       - npm_publish
 
 workflows:
@@ -87,15 +82,6 @@ workflows:
             branches:
               only: /.*/
 
-      - build_pkg:
-          requires:
-            - unit_test
-          filters: &new_tag
-            tags:
-              only: /^v\d+\.\d+\.\d+$/
-            branches:
-              ignore: /.*/
-
       - upload_coverage:
           requires:
             - unit_test
@@ -103,8 +89,12 @@ workflows:
             branches:
               only: /master/
 
-      - publish_pkg:
+      - build_and_publish:
           context: npm
           requires:
-            - build_pkg
-          filters: *new_tag
+            - unit_test
+          filters:
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
+            branches:
+              ignore: /.*/
