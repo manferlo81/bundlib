@@ -48,7 +48,8 @@ jobs:
   upload_coverage:
     executor: node
     steps:
-      - attach_workspace: *attach_workspace
+      - attach_workspace: &attach_workspace
+          at: *working_directory
       - codecov/upload:
           file: coverage/*.json
       - save_cache:
