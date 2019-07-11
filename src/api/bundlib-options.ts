@@ -46,7 +46,7 @@ export interface BrowserBuildOptions extends
   SourceMapOptions, ModuleOptions, SingleMinOptions, BrowserOptions {
 }
 
-export interface BundlibOptions10 extends
+export interface BundlibOptions extends
   SourceMapOptions, ModuleOptions, TypesOptions, BrowserOptions {
 
   input?: Nullable<InputOptions | string>;

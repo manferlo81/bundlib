@@ -15,12 +15,12 @@ export interface ESModuleBuildOptions extends PathOptions {
   min: boolean;
 }
 
-export interface CommonJSBuildInfo extends ESModuleBuildOptions {
+export interface CommonJSBuildOptions extends ESModuleBuildOptions {
   esModule: boolean;
   interop: boolean;
 }
 
-export interface BrowserBuildInfo extends CommonJSBuildInfo {
+export interface BrowserBuildOptions extends CommonJSBuildOptions {
   format: BrowserBuildFormat;
   name: string | null;
   id: string | null;
@@ -28,16 +28,16 @@ export interface BrowserBuildInfo extends CommonJSBuildInfo {
   extend: boolean;
 }
 
-export interface TypesBuildInfo extends PathOptions {
+export interface TypesBuildOptions extends PathOptions {
   equals: boolean;
 }
 
 export interface OutputOptions {
-  main: CommonJSBuildInfo | null;
+  main: CommonJSBuildOptions | null;
   module: ESModuleBuildOptions | null;
-  browser: BrowserBuildInfo | null;
-  bin: CommonJSBuildInfo | null;
-  types: TypesBuildInfo | null;
+  browser: BrowserBuildOptions | null;
+  bin: CommonJSBuildOptions | null;
+  types: TypesBuildOptions | null;
 }
 
 export type Dependencies = Record<"runtime" | "peer" | "optional", string[] | null>;
