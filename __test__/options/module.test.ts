@@ -31,9 +31,9 @@ describe("module option", () => {
 
   test("should prevent ES Module build if module = false", async () => {
 
-    const analized = await analizeWithModule(false);
+    const { output: { module: moduleOut } } = await analizeWithModule(false);
 
-    expect(analized.output.module)
+    expect(moduleOut)
       .toBeNull();
 
   });

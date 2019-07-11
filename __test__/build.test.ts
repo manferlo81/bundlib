@@ -12,11 +12,11 @@ describe("build", () => {
       bundlib: { input: "src/api/analize-pkg.ts" },
       dependencies,
     });
-
     const build = await rollup(config);
     const { output: [{ code }] } = await build.generate(config.output);
 
-    expect(typeof code).toBe("string");
+    expect(typeof code)
+      .toBe("string");
 
   }, 20000);
 
@@ -27,11 +27,11 @@ describe("build", () => {
       bundlib: { bin: "src/cli/index.ts" },
       dependencies,
     });
-
     const build = await rollup(config);
     const { output: [{ code }] } = await build.generate(config.output);
 
-    expect(typeof code).toBe("string");
+    expect(typeof code)
+      .toBe("string");
 
   }, 20000);
 
@@ -41,11 +41,11 @@ describe("build", () => {
       browser: "out/lib.umd.js",
       bundlib: { input: "src/api/validate-options.ts", globals: null },
     });
-
     const build = await rollup(config);
     const { output: [{ code }] } = await build.generate(config.output);
 
-    expect(typeof code).toBe("string");
+    expect(typeof code)
+      .toBe("string");
 
   }, 20000);
 
@@ -57,16 +57,17 @@ describe("build", () => {
       bundlib: { input: "src/api/index.ts", bin: "src/cli/index.ts" },
       dependencies,
     });
-
     const cjsBuild = await rollup(cjsConfig);
     const { output: [{ code: cjsCode }] } = await cjsBuild.generate(cjsConfig.output);
 
-    expect(typeof cjsCode).toBe("string");
+    expect(typeof cjsCode)
+      .toBe("string");
 
     const binBuild = await rollup(binConfig);
     const { output: [{ code: binCode }] } = await binBuild.generate(binConfig.output);
 
-    expect(typeof binCode).toBe("string");
+    expect(typeof binCode)
+      .toBe("string");
 
   }, 20000);
 

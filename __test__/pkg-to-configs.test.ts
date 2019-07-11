@@ -1,4 +1,3 @@
-import { OutputOptions } from "rollup";
 import createConfigs from "./tools/create-configs";
 
 describe("package to configs", () => {
@@ -7,35 +6,45 @@ describe("package to configs", () => {
 
   test("should throw on non typescript api input", () => {
 
-    return expect(createConfigs("", true, {
-      main: "out/lib.js",
-      bundlib: { input: "src/index.js" },
-    })).rejects.toThrow();
+    return expect(
+      createConfigs("", true, {
+        main: "out/lib.js",
+        bundlib: { input: "src/index.js" },
+      }),
+    ).rejects
+      .toThrow();
 
   });
 
   test("should throw on non typescript binary input", () => {
 
-    return expect(createConfigs("", true, {
-      bin: "bin/lib.js",
-      bundlib: { bin: "src/index.js" },
-    })).rejects.toThrow();
+    return expect(
+      createConfigs("", true, {
+        bin: "bin/lib.js",
+        bundlib: { bin: "src/index.js" },
+      }),
+    ).rejects
+      .toThrow();
 
   });
 
   test("should throw if name required and not provided", () => {
 
-    return expect(createConfigs("", false, {
-      browser: "out/lib.js",
-    })).rejects.toThrow();
+    return expect(
+      createConfigs("", false, {
+        browser: "out/lib.js",
+      }),
+    ).rejects
+      .toThrow();
 
   });
 
-  test("should generate empty array", async () => {
+  test("should generate empty array if no pkg content", async () => {
 
     const configs = await createConfigs(cwd, false, {});
 
-    expect(configs).toHaveLength(0);
+    expect(configs)
+      .toHaveLength(0);
 
   });
 
@@ -45,9 +54,13 @@ describe("package to configs", () => {
       module: "out/lib.cjs.js",
     });
 
-    expect(configs).toHaveLength(1);
-    const [esConfig] = configs;
-    expect((esConfig.output as OutputOptions).format).toBe("es");
+    expect(configs)
+      .toHaveLength(1);
+
+    const [config] = configs;
+
+    expect(config.output.format)
+      .toBe("es");
 
   });
 
@@ -57,9 +70,13 @@ describe("package to configs", () => {
       main: "out/lib.cjs.js",
     });
 
-    expect(configs).toHaveLength(1);
-    const [cjsConfig] = configs;
-    expect(cjsConfig.output.format).toBe("cjs");
+    expect(configs)
+      .toHaveLength(1);
+
+    const [config] = configs;
+
+    expect(config.output.format)
+      .toBe("cjs");
 
   });
 
@@ -73,13 +90,16 @@ describe("package to configs", () => {
       bundlib: { format, name, globals: {} },
     });
 
-    expect(configs).toHaveLength(1);
+    expect(configs)
+      .toHaveLength(1);
 
     const [config] = configs;
     const { output } = config;
 
-    expect(output.format).toBe(format);
-    expect(output.name).toBe(name);
+    expect(output.format)
+      .toBe(format);
+    expect(output.name)
+      .toBe(name);
 
   });
 
@@ -94,14 +114,18 @@ describe("package to configs", () => {
       bundlib: { format, name, id, globals: {} },
     });
 
-    expect(configs).toHaveLength(1);
+    expect(configs)
+      .toHaveLength(1);
 
     const [config] = configs;
     const { output } = config;
 
-    expect(output.format).toBe(format);
-    expect(output.name).toBe(name);
-    expect((output as any).amd.id).toBe(id);
+    expect(output.format)
+      .toBe(format);
+    expect(output.name)
+      .toBe(name);
+    expect((output as any).amd.id)
+      .toBe(id);
 
   });
 
@@ -116,14 +140,18 @@ describe("package to configs", () => {
       bundlib: { format, name, id, globals: {} },
     });
 
-    expect(configs).toHaveLength(1);
+    expect(configs)
+      .toHaveLength(1);
 
     const [config] = configs;
     const { output } = config;
 
-    expect(output.format).toBe(format);
-    expect(output.name).toBe(name);
-    expect((output as any).amd.id).toBe(id);
+    expect(output.format)
+      .toBe(format);
+    expect(output.name)
+      .toBe(name);
+    expect((output as any).amd.id)
+      .toBe(id);
 
   });
 
@@ -136,14 +164,18 @@ describe("package to configs", () => {
       bundlib: { name },
     });
 
-    expect(configs).toHaveLength(1);
+    expect(configs)
+      .toHaveLength(1);
 
     const [config] = configs;
     const { output } = config;
 
-    expect(typeof output).toBe("object");
-    expect(output.format).toBe("umd");
-    expect(output.name).toBe(name);
+    expect(typeof output)
+      .toBe("object");
+    expect(output.format)
+      .toBe("umd");
+    expect(output.name)
+      .toBe(name);
 
   });
 
@@ -153,13 +185,16 @@ describe("package to configs", () => {
       bin: "out/lib.js",
     });
 
-    expect(configs).toHaveLength(1);
+    expect(configs)
+      .toHaveLength(1);
 
     const [config] = configs;
     const { output } = config;
 
-    expect(typeof output).toBe("object");
-    expect(output.format).toBe("cjs");
+    expect(typeof output)
+      .toBe("object");
+    expect(output.format)
+      .toBe("cjs");
 
   });
 
@@ -173,12 +208,14 @@ describe("package to configs", () => {
       },
     });
 
-    expect(configs).toHaveLength(1);
+    expect(configs)
+      .toHaveLength(1);
 
     const [config] = configs;
     const pluginNames = config.plugins.map((plugin) => plugin.name);
 
-    expect(pluginNames).toContain("export-equals");
+    expect(pluginNames)
+      .toContain("export-equals");
 
   });
 
@@ -188,13 +225,16 @@ describe("package to configs", () => {
       bin: "bin/cli.js",
     });
 
-    expect(configs).toHaveLength(1);
+    expect(configs)
+      .toHaveLength(1);
 
     const [config] = configs;
     const pluginNames = config.plugins.map((plugin) => plugin.name);
 
-    expect(pluginNames).toContain("strip-shebang");
-    expect(pluginNames).toContain("shebang");
+    expect(pluginNames)
+      .toContain("strip-shebang");
+    expect(pluginNames)
+      .toContain("shebang");
 
   });
 
@@ -203,16 +243,17 @@ describe("package to configs", () => {
     const minifiedPostfix = ".min.js";
 
     const configs = await createConfigs(cwd, false, {
-      main: "out/lib.cjs.js",
-      module: "out/lib.es.js",
-      browser: "out/lib.umd.js",
+      main: "main.js",
+      module: "module.js",
+      browser: "browser.js",
       bundlib: {
         name: "lib",
-        min: ["main", "module", "browser"],
+        min: true,
       },
     });
 
-    expect(configs).toHaveLength(6);
+    expect(configs)
+      .toHaveLength(6);
 
     configs.forEach((config, index) => {
 
@@ -221,7 +262,8 @@ describe("package to configs", () => {
       if (isMin) {
 
         const { file } = config.output;
-        expect(file.substr(file.length - minifiedPostfix.length)).toBe(minifiedPostfix);
+        expect(file.substr(file.length - minifiedPostfix.length))
+          .toBe(minifiedPostfix);
 
       }
 
@@ -238,7 +280,8 @@ describe("package to configs", () => {
       },
     });
 
-    expect(config.external("lodash", "", false)).toBe(true);
+    expect(config.external("lodash", "", false))
+      .toBe(true);
 
   });
 
@@ -251,7 +294,8 @@ describe("package to configs", () => {
       },
     });
 
-    expect(config.external("lodash", "", false)).toBe(true);
+    expect(config.external("lodash", "", false))
+      .toBe(true);
 
   });
 
@@ -264,7 +308,8 @@ describe("package to configs", () => {
       },
     });
 
-    expect(config.external("lodash", "", false)).toBe(true);
+    expect(config.external("lodash", "", false))
+      .toBe(true);
 
   });
 
@@ -274,8 +319,10 @@ describe("package to configs", () => {
       main: "out/lib.js",
     });
 
-    expect(config.external("path", "", false)).toBe(true);
-    expect(config.external("fs", "", false)).toBe(true);
+    expect(config.external("path", "", false))
+      .toBe(true);
+    expect(config.external("fs", "", false))
+      .toBe(true);
 
   });
 
@@ -288,7 +335,8 @@ describe("package to configs", () => {
       },
     });
 
-    expect(config.external("lodash/is-array", "", false)).toBe(true);
+    expect(config.external("lodash/is-array", "", false))
+      .toBe(true);
 
   });
 
@@ -302,7 +350,23 @@ describe("package to configs", () => {
       },
     });
 
-    expect(config.external.toString()).toMatch(/(?:=> false)|(?:return false)/);
+    expect(config.external.toString())
+      .toMatch(/(?:=> false)|(?:return false)/);
+
+  });
+
+  test("should set globals to an object on browser build", async () => {
+
+    const [config] = await createConfigs(cwd, true, {
+      browser: "out/lib.js",
+      bundlib: {
+        format: "amd",
+        globals: null,
+      },
+    });
+
+    expect(typeof config.output.globals)
+      .toBe("object");
 
   });
 

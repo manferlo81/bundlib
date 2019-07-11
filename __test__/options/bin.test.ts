@@ -30,17 +30,18 @@ describe("bin option", () => {
 
   test("should read legacy binary input file bin option", async () => {
 
-    const analized = await analizeWithBin("src-bin/main.ts");
+    const { input: { bin } } = await analizeWithBin("src-bin/main.ts");
 
-    expect(analized.input.bin).toMatch(/src-bin[/\\]main\.ts$/);
+    expect(bin)
+      .toMatch(/src-bin[/\\]main\.ts$/);
 
   });
 
   test("should prevent Binary module build if bin = false", async () => {
 
-    const analized = await analizeWithBin(false);
+    const { output: { bin } } = await analizeWithBin(false);
 
-    expect(analized.output.bin)
+    expect(bin)
       .toBeNull();
 
   });

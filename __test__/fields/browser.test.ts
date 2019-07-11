@@ -4,6 +4,8 @@ describe("package.json browser field", () => {
 
   const cwd = process.cwd();
 
+  const analizeWithBrowser = (browser: any) => analize(cwd, { browser });
+
   test("should throw on invalid browser field", () => {
 
     const invalidBrowserPaths = [
@@ -11,18 +13,24 @@ describe("package.json browser field", () => {
       { name: "value" },
     ];
 
+    expect.assertions(invalidBrowserPaths.length);
+
     invalidBrowserPaths.forEach((browser) => {
-      // @ts-ignore
-      expect(analize(cwd, { browser })).rejects.toThrow(TypeError);
+      expect(
+        analizeWithBrowser(browser),
+      ).rejects
+        .toThrow(TypeError);
     });
 
   });
 
   test("should read browser field", async () => {
 
-    const analized = await analize(cwd, { browser: "out/lib.js" });
+    const analized = await analizeWithBrowser("out/lib.js");
+    const { browser } = analized.output;
 
-    expect(analized.output.browser ? analized.output.browser.file : null).toMatch(/out[\\/]lib\.js$/);
+    expect(browser ? browser.path : null)
+      .toMatch(/out[\\/]lib\.js$/);
 
   });
 

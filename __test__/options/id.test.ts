@@ -15,10 +15,13 @@ describe("id option", () => {
     expect.assertions(invalidIdOptions.length);
 
     invalidIdOptions.forEach((id) => {
-      // @ts-ignore
-      expect(analize(cwd, {
-        bundlib: { id },
-      })).rejects.toThrow(TypeError);
+      expect(
+        // @ts-ignore
+        analize(cwd, {
+          bundlib: { id },
+        }),
+      ).rejects
+        .toThrow(TypeError);
     });
 
   });
@@ -27,24 +30,24 @@ describe("id option", () => {
 
     const id = "libId";
 
-    const analized = await analize(cwd, {
+    const { output: { browser } } = await analize(cwd, {
       browser: "out/lib.umd.js",
       bundlib: { name: "lib", id },
     });
 
-    expect(analized.output.browser ? analized.output.browser.id : null)
+    expect(browser ? browser.id : null)
       .toBe(id);
 
   });
 
   test("should default to null if no browser build amd id provided", async () => {
 
-    const analized = await analize(cwd, {
+    const { output: { browser } } = await analize(cwd, {
       browser: "out/lib.umd.js",
       bundlib: { name: "lib" },
     });
 
-    expect(analized.output.browser ? analized.output.browser.id : false)
+    expect(browser ? browser.id : false)
       .toBeNull();
 
   });

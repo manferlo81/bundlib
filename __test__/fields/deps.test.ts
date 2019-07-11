@@ -6,22 +6,31 @@ describe("package.json dependencies", () => {
 
   test("should throw on invalid runtime dependencies", () => {
 
-    // @ts-ignore
-    return expect(analize(cwd, { dependencies: 100 })).rejects.toThrow(TypeError);
+    return expect(
+      // @ts-ignore
+      analize(cwd, { dependencies: 100 }),
+    ).rejects
+      .toThrow(TypeError);
 
   });
 
   test("should throw on invalid peer dependencies", () => {
 
-    // @ts-ignore
-    return expect(analize(cwd, { peerDependencies: 100 })).rejects.toThrow(TypeError);
+    return expect(
+      // @ts-ignore
+      analize(cwd, { peerDependencies: 100 }),
+    ).rejects
+      .toThrow(TypeError);
 
   });
 
   test("should throw on invalid optionalDependencies dependencies", () => {
 
-    // @ts-ignore
-    return expect(analize(cwd, { optionalDependencies: 100 })).rejects.toThrow(TypeError);
+    return expect(
+      // @ts-ignore
+      analize(cwd, { optionalDependencies: 100 }),
+    ).rejects
+      .toThrow(TypeError);
 
   });
 
@@ -38,7 +47,6 @@ describe("package.json dependencies", () => {
         "bundelib-dep3": "1.0.0",
       },
     });
-
     const { runtime, peer, optional } = analized.dependencies;
 
     expect(runtime).toEqual(["bundelib-dep1"]);

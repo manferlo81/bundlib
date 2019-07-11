@@ -30,19 +30,21 @@ describe("cache option", () => {
 
   test("should read cache option", async () => {
 
-    const cache = "cache-folder";
+    const cacheDir = "cache-folder";
 
-    const analized = await analizeWithCache(cache);
+    const { cache } = await analizeWithCache(cacheDir);
 
-    expect(analized.cache).toMatch(new RegExp("[/\\\\]" + cache + "$"));
+    expect(cache)
+      .toMatch(new RegExp("[/\\\\]" + cacheDir + "$"));
 
   });
 
   test("should default if cache not provided", async () => {
 
-    const analized = await analize(cwd, {});
+    const { cache } = await analize(cwd, {});
 
-    expect(analized.cache).toMatch(/[/\\]\.cache[/\\]bundlib$/);
+    expect(cache)
+      .toMatch(/[/\\]\.cache[/\\]bundlib$/);
 
   });
 

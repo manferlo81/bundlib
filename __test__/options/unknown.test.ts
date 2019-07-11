@@ -17,9 +17,12 @@ describe("unknown options", () => {
     expect.assertions(invalidOptions.length);
 
     invalidOptions.forEach((option) => {
-      expect(analize(cwd, {
-        bundlib: { [option]: true },
-      })).rejects.toThrow(TypeError);
+      expect(
+        analize(cwd, {
+          bundlib: { [option]: true },
+        }),
+      ).rejects
+        .toThrow(TypeError);
     });
 
   });

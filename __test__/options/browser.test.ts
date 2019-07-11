@@ -34,9 +34,9 @@ describe("browser option", () => {
 
   test("should prevent Browser module build if browser = false", async () => {
 
-    const analized = await analizeWithBrowser(false);
+    const { output: { browser } } = await analizeWithBrowser(false);
 
-    expect(analized.output.browser)
+    expect(browser)
       .toBeNull();
 
   });

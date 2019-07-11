@@ -20,104 +20,104 @@ describe("interop option", () => {
 
   test("should read truthy interop option as set as boolean", async () => {
 
-    const analized = await analizeWithInterop(1);
+    const { output: { main, browser, bin } } = await analizeWithInterop(1);
 
-    expect(analized.output.main ? analized.output.main.interop : null)
+    expect(main ? main.interop : null)
       .toBe(true);
-    expect(analized.output.browser ? analized.output.browser.interop : null)
+    expect(browser ? browser.interop : null)
       .toBe(true);
-    expect(analized.output.bin ? analized.output.bin.interop : null)
+    expect(bin ? bin.interop : null)
       .toBe(true);
 
   });
 
   test("should read falsy interop option as set as boolean", async () => {
 
-    const analized = await analizeWithInterop(0);
+    const { output: { main, browser, bin } } = await analizeWithInterop(0);
 
-    expect(analized.output.main ? analized.output.main.interop : null)
+    expect(main ? main.interop : null)
       .toBe(false);
-    expect(analized.output.browser ? analized.output.browser.interop : null)
+    expect(browser ? browser.interop : null)
       .toBe(false);
-    expect(analized.output.bin ? analized.output.bin.interop : null)
+    expect(bin ? bin.interop : null)
       .toBe(false);
 
   });
 
   test("should read true interop option as set as boolean", async () => {
 
-    const analized = await analizeWithInterop(true);
+    const { output: { main, browser, bin } } = await analizeWithInterop(true);
 
-    expect(analized.output.main ? analized.output.main.interop : null)
+    expect(main ? main.interop : null)
       .toBe(true);
-    expect(analized.output.browser ? analized.output.browser.interop : null)
+    expect(browser ? browser.interop : null)
       .toBe(true);
-    expect(analized.output.bin ? analized.output.bin.interop : null)
+    expect(bin ? bin.interop : null)
       .toBe(true);
 
   });
 
   test("should read false interop option as set as boolean", async () => {
 
-    const analized = await analizeWithInterop(false);
+    const { output: { main, browser, bin } } = await analizeWithInterop(false);
 
-    expect(analized.output.main ? analized.output.main.interop : null)
+    expect(main ? main.interop : null)
       .toBe(false);
-    expect(analized.output.browser ? analized.output.browser.interop : null)
+    expect(browser ? browser.interop : null)
       .toBe(false);
-    expect(analized.output.bin ? analized.output.bin.interop : null)
+    expect(bin ? bin.interop : null)
       .toBe(false);
 
   });
 
   test("should read truthy per-build interop option as set as boolean", async () => {
 
-    const analized = await analizeWithBuildInterop("main", 1);
+    const { output: { main, browser, bin } } = await analizeWithBuildInterop("main", 1);
 
-    expect(analized.output.main ? analized.output.main.interop : null)
+    expect(main ? main.interop : null)
       .toBe(true);
-    expect(analized.output.browser ? analized.output.browser.interop : null)
+    expect(browser ? browser.interop : null)
       .toBe(false);
-    expect(analized.output.bin ? analized.output.bin.interop : null)
+    expect(bin ? bin.interop : null)
       .toBe(false);
 
   });
 
   test("should read falsy per-build interop option as set as boolean", async () => {
 
-    const analized = await analizeWithBuildInterop("browser", 0);
+    const { output: { main, browser, bin } } = await analizeWithBuildInterop("browser", 0);
 
-    expect(analized.output.main ? analized.output.main.interop : null)
+    expect(main ? main.interop : null)
       .toBe(true);
-    expect(analized.output.browser ? analized.output.browser.interop : null)
+    expect(browser ? browser.interop : null)
       .toBe(false);
-    expect(analized.output.bin ? analized.output.bin.interop : null)
+    expect(bin ? bin.interop : null)
       .toBe(true);
 
   });
 
   test("should read true per-build interop option as set as boolean", async () => {
 
-    const analized = await analizeWithBuildInterop("bin", true);
+    const { output: { main, browser, bin } } = await analizeWithBuildInterop("bin", true);
 
-    expect(analized.output.main ? analized.output.main.interop : null)
+    expect(main ? main.interop : null)
       .toBe(false);
-    expect(analized.output.browser ? analized.output.browser.interop : null)
+    expect(browser ? browser.interop : null)
       .toBe(false);
-    expect(analized.output.bin ? analized.output.bin.interop : null)
+    expect(bin ? bin.interop : null)
       .toBe(true);
 
   });
 
   test("should read false per-build interop option as set as boolean", async () => {
 
-    const analized = await analizeWithBuildInterop("main", false);
+    const { output: { main, browser, bin } } = await analizeWithBuildInterop("main", false);
 
-    expect(analized.output.main ? analized.output.main.interop : null)
+    expect(main ? main.interop : null)
       .toBe(false);
-    expect(analized.output.browser ? analized.output.browser.interop : null)
+    expect(browser ? browser.interop : null)
       .toBe(true);
-    expect(analized.output.bin ? analized.output.bin.interop : null)
+    expect(bin ? bin.interop : null)
       .toBe(true);
 
   });

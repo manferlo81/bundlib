@@ -13,9 +13,14 @@ describe("analize", () => {
       true,
     ];
 
+    expect.assertions(invalidPkg.length);
+
     invalidPkg.forEach((pkg) => {
-      // @ts-ignore
-      expect(analize(cwd, pkg)).rejects.toThrow(TypeError);
+      expect(
+        // @ts-ignore
+        analize(cwd, pkg),
+      ).rejects
+        .toThrow(TypeError);
     });
 
   });
@@ -24,9 +29,12 @@ describe("analize", () => {
 
     const analized = await analize(cwd);
 
-    expect(typeof analized).toBe("object");
-    expect(analized.cwd).toBe(cwd);
-    expect(typeof analized.pkg).toBe("object");
+    expect(typeof analized)
+      .toBe("object");
+    expect(analized.cwd)
+      .toBe(cwd);
+    expect(typeof analized.pkg)
+      .toBe("object");
 
   });
 
@@ -35,37 +43,44 @@ describe("analize", () => {
     const pkg = { name: "lib" };
     const analized = await analize(cwd, pkg);
 
-    expect(analized.pkg).toBe(pkg);
+    expect(analized.pkg)
+      .toBe(pkg);
 
   });
 
   test("should return analized package.json", async () => {
 
     const pkg = { name: "lib" };
+
+    const analized = await analize(cwd, pkg);
     const {
       input,
       output,
       dependencies,
       cache,
-    } = await analize(cwd, pkg);
+    } = analized;
 
-    expect(input).toEqual({
-      api: expect.any(String),
-      bin: expect.any(String),
-    });
-    expect(output).toEqual({
-      main: null,
-      module: null,
-      browser: null,
-      bin: null,
-      types: null,
-    });
-    expect(dependencies).toEqual({
-      runtime: null,
-      peer: null,
-      optional: null,
-    });
-    expect(typeof cache).toBe("string");
+    expect(input)
+      .toEqual({
+        api: expect.any(String),
+        bin: expect.any(String),
+      });
+    expect(output)
+      .toEqual({
+        main: null,
+        module: null,
+        browser: null,
+        bin: null,
+        types: null,
+      });
+    expect(dependencies)
+      .toEqual({
+        runtime: null,
+        peer: null,
+        optional: null,
+      });
+    expect(typeof cache)
+      .toBe("string");
 
   });
 
