@@ -1,6 +1,6 @@
 {
   "name": "bundlib",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "An automatic javascript library bundler using Typescript and Rollup.js",
   "main": "dist/bundlib.cjs.js",
   "module": "dist/bundlib.es.js",
