@@ -5,9 +5,11 @@ import { dependencies } from "../package.json";
 
 describe("build", () => {
 
+  const cwd = process.cwd();
+
   test("should build a CommonJS module", async () => {
 
-    const [config] = await createConfigs(process.cwd(), false, {
+    const [config] = await createConfigs(cwd, false, {
       main: "out/lib.cjs.js",
       bundlib: { input: "src/api/analize-pkg.ts" },
       dependencies,
@@ -22,7 +24,7 @@ describe("build", () => {
 
   test("should build a Binary", async () => {
 
-    const [config] = await createConfigs(process.cwd(), false, {
+    const [config] = await createConfigs(cwd, false, {
       bin: "out/lib.cjs.js",
       bundlib: { bin: "src/cli/index.ts" },
       dependencies,
@@ -37,7 +39,7 @@ describe("build", () => {
 
   test("should build a Browser module", async () => {
 
-    const [config] = await createConfigs(process.cwd(), false, {
+    const [config] = await createConfigs(cwd, false, {
       browser: "out/lib.umd.js",
       bundlib: { input: "src/api/validate-options.ts", globals: null },
     });
@@ -51,7 +53,7 @@ describe("build", () => {
 
   test("should build a CommonJS and a Binary", async () => {
 
-    const [cjsConfig, binConfig] = await createConfigs(process.cwd(), false, {
+    const [cjsConfig, binConfig] = await createConfigs(cwd, false, {
       main: "out/lib.cjs.js",
       bin: "bin/cli.js",
       bundlib: { input: "src/api/index.ts", bin: "src/cli/index.ts" },
