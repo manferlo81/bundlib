@@ -6,15 +6,27 @@ An automatic javascript library bundler using [Typescript](https://github.com/Mi
 
 > :warning: Bundlib is still under active development, please [file a new issue](https://github.com/manferlo81/bundlib/issues) if you find any issue/bug, suggestions are welcome as well.
 
+## In this guide
+
+* [Install](#install)
+* [First steps](#first-steps)
+* [Build](#build)
+* [Configuration](#configuration)
+* [CLI](#cli)
+* [API](#api)
+* [Types](#types-1)
+* [Known Issues](#known-issues)
+* [Features](#features)
+
 ## Install
 
 ```bash
-npm i bundlib -D
+npm i -D bundlib
 ```
 
 ## First steps
 
-*Bundlib will use* `src/index.ts` *as entry file for your library by default, it can be configured using [input option](#input). Add the corresponding scripts to your* `package.json` *and run them. [see below for CLI options](#cli).*
+*Bundlib will use* `src/index.ts` *as entry file for your library by default, it can be configured using* [`input`](#input) *option. Add the corresponding scripts to your* `package.json` *and run them. [see below for CLI options](#cli).*
 
 ## Build
 
@@ -28,11 +40,11 @@ npm i bundlib -D
 
 ### IIFE, AMD and UMD build
 
-*For IIFE, AMD and UMD builds, add a* `"browser"` *field to your* `package.json`*. the default format is* `"umd"` *but it can be changed to* `"iife"` *or* `"amd"` *using the* [`browser` *option*](#browser)*, see the [configuration section](#configuration) for more info.*
+*For* `IIFE`*,* `AMD` *or* `UMD` *builds, add a* `"browser"` *field to your* `package.json`*. the default format is* `"umd"` *but it can be changed to* `"iife"` *or* `"amd"` *using the* [`format`](#format) *or* [`browser`](#browser) *option, see the [configuration section](#configuration) for more info.*
 
 ## Configuration
 
-*Configuration is done throu the* `"bundlib"` *field in* `package.json`*.*
+*Configuration is done throu the* `"bundlib"` *field in* `package.json`*. See the [list of options](#options) below.*
 
 ***example***
 
@@ -53,7 +65,7 @@ npm i bundlib -D
 
 ### Options
 
-*The* `"bundlib"` *field in* `package.json` *may contain any of the following properties. Any invalid or unknown option will cause* `Bundlib` *to throw at build time.*
+*The* `"bundlib"` *field in* `package.json` *may contain any of the following properties. Any invalid or unknown option will cause* `Bundlib` *to throw at build time. Setting any options or sub-options to* `null` *will cause* `bundlib` *to treat it as non-exitent.*
 
 #### input
 
@@ -280,7 +292,7 @@ interface BrowserOptions {
 * `per-build` *behavior added in:* `v0.10.0`
 
 ```typescript
-bin: string | CommonJSOptions | false;
+bin: CommonJSOptions | false;
 
 interface CommonJSOptions {
   sourcemap?: boolean | "inline";
@@ -294,7 +306,7 @@ interface CommonJSOptions {
 
 *If it's set to* `false`*, it will prevent* `Binary` *build altogether, even if there is a* `bin` *field in* `package.json`*.*
 
-> :warning: *This option was actually added in* `v0.7.0` *and it was used to set entry point for* `Binary` *build. For compatibility it still works if you set this option as string. This behavior will be removed in the future and therefore should not be used. Use* [`input`](#input) *option instead.*
+> :warning: *This option was used to set entry point for* `Binary` *build. For compatibility it still works if you set this option as string. This behavior will be removed in the future and therefore should not be used. Use* [`input`](#input) *option instead.*
 
 #### types
 
@@ -320,25 +332,27 @@ bundlib [options]
 
 ### CLI Options
 
-*Bundlib has only three options...*
+*Combine options according to your needs. Run* `bundlib -h` *for a detailed help.*
 
 #### `--dev`, `-d`
 
-*type:* `boolean`
-
-*Creates development, not minified builds. Builds affected by the* [`min` *api option*](#min) *will ignore this option.*
+*Create development, not minified builds. Builds affected by the* [`min`](#min) *option will ignore this option.*
 
 #### `--watch`, `-w`
 
-*type:* `boolean`
-
-*Runs* `bundlib` *in watch mode.*
+*Run* `bundlib` *in watch mode.*
 
 #### `--silent`, `-s`
 
-*type:* `boolean`
+*Prevent messages from showing in the console.*
 
-*Prevents messages from showing in the console.*
+#### `--version`, `-v`
+
+*Show* `bundlib` *version.*
+
+#### `--help`, `-h`
+
+*Show detailed help about the cli tool.*
 
 ## API
 
