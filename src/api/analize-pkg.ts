@@ -297,7 +297,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
       browserName,
       pkgName,
     ),
-    id: amdId || null,
+    id: browserOptions && browserOptions.id || amdId || null,
     globals: normalizeBuildGlobals(
       browserOptions,
       normalizeGlobals(browserGlobals),
