@@ -246,6 +246,7 @@ describe("package to configs", () => {
       main: "main.js",
       module: "module.js",
       browser: "browser.js",
+      bin: "bin.js",
       bundlib: {
         name: "lib",
         min: true,
@@ -253,7 +254,7 @@ describe("package to configs", () => {
     });
 
     expect(configs)
-      .toHaveLength(6);
+      .toHaveLength(8);
 
     configs.forEach((config, index) => {
 

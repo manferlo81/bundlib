@@ -331,10 +331,28 @@ async function pkgToConfigs(
         binaryOutput.esModule,
         binaryOutput.interop,
         external,
-        createPlugins(false, production, binaryOutput.sourcemap, binaryOutput.path),
+        createPlugins(false, production && !binaryOutput.min, binaryOutput.sourcemap, binaryOutput.path),
         true,
       ),
     );
+
+    if (binaryOutput.min) {
+
+      configs.push(
+        createModuleConfig(
+          binInput,
+          "cjs",
+          renameMin(binaryOutput.path),
+          binaryOutput.sourcemap,
+          binaryOutput.esModule,
+          binaryOutput.interop,
+          external,
+          createPlugins(false, true, binaryOutput.sourcemap, binaryOutput.path),
+          true,
+        ),
+      );
+
+    }
 
   }
 

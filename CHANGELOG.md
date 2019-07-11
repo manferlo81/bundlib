@@ -1,5 +1,11 @@
 # Bundlib Changelog
 
+## 0.10.1
+
+***11-JUL-2019***
+
+* fixed: binary min version
+
 ## 0.10.0
 
 ***11-JUL-2019***
