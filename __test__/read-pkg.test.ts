@@ -7,13 +7,19 @@ describe("read package.json", () => {
 
   test("should throw on no package.json", () => {
 
-    expect(analize(pathJoin(cwd, "dist"))).rejects.toThrow();
+    return expect(
+      analize(pathJoin(cwd, "dist")),
+    ).rejects
+      .toThrow();
 
   });
 
   test("should throw on invalid folder", () => {
 
-    expect(analize(pathJoin(cwd, "does-not-exist"))).rejects.toThrow();
+    return expect(
+      analize(pathJoin(cwd, "does-not-exist")),
+    ).rejects
+      .toThrow();
 
   });
 

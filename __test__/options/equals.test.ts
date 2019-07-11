@@ -16,72 +16,72 @@ describe("equals option", () => {
 
   test("should read truthy equals option as set as boolean", async () => {
 
-    const analized = await analizeWithEquals(1);
+    const { output: { types } } = await analizeWithEquals(1);
 
-    expect(analized.output.types ? analized.output.types.equals : null)
+    expect(types ? types.equals : null)
       .toBe(true);
 
   });
 
   test("should read falsy equals option as set as boolean", async () => {
 
-    const analized = await analizeWithEquals(0);
+    const { output: { types } } = await analizeWithEquals(0);
 
-    expect(analized.output.types ? analized.output.types.equals : null)
+    expect(types ? types.equals : null)
       .toBe(false);
 
   });
 
   test("should read true equals option as set as boolean", async () => {
 
-    const analized = await analizeWithEquals(true);
+    const { output: { types } } = await analizeWithEquals(true);
 
-    expect(analized.output.types ? analized.output.types.equals : null)
+    expect(types ? types.equals : null)
       .toBe(true);
 
   });
 
   test("should read false equals option as set as boolean", async () => {
 
-    const analized = await analizeWithEquals(false);
+    const { output: { types } } = await analizeWithEquals(false);
 
-    expect(analized.output.types ? analized.output.types.equals : null)
+    expect(types ? types.equals : null)
       .toBe(false);
 
   });
 
   test("should read truthy per-build equals option as set as boolean", async () => {
 
-    const analized = await analizeWithBuildEquals(1);
+    const { output: { types } } = await analizeWithBuildEquals(1);
 
-    expect(analized.output.types ? analized.output.types.equals : null)
+    expect(types ? types.equals : null)
       .toBe(true);
 
   });
 
   test("should read falsy per-build equals option as set as boolean", async () => {
 
-    const analized = await analizeWithBuildEquals(0);
+    const { output: { types } } = await analizeWithBuildEquals(0);
 
-    expect(analized.output.types ? analized.output.types.equals : null)
+    expect(types ? types.equals : null)
       .toBe(false);
 
   });
 
   test("should read true per-build equals option as set as boolean", async () => {
 
-    const analized = await analizeWithBuildEquals(true);
+    const { output: { types } } = await analizeWithBuildEquals(true);
 
-    expect(analized.output.types ? analized.output.types.equals : null)
+    expect(types ? types.equals : null)
       .toBe(true);
 
   });
 
   test("should read false per-build equals option as set as boolean", async () => {
 
-    const analized = await analizeWithBuildEquals(false);
+    const { output: { types } } = await analizeWithBuildEquals(false);
 
-    expect(analized.output.types ? analized.output.types.equals : null)
+    expect(types ? types.equals : null)
       .toBe(false);
 
   });

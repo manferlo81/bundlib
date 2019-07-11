@@ -11,9 +11,14 @@ describe("package.json bundlib field", () => {
       [],
     ];
 
+    expect.assertions(invalidBundlibOptions.length);
+
     invalidBundlibOptions.forEach((bundlib) => {
-      // @ts-ignore
-      expect(analize(cwd, { bundlib })).rejects.toThrow(TypeError);
+      expect(
+        // @ts-ignore
+        analize(cwd, { bundlib }),
+      ).rejects
+        .toThrow(TypeError);
     });
 
   });

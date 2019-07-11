@@ -4,6 +4,8 @@ describe("package.json bin field", () => {
 
   const cwd = process.cwd();
 
+  const analizeWithBin = (bin: any) => analize(cwd, { bin });
+
   test("should throw on invalid bin field", () => {
 
     const invalidBrowserPaths = [
@@ -11,18 +13,24 @@ describe("package.json bin field", () => {
       { name: "value" },
     ];
 
+    expect.assertions(invalidBrowserPaths.length);
+
     invalidBrowserPaths.forEach((bin) => {
-      // @ts-ignore
-      expect(analize(cwd, { bin })).rejects.toThrow(TypeError);
+      expect(
+        analizeWithBin(bin),
+      ).rejects
+        .toThrow(TypeError);
     });
 
   });
 
   test("should read binary output filename", async () => {
 
-    const analized = await analize(cwd, { bin: "bin/cli.js" });
+    const analized = await analizeWithBin("bin/cli.js");
+    const { bin } = analized.output;
 
-    expect(analized.output.bin ? analized.output.bin.file : null).toMatch(/bin[\\/]cli\.js$/);
+    expect(bin ? bin.path : null)
+      .toMatch(/bin[\\/]cli\.js$/);
 
   });
 

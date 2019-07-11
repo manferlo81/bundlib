@@ -36,9 +36,9 @@ describe("format option", () => {
 
     const format = "iife";
 
-    const analized = await analizeWithFormat(format);
+    const { output: { browser } } = await analizeWithFormat(format);
 
-    expect(analized.output.browser ? analized.output.browser.format : null)
+    expect(browser ? browser.format : null)
       .toBe(format);
 
   });
@@ -47,9 +47,9 @@ describe("format option", () => {
 
     const format = "amd";
 
-    const analized = await analizeWithFormat(format);
+    const { output: { browser } } = await analizeWithFormat(format);
 
-    expect(analized.output.browser ? analized.output.browser.format : null)
+    expect(browser ? browser.format : null)
       .toBe(format);
 
   });
@@ -58,9 +58,9 @@ describe("format option", () => {
 
     const format = "umd";
 
-    const analized = await analizeWithFormat(format);
+    const { output: { browser } } = await analizeWithFormat(format);
 
-    expect(analized.output.browser ? analized.output.browser.format : null)
+    expect(browser ? browser.format : null)
       .toBe(format);
 
   });
@@ -69,9 +69,9 @@ describe("format option", () => {
 
     const format = "iife";
 
-    const analized = await analizeWithBuildFormat(format);
+    const { output: { browser } } = await analizeWithBuildFormat(format);
 
-    expect(analized.output.browser ? analized.output.browser.format : null)
+    expect(browser ? browser.format : null)
       .toBe(format);
 
   });
@@ -80,9 +80,9 @@ describe("format option", () => {
 
     const format = "amd";
 
-    const analized = await analizeWithBuildFormat(format);
+    const { output: { browser } } = await analizeWithBuildFormat(format);
 
-    expect(analized.output.browser ? analized.output.browser.format : null)
+    expect(browser ? browser.format : null)
       .toBe(format);
 
   });
@@ -91,24 +91,24 @@ describe("format option", () => {
 
     const format = "umd";
 
-    const analized = await analizeWithBuildFormat(format);
+    const { output: { browser } } = await analizeWithBuildFormat(format);
 
-    expect(analized.output.browser ? analized.output.browser.format : null)
+    expect(browser ? browser.format : null)
       .toBe(format);
 
   });
 
   test("should default to umd in no browser format provided", async () => {
 
-    const analized = await analize(cwd, { browser: "out/lib.js" });
+    const { output: { browser } } = await analize(cwd, { browser: "out/lib.js" });
 
-    expect(analized.output.browser ? analized.output.browser.format : null).toBe("umd");
+    expect(browser ? browser.format : null).toBe("umd");
 
   });
 
   test("should read build browser format over global one", async () => {
 
-    const analized = await analize(cwd, {
+    const { output: { browser } } = await analize(cwd, {
       browser: "out/lib.js",
       bundlib: {
         format: "amd",
@@ -116,7 +116,7 @@ describe("format option", () => {
       },
     });
 
-    expect(analized.output.browser ? analized.output.browser.format : null).toBe("iife");
+    expect(browser ? browser.format : null).toBe("iife");
 
   });
 

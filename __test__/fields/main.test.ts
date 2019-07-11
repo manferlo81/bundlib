@@ -4,18 +4,35 @@ describe("package.json main field", () => {
 
   const cwd = process.cwd();
 
+  const analizeWithMain = (main: any) => analize(cwd, { main });
+
   test("should throw on non string main field", () => {
 
-    // @ts-ignore
-    expect(analize(cwd, { main: 100 })).rejects.toThrow(TypeError);
+    const invalidMainFields = [
+      1,
+      { name: "value" },
+    ];
+
+    expect.assertions(invalidMainFields.length);
+
+    invalidMainFields.forEach((main) => {
+
+      expect(
+        analizeWithMain(main),
+      ).rejects
+        .toThrow(TypeError);
+
+    });
 
   });
 
   test("should read main field", async () => {
 
-    const analized = await analize(cwd, { main: "out/lib.js" });
+    const analized = await analizeWithMain("out/lib.js");
+    const { main } = analized.output;
 
-    expect(analized.output.main ? analized.output.main.file : null).toMatch(/out[\\/]lib\.js$/);
+    expect(main ? main.path : null)
+      .toMatch(/out[\\/]lib\.js$/);
 
   });
 

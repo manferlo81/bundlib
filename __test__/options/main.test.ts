@@ -31,9 +31,9 @@ describe("main option", () => {
 
   test("should prevent CommonJS module build if main = false", async () => {
 
-    const analized = await analizeWithMain(false);
+    const { output: { main } } = await analizeWithMain(false);
 
-    expect(analized.output.main)
+    expect(main)
       .toBeNull();
 
   });

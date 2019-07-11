@@ -15,10 +15,13 @@ describe("name option", () => {
     expect.assertions(invalidNameOptions.length);
 
     invalidNameOptions.forEach((name) => {
-      // @ts-ignore
-      expect(analize(cwd, {
-        bundlib: { name },
-      })).rejects.toThrow(TypeError);
+      expect(
+        // @ts-ignore
+        analize(cwd, {
+          bundlib: { name },
+        }),
+      ).rejects
+        .toThrow(TypeError);
     });
 
   });
@@ -27,13 +30,13 @@ describe("name option", () => {
 
     const name = "pkg-name";
 
-    const analized = await analize(cwd, {
+    const { output: { browser } } = await analize(cwd, {
       name,
       browser: "out/lib.umd.js",
       bundlib: { name },
     });
 
-    expect(analized.output.browser ? analized.output.browser.name : null)
+    expect(browser ? browser.name : null)
       .toBe(name);
 
   });
@@ -42,12 +45,12 @@ describe("name option", () => {
 
     const pkgName = "@scope/pkg-name";
 
-    const analized = await analize(cwd, {
+    const { output: { browser } } = await analize(cwd, {
       name: pkgName,
       browser: "out/lib.umd.js",
     });
 
-    expect(analized.output.browser ? analized.output.browser.name : null)
+    expect(browser ? browser.name : null)
       .toBe("pkgName");
 
   });

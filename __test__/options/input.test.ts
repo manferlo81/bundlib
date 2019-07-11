@@ -17,10 +17,13 @@ describe("input option", () => {
     expect.assertions(invalidInputs.length);
 
     invalidInputs.forEach((input) => {
-      // @ts-ignore
-      expect(analize(cwd, {
-        bundlib: { input },
-      })).rejects.toThrow(TypeError);
+      expect(
+        // @ts-ignore
+        analize(cwd, {
+          bundlib: { input },
+        }),
+      ).rejects
+        .toThrow(TypeError);
     });
 
   });
@@ -31,7 +34,8 @@ describe("input option", () => {
       bundlib: { input: "src/main.ts" },
     });
 
-    expect(analized.input.api).toMatch(/src[/\\]main\.ts$/);
+    expect(analized.input.api)
+      .toMatch(/src[/\\]main\.ts$/);
 
   });
 
@@ -43,7 +47,8 @@ describe("input option", () => {
       },
     });
 
-    expect(analized.input.api).toMatch(/src[/\\]main\.ts$/);
+    expect(analized.input.api)
+      .toMatch(/src[/\\]main\.ts$/);
 
   });
 
@@ -55,7 +60,8 @@ describe("input option", () => {
       },
     });
 
-    expect(analized.input.bin).toMatch(/src[/\\]main\.ts$/);
+    expect(analized.input.bin)
+      .toMatch(/src[/\\]main\.ts$/);
 
   });
 
@@ -63,12 +69,12 @@ describe("input option", () => {
 
     const analized = await analize(cwd, {
       bundlib: {
-        bin: "src/main.ts",
         input: { bin: "src/bin/main.ts" },
       },
     });
 
-    expect(analized.input.bin).toMatch(/src[/\\]bin[/\\]main\.ts$/);
+    expect(analized.input.bin)
+      .toMatch(/src[/\\]bin[/\\]main\.ts$/);
 
   });
 
