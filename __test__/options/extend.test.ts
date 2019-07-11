@@ -86,4 +86,16 @@ describe("extend option", () => {
 
   });
 
+  test("should read per-build extend option over top-level one", async () => {
+
+    const { output: { browser } } = await analize(cwd, {
+      browser: "browser",
+      bundlib: { extend: true, browser: { extend: false } },
+    });
+
+    expect(browser ? browser.extend : null)
+      .toBe(false);
+
+  });
+
 });

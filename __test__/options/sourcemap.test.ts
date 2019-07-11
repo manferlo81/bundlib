@@ -120,4 +120,31 @@ describe("sourcemap option", () => {
 
   });
 
+  test("should read per-build sourcemap option over top-level one", async () => {
+
+    const { output: { main, module: moduleOut, browser, bin } } = await analize(cwd, {
+      main: "out/lib.cjs.js",
+      module: "out/lib.es.js",
+      browser: "out/lib.umd.js",
+      bin: "out/lib.bin.js",
+      bundlib: {
+        sourcemap: false,
+        main: { sourcemap: "inline" },
+        module: { sourcemap: "inline" },
+        browser: { sourcemap: "inline" },
+        bin: { sourcemap: "inline" },
+      },
+    });
+
+    expect(main ? main.sourcemap : null)
+      .toBe("inline");
+    expect(moduleOut ? moduleOut.sourcemap : null)
+      .toBe("inline");
+    expect(browser ? browser.sourcemap : null)
+      .toBe("inline");
+    expect(bin ? bin.sourcemap : null)
+      .toBe("inline");
+
+  });
+
 });

@@ -134,7 +134,7 @@ describe("globals option", () => {
 
   });
 
-  test("should set per-build globals over top-level globals", async () => {
+  test("should set per-build globals option over top-level one", async () => {
 
     const { output: { browser } } = await analize(cwd, {
       browser: "browser.js",

@@ -55,4 +55,19 @@ describe("name option", () => {
 
   });
 
+  test("should read per-build name option over top-level one", async () => {
+
+    const { output: { browser } } = await analize(cwd, {
+      browser: "browser.js",
+      bundlib: {
+        name: "top-level",
+        browser: { name: "per-build" },
+      },
+    });
+
+    expect(browser ? browser.name : null)
+      .toBe("per-build");
+
+  });
+
 });

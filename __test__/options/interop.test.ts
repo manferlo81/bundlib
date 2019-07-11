@@ -122,4 +122,27 @@ describe("interop option", () => {
 
   });
 
+  test("should read per-build interop option over top-level one", async () => {
+
+    const { output: { main, browser, bin } } = await analize(cwd, {
+      main: "main.js",
+      browser: "browser.js",
+      bin: "bin.js",
+      bundlib: {
+        interop: true,
+        main: { interop: false },
+        browser: { interop: false },
+        bin: { interop: false },
+      },
+    });
+
+    expect(main ? main.interop : null)
+      .toBe(false);
+    expect(browser ? browser.interop : null)
+      .toBe(false);
+    expect(bin ? bin.interop : null)
+      .toBe(false);
+
+  });
+
 });
