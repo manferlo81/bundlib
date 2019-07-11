@@ -17,7 +17,7 @@ import {
   BrowserBuildInfo,
   CommonJSBuildInfo,
   Dependencies,
-  ESModuleBuildInfo,
+  ESModuleBuildOptions,
   InputOptions,
   MinifyOptions,
   OutputOptions,
@@ -240,7 +240,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
   const globalMin: MinifyOptions = normalizeMin(min);
 
   const mainOutput: CommonJSBuildInfo | null = (mainOptions10 === false || !pkgMain) ? null : {
-    file: resolve(cwd, pkgMain),
+    path: resolve(cwd, pkgMain),
     sourcemap: normalizeBuildSourcemap(
       mainOptions10,
       globalSourcemap,
@@ -250,8 +250,8 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
     min: normalizeBuildMin(mainOptions10, "main", globalMin),
   };
 
-  const moduleOutput: ESModuleBuildInfo | null = (moduleOptions10 === false || !esModuleFile) ? null : {
-    file: resolve(cwd, esModuleFile),
+  const moduleOutput: ESModuleBuildOptions | null = (moduleOptions10 === false || !esModuleFile) ? null : {
+    path: resolve(cwd, esModuleFile),
     sourcemap: normalizeBuildSourcemap(
       moduleOptions10,
       globalSourcemap,
@@ -260,7 +260,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
   };
 
   const browserOutput: BrowserBuildInfo | null = (browserOptions10 === false || !pkgBrowser) ? null : {
-    file: resolve(cwd, pkgBrowser),
+    path: resolve(cwd, pkgBrowser),
     sourcemap: normalizeBuildSourcemap(
       browserOptions10,
       globalSourcemap,
@@ -286,7 +286,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
     binaryNormOptions10 === false || !pkgBin
   )
     ? null : {
-      file: resolve(cwd, pkgBin),
+      path: resolve(cwd, pkgBin),
       sourcemap: normalizeBuildSourcemap(
         binaryNormOptions10,
         globalSourcemap,

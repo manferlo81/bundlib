@@ -209,7 +209,7 @@ function pkgToConfigs(
       createModuleConfig(
         apiInput,
         "es",
-        esOutputInfo.file,
+        esOutputInfo.path,
         esOutputInfo.sourcemap,
         true,
         false,
@@ -225,7 +225,7 @@ function pkgToConfigs(
         createModuleConfig(
           apiInput,
           "es",
-          renameMin(esOutputInfo.file),
+          renameMin(esOutputInfo.path),
           esOutputInfo.sourcemap,
           true,
           false,
@@ -245,7 +245,7 @@ function pkgToConfigs(
       createModuleConfig(
         apiInput,
         "cjs",
-        cjsOutputInfo.file,
+        cjsOutputInfo.path,
         cjsOutputInfo.sourcemap,
         cjsOutputInfo.esModule,
         cjsOutputInfo.interop,
@@ -261,7 +261,7 @@ function pkgToConfigs(
         createModuleConfig(
           apiInput,
           "cjs",
-          renameMin(cjsOutputInfo.file),
+          renameMin(cjsOutputInfo.path),
           cjsOutputInfo.sourcemap,
           cjsOutputInfo.esModule,
           cjsOutputInfo.interop,
@@ -281,7 +281,7 @@ function pkgToConfigs(
       createBrowserConfig(
         apiInput,
         browserOutputInfo.format,
-        browserOutputInfo.file,
+        browserOutputInfo.path,
         browserOutputInfo.sourcemap,
         browserOutputInfo.esModule,
         browserOutputInfo.interop,
@@ -300,7 +300,7 @@ function pkgToConfigs(
         createBrowserConfig(
           apiInput,
           browserOutputInfo.format,
-          renameMin(browserOutputInfo.file),
+          renameMin(browserOutputInfo.path),
           browserOutputInfo.sourcemap,
           browserOutputInfo.esModule,
           browserOutputInfo.interop,
@@ -323,12 +323,12 @@ function pkgToConfigs(
       createModuleConfig(
         binInput,
         "cjs",
-        binaryOutputInfo.file,
+        binaryOutputInfo.path,
         binaryOutputInfo.sourcemap,
         binaryOutputInfo.esModule,
         binaryOutputInfo.interop,
         external,
-        createPlugins(false, production, !!binaryOutputInfo.sourcemap, binaryOutputInfo.file),
+        createPlugins(false, production, !!binaryOutputInfo.sourcemap, binaryOutputInfo.path),
         true,
       ),
     );
