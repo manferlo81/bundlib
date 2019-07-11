@@ -8,7 +8,7 @@ import keysOrNull from "./keys-or-null";
 import keys from "./obj-keys";
 import { normalizeBuildFlag } from "./option-flag";
 import { isBrowserFormat } from "./option-format";
-import { isValidGlobals, normalizeGlobals } from "./option-globals";
+import { isValidGlobals, normalizeBuildGlobals, normalizeGlobals } from "./option-globals";
 import { isValidMinOption, normalizeBuildMin, normalizeMin } from "./option-min";
 import normalizeBuildName from "./option-name";
 import { normalizeBuildSourcemap, normalizeSourcemap } from "./options-sourcemap";
@@ -298,7 +298,10 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
       pkgName,
     ),
     id: amdId || null,
-    globals: normalizeGlobals(browserGlobals),
+    globals: normalizeBuildGlobals(
+      browserOptions,
+      normalizeGlobals(browserGlobals),
+    ),
     extend: normalizeBuildFlag(browserOptions, "extend", !!extend),
   };
 
