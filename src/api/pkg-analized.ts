@@ -6,13 +6,16 @@ export type MinifyOptions = Record<MinifiableFields, boolean>;
 
 export type InputOptions = Record<"api" | "bin", string>;
 
-export interface ESModuleBuildInfo {
-  file: string;
+export interface PathOptions {
+  path: string;
+}
+
+export interface ESModuleBuildOptions extends PathOptions {
   sourcemap: RollupSourcemap;
   min: boolean;
 }
 
-export interface CommonJSBuildInfo extends ESModuleBuildInfo {
+export interface CommonJSBuildInfo extends ESModuleBuildOptions {
   esModule: boolean;
   interop: boolean;
 }
@@ -25,14 +28,13 @@ export interface BrowserBuildInfo extends CommonJSBuildInfo {
   extend: boolean;
 }
 
-export interface TypesBuildInfo {
-  path: string;
+export interface TypesBuildInfo extends PathOptions {
   equals: boolean;
 }
 
 export interface OutputOptions {
   main: CommonJSBuildInfo | null;
-  module: ESModuleBuildInfo | null;
+  module: ESModuleBuildOptions | null;
   browser: BrowserBuildInfo | null;
   bin: CommonJSBuildInfo | null;
   types: TypesBuildInfo | null;
