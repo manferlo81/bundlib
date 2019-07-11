@@ -27,11 +27,12 @@ import {
 import { isBool, isDictionary, isDictionaryOrNull, isNull, isString, isStringOrNull } from "./type-check";
 import { invalidKeys } from "./validate-options";
 
-async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalized> {
+async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalized>;
+async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAnalized> {
 
-  const resolvedPkg: BundlibPkgJson = pkg || await readPkg({ cwd, normalize: false });
+  const pkg: BundlibPkgJson = inputPkg || await readPkg({ cwd, normalize: false });
 
-  if (!isDictionary(resolvedPkg)) {
+  if (!isDictionary(pkg)) {
     throw error("Invalid package.json content");
   }
 
@@ -48,7 +49,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
     peerDependencies,
     optionalDependencies,
     bundlib: bundlibOptions,
-  } = resolvedPkg;
+  } = pkg;
 
   if (!isStringOrNull(pkgMain)) {
     throw invalidPkgField("main", "string");
@@ -111,29 +112,29 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
   }
 
   const {
-    input: pkgInput,
+    input: inputOption,
     sourcemap: sourcemapOption,
-    esModule: esModuleFlag,
-    interop: interopFlag,
-    extend: extendFlag,
-    equals: equalsFlag,
+    esModule,
+    interop,
+    extend,
+    equals,
     format: browserFormat,
     name: browserName,
     id: amdId,
     globals: browserGlobals,
     min,
     cache: cacheOption,
-    main: mainOptions10,
-    module: moduleOptions10,
-    browser: browserOptions10,
-    bin: binaryOptions10,
-    types: generateTypes10,
+    main: mainOptions,
+    module: moduleOptions,
+    browser: browserOptions,
+    bin: binaryOptionsOrInput,
+    types: typesOptions,
   } = bundlibOptions || {} as BundlibOptions;
 
   if (
-    !isNull(pkgInput) && !isString(pkgInput) && !(
-      isDictionary(pkgInput) && !invalidKeys(pkgInput, ["api", "bin"]) && keys(pkgInput).every((key) => (
-        isString(pkgInput[key])
+    !isNull(inputOption) && !isString(inputOption) && !(
+      isDictionary(inputOption) && !invalidKeys(inputOption, ["api", "bin"]) && keys(inputOption).every((key) => (
+        isString(inputOption[key])
       ))
     )
   ) {
@@ -169,8 +170,8 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
   }
 
   if (
-    !isNull(mainOptions10) && (mainOptions10 !== false) && !(
-      isDictionary(mainOptions10) && !invalidKeys(mainOptions10, [
+    !isNull(mainOptions) && (mainOptions !== false) && !(
+      isDictionary(mainOptions) && !invalidKeys(mainOptions, [
         "sourcemap",
         "esModule",
         "interop",
@@ -182,8 +183,8 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
   }
 
   if (
-    !isNull(moduleOptions10) && (moduleOptions10 !== false) && !(
-      isDictionary(moduleOptions10) && !invalidKeys(moduleOptions10, [
+    !isNull(moduleOptions) && (moduleOptions !== false) && !(
+      isDictionary(moduleOptions) && !invalidKeys(moduleOptions, [
         "sourcemap",
         "min",
       ])
@@ -193,8 +194,8 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
   }
 
   if (
-    !isNull(browserOptions10) && (browserOptions10 !== false) && !(
-      isDictionary(browserOptions10) && !invalidKeys(browserOptions10, [
+    !isNull(browserOptions) && (browserOptions !== false) && !(
+      isDictionary(browserOptions) && !invalidKeys(browserOptions, [
         "sourcemap",
         "esModule",
         "interop",
@@ -205,19 +206,19 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
         "globals",
         "extend",
       ]) &&
-      isBrowserFormat(browserOptions10.format) &&
-      (["name", "id"] as Array<keyof typeof browserOptions10>).every((key) => (
-        isStringOrNull(browserOptions10[key])
+      isBrowserFormat(browserOptions.format) &&
+      (["name", "id"] as Array<keyof typeof browserOptions>).every((key) => (
+        isStringOrNull(browserOptions[key])
       )) &&
-      isValidGlobals(browserOptions10.globals)
+      isValidGlobals(browserOptions.globals)
     )
   ) {
     throw invalidOption("browser", 'false | { sourcemap?: boolean | "inline", esModule?, interop?, min? }');
   }
 
   if (
-    !isNull(binaryOptions10) && !isString(binaryOptions10) && (binaryOptions10 !== false) && !(
-      isDictionary(binaryOptions10) && !invalidKeys(binaryOptions10, [
+    !isNull(binaryOptionsOrInput) && !isString(binaryOptionsOrInput) && (binaryOptionsOrInput !== false) && !(
+      isDictionary(binaryOptionsOrInput) && !invalidKeys(binaryOptionsOrInput, [
         "sourcemap",
         "esModule",
         "interop",
@@ -229,8 +230,8 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
   }
 
   if (
-    !isNull(generateTypes10) && (generateTypes10 !== false) && !(
-      isDictionary(generateTypes10) && !invalidKeys(generateTypes10, [
+    !isNull(typesOptions) && (typesOptions !== false) && !(
+      isDictionary(typesOptions) && !invalidKeys(typesOptions, [
         "equals",
       ])
     )
@@ -238,15 +239,18 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
     throw invalidOption("types", "false");
   }
 
+  const globalESModule = !!esModule;
+  const globalInterop = !!interop;
+
   const esModuleFile = pkgModule || pkgJsNextMain;
   const typesPath = pkgTypes || typings;
 
-  const apiInput = isStringOrNull(pkgInput) ? pkgInput : pkgInput.api;
-  let binInput = isStringOrNull(pkgInput) ? null : pkgInput.bin;
+  const apiInput = isStringOrNull(inputOption) ? inputOption : inputOption.api;
+  let binInput = isStringOrNull(inputOption) ? null : inputOption.bin;
 
   // falling back to "bin" option is "string" but this behavior will change in the future
-  if (isString(binaryOptions10) && !binInput) {
-    binInput = binaryOptions10;
+  if (isString(binaryOptionsOrInput) && !binInput) {
+    binInput = binaryOptionsOrInput;
   }
 
   const input: InputOptions = {
@@ -257,70 +261,70 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
   const globalSourcemap = normalizeSourcemap(sourcemapOption);
   const globalMin: MinifyOptions = normalizeMin(min);
 
-  const mainOutput: CommonJSBuildOptions | null = (mainOptions10 === false || !pkgMain) ? null : {
+  const mainOutput: CommonJSBuildOptions | null = (mainOptions === false || !pkgMain) ? null : {
     path: resolve(cwd, pkgMain),
     sourcemap: normalizeBuildSourcemap(
-      mainOptions10,
+      mainOptions,
       globalSourcemap,
     ),
-    esModule: normalizeBuildFlag(mainOptions10, "esModule", !!esModuleFlag),
-    interop: normalizeBuildFlag(mainOptions10, "interop", !!interopFlag),
-    min: normalizeBuildMin(mainOptions10, "main", globalMin),
+    esModule: normalizeBuildFlag(mainOptions, "esModule", globalESModule),
+    interop: normalizeBuildFlag(mainOptions, "interop", globalInterop),
+    min: normalizeBuildMin(mainOptions, "main", globalMin),
   };
 
-  const moduleOutput: ESModuleBuildOptions | null = (moduleOptions10 === false || !esModuleFile) ? null : {
+  const moduleOutput: ESModuleBuildOptions | null = (moduleOptions === false || !esModuleFile) ? null : {
     path: resolve(cwd, esModuleFile),
     sourcemap: normalizeBuildSourcemap(
-      moduleOptions10,
+      moduleOptions,
       globalSourcemap,
     ),
-    min: normalizeBuildMin(moduleOptions10, "module", globalMin),
+    min: normalizeBuildMin(moduleOptions, "module", globalMin),
   };
 
-  const browserOutput: BrowserBuildOptions | null = (browserOptions10 === false || !pkgBrowser) ? null : {
+  const browserOutput: BrowserBuildOptions | null = (browserOptions === false || !pkgBrowser) ? null : {
     path: resolve(cwd, pkgBrowser),
     sourcemap: normalizeBuildSourcemap(
-      browserOptions10,
+      browserOptions,
       globalSourcemap,
     ),
-    esModule: normalizeBuildFlag(browserOptions10, "esModule", !!esModuleFlag),
-    interop: normalizeBuildFlag(browserOptions10, "interop", !!interopFlag),
-    min: normalizeBuildMin(browserOptions10, "browser", globalMin),
-    format: browserOptions10 && !isNull(browserOptions10.format) ? browserOptions10.format : (browserFormat || "umd"),
+    esModule: normalizeBuildFlag(browserOptions, "esModule", globalESModule),
+    interop: normalizeBuildFlag(browserOptions, "interop", globalInterop),
+    min: normalizeBuildMin(browserOptions, "browser", globalMin),
+    format: browserOptions && !isNull(browserOptions.format) ? browserOptions.format : (browserFormat || "umd"),
     name: normalizeBuildName(
       cwd,
-      browserOptions10 ? browserOptions10.name : null,
+      browserOptions ? browserOptions.name : null,
       browserName,
       pkgName,
     ),
     id: amdId || null,
     globals: normalizeGlobals(browserGlobals),
-    extend: normalizeBuildFlag(browserOptions10, "extend", !!extendFlag),
+    extend: normalizeBuildFlag(browserOptions, "extend", !!extend),
   };
 
-  const binaryNormOptions10 = isString(binaryOptions10) ? null : binaryOptions10;
+  const binaryOptions = isString(binaryOptionsOrInput) ? null : binaryOptionsOrInput;
 
   const binaryOutput: CommonJSBuildOptions | null = (
-    binaryNormOptions10 === false || !pkgBin
+    binaryOptions === false || !pkgBin
   )
     ? null : {
       path: resolve(cwd, pkgBin),
       sourcemap: normalizeBuildSourcemap(
-        binaryNormOptions10,
+        binaryOptions,
         globalSourcemap,
       ),
-      esModule: normalizeBuildFlag(binaryNormOptions10, "esModule", !!esModuleFlag),
-      interop: normalizeBuildFlag(binaryNormOptions10, "interop", !!interopFlag),
-      min: normalizeBuildMin(binaryNormOptions10, "bin", globalMin),
+      esModule: normalizeBuildFlag(binaryOptions, "esModule", globalESModule),
+      interop: normalizeBuildFlag(binaryOptions, "interop", globalInterop),
+      min: normalizeBuildMin(binaryOptions, "bin", globalMin),
     };
 
-  const typesOutput: TypesBuildOptions | null = (generateTypes10 === false || !typesPath)
+  const typesOutput: TypesBuildOptions | null = (typesOptions === false || !typesPath)
     ? null : {
       path: resolve(cwd, typesPath),
-      equals: normalizeBuildFlag(generateTypes10, "equals", !!equalsFlag),
+      equals: normalizeBuildFlag(typesOptions, "equals", !!equals),
     };
 
-  const output10: OutputOptions = {
+  const output: OutputOptions = {
     main: mainOutput,
     module: moduleOutput,
     browser: browserOutput,
@@ -338,9 +342,9 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
 
   return {
     cwd,
-    pkg: resolvedPkg,
+    pkg,
     input,
-    output: output10,
+    output,
     dependencies,
     cache,
   };

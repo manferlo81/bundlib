@@ -18,16 +18,16 @@ import { createBrowserConfig, createModuleConfig } from "./create-config";
 import { error, noTsInput } from "./errors";
 import { PkgAnalized } from "./pkg-analized";
 import { renameMin, renamePre } from "./rename";
-import { BundlibRollupOptions, FilterablePlugins } from "./types";
+import { BundlibRollupOptions, FilterablePlugins, RollupSourcemap } from "./types";
 
 async function pkgToConfigs(pkg: PkgAnalized, dev?: boolean): Promise<BundlibRollupOptions[]>;
 async function pkgToConfigs(
   {
     cwd,
-    input: inputObject,
+    input,
     dependencies,
-    cache: cacheFolder,
-    output: output10,
+    cache,
+    output,
   }: PkgAnalized,
   dev?: boolean,
 ): Promise<BundlibRollupOptions[]> {
@@ -35,25 +35,25 @@ async function pkgToConfigs(
   const {
     api: apiInput,
     bin: binInput,
-  } = inputObject;
+  } = input;
 
   const {
-    main: cjsOutputInfo,
-    module: esOutputInfo,
-    browser: browserOutputInfo,
-    bin: binaryOutputInfo,
-    types: typesOutputInfo,
-  } = output10;
+    main: cjsOutput,
+    module: esOutput,
+    browser: browserOutput,
+    bin: binaryOutput,
+    types: typesOutput,
+  } = output;
 
   if (
-    (cjsOutputInfo || esOutputInfo || browserOutputInfo) &&
+    (cjsOutput || esOutput || browserOutput) &&
     extname(apiInput) !== ".ts"
   ) {
     throw noTsInput("Module");
   }
 
   if (
-    binaryOutputInfo &&
+    binaryOutput &&
     extname(binInput) !== ".ts"
   ) {
     throw noTsInput("Binary");
@@ -66,9 +66,9 @@ async function pkgToConfigs(
   } = dependencies;
 
   if (
-    browserOutputInfo &&
-    (browserOutputInfo.format === "iife" || browserOutputInfo.format === "umd") &&
-    !browserOutputInfo.name
+    browserOutput &&
+    (browserOutput.format === "iife" || browserOutput.format === "umd") &&
+    !browserOutput.name
   ) {
     throw error("name option is required for IIFE and UMD builds");
   }
@@ -81,7 +81,7 @@ async function pkgToConfigs(
 
   const typesFilename = renamePre(basename(apiInput), "d");
 
-  let typesOutputDir = typesOutputInfo ? typesOutputInfo.path : null;
+  let typesOutputDir = typesOutput ? typesOutput.path : null;
   if (typesOutputDir && extname(typesOutputDir) === ".ts") {
     typesOutputDir = dirname(typesOutputDir);
   }
@@ -93,11 +93,13 @@ async function pkgToConfigs(
 
   const configs: BundlibRollupOptions[] = [];
 
-  function createPlugins(browser: boolean, mini: boolean, sourcemapBool: boolean, bin?: string): FilterablePlugins {
+  function createPlugins(browser: boolean, mini: boolean, sourcemap: RollupSourcemap, bin?: string): FilterablePlugins {
+
+    const sourcemapBool = !!sourcemap;
 
     const declarationDir = !configs.length && !bin && typesOutputDir;
     const tsInclude = bin ? [cwdFolderContent] : [apiFolderContent];
-    const cacheRoot = pathJoin(cacheFolder, "rpt2");
+    const cacheRoot = pathJoin(cache, "rpt2");
 
     let shebang: string;
 
@@ -108,7 +110,7 @@ async function pkgToConfigs(
         sourcemap: sourcemapBool,
       }),
 
-      bin && cjsOutputInfo && {
+      bin && cjsOutput && {
 
         name: "api",
 
@@ -170,7 +172,7 @@ async function pkgToConfigs(
 
       json() as Plugin,
 
-      declarationDir && typesOutputInfo && typesOutputInfo.equals && exportEquals({
+      declarationDir && typesOutput && typesOutput.equals && exportEquals({
         file: resolve(cwd, pathJoin(declarationDir, typesFilename)),
       }),
 
@@ -204,34 +206,34 @@ async function pkgToConfigs(
 
   }
 
-  if (esOutputInfo) {
+  if (esOutput) {
 
     configs.push(
       createModuleConfig(
         apiInput,
         "es",
-        esOutputInfo.path,
-        esOutputInfo.sourcemap,
+        esOutput.path,
+        esOutput.sourcemap,
         true,
         false,
         external,
-        createPlugins(false, production && !esOutputInfo.min, !!esOutputInfo.sourcemap),
+        createPlugins(false, production && !esOutput.min, esOutput.sourcemap),
         true,
       ),
     );
 
-    if (esOutputInfo.min) {
+    if (esOutput.min) {
 
       configs.push(
         createModuleConfig(
           apiInput,
           "es",
-          renameMin(esOutputInfo.path),
-          esOutputInfo.sourcemap,
+          renameMin(esOutput.path),
+          esOutput.sourcemap,
           true,
           false,
           external,
-          createPlugins(false, true, !!esOutputInfo.sourcemap),
+          createPlugins(false, true, esOutput.sourcemap),
           true,
         ),
       );
@@ -240,34 +242,34 @@ async function pkgToConfigs(
 
   }
 
-  if (cjsOutputInfo) {
+  if (cjsOutput) {
 
     configs.push(
       createModuleConfig(
         apiInput,
         "cjs",
-        cjsOutputInfo.path,
-        cjsOutputInfo.sourcemap,
-        cjsOutputInfo.esModule,
-        cjsOutputInfo.interop,
+        cjsOutput.path,
+        cjsOutput.sourcemap,
+        cjsOutput.esModule,
+        cjsOutput.interop,
         external,
-        createPlugins(false, production && !cjsOutputInfo.min, !!cjsOutputInfo.sourcemap),
+        createPlugins(false, production && !cjsOutput.min, cjsOutput.sourcemap),
         true,
       ),
     );
 
-    if (cjsOutputInfo.min) {
+    if (cjsOutput.min) {
 
       configs.push(
         createModuleConfig(
           apiInput,
           "cjs",
-          renameMin(cjsOutputInfo.path),
-          cjsOutputInfo.sourcemap,
-          cjsOutputInfo.esModule,
-          cjsOutputInfo.interop,
+          renameMin(cjsOutput.path),
+          cjsOutput.sourcemap,
+          cjsOutput.esModule,
+          cjsOutput.interop,
           external,
-          createPlugins(false, true, !!cjsOutputInfo.sourcemap),
+          createPlugins(false, true, cjsOutput.sourcemap),
           true,
         ),
       );
@@ -276,41 +278,41 @@ async function pkgToConfigs(
 
   }
 
-  if (browserOutputInfo) {
+  if (browserOutput) {
 
     configs.push(
       createBrowserConfig(
         apiInput,
-        browserOutputInfo.format,
-        browserOutputInfo.path,
-        browserOutputInfo.sourcemap,
-        browserOutputInfo.esModule,
-        browserOutputInfo.interop,
-        createPlugins(true, production && !browserOutputInfo.min, !!browserOutputInfo.sourcemap),
+        browserOutput.format,
+        browserOutput.path,
+        browserOutput.sourcemap,
+        browserOutput.esModule,
+        browserOutput.interop,
+        createPlugins(true, production && !browserOutput.min, browserOutput.sourcemap),
         true,
-        browserOutputInfo.name as string,
-        browserOutputInfo.extend,
-        browserOutputInfo.globals,
-        browserOutputInfo.id,
+        browserOutput.name as string,
+        browserOutput.extend,
+        browserOutput.globals,
+        browserOutput.id,
       ),
     );
 
-    if (browserOutputInfo.min) {
+    if (browserOutput.min) {
 
       configs.push(
         createBrowserConfig(
           apiInput,
-          browserOutputInfo.format,
-          renameMin(browserOutputInfo.path),
-          browserOutputInfo.sourcemap,
-          browserOutputInfo.esModule,
-          browserOutputInfo.interop,
-          createPlugins(true, true, !!browserOutputInfo.sourcemap),
+          browserOutput.format,
+          renameMin(browserOutput.path),
+          browserOutput.sourcemap,
+          browserOutput.esModule,
+          browserOutput.interop,
+          createPlugins(true, true, browserOutput.sourcemap),
           true,
-          browserOutputInfo.name as string,
-          browserOutputInfo.extend,
-          browserOutputInfo.globals,
-          browserOutputInfo.id,
+          browserOutput.name as string,
+          browserOutput.extend,
+          browserOutput.globals,
+          browserOutput.id,
         ),
       );
 
@@ -318,18 +320,18 @@ async function pkgToConfigs(
 
   }
 
-  if (binaryOutputInfo) {
+  if (binaryOutput) {
 
     configs.push(
       createModuleConfig(
         binInput,
         "cjs",
-        binaryOutputInfo.path,
-        binaryOutputInfo.sourcemap,
-        binaryOutputInfo.esModule,
-        binaryOutputInfo.interop,
+        binaryOutput.path,
+        binaryOutput.sourcemap,
+        binaryOutput.esModule,
+        binaryOutput.interop,
         external,
-        createPlugins(false, production, !!binaryOutputInfo.sourcemap, binaryOutputInfo.path),
+        createPlugins(false, production, binaryOutput.sourcemap, binaryOutput.path),
         true,
       ),
     );
