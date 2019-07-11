@@ -35,11 +35,24 @@ jobs:
           name: Install dependencies
           command: npm install
       - run:
-          name: Build
-          command: npm run build
-      - run:
           name: Test
           command: npm test
+      - save_cache:
+          paths:
+            - node_modules
+          key: v4-deps-bundlib-{{ checksum "package.json" }}
+      - persist_to_workspace:
+          root: *working_directory
+          paths: .
+
+  build_pkg:
+    executor: node
+    steps:
+      - attach_workspace: &attach_workspace
+          at: *working_directory
+      - run:
+          name: Build
+          command: npm run build
       - save_cache:
           paths:
             - node_modules
@@ -51,8 +64,7 @@ jobs:
   upload_coverage:
     executor: node
     steps:
-      - attach_workspace: &attach_workspace
-          at: *working_directory
+      - attach_workspace: *attach_workspace
       - codecov/upload:
           file: coverage/*.json
 
@@ -75,6 +87,15 @@ workflows:
             branches:
               only: /.*/
 
+      - build_pkg:
+          requires:
+            - unit_test
+          filters: &new_tag
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
+            branches:
+              ignore: /.*/
+
       - upload_coverage:
           requires:
             - unit_test
@@ -85,9 +106,5 @@ workflows:
       - publish_pkg:
           context: npm
           requires:
-            - unit_test
-          filters:
-            tags:
-              only: /^v\d+\.\d+\.\d+$/
-            branches:
-              ignore: /.*/
+            - build_pkg
+          filters: *new_tag
