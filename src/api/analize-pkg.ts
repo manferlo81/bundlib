@@ -2,7 +2,7 @@
 import { resolve } from "path";
 import readPkg from "read-pkg";
 
-import { BundlibOptions10 } from "./bundlib-options";
+import { BundlibOptions } from "./bundlib-options";
 import { error, invalidOption, invalidPkgField } from "./errors";
 import keysOrNull from "./keys-or-null";
 import keys from "./obj-keys";
@@ -14,18 +14,18 @@ import normalizeBuildName from "./option-name";
 import { normalizeBuildSourcemap, normalizeSourcemap } from "./options-sourcemap";
 import { BundlibPkgJson } from "./pkg";
 import {
-  BrowserBuildInfo,
-  CommonJSBuildInfo,
+  BrowserBuildOptions,
+  CommonJSBuildOptions,
   Dependencies,
   ESModuleBuildOptions,
   InputOptions,
   MinifyOptions,
   OutputOptions,
   PkgAnalized,
-  TypesBuildInfo,
+  TypesBuildOptions,
 } from "./pkg-analized";
 import { isBool, isDictionary, isDictionaryOrNull, isNull, isString, isStringOrNull } from "./type-check";
-import { getInvalidOptions, invalidKeys } from "./validate-options";
+import { invalidKeys } from "./validate-options";
 
 async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalized> {
 
@@ -86,7 +86,25 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
     throw invalidPkgField("optionalDependencies", "Object");
   }
 
-  const invalidOptions = bundlibOptions && getInvalidOptions(bundlibOptions);
+  const invalidOptions = bundlibOptions && invalidKeys(bundlibOptions, [
+    "input",
+    "extend",
+    "esModule",
+    "interop",
+    "equals",
+    "sourcemap",
+    "format",
+    "name",
+    "id",
+    "globals",
+    "min",
+    "cache",
+    "main",
+    "module",
+    "browser",
+    "bin",
+    "types",
+  ] as Array<keyof BundlibOptions>);
   if (invalidOptions) {
     const optionNames = invalidOptions.map((name) => `"${name}"`).join(", ");
     throw error(`Unknown options found: (${optionNames})`);
@@ -110,7 +128,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
     browser: browserOptions10,
     bin: binaryOptions10,
     types: generateTypes10,
-  } = bundlibOptions || {} as BundlibOptions10;
+  } = bundlibOptions || {} as BundlibOptions;
 
   if (
     !isNull(pkgInput) && !isString(pkgInput) && !(
@@ -239,7 +257,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
   const globalSourcemap = normalizeSourcemap(sourcemapOption);
   const globalMin: MinifyOptions = normalizeMin(min);
 
-  const mainOutput: CommonJSBuildInfo | null = (mainOptions10 === false || !pkgMain) ? null : {
+  const mainOutput: CommonJSBuildOptions | null = (mainOptions10 === false || !pkgMain) ? null : {
     path: resolve(cwd, pkgMain),
     sourcemap: normalizeBuildSourcemap(
       mainOptions10,
@@ -259,7 +277,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
     min: normalizeBuildMin(moduleOptions10, "module", globalMin),
   };
 
-  const browserOutput: BrowserBuildInfo | null = (browserOptions10 === false || !pkgBrowser) ? null : {
+  const browserOutput: BrowserBuildOptions | null = (browserOptions10 === false || !pkgBrowser) ? null : {
     path: resolve(cwd, pkgBrowser),
     sourcemap: normalizeBuildSourcemap(
       browserOptions10,
@@ -282,7 +300,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
 
   const binaryNormOptions10 = isString(binaryOptions10) ? null : binaryOptions10;
 
-  const binaryOutput: CommonJSBuildInfo | null = (
+  const binaryOutput: CommonJSBuildOptions | null = (
     binaryNormOptions10 === false || !pkgBin
   )
     ? null : {
@@ -296,7 +314,7 @@ async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalize
       min: normalizeBuildMin(binaryNormOptions10, "bin", globalMin),
     };
 
-  const typesOutput: TypesBuildInfo | null = (generateTypes10 === false || !typesPath)
+  const typesOutput: TypesBuildOptions | null = (generateTypes10 === false || !typesPath)
     ? null : {
       path: resolve(cwd, typesPath),
       equals: normalizeBuildFlag(generateTypes10, "equals", !!equalsFlag),
