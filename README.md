@@ -57,114 +57,260 @@ npm i bundlib -D
 
 #### input
 
-* *used in:* `CommonJS`, `ES`, `Browser` builds
-* *type:* `string`
-* *defaults to* `"src/index.ts"`
+```typescript
+input: string | InputOptions;
 
-*The path to the file to be used as entry point for modules. It has to be a* `.ts` *file.*
+interface InputOptions {
+  api?: string;
+  bin?: string;
+}
 
-#### bin
+default {
+  api: "src/index.ts";
+  bin: "src-bin/index.ts";
+};
+```
 
-* *added in* `v0.7.0`
-* *used in:* `Binary`
-* *defaults to* `"src-bin/index.ts"`
-
-*The path to the file to be used as entry point for* `CLI` *binary. It has to be a* `.ts` *file.*
+*The path to the file(s) to be used as entry point for modules and binary. They have to be* `.ts` *files for* `bundlib` *to create* `rollup` *options. If a string provided, it will be used as api entry point and binary entry point will be set to default value.*
 
 #### sourcemap
 
-* `"inline"` *support added in* `v0.6.0`
-* *used in:* `CommonJS`, `ES`, `Browser` builds
-* *type:* `boolean` | `"inline"`
-* *defaults to* `true`
+* `"inline"` *support added in:* `v0.6.0`
+
+```typescript
+sourcemap: boolean | "inline";
+
+default true;
+```
 
 *Whether or not to generate source maps. Anything other than* `false` *or* `"inline"` *will default to* `true`*.*
 
+*This option can be overridden using* `per-build` *options. See* [`main`](#main)*,* [`module`](#module)*,* [`browser`](#browser) *&* [`bin`](#bin) *options.*
+
 #### esModule
 
-* *used in:* `CommonJS`, `Browser` & `Binary` builds
-* *type:* `boolean`
-* *defaults to* `false`
+```typescript
+esModule: boolean;
+
+default false;
+```
 
 *Whether or not to add a* `__esModule: true` *property to your non-es-module build.*
 
+*This option can be overridden using* `per-build` *options. See* [`main`](#main)*,* [`browser`](#browser) *&* [`bin`](#bin) *options.*
+
 #### interop
 
-* *used in:* `CommonJS`, `Browser` & `Binary` builds
-* *type:* `boolean`
-* *defaults to* `false`
+```typescript
+interop: boolean;
+
+default false;
+```
 
 *Whether or not to add an interop block.*
 
+*This option can be overridden using* `per-build` *options. See* [`main`](#main)*,* [`browser`](#browser) *&* [`bin`](#bin) *options.*
+
 #### format
 
-* *added in* `v0.7.0`
-* *used in:* `Browser` build
-* *type:* `"iife"` | `"amd"` | `"umd"`
-* *defaults to* `"umd"`
+* *added in:* `v0.7.0`
+
+```typescript
+format: "iife" | "amd" | "umd";
+
+default "umd";
+```
 
 *Defines the format to be used for the* `browser` *build.*
 
+*This option can be also defined using* `per-build` *options. See* [`browser`](#browser) *option.*
+
 #### name
 
-* *used in:* `IIFE` & `UMD` builds
-* *type:* `string`
-* *required for:* `IIFE` & `UMD` builds
+```typescript
+name: string;
+```
 
-*The name to be used to expose your library to the global scope in a* `IIFE` or `UMD` *build. If not provided it will default to the camelcased, unscoped* `"name"` *field in* `package.json` *or the camelcased directory name. If none of those can be obtained, it will throw at build time.*
+*The name to be used to expose your library to the global scope in a* `IIFE` or `UMD` *browser build. If not provided it will default to the camelcased, unscoped* `"name"` *field in* `package.json` *or the camelcased directory name. If none of those can be obtained, it will throw at build time.*
+
+*This option can be also defined using* `per-build` *options. See* [`browser`](#browser) *option.*
 
 #### id
 
-* *used in:* `AMD` & `UMD` builds
-* *type:* `string`
+```typescript
+id: string;
+```
 
-*Optional amd id for* `AMD` or `UMD` *builds.*
+*Optional amd id for* `AMD` *or* `UMD` *build.*
 
-> *If not present,* `AMD` *module will be defined with no id.*
+*This option can be also defined using* `per-build` *options. See* [`browser`](#browser) *option.*
+
+*If not present,* `AMD` *module will be defined with no id.*
 
 #### extend
 
-* *used in:* `Browser` builds
-* *type:* `boolean`
-* *defaults to* `false`
+```typescript
+extend: boolean;
 
-*Whether or not to extend the globally exposed name on a* `IIFE`, `AMD` or `UMD` *build.*
+default false;
+```
+
+*Whether or not to extend the globally exposed name on a* `IIFE`, `UMD` *build.*
+
+*This option can be also defined using* `per-build` *options. See* [`browser`](#browser) *option.*
 
 #### globals
 
-* *used in:* `Browser` builds
-* *type:* `{ [name: string]: string }` | `string[]`
+```typescript
+globals: { [name: string]: string } | string[];
+```
 
-*Object or array to map names to globals.*
+*Object or array to map names to globals in browser builds.*
+
+*This option can be also defined using* `per-build` *options. See* [`browser`](#browser) *option.*
 
 #### equals
 
-* *added in* `v0.1.0`
-* *used in:* types for `CommonJS` build
-* *type:* `boolean`
-* *defaults to* `false`
+* *added in:* `v0.1.0`
 
-*Fixes type export for CommonJS module using* `export = ...` *instead of* `export default ...`
+```typescript
+equals: boolean;
 
-> :warning: *Note that this options should only be used when your library has a default export and no named exports.*
+default false;
+```
+
+*Transforms type export for CommonJS module using* `export = ...` *instead of* `export default ...`*.*
+
+*This option can be also defined using* `per-build` *options. See* [`types`](#types) *option.*
+
+> :warning: *Note that this options should only be used when your library has a default export and no named exports, otherwise it may cause the types to become invalid.*
 
 #### min
 
-* *added in* `v0.3.2`
-* `boolean` *support added in* `v0.4.1`
-* *used in:* `CommonJS`, `ES` & `Browser` builds
-* *type:* `"main" | "module" | "browser" | boolean | Array<"main" | "module" | "browser">`
+* *added in:* `v0.3.2`
+* `boolean` *support added in:* `v0.4.1`
+
+```typescript
+min: BuildType | BuildType[] | boolean;
+
+type BuildType = "main" | "module" | "browser" | "min";
+
+default false;
+```
 
 *Defines which files should be used to build an aditional minified version, if* `true` *will affect all modules. The minified file will be renamed from* `*.ext` to `*.min.ext`*. This option will override the default behavior of the* [`--dev`, `-d` *cli option*](#-dev-d) *, which means only the minified version will be actually minified, the normal version will **NOT** be minified even if you don't set the* [`--dev`, `-d` *cli option*](#-dev-d)*.*
 
+*This option can be overridden using* `per-build` *options. See* [`main`](#main)*,* [`module`](#module)*,* [`browser`](#browser) *&* [`bin`](#bin) *options.*
+
 #### cache
 
-* *added in* `v0.6.0`
-* *used in:* `All` builds
-* *type:* `string`
-* *defaults to* `"node_modules/.cache/bundlib"`
+* *added in:* `v0.6.0`
+
+```typescript
+cache: string;
+
+default "node_modules/.cache/bundlib"
+```
 
 *Defines the directory to be used for cache, relative to the project root.*
+
+#### main
+
+* *added in:* `v0.10.0`
+
+```typescript
+main: CommonJSOptions | false;
+
+interface CommonJSOptions {
+  sourcemap?: boolean | "inline";
+  esModule?: boolean | null;
+  interop?: boolean | null;
+  min?: boolean | null;
+}
+```
+
+*Specific options to be used in* `CommonJS` *build. They will override any corresponding option set in the top-level options. See* [`sourcemap`](#sourcemap)*,* [`esModule`](#esmodule)*,* [`interop`](#interop) *&* [`min`](#min) *options.*
+
+*If it's set to* `false`*, it will prevent* `CommonJS` *build altogether, even if there is a* `main` *field in* `package.json`*.*
+
+#### module
+
+* *added in:* `v0.10.0`
+
+```typescript
+module: ESModuleOptions | false;
+
+interface ESModuleOptions {
+  sourcemap?: boolean | "inline";
+  min?: boolean | null;
+}
+```
+
+*Specific options to be used in* `ESModule` *build. They will override any corresponding option set in the top-level options. See* [`sourcemap`](#sourcemap) *&* [`min`](#min) *options.*
+
+*If it's set to* `false`*, it will prevent* `ESModule` *build altogether, even if there is a* `module` *or* `jsnext:main` *field in* `package.json`*.*
+
+#### browser
+
+* *added in:* `v0.10.0`
+
+```typescript
+browser: BrowserOptions | false;
+
+interface BrowserOptions {
+  sourcemap?: boolean | "inline";
+  esModule?: boolean;
+  interop?: boolean;
+  min?: boolean;
+  format?: "iife" | "amd" | "umd" ;
+  name?: string;
+  id?: string;
+  extend?: boolean;
+  globals?: { [name: string]: string } | string[];
+}
+```
+
+*Specific options to be used in* `Browser` *build. They will override any corresponding option set in the top-level options. See* [`sourcemap`](#sourcemap)*,* [`esModule`](#esmodule)*,* [`interop`](#interop)*,* [`min`](#min)*,* [`format`](#format)*,* [`name`](#name)*,* [`id`](#id)*,* [`extend`](#extend) *&* [`globals`](#globals) *options.*
+
+*If it's set to* `false`*, it will prevent* `Browser` *build altogether, even if there is a* `browser` *field in* `package.json`*.*
+
+#### bin
+
+* *added in:* `v0.7.0`
+* `per-build` *behavior added in:* `v0.10.0`
+
+```typescript
+bin: string | CommonJSOptions | false;
+
+interface CommonJSOptions {
+  sourcemap?: boolean | "inline";
+  esModule?: boolean | null;
+  interop?: boolean | null;
+  min?: boolean | null;
+}
+```
+
+*Specific options to be used in* `Binary` *build. They will override any corresponding option set in the top-level options. See* [`sourcemap`](#sourcemap)*,* [`esModule`](#esmodule)*,* [`interop`](#interop) *&* [`min`](#min) *options.*
+
+*If it's set to* `false`*, it will prevent* `Binary` *build altogether, even if there is a* `bin` *field in* `package.json`*.*
+
+> :warning: *This option was actually added in* `v0.7.0` *and it was used to set entry point for* `Binary` *build. For compatibility it still works if you set this option as string. This behavior will be removed in the future and therefore should not be used. Use* [`input`](#input) *option instead.*
+
+#### types
+
+* *added in:* `v0.10.0`
+
+```typescript
+types: TypesOptions | false;
+
+interface TypesOptions {
+  equals: boolean;
+}
+```
+
+*Specific options to be used for types generation. They will override any corresponding option set in the top-level options. See* [`equals`](#equals) *option.*
+
+*If it's set to* `false`*, it will prevent type declarations generation altogether, even if there is a* `types` *or* `typings` *field in* `package.json`*.*
 
 ## CLI
 
@@ -217,50 +363,12 @@ export default () => configsFromPkg(
 function analizePkg(
   cwd: string,
   pkg: PkgJson = read(cwd + "/package.json"),
-): Promise<AnalizedPkg>;
-
-interface AnalizedPkg {
-    cwd: string;
-    pkg: PkgJson;
-    input: {
-      api: string;
-      bin: string;
-    };
-    output: {
-      main: string | null;
-      module: string | null;
-      browser: string | null;
-      bin: string | null;
-      types: string | null;
-    };
-    sourcemap: boolean | "inline";
-    dependencies: {
-      runtime: string[] | null;
-      peer: string[] | null;
-      optional: string[] | null;
-    };
-    browser: {
-      format: "umd" | "iife" | "amd";
-      name: string | null;
-      id: string | null;
-      globals: Record<string, string> | null;
-    };
-    minify: {
-      main: boolean;
-      module: boolean;
-      browser: boolean;
-    };
-    options: {
-      extend: boolean;
-      esModule: boolean;
-      interop: boolean;
-      equals: boolean;
-    };
-    cache: string;
-}
+): Promise<PkgAnalized>;
 ```
 
-*Analizes* `package.json` *and returns a* `Promise` *that resolves to useful normalized information. If* `pkg` *not provided it will be read from the current working directory* `cwd`*.*
+*Analizes* `package.json` *and returns a* `Promise` *that resolves to useful normalized information,* [*see* `PkgAnalized`](#pkganalized)*. If* `pkg` *not provided it will be read from the current working directory* `cwd`*.*
+
+> :warning: *The return of this function changed drastically from* `v0.9.x` *to* `v0.10.x`*. This only affects you if you are using this method, if you are using* `configsFromPkg` *or the cli, you are safe to update.*
 
 ### configsFromPkg
 
@@ -273,6 +381,84 @@ function configsFromPkg(
 ```
 
 *Returns a* `Promise` *that resolves to an array of Rollup configs based on the content of* `package.json`*. If* `pkg` *not provided it will be read from the current working directory* `cwd`*.*
+
+## Types
+
+### PkgAnalized
+
+```typescript
+interface PkgAnalized {
+  cwd: string;
+  pkg: PkgJson;
+  input: {
+    api: string;
+    bin: string;
+  };
+  output: {
+    main: CommonJSBuildOptions | null;
+    module: ESModuleBuildOptions | null;
+    browser: BrowserBuildOptions | null;
+    bin: CommonJSBuildOptions | null;
+    types: TypesBuildOptions | null;
+  };
+  dependencies: {
+    runtime: string[] | null;
+    peer: string[] | null;
+    optional: string[] | null;
+  };
+  cache: string;
+}
+```
+
+*see also:* [`CommonJSBuildOptions`](#commonjsbuildoptions), [`ESModuleBuildOptions`](#esmodulebuildoptions), [`BrowserBuildOptions`](#browserbuildoptions) & [`TypesBuildOptions`](#typesbuildoptions)
+
+### CommonJSBuildOptions
+
+```typescript
+interface CommonJSBuildOptions {
+  path: string;
+  sourcemap: boolean | "inline";
+  esModule: boolean;
+  interop: boolean;
+  min: boolean;
+}
+```
+
+### ESModuleBuildOptions
+
+```typescript
+interface ESModuleBuildOptions {
+  path: string;
+  sourcemap: boolean | "inline";
+  min: boolean;
+}
+```
+
+### BrowserBuildOptions
+
+```typescript
+interface BrowserBuildOptions {
+  path: string;
+  sourcemap: boolean | "inline";
+  esModule: boolean;
+  interop: boolean;
+  min: boolean;
+  format: "iife" | "amd" | "umd";
+  name: string | null;
+  id: string | null;
+  globals: Record<string, string> | null;
+  extend: boolean;
+}
+```
+
+### TypesBuildOptions
+
+```typescript
+interface TypesBuildOptions {
+  path: string;
+  equals: boolean;
+}
+```
 
 ## Known Issues
 
@@ -287,6 +473,7 @@ function configsFromPkg(
 * [x] *Creates an browser build based on the* `"browser"` *field in* `package.json` *(only if* `"browser"` *fields is a* `string`*)*
 * [x] *Creates an CLI binary build based on the* `"bin"` *field in* `package.json` *(only if* `"bin"` *fields is a* `string`*)*
 * [x] *Exports types declarations based on the* `"types"` *or* `"typings"` *field in your* `package.json`
+* [x] *Skip any buils based on options*
 * [x] *Sets* `dependencies`*,* `peerDependencies` *and `optionalDependencies` *as external for* `CommonJS`*,* `ES Modules` *and* `Bynary` *module.*
 * [x] *Importing an internal file from a package* `Ex: lodash/core` *will be treated as external if* `lodash` *is included in your* `dependencies` *or* `peerDependencies`*. Requires version* `>=0.7.3`*.*
 * [x] *Transforms* `async/await` *using [Babel](https://github.com/babel/babel) and [babel-plugin-transform-async-to-promises](https://github.com/rpetrich/babel-plugin-transform-async-to-promises) for ES5 support*
