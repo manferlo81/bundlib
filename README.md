@@ -242,7 +242,7 @@ module: ESModuleOptions | false;
 
 interface ESModuleOptions {
   sourcemap?: boolean | "inline";
-  min?: boolean | null;
+  min?: boolean;
 }
 ```
 
@@ -284,9 +284,9 @@ bin: string | CommonJSOptions | false;
 
 interface CommonJSOptions {
   sourcemap?: boolean | "inline";
-  esModule?: boolean | null;
-  interop?: boolean | null;
-  min?: boolean | null;
+  esModule?: boolean;
+  interop?: boolean;
+  min?: boolean;
 }
 ```
 
