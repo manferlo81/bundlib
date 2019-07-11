@@ -20,8 +20,8 @@ import { PkgAnalized } from "./pkg-analized";
 import { renameMin, renamePre } from "./rename";
 import { BundlibRollupOptions, FilterablePlugins } from "./types";
 
-function pkgToConfigs(pkg: PkgAnalized, dev?: boolean): BundlibRollupOptions[];
-function pkgToConfigs(
+async function pkgToConfigs(pkg: PkgAnalized, dev?: boolean): Promise<BundlibRollupOptions[]>;
+async function pkgToConfigs(
   {
     cwd,
     input: inputObject,
@@ -30,7 +30,7 @@ function pkgToConfigs(
     output: output10,
   }: PkgAnalized,
   dev?: boolean,
-): BundlibRollupOptions[] {
+): Promise<BundlibRollupOptions[]> {
 
   const {
     api: apiInput,
@@ -147,6 +147,7 @@ function pkgToConfigs(
       }),
 
       typescript2({
+        // typescript: require("typescript"),
         include: tsInclude,
         cacheRoot,
         useTsconfigDeclarationDir: true,
