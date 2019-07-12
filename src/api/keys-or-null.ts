@@ -1,4 +1,4 @@
-import keys from "./obj-keys";
+import { keys } from "./helpers";
 import { Nullable } from "./types";
 
 function keysOrNull(deps: Nullable<Record<string, any>>): string[] | null {

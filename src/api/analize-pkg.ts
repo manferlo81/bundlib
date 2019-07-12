@@ -4,8 +4,8 @@ import readPkg from "read-pkg";
 
 import { BundlibOptions } from "./bundlib-options";
 import { error, invalidOption, invalidPkgField } from "./errors";
+import { keys } from "./helpers";
 import keysOrNull from "./keys-or-null";
-import keys from "./obj-keys";
 import { normalizeBuildFlag } from "./option-flag";
 import { isBrowserFormat } from "./option-format";
 import { isValidGlobals, normalizeBuildGlobals, normalizeGlobals } from "./option-globals";

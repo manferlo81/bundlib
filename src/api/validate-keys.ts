@@ -1,4 +1,4 @@
-import keys from "./obj-keys";
+import { keys } from "./helpers";
 
 export function invalidKeys(object: Record<string, any>, list: string[]): string[] | null {
   const invalid = keys(object).filter((key) => (
