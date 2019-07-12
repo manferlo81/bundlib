@@ -102,24 +102,28 @@ default true;
 #### esModule
 
 ```typescript
-esModule: boolean;
+esModule: BuildType | BuildType[] | boolean;
+
+type BuildType = "main" | "browser" | "min";
 
 default false;
 ```
 
-*Whether or not to add a* `__esModule: true` *property to your non-es-module build.*
+*Whether or not to add a* `__esModule: true` *property to your non-es-module build. If* `esModule = true` *it will affect all builds.*
 
 *This option can be overridden using* `per-build` *options. See* [`main`](#main)*,* [`browser`](#browser) *&* [`bin`](#bin) *options.*
 
 #### interop
 
 ```typescript
-interop: boolean;
+interop: BuildType | BuildType[] | boolean;
+
+type BuildType = "main" | "browser" | "min";
 
 default false;
 ```
 
-*Whether or not to add an interop block.*
+*Whether or not to add an interop block. If* `interop = true` *it will affect all builds.*
 
 *This option can be overridden using* `per-build` *options. See* [`main`](#main)*,* [`browser`](#browser) *&* [`bin`](#bin) *options.*
 

@@ -1,4 +1,5 @@
 import { MinOption } from "./option-min";
+import { ModuleOption } from "./option-module";
 import { BrowserBuildFormat, Nullable, RollupSourcemap } from "./types";
 
 export type GlobalsOptions = Nullable<Record<string, string> | string[]>;
@@ -7,12 +8,12 @@ export interface SourceMapOptions {
   sourcemap?: Nullable<RollupSourcemap>;
 }
 
-export interface ModuleOptions {
+export interface PerBuildModuleOptions {
   esModule?: Nullable<boolean>;
   interop?: Nullable<boolean>;
 }
 
-export interface SingleMinOptions {
+export interface PerBuildMinOptions {
   min?: Nullable<boolean>;
 }
 
@@ -34,21 +35,23 @@ export interface BrowserOptions {
 }
 
 export interface CommonJSBuildOptions extends
-  SourceMapOptions, ModuleOptions, SingleMinOptions {
+  SourceMapOptions, PerBuildModuleOptions, PerBuildMinOptions {
 }
 
 export interface ESModuleBuildOptions extends
-  SourceMapOptions, SingleMinOptions {
+  SourceMapOptions, PerBuildMinOptions {
 }
 
 export interface BrowserBuildOptions extends
-  SourceMapOptions, ModuleOptions, SingleMinOptions, BrowserOptions {
+  SourceMapOptions, PerBuildModuleOptions, PerBuildMinOptions, BrowserOptions {
 }
 
 export interface BundlibOptions extends
-  SourceMapOptions, ModuleOptions, TypesOptions, BrowserOptions {
+  SourceMapOptions, TypesOptions, BrowserOptions {
 
   input?: Nullable<InputOptions | string>;
+  esModule?: ModuleOption;
+  interop?: ModuleOption;
   min?: MinOption;
   cache?: Nullable<string>;
 

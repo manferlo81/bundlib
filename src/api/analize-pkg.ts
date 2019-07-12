@@ -10,6 +10,7 @@ import { normalizeBuildFlag } from "./option-flag";
 import { isBrowserFormat } from "./option-format";
 import { isValidGlobals, normalizeBuildGlobals, normalizeGlobals } from "./option-globals";
 import { isValidMinOption, MinGlobal, normalizeBuildMin, normalizeMinOption } from "./option-min";
+import { isModuleOption, normalizeBuildESModule, normalizeBuildInterop, normalizeModuleOption } from "./option-module";
 import normalizeBuildName from "./option-name";
 import { normalizeBuildSourcemap, normalizeSourcemap } from "./options-sourcemap";
 import { BundlibPkgJson } from "./pkg";
@@ -144,6 +145,14 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     throw invalidOption("sourcemap", 'boolean | "inline"');
   }
 
+  if (!isModuleOption(esModule)) {
+    throw invalidOption("esModule", 'boolean | "main" | "browser" | "bin" | Array<"main" | "browser" | "bin">');
+  }
+
+  if (!isModuleOption(interop)) {
+    throw invalidOption("interop", 'boolean | "main" | "browser" | "bin" | Array<"main" | "browser" | "bin">');
+  }
+
   if (!isBrowserFormat(browserFormat)) {
     throw invalidOption("format", '"amd" | "iife" | "amd"');
   }
@@ -161,7 +170,10 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   }
 
   if (!isValidMinOption(min)) {
-    throw invalidOption("min", 'boolean | "main" | "module" | "browser" | Array<"main" | "module" | "browser">');
+    throw invalidOption(
+      "min",
+      'boolean | "main" | "module" | "browser" | "bin" | Array<"main" | "module" | "browser" | "bin">',
+    );
   }
 
   if (!isStringOrNull(cacheOption)) {
@@ -255,8 +267,8 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   };
 
   const globalSourcemap = normalizeSourcemap(sourcemapOption);
-  const globalESModule = !!esModule;
-  const globalInterop = !!interop;
+  const globalESModule = normalizeModuleOption(esModule);
+  const globalInterop = normalizeModuleOption(interop);
   const globalMin: MinGlobal = normalizeMinOption(min);
 
   const mainOutput: CommonJSBuildOptions | null = (mainOptions === false || !pkgMain) ? null : {
@@ -265,8 +277,8 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
       mainOptions,
       globalSourcemap,
     ),
-    esModule: normalizeBuildFlag(mainOptions, "esModule", globalESModule),
-    interop: normalizeBuildFlag(mainOptions, "interop", globalInterop),
+    esModule: normalizeBuildESModule(mainOptions, "main", globalESModule),
+    interop: normalizeBuildInterop(mainOptions, "main", globalInterop),
     min: normalizeBuildMin(mainOptions, "main", globalMin),
   };
 
@@ -285,8 +297,8 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
       browserOptions,
       globalSourcemap,
     ),
-    esModule: normalizeBuildFlag(browserOptions, "esModule", globalESModule),
-    interop: normalizeBuildFlag(browserOptions, "interop", globalInterop),
+    esModule: normalizeBuildESModule(browserOptions, "browser", globalESModule),
+    interop: normalizeBuildInterop(browserOptions, "browser", globalInterop),
     min: normalizeBuildMin(browserOptions, "browser", globalMin),
     format: browserOptions && !isNull(browserOptions.format) ? browserOptions.format : (browserFormat || "umd"),
     name: normalizeBuildName(
@@ -314,8 +326,8 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
         binaryOptions,
         globalSourcemap,
       ),
-      esModule: normalizeBuildFlag(binaryOptions, "esModule", globalESModule),
-      interop: normalizeBuildFlag(binaryOptions, "interop", globalInterop),
+      esModule: normalizeBuildESModule(binaryOptions, "bin", globalESModule),
+      interop: normalizeBuildInterop(binaryOptions, "bin", globalInterop),
       min: normalizeBuildMin(binaryOptions, "bin", globalMin),
     };
 
