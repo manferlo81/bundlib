@@ -1,6 +1,6 @@
 import { GlobalsOptions } from "./bundlib-options";
+import { setProp } from "./helpers";
 import keys from "./obj-keys";
-import setProp from "./set-prop";
 import { isArray, isNull, isObject, isString } from "./type-check";
 import { Nullable } from "./types";
 

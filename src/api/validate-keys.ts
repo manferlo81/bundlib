@@ -7,11 +7,18 @@ export function invalidKeys(object: Record<string, any>, list: string[]): string
   return invalid.length ? invalid : null;
 }
 
-export function allKeysValid(
-  object: Record<string, any>,
-  list: string[],
-): boolean {
-  return keys(object).every((key) => (
-    (list as string[]).indexOf(key) >= 0
+export function listInList<T extends string>(input: string[], model: T[]): input is T[] {
+  return input.every((str) => (
+    (model as string[]).indexOf(str) >= 0
   ));
+}
+
+export function allKeysValid<K extends string>(
+  object: Record<string, any>,
+  model: K[],
+): boolean {
+  return listInList<K>(
+    keys(object),
+    model,
+  );
 }

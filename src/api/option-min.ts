@@ -1,5 +1,5 @@
 import { PerBuildMinOptions } from "./bundlib-options";
-import setProp from "./set-prop";
+import { createObject, setProp } from "./helpers";
 import { isArray, isBool, isNull } from "./type-check";
 import { Nullable } from "./types";
 
@@ -22,17 +22,12 @@ export function isValidMinOption(value: any): value is MinOption {
   );
 }
 
-export function baseMinOption(value?: boolean): MinGlobal {
-  return (["main", "module", "browser", "bin"] as MinString[]).reduce((options, field) => (
-    setProp(field, !!value, options)
-  ), {} as Record<MinString, boolean>);
-}
-
 export function normalizeMinOption(min: MinOption): MinGlobal {
-  return !min ? baseMinOption()
-    : min === true ? baseMinOption(true)
-      : isArray(min) ? min.reduce((result, field) => setProp(field, true, result), baseMinOption())
-        : setProp(min, true, baseMinOption());
+  const keys: MinString[] = ["main", "module", "browser", "bin"];
+  return !min ? createObject(keys, false)
+    : min === true ? createObject(keys, true)
+      : isArray(min) ? min.reduce((result, field) => setProp(field, true, result), createObject(keys, false))
+        : setProp(min, true, createObject(keys, false));
 }
 
 export function normalizeBuildMin(

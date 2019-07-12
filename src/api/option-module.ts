@@ -1,5 +1,5 @@
 import { PerBuildModuleOptions } from "./bundlib-options";
-import setProp from "./set-prop";
+import { createObject, setProp } from "./helpers";
 import { isArray, isBool, isNull } from "./type-check";
 import { Nullable } from "./types";
 
@@ -22,31 +22,19 @@ export function isModuleOption(value: any): value is ModuleOption {
   );
 }
 
-export function baseModuleOption(value?: boolean): ModuleGlobal {
-  return (["main", "browser", "bin"] as ModuleString[]).reduce((options, field) => (
-    setProp(field, !!value, options)
-  ), {} as ModuleGlobal);
-}
-
 export function normalizeModuleOption(option: ModuleOption): ModuleGlobal {
-  return !option ? baseModuleOption()
-    : option === true ? baseModuleOption(true)
-      : isArray(option) ? option.reduce((result, field) => setProp(field, true, result), baseModuleOption())
-        : setProp(option, true, baseModuleOption());
+  const keys: ModuleString[] = ["main", "browser", "bin"];
+  return !option ? createObject(keys, false)
+    : option === true ? createObject(keys, true)
+      : isArray(option) ? option.reduce((result, field) => setProp(field, true, result), createObject(keys, false))
+        : setProp(option, true, createObject(keys, false));
 }
 
-export function normalizeBuildESModule(
+export function normalizeBuildModule(
   build: Nullable<PerBuildModuleOptions>,
+  key: keyof PerBuildModuleOptions,
   field: ModuleString,
   def: ModuleGlobal,
 ): boolean {
-  return (!build || isNull(build.esModule)) ? def[field] : build.esModule;
-}
-
-export function normalizeBuildInterop(
-  build: Nullable<PerBuildModuleOptions>,
-  field: ModuleString,
-  def: ModuleGlobal,
-): boolean {
-  return (!build || isNull(build.interop)) ? def[field] : build.interop;
+  return (!build || isNull(build[key])) ? def[field] : build[key] as boolean;
 }

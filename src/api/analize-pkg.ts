@@ -10,7 +10,7 @@ import { normalizeBuildFlag } from "./option-flag";
 import { isBrowserFormat } from "./option-format";
 import { isValidGlobals, normalizeBuildGlobals, normalizeGlobals } from "./option-globals";
 import { isValidMinOption, MinGlobal, normalizeBuildMin, normalizeMinOption } from "./option-min";
-import { isModuleOption, normalizeBuildESModule, normalizeBuildInterop, normalizeModuleOption } from "./option-module";
+import { isModuleOption, normalizeBuildModule, normalizeModuleOption } from "./option-module";
 import normalizeBuildName from "./option-name";
 import { normalizeBuildSourcemap, normalizeSourcemap } from "./options-sourcemap";
 import { BundlibPkgJson } from "./pkg";
@@ -277,8 +277,8 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
       mainOptions,
       globalSourcemap,
     ),
-    esModule: normalizeBuildESModule(mainOptions, "main", globalESModule),
-    interop: normalizeBuildInterop(mainOptions, "main", globalInterop),
+    esModule: normalizeBuildModule(mainOptions, "esModule", "main", globalESModule),
+    interop: normalizeBuildModule(mainOptions, "interop", "main", globalInterop),
     min: normalizeBuildMin(mainOptions, "main", globalMin),
   };
 
@@ -297,8 +297,8 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
       browserOptions,
       globalSourcemap,
     ),
-    esModule: normalizeBuildESModule(browserOptions, "browser", globalESModule),
-    interop: normalizeBuildInterop(browserOptions, "browser", globalInterop),
+    esModule: normalizeBuildModule(browserOptions, "esModule", "browser", globalESModule),
+    interop: normalizeBuildModule(browserOptions, "interop", "browser", globalInterop),
     min: normalizeBuildMin(browserOptions, "browser", globalMin),
     format: browserOptions && !isNull(browserOptions.format) ? browserOptions.format : (browserFormat || "umd"),
     name: normalizeBuildName(
@@ -326,8 +326,8 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
         binaryOptions,
         globalSourcemap,
       ),
-      esModule: normalizeBuildESModule(binaryOptions, "bin", globalESModule),
-      interop: normalizeBuildInterop(binaryOptions, "bin", globalInterop),
+      esModule: normalizeBuildModule(binaryOptions, "esModule", "bin", globalESModule),
+      interop: normalizeBuildModule(binaryOptions, "interop", "bin", globalInterop),
       min: normalizeBuildMin(binaryOptions, "bin", globalMin),
     };
 
