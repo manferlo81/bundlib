@@ -1,9 +1,6 @@
 import { BundlibPkgJson } from "./pkg";
 import { BrowserBuildFormat, RollupSourcemap } from "./types";
 
-export type MinifiableFields = "main" | "module" | "browser" | "bin";
-export type MinifyOptions = Record<MinifiableFields, boolean>;
-
 export type InputOptions = Record<"api" | "bin", string>;
 
 export interface PathOptions {

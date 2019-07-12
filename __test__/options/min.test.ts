@@ -1,4 +1,4 @@
-import { MinifiableFields } from "../../src/api/pkg-analized";
+import { MinString } from "../../src/api/option-min";
 import analize from "../tools/analize";
 
 describe("min option", () => {
@@ -13,7 +13,7 @@ describe("min option", () => {
     bundlib: { min },
   });
 
-  const analizeWithBuildMin = (min: any, field: MinifiableFields) => analize(cwd, {
+  const analizeWithBuildMin = (min: any, field: MinString) => analize(cwd, {
     main: "lib.js",
     module: "lib.js",
     browser: "lib.js",

@@ -41,7 +41,7 @@ describe("build", () => {
 
     const [config] = await createConfigs(cwd, false, {
       browser: "out/lib.umd.js",
-      bundlib: { input: "src/api/validate-options.ts", globals: null },
+      bundlib: { input: "src/api/validate-keys.ts", globals: null },
     });
     const build = await rollup(config);
     const { output: [{ code }] } = await build.generate(config.output);

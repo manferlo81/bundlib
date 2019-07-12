@@ -1,8 +1,7 @@
-import { MinifiableFields } from "./pkg-analized";
+import { MinOption } from "./option-min";
 import { BrowserBuildFormat, Nullable, RollupSourcemap } from "./types";
 
 export type GlobalsOptions = Nullable<Record<string, string> | string[]>;
-export type MinOption = Nullable<MinifiableFields | MinifiableFields[] | boolean>;
 
 export interface SourceMapOptions {
   sourcemap?: Nullable<RollupSourcemap>;

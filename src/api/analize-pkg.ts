@@ -9,7 +9,7 @@ import keys from "./obj-keys";
 import { normalizeBuildFlag } from "./option-flag";
 import { isBrowserFormat } from "./option-format";
 import { isValidGlobals, normalizeBuildGlobals, normalizeGlobals } from "./option-globals";
-import { isValidMinOption, normalizeBuildMin, normalizeMin } from "./option-min";
+import { isValidMinOption, MinGlobal, normalizeBuildMin, normalizeMinOption } from "./option-min";
 import normalizeBuildName from "./option-name";
 import { normalizeBuildSourcemap, normalizeSourcemap } from "./options-sourcemap";
 import { BundlibPkgJson } from "./pkg";
@@ -19,13 +19,12 @@ import {
   Dependencies,
   ESModuleBuildOptions,
   InputOptions,
-  MinifyOptions,
   OutputOptions,
   PkgAnalized,
   TypesBuildOptions,
 } from "./pkg-analized";
 import { isBool, isDictionary, isDictionaryOrNull, isNull, isString, isStringOrNull } from "./type-check";
-import { invalidKeys } from "./validate-options";
+import { allKeysValid, invalidKeys } from "./validate-keys";
 
 async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalized>;
 async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAnalized> {
@@ -133,7 +132,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (
     !isNull(inputOption) && !isString(inputOption) && !(
-      isDictionary(inputOption) && !invalidKeys(inputOption, ["api", "bin"]) && keys(inputOption).every((key) => (
+      isDictionary(inputOption) && allKeysValid(inputOption, ["api", "bin"]) && keys(inputOption).every((key) => (
         isString(inputOption[key])
       ))
     )
@@ -171,7 +170,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (
     !isNull(mainOptions) && (mainOptions !== false) && !(
-      isDictionary(mainOptions) && !invalidKeys(mainOptions, [
+      isDictionary(mainOptions) && allKeysValid(mainOptions, [
         "sourcemap",
         "esModule",
         "interop",
@@ -184,7 +183,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (
     !isNull(moduleOptions) && (moduleOptions !== false) && !(
-      isDictionary(moduleOptions) && !invalidKeys(moduleOptions, [
+      isDictionary(moduleOptions) && allKeysValid(moduleOptions, [
         "sourcemap",
         "min",
       ])
@@ -195,7 +194,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (
     !isNull(browserOptions) && (browserOptions !== false) && !(
-      isDictionary(browserOptions) && !invalidKeys(browserOptions, [
+      isDictionary(browserOptions) && allKeysValid(browserOptions, [
         "sourcemap",
         "esModule",
         "interop",
@@ -218,7 +217,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (
     !isNull(binaryOptionsOrInput) && !isString(binaryOptionsOrInput) && (binaryOptionsOrInput !== false) && !(
-      isDictionary(binaryOptionsOrInput) && !invalidKeys(binaryOptionsOrInput, [
+      isDictionary(binaryOptionsOrInput) && allKeysValid(binaryOptionsOrInput, [
         "sourcemap",
         "esModule",
         "interop",
@@ -231,16 +230,13 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (
     !isNull(typesOptions) && (typesOptions !== false) && !(
-      isDictionary(typesOptions) && !invalidKeys(typesOptions, [
+      isDictionary(typesOptions) && allKeysValid(typesOptions, [
         "equals",
       ])
     )
   ) {
     throw invalidOption("types", "false");
   }
-
-  const globalESModule = !!esModule;
-  const globalInterop = !!interop;
 
   const esModuleFile = pkgModule || pkgJsNextMain;
   const typesPath = pkgTypes || typings;
@@ -259,7 +255,9 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   };
 
   const globalSourcemap = normalizeSourcemap(sourcemapOption);
-  const globalMin: MinifyOptions = normalizeMin(min);
+  const globalESModule = !!esModule;
+  const globalInterop = !!interop;
+  const globalMin: MinGlobal = normalizeMinOption(min);
 
   const mainOutput: CommonJSBuildOptions | null = (mainOptions === false || !pkgMain) ? null : {
     path: resolve(cwd, pkgMain),
