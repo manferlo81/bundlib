@@ -11,7 +11,7 @@ async function bundlib(
   pkg?: BundlibPkgJson,
 ): Promise<void> {
   (watch ? watchBuild : build)(
-    await configsFromPkg(cwd, dev, pkg),
+    await configsFromPkg(cwd, dev, watch, pkg),
     callbacks,
   );
 }

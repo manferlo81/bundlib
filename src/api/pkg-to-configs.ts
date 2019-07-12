@@ -21,7 +21,7 @@ import { PkgAnalized } from "./pkg-analized";
 import { renameMin, renamePre } from "./rename";
 import { BundlibRollupOptions, FilterablePlugins, RollupSourcemap } from "./types";
 
-async function pkgToConfigs(pkg: PkgAnalized, dev?: boolean): Promise<BundlibRollupOptions[]>;
+async function pkgToConfigs(pkg: PkgAnalized, dev?: boolean, watch?: boolean): Promise<BundlibRollupOptions[]>;
 async function pkgToConfigs(
   {
     cwd,
@@ -32,6 +32,7 @@ async function pkgToConfigs(
     output,
   }: PkgAnalized,
   dev?: boolean,
+  watch?: boolean,
 ): Promise<BundlibRollupOptions[]> {
 
   const {
@@ -89,7 +90,13 @@ async function pkgToConfigs(
   }
 
   const external = union(runtimeDeps, peerDeps, optionalDeps, builtinModules);
-  let typescript = union(runtimeDeps, keysOrNull(pkg.devDependencies)).indexOf("typescript") >= 0
+
+  const installedDeps = union(runtimeDeps, keysOrNull(pkg.devDependencies));
+
+  const useUserTypescript = installedDeps.indexOf("typescript") >= 0;
+  const useChokidar = !!watch && installedDeps.indexOf("chokidar") >= 0;
+
+  let typescript = useUserTypescript
     ? null
     : await import("typescript");
 
@@ -228,7 +235,7 @@ async function pkgToConfigs(
         false,
         external,
         createPlugins(false, production && !esOutput.min, esOutput.sourcemap),
-        true,
+        useChokidar,
       ),
     );
 
@@ -244,7 +251,7 @@ async function pkgToConfigs(
           false,
           external,
           createPlugins(false, true, esOutput.sourcemap),
-          true,
+          useChokidar,
         ),
       );
 
@@ -264,7 +271,7 @@ async function pkgToConfigs(
         cjsOutput.interop,
         external,
         createPlugins(false, production && !cjsOutput.min, cjsOutput.sourcemap),
-        true,
+        useChokidar,
       ),
     );
 
@@ -280,7 +287,7 @@ async function pkgToConfigs(
           cjsOutput.interop,
           external,
           createPlugins(false, true, cjsOutput.sourcemap),
-          true,
+          useChokidar,
         ),
       );
 
@@ -299,7 +306,7 @@ async function pkgToConfigs(
         browserOutput.esModule,
         browserOutput.interop,
         createPlugins(true, production && !browserOutput.min, browserOutput.sourcemap),
-        true,
+        useChokidar,
         browserOutput.name as string,
         browserOutput.extend,
         browserOutput.globals,
@@ -318,7 +325,7 @@ async function pkgToConfigs(
           browserOutput.esModule,
           browserOutput.interop,
           createPlugins(true, true, browserOutput.sourcemap),
-          true,
+          useChokidar,
           browserOutput.name as string,
           browserOutput.extend,
           browserOutput.globals,
@@ -342,7 +349,7 @@ async function pkgToConfigs(
         binaryOutput.interop,
         external,
         createPlugins(false, production && !binaryOutput.min, binaryOutput.sourcemap, binaryOutput.path),
-        true,
+        useChokidar,
       ),
     );
 
@@ -358,7 +365,7 @@ async function pkgToConfigs(
           binaryOutput.interop,
           external,
           createPlugins(false, true, binaryOutput.sourcemap, binaryOutput.path),
-          true,
+          useChokidar,
         ),
       );
 

@@ -11,6 +11,7 @@
 * improved documentation
 * dependencies updated
 * colors on git bach for windows
+* use `chokidar` only if installed
 
 ## 0.10.1
 
