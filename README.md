@@ -44,7 +44,7 @@ npm i -D bundlib
 
 ## Configuration
 
-*Configuration is done throu the* `"bundlib"` *field in* `package.json`*. See the [list of options](#options) below.*
+*Configuration is done through the* `"bundlib"` *field in* `package.json`*. See the [list of options](#options) below.*
 
 ***example***
 
@@ -65,7 +65,7 @@ npm i -D bundlib
 
 ### Options
 
-*The* `"bundlib"` *field in* `package.json` *may contain any of the following properties. Any invalid or unknown option will cause* `Bundlib` *to throw at build time. Setting any options or sub-options to* `null` *will cause* `bundlib` *to treat it as non-exitent.*
+*The* `"bundlib"` *field in* `package.json` *may contain any of the following properties. Any invalid or unknown option will cause* `Bundlib` *to throw at build time. Any option or sub-option set to* `null` *will be ignored.*
 
 #### input
 
@@ -83,7 +83,7 @@ default {
 };
 ```
 
-*The path to the file(s) to be used as entry point for modules and binary. They have to be* `.ts` *files for* `bundlib` *to create* `rollup` *options. If a string provided, it will be used as api entry point and binary entry point will be set to default value.*
+*The path to the file(s) to be used as entry point for modules and binary. They have to be* `.ts` *files for* `bundlib` *to create* `rollup` *options. If a* `string` *provided, it will be used as api entry point and binary entry point will be set to default value.*
 
 #### sourcemap
 
@@ -101,6 +101,8 @@ default true;
 
 #### esModule
 
+* *selective support added in:* `v0.10.2`
+
 ```typescript
 esModule: BuildType | BuildType[] | boolean;
 
@@ -114,6 +116,8 @@ default false;
 *This option can be overridden using* `per-build` *options. See* [`main`](#main)*,* [`browser`](#browser) *&* [`bin`](#bin) *options.*
 
 #### interop
+
+* *selective support added in:* `v0.10.2`
 
 ```typescript
 interop: BuildType | BuildType[] | boolean;
@@ -139,7 +143,7 @@ default "umd";
 
 *Defines the format to be used for the* `browser` *build.*
 
-*This option can be also defined using* `per-build` *options. See* [`browser`](#browser) *option.*
+*This option can be overridden using the* [`browser`](#browser) *option.*
 
 #### name
 
@@ -149,7 +153,7 @@ name: string;
 
 *The name to be used to expose your library to the global scope in a* `IIFE` or `UMD` *browser build. If not provided it will default to the camelcased, unscoped* `"name"` *field in* `package.json` *or the camelcased directory name. If none of those can be obtained, it will throw at build time.*
 
-*This option can be also defined using* `per-build` *options. See* [`browser`](#browser) *option.*
+*This option can be overridden using the* [`browser`](#browser) *option.*
 
 #### id
 
@@ -159,7 +163,7 @@ id: string;
 
 *Optional amd id for* `AMD` *or* `UMD` *build.*
 
-*This option can be also defined using* `per-build` *options. See* [`browser`](#browser) *option.*
+*This option can be overridden using the* [`browser`](#browser) *option.*
 
 *If not present,* `AMD` *module will be defined with no id.*
 
@@ -173,7 +177,7 @@ default false;
 
 *Whether or not to extend the globally exposed name on a* `IIFE`, `UMD` *build.*
 
-*This option can be also defined using* `per-build` *options. See* [`browser`](#browser) *option.*
+*This option can be overridden using the* [`browser`](#browser) *option.*
 
 #### globals
 
@@ -183,7 +187,7 @@ globals: { [name: string]: string } | string[];
 
 *Object or array to map names to globals in browser builds.*
 
-*This option can be also defined using* `per-build` *options. See* [`browser`](#browser) *option.*
+*This option can be overridden using the* [`browser`](#browser) *option.*
 
 #### equals
 
@@ -197,9 +201,9 @@ default false;
 
 *Transforms type export for CommonJS module using* `export = ...` *instead of* `export default ...`*.*
 
-*This option can be also defined using* `per-build` *options. See* [`types`](#types) *option.*
+*This option can be overridden using the* [`types`](#types) *option.*
 
-> :warning: *Note that this options should only be used when your library has a default export and no named exports, otherwise it may cause the types to become invalid.*
+> :warning: *Note that this options should only be used when your library has a* `default` *export and no named exports, otherwise it may cause the types to become invalid.*
 
 #### min
 

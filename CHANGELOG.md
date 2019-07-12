@@ -8,6 +8,7 @@
 * don't check `package.json` field if corresponding build disabled
 * dynamic imports support
 * imports user `typescript` if installed
+* improved documentation
 
 ## 0.10.1
 
