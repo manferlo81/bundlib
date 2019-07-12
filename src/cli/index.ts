@@ -16,6 +16,11 @@ import { BuildCallbackObject } from "./types.js";
 
 async function action() {
 
+  if (!chalk.level && !chalk.enabled && process.env.MINGW_CHOST && process.env.WINDIR) {
+    chalk.level = 3;
+    chalk.enabled = true;
+  }
+
   const cwd = process.cwd();
   const { dev, watch, silent } = program;
 

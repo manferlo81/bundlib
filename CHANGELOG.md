@@ -10,6 +10,7 @@
 * imports user `typescript` if installed
 * improved documentation
 * dependencies updated
+* colors on git bach for windows
 
 ## 0.10.1
 
