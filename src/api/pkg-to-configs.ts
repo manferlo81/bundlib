@@ -16,6 +16,7 @@ import typescript2 from "rollup-plugin-typescript2";
 
 import { createBrowserConfig, createModuleConfig } from "./create-config";
 import { error, noTsInput } from "./errors";
+import keysOrNull from "./keys-or-null";
 import { PkgAnalized } from "./pkg-analized";
 import { renameMin, renamePre } from "./rename";
 import { BundlibRollupOptions, FilterablePlugins, RollupSourcemap } from "./types";
@@ -24,6 +25,7 @@ async function pkgToConfigs(pkg: PkgAnalized, dev?: boolean): Promise<BundlibRol
 async function pkgToConfigs(
   {
     cwd,
+    pkg,
     input,
     dependencies,
     cache,
@@ -87,6 +89,9 @@ async function pkgToConfigs(
   }
 
   const external = union(runtimeDeps, peerDeps, optionalDeps, builtinModules);
+  let typescript = union(runtimeDeps, keysOrNull(pkg.devDependencies)).indexOf("typescript") >= 0
+    ? null
+    : await import("typescript");
 
   const extensions = [".ts", ".js"];
   const exclude = /node_modules/;
@@ -149,7 +154,9 @@ async function pkgToConfigs(
       }),
 
       typescript2({
-        // typescript: require("typescript"),
+        typescript: typescript = typescript || require(require.resolve("typescript", {
+          paths: [cwd],
+        })),
         include: tsInclude,
         cacheRoot,
         useTsconfigDeclarationDir: true,
@@ -180,7 +187,10 @@ async function pkgToConfigs(
         extensions,
         exclude,
         babelrc: false,
-        plugins: [require.resolve("babel-plugin-transform-async-to-promises")],
+        plugins: [
+          require.resolve("@babel/plugin-syntax-dynamic-import"),
+          require.resolve("babel-plugin-transform-async-to-promises"),
+        ],
       }),
 
       buble({

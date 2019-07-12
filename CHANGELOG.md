@@ -6,6 +6,8 @@
 
 * added selective support to top-level `esModule` & `interop` options
 * don't check `package.json` field if corresponding build disabled
+* dynamic imports support
+* imports user `typescript` if installed
 
 ## 0.10.1
 
