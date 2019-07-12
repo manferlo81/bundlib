@@ -397,7 +397,7 @@ function analizePkg(
 ```typescript
 function configsFromPkg(
   cwd: string,
-  dev: boolean = false,
+  options: { dev? boolean, watch?: boolean } | null | false,
   pkg: PkgJson = read(cwd + "/package.json"),
 ): Promise<RollupOptions[]>;
 ```

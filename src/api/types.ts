@@ -31,3 +31,8 @@ export interface BundlibRollupOptions extends RollupOptions {
   plugins: Plugin[];
   watch: RollupWatcherOptions;
 }
+
+export interface BundlibAPIOptions {
+  dev?: boolean;
+  watch?: boolean;
+}

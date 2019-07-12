@@ -1,6 +1,6 @@
 # Bundlib Changelog
 
-## 0.10.2
+## 0.11.0
 
 ***12-JUL-2019***
 
@@ -12,6 +12,7 @@
 * dependencies updated
 * colors on git bach for windows
 * use `chokidar` only if installed
+* changes in `configsFromPkg` api method
 
 ## 0.10.1
 

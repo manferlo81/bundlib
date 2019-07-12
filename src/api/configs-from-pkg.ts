@@ -1,18 +1,16 @@
 import analizePkg from "./analize-pkg";
 import { BundlibPkgJson } from "./pkg";
 import pkgToConfigs from "./pkg-to-configs";
-import { BundlibRollupOptions } from "./types";
+import { BundlibAPIOptions, BundlibRollupOptions, Nullable } from "./types";
 
 async function configsFromPkg(
   cwd: string,
-  dev?: boolean,
-  watch?: boolean,
+  options?: Nullable<BundlibAPIOptions | false>,
   pkgJson?: BundlibPkgJson,
 ): Promise<BundlibRollupOptions[]> {
   return await pkgToConfigs(
     await analizePkg(cwd, pkgJson),
-    dev,
-    watch,
+    options,
   );
 }
 

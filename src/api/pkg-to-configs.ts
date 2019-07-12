@@ -19,21 +19,19 @@ import { error, noTsInput } from "./errors";
 import keysOrNull from "./keys-or-null";
 import { PkgAnalized } from "./pkg-analized";
 import { renameMin, renamePre } from "./rename";
-import { BundlibRollupOptions, FilterablePlugins, RollupSourcemap } from "./types";
+import { BundlibAPIOptions, BundlibRollupOptions, FilterablePlugins, Nullable, RollupSourcemap } from "./types";
 
-async function pkgToConfigs(pkg: PkgAnalized, dev?: boolean, watch?: boolean): Promise<BundlibRollupOptions[]>;
 async function pkgToConfigs(
-  {
-    cwd,
-    pkg,
-    input,
-    dependencies,
-    cache,
-    output,
-  }: PkgAnalized,
-  dev?: boolean,
-  watch?: boolean,
+  pkg: PkgAnalized,
+  options?: Nullable<BundlibAPIOptions | false>,
+): Promise<BundlibRollupOptions[]>;
+
+async function pkgToConfigs(
+  { cwd, pkg, input, dependencies, cache, output }: PkgAnalized,
+  options?: Nullable<BundlibAPIOptions | false>,
 ): Promise<BundlibRollupOptions[]> {
+
+  const { dev, watch } = options || {} as BundlibAPIOptions;
 
   const {
     api: apiInput,

@@ -6,12 +6,12 @@ import watchBuild from "./watch";
 
 async function bundlib(
   cwd: string,
-  { dev, watch }: BundlibOptions,
+  options: BundlibOptions,
   callbacks: BuildCallbackObject,
   pkg?: BundlibPkgJson,
 ): Promise<void> {
-  (watch ? watchBuild : build)(
-    await configsFromPkg(cwd, dev, watch, pkg),
+  (options.watch ? watchBuild : build)(
+    await configsFromPkg(cwd, options, pkg),
     callbacks,
   );
 }
