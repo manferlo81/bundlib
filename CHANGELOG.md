@@ -9,6 +9,7 @@
 * dynamic imports support
 * imports user `typescript` if installed
 * improved documentation
+* dependencies updated
 
 ## 0.10.1
 
