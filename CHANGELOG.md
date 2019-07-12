@@ -1,5 +1,11 @@
 # Bundlib Changelog
 
+## 0.10.2
+
+***12-JUL-2019***
+
+* added selective support to top-level `esModule` & `interop` options
+
 ## 0.10.1
 
 ***11-JUL-2019***

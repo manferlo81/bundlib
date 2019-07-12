@@ -5,16 +5,16 @@ describe("interop option", () => {
   const cwd = process.cwd();
 
   const analizeWithInterop = (interop: any) => analize(cwd, {
-    main: "out/lib.cjs.js",
-    browser: "out/lib.umd.js",
-    bin: "out/lib.bin.js",
+    main: "main.js",
+    browser: "browser.js",
+    bin: "bin.js",
     bundlib: { interop },
   });
 
   const analizeWithBuildInterop = (field: string, interop: any) => analize(cwd, {
-    main: "out/lib.cjs.js",
-    browser: "out/lib.umd.js",
-    bin: "out/lib.bin.js",
+    main: "main.js",
+    browser: "browser.js",
+    bin: "bin.js",
     bundlib: { interop: !interop, [field]: { interop } },
   });
 
@@ -26,6 +26,7 @@ describe("interop option", () => {
       "browser-",
       "bin-",
       ["main-"],
+      ["main", "browser-"],
       {},
     ];
 
@@ -42,7 +43,20 @@ describe("interop option", () => {
 
   });
 
-  test("should read string interop option", async () => {
+  test("should read string main interop option", async () => {
+
+    const { output: { main, browser, bin } } = await analizeWithInterop("main");
+
+    expect(main ? main.interop : null)
+      .toBe(true);
+    expect(browser ? browser.interop : null)
+      .toBe(false);
+    expect(bin ? bin.interop : null)
+      .toBe(false);
+
+  });
+
+  test("should read string browser interop option", async () => {
 
     const { output: { main, browser, bin } } = await analizeWithInterop("browser");
 
@@ -52,6 +66,19 @@ describe("interop option", () => {
       .toBe(true);
     expect(bin ? bin.interop : null)
       .toBe(false);
+
+  });
+
+  test("should read string bin interop option", async () => {
+
+    const { output: { main, browser, bin } } = await analizeWithInterop("bin");
+
+    expect(main ? main.interop : null)
+      .toBe(false);
+    expect(browser ? browser.interop : null)
+      .toBe(false);
+    expect(bin ? bin.interop : null)
+      .toBe(true);
 
   });
 
@@ -68,7 +95,7 @@ describe("interop option", () => {
 
   });
 
-  test("should read true interop option", async () => {
+  test("should read true as interop option", async () => {
 
     const { output: { main, browser, bin } } = await analizeWithInterop(true);
 
@@ -94,7 +121,20 @@ describe("interop option", () => {
 
   });
 
-  test("should read per-build interop option", async () => {
+  test("should read per-build main interop option", async () => {
+
+    const { output: { main, browser, bin } } = await analizeWithBuildInterop("main", true);
+
+    expect(main ? main.interop : null)
+      .toBe(true);
+    expect(browser ? browser.interop : null)
+      .toBe(false);
+    expect(bin ? bin.interop : null)
+      .toBe(false);
+
+  });
+
+  test("should read per-build browser interop option", async () => {
 
     const { output: { main, browser, bin } } = await analizeWithBuildInterop("browser", true);
 
@@ -104,6 +144,19 @@ describe("interop option", () => {
       .toBe(true);
     expect(bin ? bin.interop : null)
       .toBe(false);
+
+  });
+
+  test("should read per-build bin interop option", async () => {
+
+    const { output: { main, browser, bin } } = await analizeWithBuildInterop("bin", true);
+
+    expect(main ? main.interop : null)
+      .toBe(false);
+    expect(browser ? browser.interop : null)
+      .toBe(false);
+    expect(bin ? bin.interop : null)
+      .toBe(true);
 
   });
 
