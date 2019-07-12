@@ -8,15 +8,13 @@ export type ModuleOption = Nullable<ModuleString | ModuleString[] | boolean>;
 
 export type ModuleGlobal = Record<ModuleString, boolean>;
 
-export function isModuleString(value: any): value is ModuleString {
-  return !!value && (
-    value === "main" || value === "browser" || value === "bin"
-  );
+export function isModuleString(value: unknown): value is ModuleString {
+  return value === "main" || value === "browser" || value === "bin";
 }
 
-export function isModuleOption(value: any): value is ModuleOption {
+export function isModuleOption(value: unknown): value is ModuleOption {
   return isNull(value) || isBool(value) || isModuleString(value) || (
-    isArray<ModuleString>(value) && value.every((item) => (
+    isArray<unknown>(value) && value.every((item) => (
       isModuleString(item)
     ))
   );

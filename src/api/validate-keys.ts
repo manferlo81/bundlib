@@ -13,7 +13,7 @@ export function listInList<T extends string>(input: string[], model: T[]): input
   ));
 }
 
-export function allKeysValid<K extends string>(
+export function allKeysInList<K extends string>(
   object: Record<string, any>,
   model: K[],
 ): boolean {

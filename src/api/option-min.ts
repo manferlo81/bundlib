@@ -9,9 +9,7 @@ export type MinOption = Nullable<MinString | MinString[] | boolean>;
 export type MinGlobal = Record<MinString, boolean>;
 
 export function isMinString(value: any): value is MinString {
-  return !!value && (
-    value === "main" || value === "module" || value === "browser" || value === "bin"
-  );
+  return value === "main" || value === "module" || value === "browser" || value === "bin";
 }
 
 export function isValidMinOption(value: any): value is MinOption {

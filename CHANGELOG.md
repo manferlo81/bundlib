@@ -5,6 +5,7 @@
 ***12-JUL-2019***
 
 * added selective support to top-level `esModule` & `interop` options
+* don't check `package.json` field if corresponding build disabled
 
 ## 0.10.1
 

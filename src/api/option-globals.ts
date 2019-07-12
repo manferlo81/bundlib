@@ -4,12 +4,14 @@ import keys from "./obj-keys";
 import { isArray, isNull, isObject, isString } from "./type-check";
 import { Nullable } from "./types";
 
-export function isValidGlobals(value: any): value is GlobalsOptions {
-  return isNull(value) || (isObject(value) && (
-    isArray(value) ? value.every((item) => isString(item)) : keys(value).every((key) => (
-      isString(key) && isString(value[key])
-    ))
-  ));
+export function isValidGlobals(value: unknown): value is GlobalsOptions {
+  return isNull(value) || (
+    isObject(value) && (
+      isArray(value) ? value.every((item) => isString(item)) : keys(value).every((key) => (
+        isString(key) && isString(value[key])
+      ))
+    )
+  );
 }
 
 export function normalizeGlobals(globals: GlobalsOptions): Record<string, string> | null {

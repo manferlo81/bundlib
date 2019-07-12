@@ -25,7 +25,7 @@ import {
   TypesBuildOptions,
 } from "./pkg-analized";
 import { isBool, isDictionary, isDictionaryOrNull, isNull, isString, isStringOrNull } from "./type-check";
-import { allKeysValid, invalidKeys } from "./validate-keys";
+import { allKeysInList, invalidKeys } from "./validate-keys";
 
 async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalized>;
 async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAnalized> {
@@ -51,40 +51,8 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     bundlib: bundlibOptions,
   } = pkg;
 
-  if (!isStringOrNull(pkgMain)) {
-    throw invalidPkgField("main", "string");
-  }
-
-  if (!isStringOrNull(pkgModule)) {
-    throw invalidPkgField("module", "string");
-  }
-
-  if (!isStringOrNull(pkgJsNextMain) && !pkgModule) {
-    throw invalidPkgField("jsnext:main", "string");
-  }
-
-  if (!isStringOrNull(pkgBrowser)) {
-    throw invalidPkgField("browser", "string");
-  }
-
-  if (!isStringOrNull(pkgBin)) {
-    throw invalidPkgField("bin", "string");
-  }
-
   if (!isDictionaryOrNull(bundlibOptions)) {
     throw invalidPkgField("bundlib", "Object");
-  }
-
-  if (!isDictionaryOrNull(runtimeDependencies)) {
-    throw invalidPkgField("dependencies", "Object");
-  }
-
-  if (!isDictionaryOrNull(peerDependencies)) {
-    throw invalidPkgField("peerDependencies", "Object");
-  }
-
-  if (!isDictionaryOrNull(optionalDependencies)) {
-    throw invalidPkgField("optionalDependencies", "Object");
   }
 
   const invalidOptions = bundlibOptions && invalidKeys(bundlibOptions, [
@@ -131,9 +99,11 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     types: typesOptions,
   } = bundlibOptions || {} as BundlibOptions;
 
+  const binaryOptions = isString(binaryOptionsOrInput) ? null : binaryOptionsOrInput;
+
   if (
-    !isNull(inputOption) && !isString(inputOption) && !(
-      isDictionary(inputOption) && allKeysValid(inputOption, ["api", "bin"]) && keys(inputOption).every((key) => (
+    !isStringOrNull(inputOption) && !(
+      isDictionary(inputOption) && allKeysInList(inputOption, ["api", "bin"]) && keys(inputOption).every((key) => (
         isString(inputOption[key])
       ))
     )
@@ -146,11 +116,17 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   }
 
   if (!isModuleOption(esModule)) {
-    throw invalidOption("esModule", 'boolean | "main" | "browser" | "bin" | Array<"main" | "browser" | "bin">');
+    throw invalidOption(
+      "esModule",
+      'boolean | "main" | "browser" | "bin" | Array<"main" | "browser" | "bin">',
+    );
   }
 
   if (!isModuleOption(interop)) {
-    throw invalidOption("interop", 'boolean | "main" | "browser" | "bin" | Array<"main" | "browser" | "bin">');
+    throw invalidOption(
+      "interop",
+      'boolean | "main" | "browser" | "bin" | Array<"main" | "browser" | "bin">',
+    );
   }
 
   if (!isBrowserFormat(browserFormat)) {
@@ -166,7 +142,10 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   }
 
   if (!isValidGlobals(browserGlobals)) {
-    throw invalidOption("globals", "Object<string, string> | string[]");
+    throw invalidOption(
+      "globals",
+      "Object<string, string> | string[]",
+    );
   }
 
   if (!isValidMinOption(min)) {
@@ -182,7 +161,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (
     !isNull(mainOptions) && (mainOptions !== false) && !(
-      isDictionary(mainOptions) && allKeysValid(mainOptions, [
+      isDictionary(mainOptions) && allKeysInList(mainOptions, [
         "sourcemap",
         "esModule",
         "interop",
@@ -190,23 +169,29 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
       ])
     )
   ) {
-    throw invalidOption("main", 'false | { sourcemap?: boolean | "inline", esModule?, interop?, min? }');
+    throw invalidOption(
+      "main",
+      'false | { sourcemap?: boolean | "inline", esModule?: boolean, interop?: boolean, min?: boolean }',
+    );
   }
 
   if (
     !isNull(moduleOptions) && (moduleOptions !== false) && !(
-      isDictionary(moduleOptions) && allKeysValid(moduleOptions, [
+      isDictionary(moduleOptions) && allKeysInList(moduleOptions, [
         "sourcemap",
         "min",
       ])
     )
   ) {
-    throw invalidOption("module", 'false | { sourcemap?: boolean | "inline", min? }');
+    throw invalidOption(
+      "module",
+      'false | { sourcemap?: boolean | "inline", min?: boolean }',
+    );
   }
 
   if (
     !isNull(browserOptions) && (browserOptions !== false) && !(
-      isDictionary(browserOptions) && allKeysValid(browserOptions, [
+      isDictionary(browserOptions) && allKeysInList(browserOptions, [
         "sourcemap",
         "esModule",
         "interop",
@@ -224,12 +209,18 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
       isValidGlobals(browserOptions.globals)
     )
   ) {
-    throw invalidOption("browser", 'false | { sourcemap?: boolean | "inline", esModule?, interop?, min? }');
+    throw invalidOption(
+      "browser",
+      'false | { sourcemap?: boolean | "inline", esModule?: boolean, interop?: boolean, min?: boolean, ... }',
+    );
   }
 
+  // "bin" options as string is deprecated
+  // after removed it should throw if it's string
+  // !isString(binaryOptionsOrInput) will be removed...
   if (
     !isNull(binaryOptionsOrInput) && !isString(binaryOptionsOrInput) && (binaryOptionsOrInput !== false) && !(
-      isDictionary(binaryOptionsOrInput) && allKeysValid(binaryOptionsOrInput, [
+      isDictionary(binaryOptionsOrInput) && allKeysInList(binaryOptionsOrInput, [
         "sourcemap",
         "esModule",
         "interop",
@@ -237,17 +228,52 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
       ])
     )
   ) {
-    throw invalidOption("bin", 'string | false | { sourcemap?: boolean | "inline", esModule?, interop?, min? }');
+    throw invalidOption(
+      "bin",
+      'false | { sourcemap?: boolean | "inline", esModule?: boolean, interop?: boolean, min?: boolean }',
+    );
   }
 
   if (
     !isNull(typesOptions) && (typesOptions !== false) && !(
-      isDictionary(typesOptions) && allKeysValid(typesOptions, [
+      isDictionary(typesOptions) && allKeysInList(typesOptions, [
         "equals",
       ])
     )
   ) {
-    throw invalidOption("types", "false");
+    throw invalidOption("types", "false | { equals?: boolean }");
+  }
+
+  if ((mainOptions !== false) && !isStringOrNull(pkgMain)) {
+    throw invalidPkgField("main", "string");
+  }
+
+  if ((moduleOptions !== false) && !isStringOrNull(pkgModule)) {
+    throw invalidPkgField("module", "string");
+  }
+
+  if (!pkgModule && (moduleOptions !== false) && !isStringOrNull(pkgJsNextMain)) {
+    throw invalidPkgField("jsnext:main", "string");
+  }
+
+  if ((browserOptions !== false) && !isStringOrNull(pkgBrowser)) {
+    throw invalidPkgField("browser", "string");
+  }
+
+  if ((binaryOptions !== false) && !isStringOrNull(pkgBin)) {
+    throw invalidPkgField("bin", "string");
+  }
+
+  if (!isDictionaryOrNull(runtimeDependencies)) {
+    throw invalidPkgField("dependencies", "Object");
+  }
+
+  if (!isDictionaryOrNull(peerDependencies)) {
+    throw invalidPkgField("peerDependencies", "Object");
+  }
+
+  if (!isDictionaryOrNull(optionalDependencies)) {
+    throw invalidPkgField("optionalDependencies", "Object");
   }
 
   const esModuleFile = pkgModule || pkgJsNextMain;
@@ -292,7 +318,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   };
 
   const browserOutput: BrowserBuildOptions | null = (browserOptions === false || !pkgBrowser) ? null : {
-    path: resolve(cwd, pkgBrowser),
+    path: resolve(cwd, pkgBrowser as string),
     sourcemap: normalizeBuildSourcemap(
       browserOptions,
       globalSourcemap,
@@ -315,13 +341,11 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     extend: normalizeBuildFlag(browserOptions, "extend", !!extend),
   };
 
-  const binaryOptions = isString(binaryOptionsOrInput) ? null : binaryOptionsOrInput;
-
   const binaryOutput: CommonJSBuildOptions | null = (
     binaryOptions === false || !pkgBin
   )
     ? null : {
-      path: resolve(cwd, pkgBin),
+      path: resolve(cwd, pkgBin as string),
       sourcemap: normalizeBuildSourcemap(
         binaryOptions,
         globalSourcemap,
