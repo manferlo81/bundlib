@@ -1,6 +1,6 @@
 import builtinModules from "builtin-modules";
 import { union } from "lodash";
-import { basename, dirname, extname, join as pathJoin, relative, resolve } from "path";
+import { basename, dirname, extname, join as pathJoin, resolve } from "path";
 import { Plugin } from "rollup";
 
 import addShebang from "rollup-plugin-add-shebang";
@@ -14,8 +14,10 @@ import stripShebang from "rollup-plugin-strip-shebang";
 import { terser } from "rollup-plugin-terser";
 import typescript2 from "rollup-plugin-typescript2";
 
+import mapIdExternal from "./api-plugin";
 import { createBrowserConfig, createModuleConfig } from "./create-config";
 import { error, noTsInput } from "./errors";
+import { setProp } from "./helpers";
 import keysOrNull from "./keys-or-null";
 import { PkgAnalized } from "./pkg-analized";
 import { renameMin, renamePre } from "./rename";
@@ -24,21 +26,18 @@ import {
   BundlibRollupModuleOutputOptions,
   BundlibRollupOptions,
   FilterablePlugins,
-  Nullable,
   RollupSourcemap,
 } from "./types";
 
 async function pkgToConfigs(
   pkg: PkgAnalized,
-  options?: Nullable<BundlibAPIOptions | false>,
+  options: BundlibAPIOptions,
 ): Promise<Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>>;
 
 async function pkgToConfigs(
   { cwd, pkg, input, dependencies, cache, output }: PkgAnalized,
-  options?: Nullable<BundlibAPIOptions | false>,
+  { dev, watch }: BundlibAPIOptions,
 ): Promise<Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>> {
-
-  const { dev, watch } = options || {} as BundlibAPIOptions;
 
   const {
     api: apiInput,
@@ -127,34 +126,39 @@ async function pkgToConfigs(
         sourcemap: sourcemapBool,
       }),
 
-      bin && cjsOutput && {
+      bin && cjsOutput && mapIdExternal(
+        cwd,
+        bin,
+        setProp(apiInput, cwd, {}),
+      ),
+      // bin && cjsOutput && {
 
-        name: "api",
+      //   name: "api",
 
-        resolveId(moduleId, from) {
+      //   resolveId(moduleId, from) {
 
-          const resolved = !from ? moduleId : pathJoin(dirname(from), moduleId);
+      //     const resolved = !from ? moduleId : pathJoin(dirname(from), moduleId);
 
-          if (
-            resolved === apiInput ||
-            pathJoin(resolved, ".ts") === apiInput ||
-            pathJoin(resolved, "/index.ts") === apiInput
-          ) {
-            return {
-              id: relative(
-                dirname(bin),
-                cwd,
-              ),
-              external: true,
-              moduleSideEffects: false,
-            };
-          }
+      //     if (
+      //       resolved === apiInput ||
+      //       pathJoin(resolved, ".ts") === apiInput ||
+      //       pathJoin(resolved, "/index.ts") === apiInput
+      //     ) {
+      //       return {
+      //         id: relative(
+      //           dirname(bin),
+      //           cwd,
+      //         ),
+      //         external: true,
+      //         moduleSideEffects: false,
+      //       };
+      //     }
 
-          return null;
+      //     return null;
 
-        },
+      //   },
 
-      },
+      // },
 
       browser && nodeResolve({
         preferBuiltins: !browser,
