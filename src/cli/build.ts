@@ -1,12 +1,15 @@
 import { statSync } from "fs";
 import { rollup } from "rollup";
 
-import { BundlibRollupOptions, BundlibRollupOutputOptions } from "../api/types";
+import { BundlibRollupModuleOutputOptions, BundlibRollupOptions } from "../api/types";
 
 import oneByOne from "./one-by-one";
 import { BuildCallbackObject } from "./types";
 
-function build(configs: Array<BundlibRollupOptions<BundlibRollupOutputOptions>>, callbacks: BuildCallbackObject): void {
+function build(
+  configs: Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>,
+  callbacks: BuildCallbackObject,
+): void {
 
   if (callbacks.start) {
     callbacks.start();

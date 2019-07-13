@@ -16,7 +16,7 @@ export type BrowserBuildFormat = "iife" | "amd" | "umd";
 
 export type BundlibBuildFormat = ModuleBuildFormat | BrowserBuildFormat;
 
-export interface BundlibRollupOutputOptions extends RollupOutputOptions {
+export interface BundlibRollupModuleOutputOptions extends RollupOutputOptions {
   file: string;
   format: BundlibBuildFormat;
   sourcemap: RollupSourcemap;
@@ -24,7 +24,16 @@ export interface BundlibRollupOutputOptions extends RollupOutputOptions {
   interop: boolean;
 }
 
-export interface BundlibRollupOptions<OutputOptions extends BundlibRollupOutputOptions> extends RollupOptions {
+export interface BundlibRollupBrowseOutputOptions extends BundlibRollupModuleOutputOptions {
+  name: string;
+  extend: boolean;
+  globals: Record<string, string>;
+  amd?: {
+    id: string;
+  };
+}
+
+export interface BundlibRollupOptions<OutputOptions extends BundlibRollupModuleOutputOptions> extends RollupOptions {
   input: string;
   output: OutputOptions;
   external: IsExternal;

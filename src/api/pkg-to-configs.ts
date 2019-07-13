@@ -21,8 +21,8 @@ import { PkgAnalized } from "./pkg-analized";
 import { renameMin, renamePre } from "./rename";
 import {
   BundlibAPIOptions,
+  BundlibRollupModuleOutputOptions,
   BundlibRollupOptions,
-  BundlibRollupOutputOptions,
   FilterablePlugins,
   Nullable,
   RollupSourcemap,
@@ -31,12 +31,12 @@ import {
 async function pkgToConfigs(
   pkg: PkgAnalized,
   options?: Nullable<BundlibAPIOptions | false>,
-): Promise<Array<BundlibRollupOptions<BundlibRollupOutputOptions>>>;
+): Promise<Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>>;
 
 async function pkgToConfigs(
   { cwd, pkg, input, dependencies, cache, output }: PkgAnalized,
   options?: Nullable<BundlibAPIOptions | false>,
-): Promise<Array<BundlibRollupOptions<BundlibRollupOutputOptions>>> {
+): Promise<Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>> {
 
   const { dev, watch } = options || {} as BundlibAPIOptions;
 
@@ -108,7 +108,7 @@ async function pkgToConfigs(
   const extensions = [".ts", ".js"];
   const exclude = /node_modules/;
 
-  const configs: Array<BundlibRollupOptions<BundlibRollupOutputOptions>> = [];
+  const configs: Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>> = [];
 
   function createPlugins(browser: boolean, mini: boolean, sourcemap: RollupSourcemap, bin?: string): FilterablePlugins {
 
