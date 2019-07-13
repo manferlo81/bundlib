@@ -19,17 +19,24 @@ import { error, noTsInput } from "./errors";
 import keysOrNull from "./keys-or-null";
 import { PkgAnalized } from "./pkg-analized";
 import { renameMin, renamePre } from "./rename";
-import { BundlibAPIOptions, BundlibRollupOptions, FilterablePlugins, Nullable, RollupSourcemap } from "./types";
+import {
+  BundlibAPIOptions,
+  BundlibRollupOptions,
+  BundlibRollupOutputOptions,
+  FilterablePlugins,
+  Nullable,
+  RollupSourcemap,
+} from "./types";
 
 async function pkgToConfigs(
   pkg: PkgAnalized,
   options?: Nullable<BundlibAPIOptions | false>,
-): Promise<BundlibRollupOptions[]>;
+): Promise<Array<BundlibRollupOptions<BundlibRollupOutputOptions>>>;
 
 async function pkgToConfigs(
   { cwd, pkg, input, dependencies, cache, output }: PkgAnalized,
   options?: Nullable<BundlibAPIOptions | false>,
-): Promise<BundlibRollupOptions[]> {
+): Promise<Array<BundlibRollupOptions<BundlibRollupOutputOptions>>> {
 
   const { dev, watch } = options || {} as BundlibAPIOptions;
 
@@ -101,7 +108,7 @@ async function pkgToConfigs(
   const extensions = [".ts", ".js"];
   const exclude = /node_modules/;
 
-  const configs: BundlibRollupOptions[] = [];
+  const configs: Array<BundlibRollupOptions<BundlibRollupOutputOptions>> = [];
 
   function createPlugins(browser: boolean, mini: boolean, sourcemap: RollupSourcemap, bin?: string): FilterablePlugins {
 

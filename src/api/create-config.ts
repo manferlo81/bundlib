@@ -19,7 +19,7 @@ export function createConfig(
   external: Nullable<string[]>,
   plugins: FilterablePlugins,
   chokidar: boolean | RollupWatchOptions,
-): BundlibRollupOptions {
+): BundlibRollupOptions<BundlibRollupOutputOptions> {
 
   return {
 
@@ -49,7 +49,7 @@ export function createModuleConfig(
   external: Nullable<string[]>,
   plugins: FilterablePlugins,
   chokidar: boolean | RollupWatchOptions,
-): BundlibRollupOptions {
+): BundlibRollupOptions<BundlibRollupOutputOptions> {
 
   return createConfig(
     input,
@@ -80,7 +80,7 @@ export function createBrowserConfig(
   extend: boolean,
   globals: Nullable<Record<string, string>>,
   id: Nullable<string>,
-): BundlibRollupOptions {
+): BundlibRollupOptions<BundlibRollupOutputOptions> {
 
   const extra: RollupOutputOptions = {
     name,

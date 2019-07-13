@@ -24,9 +24,9 @@ export interface BundlibRollupOutputOptions extends RollupOutputOptions {
   interop: boolean;
 }
 
-export interface BundlibRollupOptions extends RollupOptions {
+export interface BundlibRollupOptions<OutputOptions extends BundlibRollupOutputOptions> extends RollupOptions {
   input: string;
-  output: BundlibRollupOutputOptions;
+  output: OutputOptions;
   external: IsExternal;
   plugins: Plugin[];
   watch: RollupWatcherOptions;
