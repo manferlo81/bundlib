@@ -1,5 +1,11 @@
 # Bundlib Changelog
 
+## 0.11.1
+
+***14-JUL-2019***
+
+* bug fixes
+
 ## 0.11.0
 
 ***13-JUL-2019***
