@@ -2,17 +2,17 @@
 
 ## 0.11.0
 
-***12-JUL-2019***
+***13-JUL-2019***
 
 * added selective support to top-level `esModule` & `interop` options
 * don't check `package.json` field if corresponding build disabled
 * dynamic imports support
 * imports user `typescript` if installed
-* improved documentation
-* dependencies updated
-* colors on git bach for windows
 * use `chokidar` only if installed
 * changes in `configsFromPkg` api method
+* colors on git bach for windows
+* improved documentation
+* dependencies updated
 
 ## 0.10.1
 

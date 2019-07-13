@@ -496,6 +496,7 @@ interface TypesBuildOptions {
 * [x] *Skip any build based on options*
 * [x] *Sets* `dependencies`*,* `peerDependencies` *and `optionalDependencies` *as external for* `CommonJS`*,* `ES Module` *and* `Bynary` *modules*
 * [x] *Uses the user copy of* `typescript` *if installed*
+* [x] *Uses* `chokidar` *if installed*
 * [x] *Importing an internal file from a package* `Ex: lodash/core` *will be treated as external if* `lodash` *is included in your* `dependencies` *or* `peerDependencies`
 * [x] *Transforms* `async/await` *using* [`Babel`](https://github.com/babel/babel) *and* [`babel-plugin-transform-async-to-promises`](https://github.com/rpetrich/babel-plugin-transform-async-to-promises) *for ES5 support*
 * [x] *Dynamic Import support through* [`@babel/plugin-syntax-dynamic-import`](#https://babeljs.io/docs/en/babel-plugin-syntax-dynamic-import)
