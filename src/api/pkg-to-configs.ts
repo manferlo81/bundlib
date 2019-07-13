@@ -109,7 +109,13 @@ async function pkgToConfigs(
 
   const configs: Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>> = [];
 
-  function createPlugins(browser: boolean, mini: boolean, sourcemap: RollupSourcemap, bin?: string): FilterablePlugins {
+  function createPlugins(
+    outputFile: string | null,
+    sourcemap: RollupSourcemap,
+    mini: boolean,
+    browser: boolean,
+    bin: boolean,
+  ): FilterablePlugins {
 
     const sourcemapBool = !!sourcemap;
 
@@ -126,39 +132,11 @@ async function pkgToConfigs(
         sourcemap: sourcemapBool,
       }),
 
-      bin && cjsOutput && mapIdExternal(
+      bin && cjsOutput && outputFile && mapIdExternal(
         cwd,
-        bin,
+        dirname(outputFile),
         setProp(apiInput, cwd, {}),
       ),
-      // bin && cjsOutput && {
-
-      //   name: "api",
-
-      //   resolveId(moduleId, from) {
-
-      //     const resolved = !from ? moduleId : pathJoin(dirname(from), moduleId);
-
-      //     if (
-      //       resolved === apiInput ||
-      //       pathJoin(resolved, ".ts") === apiInput ||
-      //       pathJoin(resolved, "/index.ts") === apiInput
-      //     ) {
-      //       return {
-      //         id: relative(
-      //           dirname(bin),
-      //           cwd,
-      //         ),
-      //         external: true,
-      //         moduleSideEffects: false,
-      //       };
-      //     }
-
-      //     return null;
-
-      //   },
-
-      // },
 
       browser && nodeResolve({
         preferBuiltins: !browser,
@@ -217,8 +195,8 @@ async function pkgToConfigs(
         objectAssign: true,
       }) as Plugin,
 
-      bin && addShebang({
-        include: bin,
+      bin && outputFile && addShebang({
+        include: outputFile,
         shebang: () => shebang,
       }),
 
@@ -243,7 +221,13 @@ async function pkgToConfigs(
         true,
         false,
         external,
-        createPlugins(false, production && !esOutput.min, esOutput.sourcemap),
+        createPlugins(
+          esOutput.path,
+          esOutput.sourcemap,
+          production && !esOutput.min,
+          false,
+          false,
+        ),
         useChokidar,
       ),
     );
@@ -259,7 +243,13 @@ async function pkgToConfigs(
           true,
           false,
           external,
-          createPlugins(false, true, esOutput.sourcemap),
+          createPlugins(
+            esOutput.path,
+            esOutput.sourcemap,
+            true,
+            false,
+            false,
+          ),
           useChokidar,
         ),
       );
@@ -279,7 +269,13 @@ async function pkgToConfigs(
         cjsOutput.esModule,
         cjsOutput.interop,
         external,
-        createPlugins(false, production && !cjsOutput.min, cjsOutput.sourcemap),
+        createPlugins(
+          cjsOutput.path,
+          cjsOutput.sourcemap,
+          production && !cjsOutput.min,
+          false,
+          false,
+        ),
         useChokidar,
       ),
     );
@@ -295,7 +291,13 @@ async function pkgToConfigs(
           cjsOutput.esModule,
           cjsOutput.interop,
           external,
-          createPlugins(false, true, cjsOutput.sourcemap),
+          createPlugins(
+            cjsOutput.path,
+            cjsOutput.sourcemap,
+            true,
+            false,
+            false,
+          ),
           useChokidar,
         ),
       );
@@ -314,7 +316,13 @@ async function pkgToConfigs(
         browserOutput.sourcemap,
         browserOutput.esModule,
         browserOutput.interop,
-        createPlugins(true, production && !browserOutput.min, browserOutput.sourcemap),
+        createPlugins(
+          null,
+          browserOutput.sourcemap,
+          production && !browserOutput.min,
+          true,
+          false,
+        ),
         useChokidar,
         browserOutput.name as string,
         browserOutput.extend,
@@ -333,7 +341,13 @@ async function pkgToConfigs(
           browserOutput.sourcemap,
           browserOutput.esModule,
           browserOutput.interop,
-          createPlugins(true, true, browserOutput.sourcemap),
+          createPlugins(
+            null,
+            browserOutput.sourcemap,
+            true,
+            true,
+            false,
+          ),
           useChokidar,
           browserOutput.name as string,
           browserOutput.extend,
@@ -357,7 +371,13 @@ async function pkgToConfigs(
         binaryOutput.esModule,
         binaryOutput.interop,
         external,
-        createPlugins(false, production && !binaryOutput.min, binaryOutput.sourcemap, binaryOutput.path),
+        createPlugins(
+          binaryOutput.path,
+          binaryOutput.sourcemap,
+          production && !binaryOutput.min,
+          false,
+          true,
+        ),
         useChokidar,
       ),
     );
@@ -373,7 +393,13 @@ async function pkgToConfigs(
           binaryOutput.esModule,
           binaryOutput.interop,
           external,
-          createPlugins(false, true, binaryOutput.sourcemap, binaryOutput.path),
+          createPlugins(
+            binaryOutput.path,
+            binaryOutput.sourcemap,
+            true,
+            false,
+            true,
+          ),
           useChokidar,
         ),
       );

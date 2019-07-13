@@ -1,14 +1,14 @@
-import { dirname, join as pathJoin, relative } from "path";
+import { dirname, join as pathJoin, relative, resolve } from "path";
 import { Plugin } from "rollup";
 import slash from "slash";
 import { keys, setProp } from "./helpers";
 
-export function mapIdExternal(cwd: string, file: string, map: Record<string, string>): Plugin {
+export function mapIdExternal(cwd: string, outputDir: string, map: Record<string, string>): Plugin {
 
   const normalizedMap = keys(map).reduce<Record<string, string>>((result, source) => (
     setProp(
-      slash(source),
-      map[source],
+      slash(resolve(cwd, source)),
+      resolve(cwd, map[source]),
       result,
     )
   ), {});
@@ -22,17 +22,25 @@ export function mapIdExternal(cwd: string, file: string, map: Record<string, str
       const resolved = !from ? moduleId : pathJoin(dirname(from), moduleId);
 
       const target = normalizedMap[slash(resolved)]
-        || normalizedMap[slash(pathJoin(resolved, ".ts"))]
-        || normalizedMap[slash(pathJoin(resolved, "/index.ts"))];
+        || normalizedMap[slash(resolved + ".ts")]
+        || normalizedMap[slash(pathJoin(resolved, "index.ts"))];
 
       if (!target) {
         return null;
       }
 
+      const relativeTarget = relative(
+        outputDir,
+        target,
+      );
+
       return {
-        id: relative(
-          dirname(file),
-          target,
+        id: (
+          !relativeTarget
+            ? "."
+            : relativeTarget[0] === "."
+              ? relativeTarget
+              : pathJoin(".", relativeTarget)
         ),
         external: true,
         moduleSideEffects: false,
