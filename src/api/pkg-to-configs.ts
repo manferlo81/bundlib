@@ -197,7 +197,7 @@ async function pkgToConfigs(
 
       bin && outputFile && addShebang({
         include: outputFile,
-        shebang: () => shebang,
+        shebang: () => shebang || "#!/usr/bin/env node",
       }),
 
       mini && terser({

@@ -1,5 +1,11 @@
 # Bundlib Changelog
 
+## 0.11.2
+
+***14-JUL-2019***
+
+* fixed: add default shebang for binary if none specified
+
 ## 0.11.1
 
 ***14-JUL-2019***
