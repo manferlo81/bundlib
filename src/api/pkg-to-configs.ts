@@ -104,7 +104,7 @@ async function pkgToConfigs(
     ? null
     : await import("typescript");
 
-  const extensions = [".ts", ".js"];
+  const extensions = [".ts", ".tsx", ".js", ".jsx", ".mjs", ".node"];
   const exclude = /node_modules/;
 
   const configs: Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>> = [];
@@ -138,7 +138,7 @@ async function pkgToConfigs(
         setProp(apiInput, cwd, {}),
       ),
 
-      browser && nodeResolve({
+      nodeResolve({
         preferBuiltins: !browser,
         extensions,
       }),
