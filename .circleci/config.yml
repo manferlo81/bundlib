@@ -52,10 +52,6 @@ jobs:
           at: *working_directory
       - codecov/upload:
           file: coverage/*.json
-      - save_cache:
-          paths:
-            - node_modules
-          key: v4-deps-bundlib-{{ checksum "package.json" }}
 
   build_and_publish:
     executor: node
@@ -64,10 +60,6 @@ jobs:
       - run:
           name: Build
           command: npm run build
-      - save_cache:
-          paths:
-            - node_modules
-          key: v4-deps-bundlib-{{ checksum "package.json" }}
       - npm_publish
 
 workflows:
