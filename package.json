@@ -19,9 +19,9 @@
     "clean": "rm -rf node_modules/.cache/bundlib node_modules/.cache/jest bin dist types coverage",
     "lint": "tslint src/**/*.ts",
     "dev": "ts-node -P ts-node-tsconfig.json src/cli -dw",
-    "build": "npm run lint && ts-node -P ts-node-tsconfig.json src/cli -d",
+    "build": "ts-node -P ts-node-tsconfig.json src/cli -d",
     "test": "jest --color -w 3",
-    "preversion": "npm run clean && npm run build && npm test"
+    "preversion": "npm run clean && npm run lint && npm run build && npm test"
   },
   "keywords": [
     "library",
