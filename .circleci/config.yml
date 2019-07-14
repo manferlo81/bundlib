@@ -34,13 +34,13 @@ jobs:
       - run:
           name: Install dependencies
           command: npm install
-      - run:
-          name: Test
-          command: npm test
       - save_cache:
           paths:
             - node_modules
           key: v4-deps-bundlib-{{ checksum "package.json" }}
+      - run:
+          name: Test
+          command: npm test
       - persist_to_workspace:
           root: *working_directory
           paths: .
