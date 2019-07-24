@@ -15,7 +15,7 @@ import typescript2 from "rollup-plugin-typescript2";
 import mapIdExternal from "./api-plugin";
 
 import { createBrowserConfig, createModuleConfig } from "./create-config";
-import { error, noTsInput } from "./errors";
+import { error } from "./errors";
 import extensionMatch from "./ext-match";
 import { setProp } from "./helpers";
 import keysOrNull from "./keys-or-null";
@@ -52,20 +52,6 @@ async function pkgToConfigs(
     types: typesOutput,
   } = output;
 
-  if (
-    (cjsOutput || esOutput || browserOutput) &&
-    !extensionMatch(apiInput, ["ts", "tsx"])
-  ) {
-    throw noTsInput("Module");
-  }
-
-  if (
-    binaryOutput &&
-    !extensionMatch(binInput, ["ts", "tsx"])
-  ) {
-    throw noTsInput("Binary");
-  }
-
   const {
     runtime: runtimeDeps,
     peer: peerDeps,
@@ -82,14 +68,21 @@ async function pkgToConfigs(
 
   const production = !dev;
 
+  const extensions = [".ts", ".tsx", ".js", ".jsx", ".mjs", ".node"];
+
   const apiFolder = dirname(apiInput);
-  const apiFolderContent = resolve(apiFolder, "**/*.ts");
-  const cwdFolderContent = resolve(cwd, "**/*.ts");
+
+  const apiFolderContent = extensions.map((ext) => (
+    resolve(apiFolder, `**/*${ext}`)
+  ));
+  const cwdFolderContent = extensions.map((ext) => (
+    resolve(cwd, `**/*${ext}`)
+  ));
 
   const typesFilename = renamePre(basename(apiInput), "d");
 
   let typesOutputDir = typesOutput ? typesOutput.path : null;
-  if (typesOutputDir && extensionMatch(typesOutputDir, ["ts"])) {
+  if (typesOutputDir && extensionMatch(typesOutputDir, [".ts"])) {
     typesOutputDir = dirname(typesOutputDir);
   }
 
@@ -104,12 +97,12 @@ async function pkgToConfigs(
     ? null
     : await import("typescript");
 
-  const extensions = [".ts", ".tsx", ".js", ".jsx", ".mjs", ".node"];
   const exclude = /node_modules/;
 
   const configs: Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>> = [];
 
   function createPlugins(
+    inputFile: string,
     outputFile: string | null,
     sourcemap: RollupSourcemap,
     mini: boolean,
@@ -119,8 +112,10 @@ async function pkgToConfigs(
 
     const sourcemapBool = !!sourcemap;
 
-    const declarationDir = !configs.length && !bin && typesOutputDir;
-    const tsInclude = bin ? [cwdFolderContent] : [apiFolderContent];
+    const inputIsTypescript = extensionMatch(inputFile, [".ts", ".tsx"]);
+
+    const declarationDir = inputIsTypescript && !configs.length && !bin && typesOutputDir;
+    const tsInclude = bin ? cwdFolderContent : apiFolderContent;
     const cacheRoot = pathJoin(cache, "rpt2");
 
     let shebang: string;
@@ -147,7 +142,7 @@ async function pkgToConfigs(
         sourceMap: sourcemapBool,
       }),
 
-      typescript2({
+      inputIsTypescript && typescript2({
         typescript: typescript = typescript || require(require.resolve("typescript", {
           paths: [cwd],
         })),
@@ -157,6 +152,11 @@ async function pkgToConfigs(
         tsconfigDefaults: {
           include: tsInclude,
           exclude: [],
+          compilerOptions: {
+            esModuleInterop: true,
+            resolveJsonModule: true,
+            allowSyntheticDefaultImports: true,
+          },
         },
         tsconfigOverride: {
           compilerOptions: {
@@ -166,6 +166,7 @@ async function pkgToConfigs(
             sourceMap: sourcemapBool,
             declaration: !!declarationDir,
             declarationDir: declarationDir || "",
+            allowJs: !typesOutputDir,
             emitDeclarationOnly: false,
           },
         },
@@ -218,6 +219,7 @@ async function pkgToConfigs(
         false,
         external,
         createPlugins(
+          apiInput,
           esOutput.path,
           esOutput.sourcemap,
           production && !esOutput.min,
@@ -240,6 +242,7 @@ async function pkgToConfigs(
           false,
           external,
           createPlugins(
+            apiInput,
             esOutput.path,
             esOutput.sourcemap,
             true,
@@ -266,6 +269,7 @@ async function pkgToConfigs(
         cjsOutput.interop,
         external,
         createPlugins(
+          apiInput,
           cjsOutput.path,
           cjsOutput.sourcemap,
           production && !cjsOutput.min,
@@ -288,6 +292,7 @@ async function pkgToConfigs(
           cjsOutput.interop,
           external,
           createPlugins(
+            apiInput,
             cjsOutput.path,
             cjsOutput.sourcemap,
             true,
@@ -313,6 +318,7 @@ async function pkgToConfigs(
         browserOutput.esModule,
         browserOutput.interop,
         createPlugins(
+          apiInput,
           null,
           browserOutput.sourcemap,
           production && !browserOutput.min,
@@ -338,6 +344,7 @@ async function pkgToConfigs(
           browserOutput.esModule,
           browserOutput.interop,
           createPlugins(
+            apiInput,
             null,
             browserOutput.sourcemap,
             true,
@@ -368,6 +375,7 @@ async function pkgToConfigs(
         binaryOutput.interop,
         external,
         createPlugins(
+          binInput,
           binaryOutput.path,
           binaryOutput.sourcemap,
           production && !binaryOutput.min,
@@ -390,6 +398,7 @@ async function pkgToConfigs(
           binaryOutput.interop,
           external,
           createPlugins(
+            binInput,
             binaryOutput.path,
             binaryOutput.sourcemap,
             true,

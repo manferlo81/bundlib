@@ -6,6 +6,7 @@
 
 * `React JSX` support
 * dependencies updated
+* javascript input support
 
 ## 0.11.2
 
