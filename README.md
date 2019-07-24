@@ -2,7 +2,7 @@
 
 [![CircleCI](https://circleci.com/gh/manferlo81/bundlib.svg?style=svg)](https://circleci.com/gh/manferlo81/bundlib) [![Greenkeeper badge](https://badges.greenkeeper.io/manferlo81/bundlib.svg)](https://greenkeeper.io/) [![npm](https://img.shields.io/npm/v/bundlib.svg)](https://www.npmjs.com/package/bundlib) [![dependencies Status](https://david-dm.org/manferlo81/bundlib/status.svg)](https://david-dm.org/manferlo81/bundlib) [![devDependencies Status](https://david-dm.org/manferlo81/bundlib/dev-status.svg)](https://david-dm.org/manferlo81/bundlib?type=dev) [![install size](https://packagephobia.now.sh/badge?p=bundlib)](https://packagephobia.now.sh/result?p=bundlib) [![Known Vulnerabilities](https://snyk.io/test/github/manferlo81/bundlib/badge.svg?targetFile=package.json)](https://snyk.io/test/github/manferlo81/bundlib?targetFile=package.json) [![codecov](https://codecov.io/gh/manferlo81/bundlib/branch/master/graph/badge.svg)](https://codecov.io/gh/manferlo81/bundlib) [![License](https://img.shields.io/github/license/manferlo81/bundlib.svg)](LICENSE)
 
-An automatic javascript library bundler using [Typescript](https://github.com/Microsoft/TypeScript) and [Rollup.js](https://github.com/rollup/rollup).
+An automatic javascript library bundler using [Rollup.js](https://github.com/rollup/rollup) and optionally [Typescript](https://github.com/Microsoft/TypeScript).
 
 > :warning: Bundlib is still under active development, please [file a new issue](https://github.com/manferlo81/bundlib/issues) if you find any issue/bug, suggestions are welcome as well.
 
@@ -488,20 +488,20 @@ interface TypesBuildOptions {
 
 ## Features
 
-* [x] *Creates a* `CommonJS` *Module based on the* `"main"` *field in* `package.json`
-* [x] *Creates an* `ES Module` *based on the* `"module"` *field in* `package.json`
-* [x] *Creates an* `Browser` *build based on the* `"browser"` *field in* `package.json` *(only if* `"browser"` *fields is a* `string`*)*
-* [x] *Creates an CLI* `Binary` *build based on the* `"bin"` *field in* `package.json` *(only if* `"bin"` *fields is a* `string`*)*
-* [x] *Exports types declarations based on the* `"types"` *or* `"typings"` *field in your* `package.json`
-* [x] *Skip any build based on options*
-* [x] *Sets* `dependencies`*,* `peerDependencies` *and `optionalDependencies` *as external for* `CommonJS`*,* `ES Module` *and* `Bynary` *modules*
-* [x] *Uses the user copy of* `typescript` *if installed*
-* [x] *Uses* `chokidar` *if installed*
-* [x] *Importing an internal file from a package* `Ex: lodash/core` *will be treated as external if* `lodash` *is included in your* `dependencies` *or* `peerDependencies`
-* [x] *Transforms* `async/await` *using* [`Babel`](https://github.com/babel/babel) *and* [`babel-plugin-transform-async-to-promises`](https://github.com/rpetrich/babel-plugin-transform-async-to-promises) *for ES5 support*
-* [x] *Dynamic Import support through* [`@babel/plugin-syntax-dynamic-import`](#https://babeljs.io/docs/en/babel-plugin-syntax-dynamic-import)
-* [x] `React JSX` *support.*
-* [x] *Minifies build using* [`Terser`](https://github.com/terser-js/terser)
+* *Creates a* `CommonJS` *Module based on the* `"main"` *field in* `package.json`
+* *Creates an* `ES Module` *based on the* `"module"` *field in* `package.json`
+* *Creates an* `Browser` *build based on the* `"browser"` *field in* `package.json` *(only if* `"browser"` *field value is a* `string`*)*
+* *Creates an CLI* `Binary` *build based on the* `"bin"` *field in* `package.json` *(only if* `"bin"` *field value is a* `string`*)*
+* *Exports types declarations based on the* `"types"` *or* `"typings"` *field in your* `package.json`
+* *Skip any build based on options*
+* *Sets* `dependencies`*,* `peerDependencies` *and `optionalDependencies` *as external for* `CommonJS`*,* `ES Module` *and* `Bynary` *modules*
+* *Uses the user copy of* `typescript` *if installed*
+* *Uses* `chokidar` *if installed*
+* *Importing an internal file from a package* `Ex: lodash/core` *will be treated as external if* `lodash` *is included in your* `dependencies` *or* `peerDependencies`
+* *Transforms* `async/await` *using* [`Babel`](https://github.com/babel/babel) *and* [`babel-plugin-transform-async-to-promises`](https://github.com/rpetrich/babel-plugin-transform-async-to-promises) *for ES5 support*
+* *Dynamic Import support through* [`@babel/plugin-syntax-dynamic-import`](#https://babeljs.io/docs/en/babel-plugin-syntax-dynamic-import)
+* `React JSX` *support.*
+* *Minifies build using* [`Terser`](https://github.com/terser-js/terser)
 
 ## License
 
