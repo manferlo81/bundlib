@@ -11,5 +11,5 @@ export function invalidOption(option: string, type: string): TypeError {
 }
 
 export function noTsInput(desc: string) {
-  return error(`${desc} input has to point to a typescript (.ts) file.`);
+  return error(`${desc} input has to point to a typescript (.ts | .tsx) file.`);
 }

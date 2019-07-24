@@ -83,7 +83,7 @@ default {
 };
 ```
 
-*The path to the file(s) to be used as entry point for modules and binary. They have to be* `.ts` *files for* `bundlib` *to create* `rollup` *options. If a* `string` *provided, it will be used as api entry point and binary entry point will be set to default value.*
+*The path to the file(s) to be used as entry point for modules and binary. They have to be* `.ts` or `.tsx` *files for* `bundlib` *to create* `rollup` *options. If a* `string` *provided, it will be used as api entry point and binary entry point will be set to default value.*
 
 #### sourcemap
 
@@ -314,7 +314,7 @@ interface CommonJSOptions {
 
 *If it's set to* `false`*, it will prevent* `Binary` *build altogether, even if there is a* `bin` *field in* `package.json`*.*
 
-> :warning: *This option was used to set entry point for* `Binary` *build. For compatibility it still works if you set this option as string. This behavior will be removed in the future and therefore should not be used. Use* [`input`](#input) *option instead.*
+> :warning: *This option was used to set entry point for* `Binary` *build. For compatibility reasons it still works if you set this option as* `string`*. This behavior will be removed in the future and therefore should not be used. Use* [`input`](#input) *option instead.*
 
 #### types
 
@@ -500,7 +500,7 @@ interface TypesBuildOptions {
 * [x] *Importing an internal file from a package* `Ex: lodash/core` *will be treated as external if* `lodash` *is included in your* `dependencies` *or* `peerDependencies`
 * [x] *Transforms* `async/await` *using* [`Babel`](https://github.com/babel/babel) *and* [`babel-plugin-transform-async-to-promises`](https://github.com/rpetrich/babel-plugin-transform-async-to-promises) *for ES5 support*
 * [x] *Dynamic Import support through* [`@babel/plugin-syntax-dynamic-import`](#https://babeljs.io/docs/en/babel-plugin-syntax-dynamic-import)
-* [x] *Transforms using* [`Buble`](https://github.com/bublejs/buble)
+* [x] `React JSX` *support.*
 * [x] *Minifies build using* [`Terser`](https://github.com/terser-js/terser)
 
 ## License

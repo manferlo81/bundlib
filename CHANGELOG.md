@@ -1,5 +1,12 @@
 # Bundlib Changelog
 
+## 0.12.0
+
+***24-JUL-2019***
+
+* `React JSX` support
+* dependencies updated
+
 ## 0.11.2
 
 ***14-JUL-2019***

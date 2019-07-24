@@ -1,11 +1,10 @@
 import builtinModules from "builtin-modules";
 import { union } from "lodash";
-import { basename, dirname, extname, join as pathJoin, resolve } from "path";
+import { basename, dirname, join as pathJoin, resolve } from "path";
 import { Plugin } from "rollup";
 
 import addShebang from "rollup-plugin-add-shebang";
 import babel from "rollup-plugin-babel";
-import buble from "rollup-plugin-buble";
 import commonjs from "rollup-plugin-commonjs";
 import exportEquals from "rollup-plugin-export-equals";
 import json from "rollup-plugin-json";
@@ -13,10 +12,11 @@ import nodeResolve from "rollup-plugin-node-resolve";
 import stripShebang from "rollup-plugin-strip-shebang";
 import { terser } from "rollup-plugin-terser";
 import typescript2 from "rollup-plugin-typescript2";
-
 import mapIdExternal from "./api-plugin";
+
 import { createBrowserConfig, createModuleConfig } from "./create-config";
 import { error, noTsInput } from "./errors";
+import extensionMatch from "./ext-match";
 import { setProp } from "./helpers";
 import keysOrNull from "./keys-or-null";
 import { PkgAnalized } from "./pkg-analized";
@@ -54,14 +54,14 @@ async function pkgToConfigs(
 
   if (
     (cjsOutput || esOutput || browserOutput) &&
-    extname(apiInput) !== ".ts"
+    !extensionMatch(apiInput, ["ts", "tsx"])
   ) {
     throw noTsInput("Module");
   }
 
   if (
     binaryOutput &&
-    extname(binInput) !== ".ts"
+    !extensionMatch(binInput, ["ts", "tsx"])
   ) {
     throw noTsInput("Binary");
   }
@@ -89,7 +89,7 @@ async function pkgToConfigs(
   const typesFilename = renamePre(basename(apiInput), "d");
 
   let typesOutputDir = typesOutput ? typesOutput.path : null;
-  if (typesOutputDir && extname(typesOutputDir) === ".ts") {
+  if (typesOutputDir && extensionMatch(typesOutputDir, ["ts"])) {
     typesOutputDir = dirname(typesOutputDir);
   }
 
@@ -181,19 +181,15 @@ async function pkgToConfigs(
         extensions,
         exclude,
         babelrc: false,
+        presets: [
+          require.resolve("@babel/preset-env"),
+          require.resolve("@babel/preset-react"),
+        ],
         plugins: [
           require.resolve("@babel/plugin-syntax-dynamic-import"),
           require.resolve("babel-plugin-transform-async-to-promises"),
         ],
       }),
-
-      buble({
-        exclude,
-        target: {
-          node: 0.12,
-        },
-        objectAssign: true,
-      }) as Plugin,
 
       bin && outputFile && addShebang({
         include: outputFile,
