@@ -4,7 +4,7 @@
 
 An automatic javascript library bundler using [Rollup.js](https://github.com/rollup/rollup) and optionally [Typescript](https://github.com/Microsoft/TypeScript).
 
-> :warning: Bundlib is still under active development, please [file a new issue](https://github.com/manferlo81/bundlib/issues) if you find any issue/bug, suggestions are welcome as well.
+> :warning: Bundlib under active development, please [file a new issue](https://github.com/manferlo81/bundlib/issues) if you find any issue/bug, suggestions are welcome as well.
 
 ## In this guide
 
@@ -56,8 +56,7 @@ npm i -D bundlib
   "browser" : "dist/my-lib.amd.js",
   // ...
   "bundlib": {
-    "name": "myLib",
-    "browser": "amd"
+    "format": "amd"
   }
   // ...
 }
@@ -83,11 +82,9 @@ default {
 };
 ```
 
-*The path to the file(s) to be used as entry point for modules and binary. They have to be* `.ts` or `.tsx` *files for* `bundlib` *to create* `rollup` *options. If a* `string` *provided, it will be used as api entry point and binary entry point will be set to default value.*
+*The path to the file(s) to be used as entry point for modules and binary. If a* `string` *is provided, it will be used as api entry point and binary entry point will be set to default value.*
 
 #### sourcemap
-
-* `"inline"` *support added in:* `v0.6.0`
 
 ```typescript
 sourcemap: boolean | "inline";
@@ -97,11 +94,9 @@ default true;
 
 *Whether or not to generate source maps. Anything other than* `false` *or* `"inline"` *will default to* `true`*.*
 
-*This option can be overridden using* `per-build` *options. See* [`main`](#main)*,* [`module`](#module)*,* [`browser`](#browser) *&* [`bin`](#bin) *options.*
+*This option can be overridden using* `per-build` *options. See* [`main`](#main)*,* [`module`](#module)*,* [`browser`](#browser) *and* [`bin`](#bin) *options.*
 
 #### esModule
-
-* *selective support added in:* `v0.10.2`
 
 ```typescript
 esModule: BuildType | BuildType[] | boolean;
@@ -117,8 +112,6 @@ default false;
 
 #### interop
 
-* *selective support added in:* `v0.10.2`
-
 ```typescript
 interop: BuildType | BuildType[] | boolean;
 
@@ -132,8 +125,6 @@ default false;
 *This option can be overridden using* `per-build` *options. See* [`main`](#main)*,* [`browser`](#browser) *&* [`bin`](#bin) *options.*
 
 #### format
-
-* *added in:* `v0.7.0`
 
 ```typescript
 format: "iife" | "amd" | "umd";
@@ -183,6 +174,8 @@ default false;
 
 ```typescript
 globals: { [name: string]: string } | string[];
+
+default {};
 ```
 
 *Object or array to map names to globals in browser builds.*
@@ -190,8 +183,6 @@ globals: { [name: string]: string } | string[];
 *This option can be overridden using the* [`browser`](#browser) *option.*
 
 #### equals
-
-* *added in:* `v0.1.0`
 
 ```typescript
 equals: boolean;
@@ -203,12 +194,9 @@ default false;
 
 *This option can be overridden using the* [`types`](#types) *option.*
 
-> :warning: *Note that this options should only be used when your library has a* `default` *export and no named exports, otherwise it may cause the types to become invalid.*
+> :warning: *Note that this option should only be used when your library has a* `default` *export and no* `named` *exports, otherwise it may cause the type declarations to become invalid.*
 
 #### min
-
-* *added in:* `v0.3.2`
-* `boolean` *support added in:* `v0.4.1`
 
 ```typescript
 min: BuildType | BuildType[] | boolean;
@@ -224,8 +212,6 @@ default false;
 
 #### cache
 
-* *added in:* `v0.6.0`
-
 ```typescript
 cache: string;
 
@@ -235,8 +221,6 @@ default "node_modules/.cache/bundlib"
 *Defines the directory to be used for cache, relative to the project root.*
 
 #### main
-
-* *added in:* `v0.10.0`
 
 ```typescript
 main: CommonJSOptions | false;
@@ -255,8 +239,6 @@ interface CommonJSOptions {
 
 #### module
 
-* *added in:* `v0.10.0`
-
 ```typescript
 module: ESModuleOptions | false;
 
@@ -271,8 +253,6 @@ interface ESModuleOptions {
 *If it's set to* `false`*, it will prevent* `ESModule` *build altogether, even if there is a* `module` *or* `jsnext:main` *field in* `package.json`*.*
 
 #### browser
-
-* *added in:* `v0.10.0`
 
 ```typescript
 browser: BrowserOptions | false;
@@ -296,9 +276,6 @@ interface BrowserOptions {
 
 #### bin
 
-* *added in:* `v0.7.0`
-* `per-build` *behavior added in:* `v0.10.0`
-
 ```typescript
 bin: CommonJSOptions | false;
 
@@ -317,8 +294,6 @@ interface CommonJSOptions {
 > :warning: *This option was used to set entry point for* `Binary` *build. For compatibility reasons it still works if you set this option as* `string`*. This behavior will be removed in the future and therefore should not be used. Use* [`input`](#input) *option instead.*
 
 #### types
-
-* *added in:* `v0.10.0`
 
 ```typescript
 types: TypesOptions | false;
@@ -489,18 +464,19 @@ interface TypesBuildOptions {
 ## Features
 
 * *Creates a* `CommonJS` *Module based on the* `"main"` *field in* `package.json`
-* *Creates an* `ES Module` *based on the* `"module"` *field in* `package.json`
+* *Creates an* `ES Module` *based on the* `"module"` *or* `"jsnext:main"` *field in* `package.json`
 * *Creates an* `Browser` *build based on the* `"browser"` *field in* `package.json` *(only if* `"browser"` *field value is a* `string`*)*
 * *Creates an CLI* `Binary` *build based on the* `"bin"` *field in* `package.json` *(only if* `"bin"` *field value is a* `string`*)*
-* *Exports types declarations based on the* `"types"` *or* `"typings"` *field in your* `package.json`
+* *Exports type declarations based on the* `"types"` *or* `"typings"` *field in your* `package.json`
 * *Skip any build based on options*
-* *Sets* `dependencies`*,* `peerDependencies` *and `optionalDependencies` *as external for* `CommonJS`*,* `ES Module` *and* `Bynary` *modules*
+* *Sets* `"dependencies"`*,* `"peerDependencies"` *and `"optionalDependencies"` *as external for* `CommonJS`*,* `ES Module` *and* `Bynary` *modules*
 * *Uses the user copy of* `typescript` *if installed*
 * *Uses* `chokidar` *if installed*
-* *Importing an internal file from a package* `Ex: lodash/core` *will be treated as external if* `lodash` *is included in your* `dependencies` *or* `peerDependencies`
-* *Transforms* `async/await` *using* [`Babel`](https://github.com/babel/babel) *and* [`babel-plugin-transform-async-to-promises`](https://github.com/rpetrich/babel-plugin-transform-async-to-promises) *for ES5 support*
-* *Dynamic Import support through* [`@babel/plugin-syntax-dynamic-import`](#https://babeljs.io/docs/en/babel-plugin-syntax-dynamic-import)
-* `React JSX` *support.*
+* *Importing an internal file from a package* `Ex: lodash/core` *will be treated as external if* `lodash` *is included in your* `"dependencies"`*,* `peerDependencies` *or* `optionalDependencies`
+* *Transforms* `async/await` *using* [`Babel`](https://babeljs.io) *and* [`babel-plugin-transform-async-to-promises`](https://github.com/rpetrich/babel-plugin-transform-async-to-promises) *for ES5 support*
+* *Dynamic Import support through* [`@babel/plugin-syntax-dynamic-import`](https://babeljs.io/docs/en/babel-plugin-syntax-dynamic-import)
+* `React JSX` *support through* [`@babel/preset-react`](https://babeljs.io/docs/en/next/babel-preset-react)
+* Uses [`@babel/preset-env`](https://babeljs.io/docs/en/next/babel-preset-env)
 * *Minifies build using* [`Terser`](https://github.com/terser-js/terser)
 
 ## License

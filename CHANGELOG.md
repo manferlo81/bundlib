@@ -2,11 +2,12 @@
 
 ## 0.12.0
 
-***24-JUL-2019***
+***25-JUL-2019***
 
 * `React JSX` support
-* dependencies updated
 * javascript input support
+* dependencies updated
+* improved documentation
 
 ## 0.11.2
 
