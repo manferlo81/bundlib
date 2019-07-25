@@ -15,6 +15,19 @@ describe("package to configs", () => {
 
   });
 
+  test("should throw if generate types on javascript source", () => {
+
+    return expect(
+      createConfigs("", false, {
+        main: "lib.js",
+        types: "types",
+        bundlib: { input: "src/index.js" },
+      }),
+    ).rejects
+      .toThrow();
+
+  });
+
   test("should generate empty array if no pkg content", async () => {
 
     const configs = await createConfigs(cwd, false, {});
@@ -155,10 +168,30 @@ describe("package to configs", () => {
 
   });
 
-  test("should generate Bynary build config", async () => {
+  test("should generate Binary build config from default typescript input", async () => {
 
     const configs = await createConfigs(cwd, true, {
       bin: "out/lib.js",
+    });
+
+    expect(configs)
+      .toHaveLength(1);
+
+    const [config] = configs;
+    const { output } = config;
+
+    expect(typeof output)
+      .toBe("object");
+    expect(output.format)
+      .toBe("cjs");
+
+  });
+
+  test("should generate Binary build config from javascript input", async () => {
+
+    const configs = await createConfigs(cwd, true, {
+      bin: "out/lib.js",
+      bundlib: { input: { bin: "src-bin/index.js" } },
     });
 
     expect(configs)
@@ -214,7 +247,7 @@ describe("package to configs", () => {
 
   });
 
-  test("should generate configs with extra minified versions", async () => {
+  test("should generate configs with extra minified versions from default typescript input", async () => {
 
     const minifiedPostfix = ".min.js";
 
@@ -224,6 +257,41 @@ describe("package to configs", () => {
       browser: "browser.js",
       bin: "bin.js",
       bundlib: {
+        name: "lib",
+        min: true,
+      },
+    });
+
+    expect(configs)
+      .toHaveLength(8);
+
+    configs.forEach((config, index) => {
+
+      const isMin = index % 2;
+
+      if (isMin) {
+
+        const { file } = config.output;
+        expect(file.substr(file.length - minifiedPostfix.length))
+          .toBe(minifiedPostfix);
+
+      }
+
+    });
+
+  });
+
+  test("should generate configs with extra minified versions from javascript input", async () => {
+
+    const minifiedPostfix = ".min.js";
+
+    const configs = await createConfigs(cwd, false, {
+      main: "main.js",
+      module: "module.js",
+      browser: "browser.js",
+      bin: "bin.js",
+      bundlib: {
+        input: { api: "src/index.js", bin: "src-bin/index.js" },
         name: "lib",
         min: true,
       },

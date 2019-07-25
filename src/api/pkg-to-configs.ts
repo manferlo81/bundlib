@@ -63,19 +63,35 @@ async function pkgToConfigs(
     (browserOutput.format === "iife" || browserOutput.format === "umd") &&
     !browserOutput.name
   ) {
-    throw error("name option is required for IIFE and UMD builds");
+    throw error("option 'name' is required for IIFE and UMD builds");
   }
+
+  const typescriptOnlyExtensions = [".ts", ".tsx"];
+  const javascriptExtensions = [".js", ".jsx", ".mjs", ".node"];
+
+  const isTypescriptAPIInput = extensionMatch(apiInput, typescriptOnlyExtensions);
+  const isTypescriptBinaryInput = extensionMatch(binInput, typescriptOnlyExtensions);
+
+  if (
+    typesOutput &&
+    !isTypescriptAPIInput
+  ) {
+    throw error("can't generate types from javascript source");
+  }
+
+  const typescriptExtensions = [...typescriptOnlyExtensions, ...javascriptExtensions];
+
+  const apiExtensions = isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions;
+  const binaryExtensions = isTypescriptBinaryInput ? typescriptExtensions : javascriptExtensions;
 
   const production = !dev;
 
-  const extensions = [".ts", ".tsx", ".js", ".jsx", ".mjs", ".node"];
-
   const apiFolder = dirname(apiInput);
 
-  const apiFolderContent = extensions.map((ext) => (
+  const apiFolderContent = apiExtensions.map((ext) => (
     resolve(apiFolder, `**/*${ext}`)
   ));
-  const cwdFolderContent = extensions.map((ext) => (
+  const cwdFolderContent = binaryExtensions.map((ext) => (
     resolve(cwd, `**/*${ext}`)
   ));
 
@@ -90,7 +106,9 @@ async function pkgToConfigs(
 
   const installedDeps = union(runtimeDeps, keysOrNull(pkg.devDependencies));
 
-  const useUserTypescript = installedDeps.indexOf("typescript") >= 0;
+  const useUserTypescript = (
+    isTypescriptAPIInput || isTypescriptBinaryInput
+  ) && installedDeps.indexOf("typescript") >= 0;
   const useChokidar = !!watch && installedDeps.indexOf("chokidar") >= 0;
 
   let typescript = useUserTypescript
@@ -102,7 +120,8 @@ async function pkgToConfigs(
   const configs: Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>> = [];
 
   function createPlugins(
-    inputFile: string,
+    inputIsTypescript: boolean,
+    extensions: string[],
     outputFile: string | null,
     sourcemap: RollupSourcemap,
     mini: boolean,
@@ -111,8 +130,6 @@ async function pkgToConfigs(
   ): FilterablePlugins {
 
     const sourcemapBool = !!sourcemap;
-
-    const inputIsTypescript = extensionMatch(inputFile, [".ts", ".tsx"]);
 
     const declarationDir = inputIsTypescript && !configs.length && !bin && typesOutputDir;
     const tsInclude = bin ? cwdFolderContent : apiFolderContent;
@@ -209,20 +226,23 @@ async function pkgToConfigs(
 
   if (esOutput) {
 
+    const { path, sourcemap, min } = esOutput;
+
     configs.push(
       createModuleConfig(
         apiInput,
         "es",
-        esOutput.path,
-        esOutput.sourcemap,
+        path,
+        sourcemap,
         true,
         false,
         external,
         createPlugins(
-          apiInput,
-          esOutput.path,
-          esOutput.sourcemap,
-          production && !esOutput.min,
+          isTypescriptAPIInput,
+          isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
+          path,
+          sourcemap,
+          production && !min,
           false,
           false,
         ),
@@ -230,21 +250,22 @@ async function pkgToConfigs(
       ),
     );
 
-    if (esOutput.min) {
+    if (min) {
 
       configs.push(
         createModuleConfig(
           apiInput,
           "es",
-          renameMin(esOutput.path),
-          esOutput.sourcemap,
+          renameMin(path),
+          sourcemap,
           true,
           false,
           external,
           createPlugins(
-            apiInput,
-            esOutput.path,
-            esOutput.sourcemap,
+            isTypescriptAPIInput,
+            isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
+            path,
+            sourcemap,
             true,
             false,
             false,
@@ -259,20 +280,23 @@ async function pkgToConfigs(
 
   if (cjsOutput) {
 
+    const { path, sourcemap, esModule, interop, min } = cjsOutput;
+
     configs.push(
       createModuleConfig(
         apiInput,
         "cjs",
-        cjsOutput.path,
-        cjsOutput.sourcemap,
-        cjsOutput.esModule,
-        cjsOutput.interop,
+        path,
+        sourcemap,
+        esModule,
+        interop,
         external,
         createPlugins(
-          apiInput,
-          cjsOutput.path,
-          cjsOutput.sourcemap,
-          production && !cjsOutput.min,
+          isTypescriptAPIInput,
+          isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
+          path,
+          sourcemap,
+          production && !min,
           false,
           false,
         ),
@@ -280,21 +304,22 @@ async function pkgToConfigs(
       ),
     );
 
-    if (cjsOutput.min) {
+    if (min) {
 
       configs.push(
         createModuleConfig(
           apiInput,
           "cjs",
-          renameMin(cjsOutput.path),
-          cjsOutput.sourcemap,
-          cjsOutput.esModule,
-          cjsOutput.interop,
+          renameMin(path),
+          sourcemap,
+          esModule,
+          interop,
           external,
           createPlugins(
-            apiInput,
-            cjsOutput.path,
-            cjsOutput.sourcemap,
+            isTypescriptAPIInput,
+            isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
+            path,
+            sourcemap,
             true,
             false,
             false,
@@ -309,53 +334,57 @@ async function pkgToConfigs(
 
   if (browserOutput) {
 
+    const { path, sourcemap, esModule, interop, format, name, extend, id, globals, min } = browserOutput;
+
     configs.push(
       createBrowserConfig(
         apiInput,
-        browserOutput.format,
-        browserOutput.path,
-        browserOutput.sourcemap,
-        browserOutput.esModule,
-        browserOutput.interop,
+        format,
+        path,
+        sourcemap,
+        esModule,
+        interop,
         createPlugins(
-          apiInput,
+          isTypescriptAPIInput,
+          isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
           null,
-          browserOutput.sourcemap,
-          production && !browserOutput.min,
+          sourcemap,
+          production && !min,
           true,
           false,
         ),
         useChokidar,
-        browserOutput.name as string,
-        browserOutput.extend,
-        browserOutput.globals,
-        browserOutput.id,
+        name as string,
+        extend,
+        globals,
+        id,
       ),
     );
 
-    if (browserOutput.min) {
+    if (min) {
 
       configs.push(
         createBrowserConfig(
           apiInput,
-          browserOutput.format,
-          renameMin(browserOutput.path),
-          browserOutput.sourcemap,
-          browserOutput.esModule,
-          browserOutput.interop,
+          format,
+          renameMin(path),
+          sourcemap,
+          esModule,
+          interop,
           createPlugins(
-            apiInput,
+            isTypescriptAPIInput,
+            isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
             null,
-            browserOutput.sourcemap,
+            sourcemap,
             true,
             true,
             false,
           ),
           useChokidar,
-          browserOutput.name as string,
-          browserOutput.extend,
-          browserOutput.globals,
-          browserOutput.id,
+          name as string,
+          extend,
+          globals,
+          id,
         ),
       );
 
@@ -365,20 +394,23 @@ async function pkgToConfigs(
 
   if (binaryOutput) {
 
+    const { path, sourcemap, esModule, interop, min } = binaryOutput;
+
     configs.push(
       createModuleConfig(
         binInput,
         "cjs",
-        binaryOutput.path,
-        binaryOutput.sourcemap,
-        binaryOutput.esModule,
-        binaryOutput.interop,
+        path,
+        sourcemap,
+        esModule,
+        interop,
         external,
         createPlugins(
-          binInput,
-          binaryOutput.path,
-          binaryOutput.sourcemap,
-          production && !binaryOutput.min,
+          isTypescriptBinaryInput,
+          isTypescriptBinaryInput ? typescriptExtensions : javascriptExtensions,
+          path,
+          sourcemap,
+          production && !min,
           false,
           true,
         ),
@@ -386,21 +418,22 @@ async function pkgToConfigs(
       ),
     );
 
-    if (binaryOutput.min) {
+    if (min) {
 
       configs.push(
         createModuleConfig(
           binInput,
           "cjs",
-          renameMin(binaryOutput.path),
-          binaryOutput.sourcemap,
-          binaryOutput.esModule,
-          binaryOutput.interop,
+          renameMin(path),
+          sourcemap,
+          esModule,
+          interop,
           external,
           createPlugins(
-            binInput,
-            binaryOutput.path,
-            binaryOutput.sourcemap,
+            isTypescriptBinaryInput,
+            isTypescriptBinaryInput ? typescriptExtensions : javascriptExtensions,
+            path,
+            sourcemap,
             true,
             false,
             true,
