@@ -198,9 +198,14 @@ async function pkgToConfigs(
       babel({
         extensions,
         exclude,
-        babelrc: false,
+        babelrc: true,
         presets: [
-          require.resolve("@babel/preset-env"),
+          [
+            require.resolve("@babel/preset-env"),
+            {
+              loose: true,
+            },
+          ],
           require.resolve("@babel/preset-react"),
         ],
         plugins: [

@@ -5,6 +5,7 @@
 ***06-AUG-2019***
 
 * dependencies updated
+* babel `loose` transformations
 
 ## 0.12.0
 
