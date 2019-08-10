@@ -348,9 +348,9 @@ import { configsFromPkg } from "bundlib";
 
 const dev = !process.env.production;
 
-export default () => configsFromPkg(
+export default configsFromPkg(
   process.cwd(),
-  dev,
+  { dev },
 );
 ```
 

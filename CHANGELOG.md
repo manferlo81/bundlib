@@ -2,8 +2,9 @@
 
 ## 0.12.1
 
-***07-AUG-2019***
+***10-AUG-2019***
 
+* fixed typo in documentation
 * dependencies updated
 * babel `loose` transformations
 
