@@ -475,6 +475,7 @@ interface TypesBuildOptions {
 * *Importing an internal file from a package* `Ex: lodash/core` *will be treated as external if* `lodash` *is included in your* `"dependencies"`*,* `peerDependencies` *or* `optionalDependencies`
 * *Transforms* `async/await` *using* [`Babel`](https://babeljs.io) *and* [`babel-plugin-transform-async-to-promises`](https://github.com/rpetrich/babel-plugin-transform-async-to-promises) *for ES5 support*
 * *Dynamic Import support through* [`@babel/plugin-syntax-dynamic-import`](https://babeljs.io/docs/en/babel-plugin-syntax-dynamic-import)
+* *Tranforms* `Object.assign` *using* [`@babel/plugin-transform-object-assign`](https://babeljs.io/docs/en/babel-plugin-transform-object-assign)
 * `React JSX` *support through* [`@babel/preset-react`](https://babeljs.io/docs/en/next/babel-preset-react)
 * Uses [`@babel/preset-env`](https://babeljs.io/docs/en/next/babel-preset-env)
 * *Minifies build using* [`Terser`](https://github.com/terser-js/terser)

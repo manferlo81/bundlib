@@ -5,6 +5,7 @@
 ***28-AUG-2019***
 
 * dependencies updated
+* use `@babel/plugin-transform-object-assign`
 
 ## 0.12.1
 
