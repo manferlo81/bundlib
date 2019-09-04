@@ -81,6 +81,22 @@ async function action() {
         logError(err);
       },
 
+      warn(warning) {
+
+        let msg = warning;
+
+        if (typeof msg === "object") {
+          const { plugin, message } = msg;
+          const pluginName = chalk.bold.magenta(plugin || "unknown");
+          msg = `(plugin ${pluginName}) ${message}`;
+        }
+
+        const tag = chalk.bold.magenta("warning:");
+
+        log(`${tag} ${msg}`);
+
+      },
+
     } as BuildCallbackObject);
 
     if (watch) {

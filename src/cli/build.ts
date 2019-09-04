@@ -19,15 +19,15 @@ function build(
 
   oneByOne(configs, async (config, next, index) => {
 
-    const { input, output: outputOptions } = config;
-    const { file: output, format } = outputOptions;
+    const { input, output } = config;
+    const { file: outputFile, format } = output;
 
     const isModuleBuild = format === "cjs" || format === "es";
-    const cacheKey = (isModuleBuild ? "module:" : "browser:") + input;
+    const cacheKey = `${isModuleBuild ? "module" : "browser"}:${input}`;
     config.cache = cache[cacheKey];
 
     if (callbacks.buildStart) {
-      callbacks.buildStart(input, output);
+      callbacks.buildStart(input, outputFile);
     }
 
     try {
@@ -36,15 +36,14 @@ function build(
 
       const buildResult = await rollup(config);
       config.cache = cache[cacheKey] = buildResult.cache;
-      await buildResult.write(outputOptions);
+      await buildResult.write(output);
 
-      const { size } = statSync(output);
-
+      const { size } = statSync(outputFile);
       const totalTime = Date.now() - currentTime;
 
       if (callbacks.buildEnd) {
         callbacks.buildEnd(
-          output,
+          outputFile,
           size,
           totalTime,
         );

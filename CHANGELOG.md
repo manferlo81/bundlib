@@ -2,11 +2,12 @@
 
 ## 0.12.3
 
-***02-SEP-2019***
+***04-SEP-2019***
 
 * dependencies updated
 * console messages refactoring
 * windows detection based on `process.platform`
+* formatted rollup warnings
 
 ## 0.12.2
 

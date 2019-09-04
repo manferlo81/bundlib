@@ -1,3 +1,5 @@
+import { RollupWarning } from "rollup";
+
 import { BundlibPkgJson, configsFromPkg } from "../api";
 
 import build from "./build";
@@ -10,10 +12,24 @@ async function bundlib(
   callbacks: BuildCallbackObject,
   pkg?: BundlibPkgJson,
 ): Promise<void> {
+
+  const configs = await configsFromPkg(cwd, options, pkg);
+
+  const { warn } = callbacks;
+
+  configs.forEach((config) => {
+    config.onwarn = (warning: string | RollupWarning) => {
+      if (warn) {
+        warn(warning);
+      }
+    };
+  });
+
   (options.watch ? watchBuild : build)(
-    await configsFromPkg(cwd, options, pkg),
+    configs,
     callbacks,
   );
+
 }
 
 export default bundlib;
