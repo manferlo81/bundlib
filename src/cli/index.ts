@@ -83,17 +83,23 @@ async function action() {
 
       warn(warning) {
 
-        let msg = warning;
+        let message = warning;
 
-        if (typeof msg === "object") {
-          const { plugin, message } = msg;
-          const pluginName = chalk.bold.magenta(plugin || "unknown");
-          msg = `(plugin ${pluginName}) ${message}`;
+        if (typeof message === "object") {
+
+          const { plugin, message: msg } = message;
+
+          message = msg;
+
+          if (plugin) {
+            message = `(plugin ${chalk.bold.magenta(plugin)}) ${message}`;
+          }
+
         }
 
         const tag = chalk.bold.magenta("warning:");
 
-        log(`${tag} ${msg}`);
+        log(`${tag} ${message}`);
 
       },
 
