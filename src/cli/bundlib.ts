@@ -1,10 +1,9 @@
-import { RollupWarning } from "rollup";
-
 import { BundlibPkgJson, configsFromPkg } from "../api";
 
+import { RollupWarning } from "rollup";
 import build from "./build";
 import { BuildCallbackObject, BundlibOptions } from "./types";
-import watchBuild from "./watch";
+import watch from "./watch";
 
 async function bundlib(
   cwd: string,
@@ -17,15 +16,13 @@ async function bundlib(
 
   const { warn } = callbacks;
 
+  const onwarn = warn ? (warning: string | RollupWarning) => warn(warning) : (() => null);
+
   configs.forEach((config) => {
-    config.onwarn = (warning: string | RollupWarning) => {
-      if (warn) {
-        warn(warning);
-      }
-    };
+    config.onwarn = onwarn;
   });
 
-  (options.watch ? watchBuild : build)(
+  (options.watch ? watch : build)(
     configs,
     callbacks,
   );
