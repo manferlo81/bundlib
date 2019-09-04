@@ -8,6 +8,7 @@
 * console messages refactoring
 * windows detection based on `process.platform`
 * formatted rollup warnings
+* refactoring
 
 ## 0.12.2
 

@@ -13,39 +13,65 @@ interface WatchEvent {
 
 function watch(configs: RollupOptions[], callbacks: BuildCallbackObject): void {
 
+  function ERROR(event: WatchEvent) {
+    if (callbacks.error) {
+      callbacks.error(event.error);
+    }
+  }
+
+  const table: Record<string, (event: WatchEvent) => void> = {
+
+    START: () => {
+      if (callbacks.start) {
+        callbacks.start();
+      }
+    },
+
+    END: () => {
+      if (callbacks.end) {
+        callbacks.end();
+      }
+    },
+
+    BUNDLE_START: (event) => {
+      if (callbacks.buildStart) {
+        const { output: out } = event;
+        const { length: len } = out;
+        for (let i = 0; i < len; i++) {
+          callbacks.buildStart(event.input, out[i]);
+        }
+      }
+    },
+
+    BUNDLE_END: (event) => {
+      if (callbacks.buildEnd) {
+        const { output: out } = event;
+        const { length: len } = out;
+        for (let i = 0; i < len; i++) {
+          const stats = statSync(out[i]);
+          callbacks.buildEnd(
+            out[i],
+            stats.size,
+            event.duration || 0,
+          );
+        }
+      }
+    },
+
+    ERROR,
+    FATAL: ERROR,
+
+  };
+
   const watcher = rollupWatch(configs);
 
   watcher.on("event", (event: WatchEvent) => {
 
-    const { code, input, output, duration, error } = event;
+    const { code } = event;
+    const handler = table[code];
 
-    if (callbacks.start && code === "START") {
-      callbacks.start();
-    }
-
-    if (callbacks.end && code === "END") {
-      callbacks.end();
-    }
-
-    if (callbacks.buildStart && code === "BUNDLE_START") {
-      for (const filename of output) {
-        callbacks.buildStart(input, filename);
-      }
-    }
-
-    if (callbacks.buildEnd && code === "BUNDLE_END") {
-      for (const filename of output) {
-        const { size } = statSync(filename);
-        callbacks.buildEnd(
-          filename,
-          size,
-          duration || 0,
-        );
-      }
-    }
-
-    if (callbacks.error && (code === "ERROR" || code === "FATAL")) {
-      callbacks.error(error);
+    if (handler) {
+      handler(event);
     }
 
   });
