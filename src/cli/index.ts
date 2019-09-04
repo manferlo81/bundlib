@@ -10,13 +10,14 @@ import readPkg from "read-pkg";
 import { version } from "../../package.json";
 import { BundlibPkgJson } from "../api/pkg";
 
+import slash from "slash";
 import bundlib from "./bundlib";
 import { log, logError } from "./console";
 import { BuildCallbackObject } from "./types.js";
 
 async function action() {
 
-  if (!chalk.level && !chalk.enabled && process.env.MINGW_CHOST && process.env.WINDIR) {
+  if (!chalk.level && !chalk.enabled && process.platform === "win32" && process.env.MINGW_CHOST) {
     chalk.level = 3;
     chalk.enabled = true;
   }
@@ -27,10 +28,11 @@ async function action() {
   let pkg: BundlibPkgJson | undefined;
 
   if (!silent) {
-    const msgVersion = chalk.green.bold(`Bundlib v${version}`);
-    const msgReading = chalk.cyan.bold("reading package.json...");
-    log(`${msgVersion}
-`);
+    const app = chalk.green(`Bundlib`);
+    const msgVersion = chalk.yellow(`v${version}`);
+    log(chalk.bold(`${app} ${msgVersion}
+`));
+    const msgReading = chalk.bold("reading package.json...");
     log(`${msgReading}
 `);
 
@@ -43,11 +45,11 @@ async function action() {
 
     if (name && ver) {
 
-      const msgBuilding = chalk.green.bold("building:");
-      const projInfo = chalk.yellow.bold(`${name} v${ver}`);
+      const projName = chalk.green(name);
+      const projVer = chalk.yellow(`v${ver}`);
 
-      log(`${msgBuilding} ${projInfo}
-`);
+      log(chalk.bold(`building: ${projName} ${projVer}
+`));
 
     }
 
@@ -68,12 +70,11 @@ async function action() {
     Object.assign(callbacks, {
 
       buildEnd(filename, size, duration) {
-        const colorTag = chalk.green.bold.inverse(" built ");
-        const colorFilename = chalk.yellow.bold(relative(cwd, filename));
-        const colorSize = chalk.magenta.bold(fileSize(size));
-        const colorIn = chalk.cyan("in");
-        const colorTime = chalk.magenta.bold(prettyMs(duration, { secondsDecimalDigits: 2 }));
-        log(`${colorTag} ${colorFilename} ( ${colorSize} ${colorIn} ${colorTime} )`);
+        const tag = chalk.bold.bgBlack.green.inverse(" built ");
+        const path = chalk.bold.yellow(slash(relative(cwd, filename)));
+        const colorSize = chalk.bold.magenta(fileSize(size));
+        const colorTime = chalk.bold.magenta(prettyMs(duration, { secondsDecimalDigits: 2 }));
+        log(`${tag} ${path} ( ${colorSize} in ${colorTime} )`);
       },
 
       error(err) {
@@ -88,17 +89,15 @@ async function action() {
 
         start() {
           if (buildIndex) {
-            const msgRebuild = chalk.cyan("rebuilding...");
-            log(`${msgRebuild}
+            log(`rebuilding...
 `);
           }
           buildIndex++;
         },
 
         end() {
-          const msgWait = chalk.cyan("waiting for changes...");
           log(`
-${msgWait}`);
+waiting for changes...`);
         },
 
       } as BuildCallbackObject);

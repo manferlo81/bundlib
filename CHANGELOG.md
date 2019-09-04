@@ -5,6 +5,8 @@
 ***02-SEP-2019***
 
 * dependencies updated
+* console messages refactoring
+* windows detection based on `process.platform`
 
 ## 0.12.2
 
