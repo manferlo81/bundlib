@@ -28,13 +28,14 @@ async function action() {
   let pkg: BundlibPkgJson | undefined;
 
   if (!silent) {
+
     const app = chalk.green(`Bundlib`);
     const msgVersion = chalk.yellow(`v${version}`);
     log(chalk.bold(`${app} ${msgVersion}
 `));
-    const msgReading = chalk.bold("reading package.json...");
-    log(`${msgReading}
-`);
+
+    const filename = chalk.bold.yellow("package.json");
+    log(`reading: ${filename}`);
 
     pkg = await readPkg({
       cwd,
@@ -45,11 +46,11 @@ async function action() {
 
     if (name && ver) {
 
-      const projName = chalk.green(name);
-      const projVer = chalk.yellow(`v${ver}`);
+      const projName = chalk.bold.green(name);
+      const projVer = chalk.bold.yellow(`v${ver}`);
 
-      log(chalk.bold(`building: ${projName} ${projVer}
-`));
+      log(`building: ${projName} ${projVer}
+`);
 
     }
 
