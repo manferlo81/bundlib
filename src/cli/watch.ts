@@ -13,50 +13,42 @@ interface WatchEvent {
 
 function watch(configs: RollupOptions[], callbacks: BuildCallbackObject): void {
 
-  function ERROR(event: WatchEvent) {
-    if (callbacks.error) {
-      callbacks.error(event.error);
-    }
-  }
+  const { start, end, buildStart, buildEnd, error } = callbacks;
 
-  const table: Record<string, (event: WatchEvent) => void> = {
+  const ERROR = error && ((event: WatchEvent) => {
+    error(event.error);
+  });
 
-    START: () => {
-      if (callbacks.start) {
-        callbacks.start();
+  const table: Record<string, ((event: WatchEvent) => void) | null | undefined> = {
+
+    START: start && (() => {
+      start();
+    }),
+
+    END: end && (() => {
+      end();
+    }),
+
+    BUNDLE_START: buildStart && ((event) => {
+      const { output: out } = event;
+      const { length: len } = out;
+      for (let i = 0; i < len; i++) {
+        buildStart(event.input, out[i]);
       }
-    },
+    }),
 
-    END: () => {
-      if (callbacks.end) {
-        callbacks.end();
+    BUNDLE_END: buildEnd && ((event) => {
+      const { output: out } = event;
+      const { length: len } = out;
+      for (let i = 0; i < len; i++) {
+        const stats = statSync(out[i]);
+        buildEnd(
+          out[i],
+          stats.size,
+          event.duration || 0,
+        );
       }
-    },
-
-    BUNDLE_START: (event) => {
-      if (callbacks.buildStart) {
-        const { output: out } = event;
-        const { length: len } = out;
-        for (let i = 0; i < len; i++) {
-          callbacks.buildStart(event.input, out[i]);
-        }
-      }
-    },
-
-    BUNDLE_END: (event) => {
-      if (callbacks.buildEnd) {
-        const { output: out } = event;
-        const { length: len } = out;
-        for (let i = 0; i < len; i++) {
-          const stats = statSync(out[i]);
-          callbacks.buildEnd(
-            out[i],
-            stats.size,
-            event.duration || 0,
-          );
-        }
-      }
-    },
+    }),
 
     ERROR,
     FATAL: ERROR,
@@ -68,10 +60,10 @@ function watch(configs: RollupOptions[], callbacks: BuildCallbackObject): void {
   watcher.on("event", (event: WatchEvent) => {
 
     const { code } = event;
-    const handler = table[code];
+    const handle = table[code];
 
-    if (handler) {
-      handler(event);
+    if (handle) {
+      handle(event);
     }
 
   });
