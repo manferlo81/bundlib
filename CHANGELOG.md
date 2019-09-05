@@ -1,5 +1,11 @@
 # Bundlib Changelog
 
+## 0.12.4
+
+***05-SEP-2019***
+
+* using `async-to-promises` inline helpers
+
 ## 0.12.3
 
 ***04-SEP-2019***

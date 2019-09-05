@@ -202,15 +202,16 @@ async function pkgToConfigs(
         presets: [
           [
             require.resolve("@babel/preset-env"),
-            {
-              loose: true,
-            },
+            { loose: true },
           ],
           require.resolve("@babel/preset-react"),
         ],
         plugins: [
           require.resolve("@babel/plugin-syntax-dynamic-import"),
-          require.resolve("babel-plugin-transform-async-to-promises"),
+          [
+            require.resolve("babel-plugin-transform-async-to-promises"),
+            { inlineHelpers: true },
+          ],
           require.resolve("@babel/plugin-transform-object-assign"),
         ],
       }),
