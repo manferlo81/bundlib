@@ -1,5 +1,5 @@
 import { statSync } from "fs";
-import { rollup } from "rollup";
+import { rollup, RollupCache } from "rollup";
 
 import { BundlibRollupModuleOutputOptions, BundlibRollupOptions } from "../api/types";
 
@@ -15,7 +15,7 @@ function build(
     callbacks.start();
   }
 
-  const cache: Record<string, object | undefined> = {};
+  const cache: Partial<Record<string, RollupCache>> = {};
 
   oneByOne(configs, async (config, next, index) => {
 
