@@ -29,15 +29,15 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v4-deps-bundlib-{{ checksum "package.json" }}
-            - v4-deps-bundlib-
+            - v5-deps-bundlib-{{ checksum "package.json" }}
+            - v5-deps-bundlib-
       - run:
           name: Install dependencies
           command: npm install
       - save_cache:
           paths:
             - node_modules
-          key: v4-deps-bundlib-{{ checksum "package.json" }}
+          key: v5-deps-bundlib-{{ checksum "package.json" }}
       - run:
           name: Test
           command: npm test
