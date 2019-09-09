@@ -21,7 +21,7 @@
     "dev": "ts-node -P ts-node-tsconfig.json src/cli -dw",
     "build": "ts-node -P ts-node-tsconfig.json src/cli -d",
     "test": "jest --color -w 3",
-    "preversion": "npm run clean && npm run lint && npm run build && npm test"
+    "preversion": "npm run clean && npm run lint && npm test && npm run build"
   },
   "keywords": [
     "library",
