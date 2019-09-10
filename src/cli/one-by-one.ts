@@ -1,30 +1,29 @@
 type OneByOneNext = () => void;
-type OneByOneCallback<T> = (item: T, next: OneByOneNext, index: number) => void;
+type OneByOneCallback<T> = (item: T, next: OneByOneNext | null) => void;
 
-function createNext<T>(arr: ArrayLike<T>, callback: OneByOneCallback<T>): OneByOneNext {
+function oneByOne<T>(arr: ArrayLike<T>, callback: OneByOneCallback<T>): void {
 
   let index = 0;
+  const len = arr.length;
+  const last = len - 1;
 
   const next: OneByOneNext = () => {
 
-    if (!(index in arr)) {
+    if (index > last) {
       return;
     }
 
-    const currentIndex = index++;
-    const item = arr[currentIndex];
+    callback(
+      arr[index],
+      (index < last) ? next : null,
+    );
 
-    callback(item, next, currentIndex);
+    index++;
 
   };
 
-  return next;
-
-}
-
-function oneByOne<T>(arr: ArrayLike<T>, callback: OneByOneCallback<T>): void {
-  const next = createNext(arr, callback);
   next();
+
 }
 
 export default oneByOne;

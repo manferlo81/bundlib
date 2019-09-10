@@ -17,7 +17,7 @@ function build(
 
   const cache: Partial<Record<string, RollupCache>> = {};
 
-  oneByOne(configs, async (config, next, index) => {
+  oneByOne(configs, async (config, next) => {
 
     const { input, output } = config;
     const { file: outputFile, format } = output;
@@ -57,13 +57,13 @@ function build(
 
     }
 
-    if (index + 1 >= configs.length) {
-      if (callbacks.end) {
-        callbacks.end();
-      }
+    if (next) {
+      return next();
     }
 
-    next();
+    if (callbacks.end) {
+      callbacks.end();
+    }
 
   });
 
