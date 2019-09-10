@@ -11,7 +11,16 @@ import bundlib from "./bundlib";
 import { log, logError } from "./console";
 import { BuildCallbackObject, BundlibOptions } from "./types";
 
-export async function action(version: string, silent: boolean, options: BundlibOptions) {
+function prjInfo(name: string, ver: string) {
+
+  const projName = chalk.bold.green(name);
+  const projVer = chalk.bold.yellow(`v${ver}`);
+
+  return `${projName} ${projVer}`;
+
+}
+
+export async function action(displayName: string, version: string, silent: boolean, options: BundlibOptions) {
 
   if (!chalk.level && !chalk.enabled && process.platform === "win32" && process.env.MINGW_CHOST) {
     chalk.level = 3;
@@ -24,10 +33,9 @@ export async function action(version: string, silent: boolean, options: BundlibO
 
   if (!silent) {
 
-    const app = chalk.green(`Bundlib`);
-    const msgVersion = chalk.yellow(`v${version}`);
-    log(chalk.bold(`${app} ${msgVersion}
-`));
+    const appInfo = prjInfo(displayName, version);
+    log(`${appInfo}
+`);
 
     const filename = chalk.bold.yellow("package.json");
     log(`reading: ${filename}`);
@@ -37,14 +45,13 @@ export async function action(version: string, silent: boolean, options: BundlibO
       normalize: false,
     });
 
-    const { name, version: ver } = pkg;
+    const { name: prjName, displayName: prjDispName, version: prjVer } = pkg;
+    const prjInfoName = prjDispName as (string | undefined) || prjName;
 
-    if (name && ver) {
+    if (prjInfoName && prjVer) {
 
-      const projName = chalk.bold.green(name);
-      const projVer = chalk.bold.yellow(`v${ver}`);
-
-      log(`building: ${projName} ${projVer}
+      const info = prjInfo(prjInfoName, prjVer);
+      log(`building: ${info}
 `);
 
     }

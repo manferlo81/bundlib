@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import program from "commander";
-import { version } from "../../package.json";
+import { displayName, version } from "../../package.json";
 
 import { action } from "./action";
 
@@ -20,7 +20,7 @@ program
   .option("-s, --silent", "prevent messages from showing in the console")
   .action(() => {
     const { dev, watch, silent } = program;
-    action(version, silent, {
+    action(displayName, version, silent, {
       dev,
       watch,
     });

@@ -6,6 +6,7 @@
 
 * dependencies updated
 * improved documentation
+* use `displayName` from `package.json`
 
 ## 0.12.4
 
