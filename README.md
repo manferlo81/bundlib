@@ -26,29 +26,29 @@ npm i -D bundlib
 
 ## First steps
 
-*Bundlib will use* `src/index.ts` *as entry file for your library by default, it can be configured using* [`input`](#input) *option. Add the corresponding scripts to your* `package.json` *and run them. [see below for CLI options](#cli).*
+Bundlib will use `src/index.ts` as entry file for your library by default, it can be configured using the [`input`](#input) option. Add the corresponding scripts to your `package.json` and run them. [see below for CLI options](#cli).
 
 ## Build
 
 ### CommonJS module
 
-*Building a* `CommonJS Module` *is as simple as adding a* `"main"` *field to your* `package.json` *pointing to the output file, and* `bundlib` *will build it for you. [see the configuration section](#configuration) for extra options.*
+Building a `CommonJS Module` is as simple as adding a `"main"` field to your `package.json` pointing to the output file, and `bundlib` will build it for you. [see the configuration section](#configuration) for extra options.
 
 ### ES module
 
-*To build a* `ES Module` *simply add a* `"module"` *field to your* `package.json` *pointing to the output file. [see the configuration section](#configuration) for extra options.*
+To build a `ES Module` simply add a `"module"` field to your `package.json` pointing to the output file. [see the configuration section](#configuration) for extra options.
 
 ### IIFE, AMD and UMD build
 
-*For* `IIFE`*,* `AMD` *or* `UMD` *builds, add a* `"browser"` *field to your* `package.json`*. the default format is* `"umd"` *but it can be changed to* `"iife"` *or* `"amd"` *using the* [`format`](#format) *or* [`browser`](#browser) *option, see the [configuration section](#configuration) for more info.*
+For `IIFE`, `AMD` or `UMD` builds, add a `"browser"` field to your `package.json`. The default format is `"umd"` but it can be changed to `"iife"` or `"amd"` using the [`format`](#format) or [`browser`](#browser) option, see the [configuration section](#configuration) for more info.
 
 ## Configuration
 
-*Configuration is done through the* `"bundlib"` *field in* `package.json`*. See the [list of options](#options) below.*
+Configuration is done through the `"bundlib"` field in your `package.json`. See the [list of options](#options) below.
 
 ***example***
 
-```javascript
+```json
 // package.json
 {
   "version": "1.0.0",
@@ -64,7 +64,7 @@ npm i -D bundlib
 
 ### Options
 
-*The* `"bundlib"` *field in* `package.json` *may contain any of the following properties. Any invalid or unknown option will cause* `Bundlib` *to throw at build time. Any option or sub-option set to* `null` *will be ignored.*
+The `"bundlib"` field in `package.json` may contain any of the following properties. Any invalid or unknown option will cause `Bundlib` to throw at build time. Any option or sub-option set to `null` will be ignored.
 
 #### input
 
@@ -82,7 +82,7 @@ default {
 };
 ```
 
-*The path to the file(s) to be used as entry point for modules and binary. If a* `string` *is provided, it will be used as api entry point and binary entry point will be set to default value.*
+The path to the file(s) to be used as entry point(s) for modules and binary. If a `string` is provided, it will be used as `API` entry point and `Binary` entry point will be set to the default value.
 
 #### sourcemap
 
@@ -92,9 +92,9 @@ sourcemap: boolean | "inline";
 default true;
 ```
 
-*Whether or not to generate source maps. Anything other than* `false` *or* `"inline"` *will default to* `true`*.*
+Whether or not to generate source maps. Anything other than `false` or `"inline"` will default to `true`.
 
-*This option can be overridden using* `per-build` *options. See* [`main`](#main)*,* [`module`](#module)*,* [`browser`](#browser) *and* [`bin`](#bin) *options.*
+This option can be overridden using `per-build` options. See [`main`](#main), [`module`](#module), [`browser`](#browser) and [`bin`](#bin) options.
 
 #### esModule
 
@@ -106,9 +106,9 @@ type BuildType = "main" | "browser" | "min";
 default false;
 ```
 
-*Whether or not to add a* `__esModule: true` *property to your non-es-module build. If* `esModule = true` *it will affect all builds.*
+Whether or not to add a `__esModule: true` property to your `non ES Module` build. If `esModule = true` it will affect all supported builds.
 
-*This option can be overridden using* `per-build` *options. See* [`main`](#main)*,* [`browser`](#browser) *&* [`bin`](#bin) *options.*
+This option can be overridden using `per-build` options. See [`main`](#main), [`browser`](#browser) and [`bin`](#bin) options.
 
 #### interop
 
@@ -120,9 +120,9 @@ type BuildType = "main" | "browser" | "min";
 default false;
 ```
 
-*Whether or not to add an interop block. If* `interop = true` *it will affect all builds.*
+Whether or not to add an interop block. If `interop = true` it will affect all supported builds.
 
-*This option can be overridden using* `per-build` *options. See* [`main`](#main)*,* [`browser`](#browser) *&* [`bin`](#bin) *options.*
+This option can be overridden using `per-build` options. See [`main`](#main), [`browser`](#browser) and [`bin`](#bin) options.
 
 #### format
 
@@ -132,9 +132,9 @@ format: "iife" | "amd" | "umd";
 default "umd";
 ```
 
-*Defines the format to be used for the* `browser` *build.*
+Defines the format to be used for the `Browser` build.
 
-*This option can be overridden using the* [`browser`](#browser) *option.*
+This option can be overridden using the [`browser`](#browser) option.
 
 #### name
 
@@ -142,9 +142,9 @@ default "umd";
 name: string;
 ```
 
-*The name to be used to expose your library to the global scope in a* `IIFE` or `UMD` *browser build. If not provided it will default to the camelcased, unscoped* `"name"` *field in* `package.json` *or the camelcased directory name. If none of those can be obtained, it will throw at build time.*
+The name to be used to expose your library to the global scope in a `IIFE` or `UMD` browser build. If not provided it will default to the camelcased, unscoped `"name"` field in `package.json` or the camelcased directory name. If none of those can be obtained, it will throw at build time.
 
-*This option can be overridden using the* [`browser`](#browser) *option.*
+This option can be overridden using the [`browser`](#browser) option.
 
 #### id
 
@@ -152,11 +152,11 @@ name: string;
 id: string;
 ```
 
-*Optional amd id for* `AMD` *or* `UMD` *build.*
+Optional amd id for `AMD` or `UMD` build.
 
-*This option can be overridden using the* [`browser`](#browser) *option.*
+This option can be overridden using the [`browser`](#browser) option.
 
-*If not present,* `AMD` *module will be defined with no id.*
+If not present, `AMD` module will be defined with no id.
 
 #### extend
 
@@ -166,9 +166,9 @@ extend: boolean;
 default false;
 ```
 
-*Whether or not to extend the globally exposed name on a* `IIFE`, `UMD` *build.*
+Whether or not to extend the globally exposed name on a `IIFE` or `UMD` build.
 
-*This option can be overridden using the* [`browser`](#browser) *option.*
+This option can be overridden using the [`browser`](#browser) option.
 
 #### globals
 
@@ -178,9 +178,9 @@ globals: { [name: string]: string } | string[];
 default {};
 ```
 
-*Object or array to map names to globals in browser builds.*
+Object or array to map names to globals in `Browser` build.
 
-*This option can be overridden using the* [`browser`](#browser) *option.*
+This option can be overridden using the [`browser`](#browser) option.
 
 #### equals
 
@@ -190,9 +190,9 @@ equals: boolean;
 default false;
 ```
 
-*Transforms type export for CommonJS module using* `export = ...` *instead of* `export default ...`*.*
+Transforms type export for CommonJS module using `export = ...` instead of `export default ...`.
 
-*This option can be overridden using the* [`types`](#types) *option.*
+This option can be overridden using the [`types`](#types) option.
 
 > :warning: *Note that this option should only be used when your library has a* `default` *export and no* `named` *exports, otherwise it may cause the type declarations to become invalid.*
 
@@ -206,9 +206,9 @@ type BuildType = "main" | "module" | "browser" | "min";
 default false;
 ```
 
-*Defines which files should be used to build an aditional minified version, if* `true` *will affect all modules. The minified file will be renamed from* `*.ext` to `*.min.ext`*. This option will override the default behavior of the* [`--dev`, `-d` *cli option*](#-dev-d) *, which means only the minified version will be actually minified, the normal version will **NOT** be minified even if you don't set the* [`--dev`, `-d` *cli option*](#-dev-d)*.*
+Defines which files should be used to build an aditional minified version, if `true` will affect all modules. The minified file will be renamed from `*.ext` to `*.min.ext`. This option will override the default behavior of the [`--dev`, `-d` *cli option*](#-dev-d) , which means only the minified version will be actually minified, the normal version will **NOT** be minified even if you don't set the [`--dev`, `-d` cli option](#-dev-d).
 
-*This option can be overridden using* `per-build` *options. See* [`main`](#main)*,* [`module`](#module)*,* [`browser`](#browser) *&* [`bin`](#bin) *options.*
+This option can be overridden using `per-build` options. See [`main`](#main), [`module`](#module), [`browser`](#browser) and [`bin`](#bin) options.
 
 #### cache
 
@@ -218,7 +218,7 @@ cache: string;
 default "node_modules/.cache/bundlib"
 ```
 
-*Defines the directory to be used for cache, relative to the project root.*
+Defines the directory to be used for cache, relative to the project root.
 
 #### main
 
@@ -233,9 +233,9 @@ interface CommonJSOptions {
 }
 ```
 
-*Specific options to be used in* `CommonJS` *build. They will override any corresponding option set in the top-level options. See* [`sourcemap`](#sourcemap)*,* [`esModule`](#esmodule)*,* [`interop`](#interop) *&* [`min`](#min) *options.*
+Specific options to be used in the `CommonJS` build. They will override any corresponding option set in the top-level options. See [`sourcemap`](#sourcemap), [`esModule`](#esmodule), [`interop`](#interop) and [`min`](#min) options.
 
-*If it's set to* `false`*, it will prevent* `CommonJS` *build altogether, even if there is a* `main` *field in* `package.json`*.*
+If it's set to `false`, it will prevent `CommonJS` build altogether, even if there is a `"main"` field in `package.json`.
 
 #### module
 
@@ -248,9 +248,9 @@ interface ESModuleOptions {
 }
 ```
 
-*Specific options to be used in* `ESModule` *build. They will override any corresponding option set in the top-level options. See* [`sourcemap`](#sourcemap) *&* [`min`](#min) *options.*
+Specific options to be used in the `ES Module` build. They will override any corresponding option set in the top-level options. See [`sourcemap`](#sourcemap) and [`min`](#min) options.
 
-*If it's set to* `false`*, it will prevent* `ESModule` *build altogether, even if there is a* `module` *or* `jsnext:main` *field in* `package.json`*.*
+If it's set to `false`, it will prevent `ES Module` build altogether, even if there is a `"module"` or `"jsnext:main"` field in `package.json`.
 
 #### browser
 
@@ -270,9 +270,9 @@ interface BrowserOptions {
 }
 ```
 
-*Specific options to be used in* `Browser` *build. They will override any corresponding option set in the top-level options. See* [`sourcemap`](#sourcemap)*,* [`esModule`](#esmodule)*,* [`interop`](#interop)*,* [`min`](#min)*,* [`format`](#format)*,* [`name`](#name)*,* [`id`](#id)*,* [`extend`](#extend) *&* [`globals`](#globals) *options.*
+Specific options to be used in the `Browser` build. They will override any corresponding option set in the top-level options. See [`sourcemap`](#sourcemap), [`esModule`](#esmodule), [`interop`](#interop), [`min`](#min), [`format`](#format), [`name`](#name), [`id`](#id), [`extend`](#extend) and [`globals`](#globals) options.
 
-*If it's set to* `false`*, it will prevent* `Browser` *build altogether, even if there is a* `browser` *field in* `package.json`*.*
+If it's set to* `false`, it will prevent `Browser` build altogether, even if there is a `"browser"` field in `package.json`.
 
 #### bin
 
@@ -287,9 +287,9 @@ interface CommonJSOptions {
 }
 ```
 
-*Specific options to be used in* `Binary` *build. They will override any corresponding option set in the top-level options. See* [`sourcemap`](#sourcemap)*,* [`esModule`](#esmodule)*,* [`interop`](#interop) *&* [`min`](#min) *options.*
+Specific options to be used in `Binary` build. They will override any corresponding option set in the top-level options. See [`sourcemap`](#sourcemap), [`esModule`](#esmodule), [`interop`](#interop) and [`min`](#min) options.
 
-*If it's set to* `false`*, it will prevent* `Binary` *build altogether, even if there is a* `bin` *field in* `package.json`*.*
+If it's set to `false`, it will prevent `Binary` build altogether, even if there is a `"bin"` field in `package.json`.
 
 > :warning: *This option was used to set entry point for* `Binary` *build. For compatibility reasons it still works if you set this option as* `string`*. This behavior will be removed in the future and therefore should not be used. Use* [`input`](#input) *option instead.*
 
@@ -303,9 +303,9 @@ interface TypesOptions {
 }
 ```
 
-*Specific options to be used for types generation. They will override any corresponding option set in the top-level options. See* [`equals`](#equals) *option.*
+Specific options to be used for types generation. They will override any corresponding option set in the top-level options. See [`equals`](#equals) option.
 
-*If it's set to* `false`*, it will prevent type declarations generation altogether, even if there is a* `types` *or* `typings` *field in* `package.json`*.*
+If it's set to `false`, it will prevent type declarations generation altogether, even if there is a `"types"` or `"typings"` field in `package.json`.
 
 ## CLI
 
@@ -315,27 +315,27 @@ bundlib [options]
 
 ### CLI Options
 
-*Combine options according to your needs. Run* `bundlib -h` *for a detailed help.*
+Combine options according to your needs. Run `bundlib --help` or `bundlib -h` for a detailed help.
 
 #### `--dev`, `-d`
 
-*Create development, not minified builds. Builds affected by the* [`min`](#min) *option will ignore this option.*
+Create development, not minified builds. Builds affected by the [`min`](#min) option will ignore this option.
 
 #### `--watch`, `-w`
 
-*Run* `bundlib` *in watch mode.*
+Run `bundlib` in watch mode.
 
 #### `--silent`, `-s`
 
-*Prevent messages from showing in the console.*
+Prevent messages from showing in the console.
 
 #### `--version`, `-v`
 
-*Show* `bundlib` *version.*
+Show `bundlib` version.
 
 #### `--help`, `-h`
 
-*Show detailed help about the cli tool.*
+Show detailed help about the CLI tool.
 
 ## API
 
@@ -363,9 +363,7 @@ function analizePkg(
 ): Promise<PkgAnalized>;
 ```
 
-*Analizes* `package.json` *and returns a* `Promise` *that resolves to useful normalized information,* [*see* `PkgAnalized`](#pkganalized)*. If* `pkg` *not provided it will be read from the current working directory* `cwd`*.*
-
-> :warning: *The return of this function changed drastically from* `v0.9.x` *to* `v0.10.x`*. This only affects you if you are using this method, if you are using* `configsFromPkg` *or the cli, you are safe to update.*
+Analizes `package.json` and returns a `Promise` that resolves to useful normalized information, [*see* `PkgAnalized`](#pkganalized). If `pkg` not provided it will be read from the current working directory `cwd`.
 
 ### configsFromPkg
 
@@ -377,7 +375,7 @@ function configsFromPkg(
 ): Promise<RollupOptions[]>;
 ```
 
-*Returns a* `Promise` *that resolves to an array of Rollup configs based on the content of* `package.json`*. If* `pkg` *not provided it will be read from the current working directory* `cwd`*.*
+Returns a `Promise` that resolves to an array of Rollup configs based on the content of `package.json`. If `pkg` not provided it will be read from the current working directory `cwd`.
 
 ## Types
 
@@ -463,22 +461,22 @@ interface TypesBuildOptions {
 
 ## Features
 
-* *Creates a* `CommonJS` *Module based on the* `"main"` *field in* `package.json`
-* *Creates an* `ES Module` *based on the* `"module"` *or* `"jsnext:main"` *field in* `package.json`
-* *Creates an* `Browser` *build based on the* `"browser"` *field in* `package.json` *(only if* `"browser"` *field value is a* `string`*)*
-* *Creates an CLI* `Binary` *build based on the* `"bin"` *field in* `package.json` *(only if* `"bin"` *field value is a* `string`*)*
-* *Exports type declarations based on the* `"types"` *or* `"typings"` *field in your* `package.json`
-* *Skip any build based on options*
-* *Sets* `"dependencies"`*,* `"peerDependencies"` *and `"optionalDependencies"` *as external for* `CommonJS`*,* `ES Module` *and* `Bynary` *modules*
-* *Uses the user copy of* `typescript` *if installed*
-* *Uses* `chokidar` *if installed*
-* *Importing an internal file from a package* `Ex: lodash/core` *will be treated as external if* `lodash` *is included in your* `"dependencies"`*,* `peerDependencies` *or* `optionalDependencies`
-* *Transforms* `async/await` *using* [`Babel`](https://babeljs.io) *and* [`babel-plugin-transform-async-to-promises`](https://github.com/rpetrich/babel-plugin-transform-async-to-promises) *for ES5 support*
-* *Dynamic Import support through* [`@babel/plugin-syntax-dynamic-import`](https://babeljs.io/docs/en/babel-plugin-syntax-dynamic-import)
-* *Tranforms* `Object.assign` *using* [`@babel/plugin-transform-object-assign`](https://babeljs.io/docs/en/babel-plugin-transform-object-assign)
-* `React JSX` *support through* [`@babel/preset-react`](https://babeljs.io/docs/en/next/babel-preset-react)
+* Creates a `CommonJS Module` build based on the `"main"` field in your `package.json`
+* Creates an `ES Module` build based on the `"module"` or `"jsnext:main"` field in your `package.json`
+* Creates a `Browser` build based on the `"browser"` field in your `package.json`
+* Creates an CLI `Binary` build based on the `"bin"` field in your `package.json`
+* Exports type declarations based on the `"types"` or `"typings"` field in your `package.json`
+* Skip any build based on options
+* Sets `"dependencies"`, `"peerDependencies"` and `"optionalDependencies"` as external for `CommonJS Module`, `ES Module` and `Binary` builds
+* Uses the user copy of `typescript` if installed
+* Uses `chokidar` if installed
+* Importing an internal file from a package `Ex: lodash/core` will be treated as external if `lodash` is included in your `"dependencies"`, `peerDependencies` or `optionalDependencies`
+* Transforms `async/await` using [`Babel`](https://babeljs.io) and [`babel-plugin-transform-async-to-promises`](https://github.com/rpetrich/babel-plugin-transform-async-to-promises) for ES5 support
+* Dynamic Import support through [`@babel/plugin-syntax-dynamic-import`](https://babeljs.io/docs/en/babel-plugin-syntax-dynamic-import)
+* Tranforms `Object.assign` using [`@babel/plugin-transform-object-assign`](https://babeljs.io/docs/en/babel-plugin-transform-object-assign)
+* `React JSX` support through [`@babel/preset-react`](https://babeljs.io/docs/en/next/babel-preset-react)
 * Uses [`@babel/preset-env`](https://babeljs.io/docs/en/next/babel-preset-env)
-* *Minifies build using* [`Terser`](https://github.com/terser-js/terser)
+* Minifies build using [`Terser`](https://github.com/terser-js/terser)
 
 ## License
 

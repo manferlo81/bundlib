@@ -2,9 +2,10 @@
 
 ## 0.12.5
 
-***09-SEP-2019***
+***10-SEP-2019***
 
 * dependencies updated
+* improved documentation
 
 ## 0.12.4
 
