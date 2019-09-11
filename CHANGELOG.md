@@ -1,5 +1,11 @@
 # Bundlib Changelog
 
+## 0.12.6
+
+***11-SEP-2019***
+
+* dependencies updated
+
 ## 0.12.5
 
 ***10-SEP-2019***
