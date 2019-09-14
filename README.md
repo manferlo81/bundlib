@@ -4,7 +4,7 @@
 
 An automatic javascript library bundler using [Rollup.js](https://github.com/rollup/rollup) and optionally [Typescript](https://github.com/Microsoft/TypeScript).
 
-> :warning: Bundlib under active development, please [file a new issue](https://github.com/manferlo81/bundlib/issues) if you find any issue/bug, suggestions are welcome as well.
+> :warning: Bundlib is under active development, please [file a new issue](https://github.com/manferlo81/bundlib/issues) if you find any issue or bug, suggestions are welcome as well.
 
 ## In this guide
 
