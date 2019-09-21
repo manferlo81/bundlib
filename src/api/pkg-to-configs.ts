@@ -58,6 +58,8 @@ async function pkgToConfigs(
     optional: optionalDeps,
   } = dependencies;
 
+  // throw if "name" option required and not present
+
   if (
     browserOutput &&
     (browserOutput.format === "iife" || browserOutput.format === "umd") &&
@@ -71,6 +73,9 @@ async function pkgToConfigs(
 
   const isTypescriptAPIInput = extensionMatch(apiInput, typescriptOnlyExtensions);
   const isTypescriptBinaryInput = extensionMatch(binInput, typescriptOnlyExtensions);
+
+  // throw if trying to generate type definitions from javascript input
+  // TODO: show warning intead of throwing
 
   if (
     typesOutput &&
@@ -102,13 +107,22 @@ async function pkgToConfigs(
     typesOutputDir = dirname(typesOutputDir);
   }
 
+  // set external modules
+
   const external = union(runtimeDeps, peerDeps, optionalDeps, builtinModules);
 
+  // get installed dependencies from package.json
+
   const installedDeps = union(runtimeDeps, keysOrNull(pkg.devDependencies));
+
+  // determine whetehr to use "built-in" typescript module
 
   const useUserTypescript = (
     isTypescriptAPIInput || isTypescriptBinaryInput
   ) && installedDeps.indexOf("typescript") >= 0;
+
+  // determine whether or not to use chokidar
+
   const useChokidar = !!watch && installedDeps.indexOf("chokidar") >= 0;
 
   let typescript = useUserTypescript
@@ -160,9 +174,9 @@ async function pkgToConfigs(
       }),
 
       inputIsTypescript && typescript2({
-        typescript: typescript = typescript || require(require.resolve("typescript", {
+        typescript: typescript || (typescript = require(require.resolve("typescript", {
           paths: [cwd],
-        })),
+        }))),
         include: tsInclude,
         cacheRoot,
         useTsconfigDeclarationDir: true,
