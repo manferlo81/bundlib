@@ -1,4 +1,4 @@
-import chalk from "chalk";
+import { bgBlack, bold, green, inverse, magenta, yellow } from "colorette";
 import fileSize from "filesize";
 import { relative } from "path";
 import prettyMs from "pretty-ms";
@@ -13,19 +13,14 @@ import { BuildCallbackObject, BundlibOptions } from "./types";
 
 function prjInfo(name: string, ver: string) {
 
-  const projName = chalk.bold.green(name);
-  const projVer = chalk.bold.yellow(`v${ver}`);
+  const projName = bold(green(name));
+  const projVer = bold(yellow(`v${ver}`));
 
   return `${projName} ${projVer}`;
 
 }
 
 export async function action(displayName: string, version: string, silent: boolean, options: BundlibOptions) {
-
-  if (!chalk.level && !chalk.enabled && process.platform === "win32" && process.env.MINGW_CHOST) {
-    chalk.level = 3;
-    chalk.enabled = true;
-  }
 
   const cwd = process.cwd();
 
@@ -37,7 +32,7 @@ export async function action(displayName: string, version: string, silent: boole
     log(`${appInfo}
 `);
 
-    const filename = chalk.bold.yellow("package.json");
+    const filename = bold(yellow("package.json"));
     log(`reading: ${filename}`);
 
     pkg = await readPkg({
@@ -73,10 +68,10 @@ export async function action(displayName: string, version: string, silent: boole
     Object.assign(callbacks, {
 
       buildEnd(filename, size, duration) {
-        const tag = chalk.bold.bgBlack.green.inverse(" built ");
-        const path = chalk.bold.yellow(slash(relative(cwd, filename)));
-        const colorSize = chalk.bold.magenta(fileSize(size));
-        const colorTime = chalk.bold.magenta(prettyMs(duration, { secondsDecimalDigits: 2 }));
+        const tag = bold(bgBlack(green(inverse(" built "))));
+        const path = bold(yellow(slash(relative(cwd, filename))));
+        const colorSize = bold(magenta(fileSize(size)));
+        const colorTime = bold(magenta(prettyMs(duration, { secondsDecimalDigits: 2 })));
         log(`${tag} ${path} ( ${colorSize} in ${colorTime} )`);
       },
 
@@ -95,12 +90,12 @@ export async function action(displayName: string, version: string, silent: boole
           message = msg;
 
           if (plugin) {
-            message = `(plugin ${chalk.bold.magenta(plugin)}) ${message}`;
+            message = `(plugin ${bold(magenta(plugin))}) ${message}`;
           }
 
         }
 
-        const tag = chalk.bold.magenta("warning:");
+        const tag = bold(magenta("warning:"));
 
         log(`${tag} ${message}`);
 

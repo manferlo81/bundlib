@@ -1,9 +1,9 @@
-import chalk from "chalk";
+import { bgWhite, bold, cyan, inverse, red } from "colorette";
 
 function create(name: Extract<keyof typeof console, "log" | "error">) {
   const method = console[name];
   return (msg: any) => (
-    method(chalk.cyan(msg))
+    method(cyan(msg))
   );
 }
 
@@ -14,6 +14,6 @@ export function logError(err: Error) {
   if (err.stack) {
     error(err.stack);
   }
-  const tag = chalk.bold.bgWhite.red.inverse(" error ");
+  const tag = bold(bgWhite(red(inverse(" error "))));
   error(`${tag} ${err.message || err}`);
 }

@@ -15,7 +15,7 @@
       "*": [
         "declarations/*"
       ]
-    },
+    }
   },
   "exclude": [
     "types"

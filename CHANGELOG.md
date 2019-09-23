@@ -2,9 +2,10 @@
 
 ## 0.12.6
 
-***21-SEP-2019***
+***23-SEP-2019***
 
 * dependencies updated
+* switched from `chalk` to `colorette`
 
 ## 0.12.5
 
