@@ -1,8 +1,8 @@
 # Bundlib
 
-[![CircleCI](https://circleci.com/gh/manferlo81/bundlib.svg?style=svg)](https://circleci.com/gh/manferlo81/bundlib) [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=manferlo81/bundlib)](https://dependabot.com) [![npm](https://badgen.net/npm/v/bundlib)](https://www.npmjs.com/package/bundlib) [![codecov](https://codecov.io/gh/manferlo81/bundlib/branch/master/graph/badge.svg)](https://codecov.io/gh/manferlo81/bundlib) [![dependencies](https://badgen.net/david/dep/manferlo81/bundlib)](https://david-dm.org/manferlo81/bundlib) [![dev dependencies](https://badgen.net/david/dev/manferlo81/bundlib)](https://david-dm.org/manferlo81/bundlib?type=dev) [![install size](https://packagephobia.now.sh/badge?p=bundlib)](https://packagephobia.now.sh/result?p=bundlib) [![Known Vulnerabilities](https://snyk.io/test/github/manferlo81/bundlib/badge.svg?targetFile=package.json)](https://snyk.io/test/github/manferlo81/bundlib?targetFile=package.json) [![license](https://badgen.net/npm/license/bundlib)](LICENSE)
+[![CircleCI](https://circleci.com/gh/manferlo81/bundlib.svg?style=svg)](https://circleci.com/gh/manferlo81/bundlib) [![dependabot](https://api.dependabot.com/badges/status?host=github&repo=manferlo81/bundlib)](https://dependabot.com) [![npm](https://badgen.net/npm/v/bundlib)](https://www.npmjs.com/package/bundlib) [![codecov](https://codecov.io/gh/manferlo81/bundlib/branch/master/graph/badge.svg)](https://codecov.io/gh/manferlo81/bundlib) [![dependencies](https://badgen.net/david/dep/manferlo81/bundlib)](https://david-dm.org/manferlo81/bundlib) [![dev dependencies](https://badgen.net/david/dev/manferlo81/bundlib)](https://david-dm.org/manferlo81/bundlib?type=dev) [![packagephobia](https://badgen.net/packagephobia/install/bundlib)](https://packagephobia.now.sh/result?p=bundlib) [![types](https://img.shields.io/npm/types/bundlib.svg)](https://github.com/microsoft/typescript) [![Known Vulnerabilities](https://snyk.io/test/github/manferlo81/bundlib/badge.svg?targetFile=package.json)](https://snyk.io/test/github/manferlo81/bundlib?targetFile=package.json) [![license](https://badgen.net/github/license/manferlo81/bundlib)](LICENSE)
 
-An automatic javascript library bundler using [Rollup.js](https://github.com/rollup/rollup) and optionally [Typescript](https://github.com/Microsoft/TypeScript).
+A javascript library bundler powered by [Rollup.js](https://github.com/rollup/rollup) and optionally [Typescript](https://github.com/Microsoft/TypeScript).
 
 > :warning: Bundlib is under active development, please [file a new issue](https://github.com/manferlo81/bundlib/issues) if you find any issue or bug, suggestions are welcome as well.
 
@@ -473,7 +473,7 @@ interface TypesBuildOptions {
 * Importing an internal file from a package `Ex: lodash/core` will be treated as external if `lodash` is included in your `"dependencies"`, `peerDependencies` or `optionalDependencies`
 * Transforms `async/await` using [`Babel`](https://babeljs.io) and [`babel-plugin-transform-async-to-promises`](https://github.com/rpetrich/babel-plugin-transform-async-to-promises) for ES5 support
 * Dynamic Import support through [`@babel/plugin-syntax-dynamic-import`](https://babeljs.io/docs/en/babel-plugin-syntax-dynamic-import)
-* Tranforms `Object.assign` using [`@babel/plugin-transform-object-assign`](https://babeljs.io/docs/en/babel-plugin-transform-object-assign)
+* Transforms `Object.assign` using [`@babel/plugin-transform-object-assign`](https://babeljs.io/docs/en/babel-plugin-transform-object-assign)
 * `React JSX` support through [`@babel/preset-react`](https://babeljs.io/docs/en/next/babel-preset-react)
 * Uses [`@babel/preset-env`](https://babeljs.io/docs/en/next/babel-preset-env)
 * Minifies build using [`Terser`](https://github.com/terser-js/terser)
