@@ -67,7 +67,7 @@
     "@types/mock-fs": "^3.6.30",
     "@types/node": "^12.7.8",
     "@types/rollup-plugin-json": "^3.0.2",
-    "eslint": "^6.4.0",
+    "eslint": "^6.5.0",
     "husky": "^3.0.7",
     "jest": "^24.8.0",
     "mock-fs": "^4.10.1",
