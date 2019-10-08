@@ -43,7 +43,7 @@
     "chokidar": "^3.2.1",
     "colorette": "^1.1.0",
     "commander": "^3.0.2",
-    "filesize": "^5.0.1",
+    "filesize": "^5.0.2",
     "lodash": "^4.17.15",
     "pretty-ms": "^5.0.0",
     "read-pkg": "^5.2.0",
