@@ -14,9 +14,8 @@ describe("name option", () => {
 
     expect.assertions(invalidNameOptions.length);
 
-    invalidNameOptions.forEach((name) => {
+    invalidNameOptions.forEach((name: any) => {
       expect(
-        // @ts-ignore
         analize(cwd, {
           bundlib: { name },
         }),

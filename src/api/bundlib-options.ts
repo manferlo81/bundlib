@@ -1,6 +1,5 @@
-import { MinOption } from "./option-min";
-import { ModuleOption } from "./option-module";
-import { BrowserBuildFormat, Nullable, RollupSourcemap } from "./types";
+import { Nullable } from "./helper-types";
+import { BrowserBuildFormat, RollupSourcemap } from "./types";
 
 export type GlobalsOptions = Nullable<Record<string, string> | string[]>;
 
@@ -21,6 +20,12 @@ export interface InputOptions {
   api?: Nullable<string>;
   bin?: Nullable<string>;
 }
+
+export type ModuleString = "main" | "browser" | "bin";
+export type ModuleOption = Nullable<ModuleString | ModuleString[] | boolean>;
+
+export type MinString = "main" | "module" | "browser" | "bin";
+export type MinOption = Nullable<MinString | MinString[] | boolean>;
 
 export interface TypesOptions {
   equals?: Nullable<boolean>;

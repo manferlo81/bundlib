@@ -14,9 +14,8 @@ describe("id option", () => {
 
     expect.assertions(invalidIdOptions.length);
 
-    invalidIdOptions.forEach((id) => {
+    invalidIdOptions.forEach((id: any) => {
       expect(
-        // @ts-ignore
         analize(cwd, {
           bundlib: { id },
         }),

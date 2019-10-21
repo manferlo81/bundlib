@@ -1,6 +1,7 @@
 import { SourceMapOptions } from "./bundlib-options";
+import { Nullable } from "./helper-types";
 import { isNull } from "./type-check";
-import { Nullable, RollupSourcemap } from "./types";
+import { RollupSourcemap } from "./types";
 
 export function normalizeSourcemap(sourcemap: any): RollupSourcemap {
   return sourcemap === "inline" ? "inline" : (sourcemap !== false);

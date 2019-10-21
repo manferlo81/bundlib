@@ -6,13 +6,7 @@ import { BundlibOptions } from "./bundlib-options";
 import { error, invalidOption, invalidPkgField } from "./errors";
 import { keys } from "./helpers";
 import keysOrNull from "./keys-or-null";
-import { normalizeBuildFlag } from "./option-flag";
-import { isBrowserFormat } from "./option-format";
-import { isValidGlobals, normalizeBuildGlobals, normalizeGlobals } from "./option-globals";
-import { isValidMinOption, normalizeBuildMin, normalizeMinOption } from "./option-min";
-import { isModuleOption, normalizeBuildModule, normalizeModuleOption } from "./option-module";
-import normalizeBuildName from "./option-name";
-import { normalizeBuildSourcemap, normalizeSourcemap } from "./options-sourcemap";
+
 import { BundlibPkgJson } from "./pkg";
 import {
   BrowserBuildOptions,
@@ -26,6 +20,19 @@ import {
 } from "./pkg-analized";
 import { isBool, isDictionary, isDictionaryOrNull, isNull, isString, isStringOrNull } from "./type-check";
 import { invalidKeys, keysInList } from "./validate-keys";
+
+import { isBrowserOption } from "./option-browser";
+import { isModuleOption, normalizeBuildModule, normalizeModuleOption } from "./option-esmodule";
+import { normalizeBuildFlag } from "./option-flag";
+import { isBrowserFormat } from "./option-format";
+import { isValidGlobals, normalizeBuildGlobals, normalizeGlobals } from "./option-globals";
+import { isInOpKey } from "./option-input";
+import { isCJSOptionKey } from "./option-main";
+import { isValidMinOption, normalizeBuildMin, normalizeMinOption } from "./option-min";
+import { isModuleOptionKey } from "./option-module";
+import normalizeBuildName from "./option-name";
+import { isTypesOptionKey } from "./option-types";
+import { normalizeBuildSourcemap, normalizeSourcemap } from "./options-sourcemap";
 
 async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalized>;
 async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAnalized> {
@@ -116,7 +123,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (
     !isStringOrNull(inputOption) && !(
-      isDictionary(inputOption) && keysInList(inputOption, "api", "bin") && keys(inputOption).every((key) => (
+      isDictionary(inputOption) && keysInList(inputOption, isInOpKey) && keys(inputOption).every((key) => (
         isString(inputOption[key])
       ))
     )
@@ -206,7 +213,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   if (
     !isNull(mainOptions) && (mainOptions !== false) && !(
       isDictionary(mainOptions) &&
-      keysInList(mainOptions, "sourcemap", "esModule", "interop", "min")
+      keysInList(mainOptions, isCJSOptionKey)
     )
   ) {
     throw invalidOption(
@@ -222,7 +229,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   if (
     !isNull(moduleOptions) && (moduleOptions !== false) && !(
       isDictionary(moduleOptions) &&
-      keysInList(moduleOptions, "sourcemap", "min")
+      keysInList(moduleOptions, isModuleOptionKey)
     )
   ) {
     throw invalidOption(
@@ -238,18 +245,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   if (
     !isNull(browserOptions) && (browserOptions !== false) && !(
       isDictionary(browserOptions) &&
-      keysInList(
-        browserOptions,
-        "sourcemap",
-        "esModule",
-        "interop",
-        "min",
-        "format",
-        "name",
-        "id",
-        "globals",
-        "extend",
-      ) &&
+      keysInList(browserOptions, isBrowserOption) &&
       isBrowserFormat(browserOptions.format) &&
       (["name", "id"] as Array<keyof typeof browserOptions>).every((key) => (
         isStringOrNull(browserOptions[key])
@@ -270,7 +266,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   if (
     !isNull(binaryOptions) && (binaryOptions !== false) && !(
       isDictionary(binaryOptions) &&
-      keysInList(binaryOptions, "sourcemap", "esModule", "interop", "min")
+      keysInList(binaryOptions, isCJSOptionKey)
     )
   ) {
     throw invalidOption(
@@ -286,7 +282,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   if (
     !isNull(typesOptions) && (typesOptions !== false) && !(
       isDictionary(typesOptions) &&
-      keysInList(typesOptions, "equals")
+      keysInList(typesOptions, isTypesOptionKey)
     )
   ) {
     throw invalidOption("types", "false | { equals?: boolean }");

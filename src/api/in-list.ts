@@ -1,7 +1,13 @@
-export type InList<M extends string> = (str: string) => str is M;
+import { Nullable } from "./helper-types";
 
-export function createInList<M extends string>(...model: M[]): InList<M> {
-  return (str: string): str is M => (
-    model.indexOf(str as M) !== -1
+type InListTarget = Nullable<string | number | boolean>;
+
+export type InList<M extends InListTarget> = (str: unknown) => str is M;
+
+export function createInList<M extends InListTarget>(...model: Array<M | InList<M>>): InList<M> {
+  return (str: unknown): str is M => (
+    model.some(
+      (inList) => (typeof inList === "function") ? inList(str) : (str === inList),
+    )
   );
 }

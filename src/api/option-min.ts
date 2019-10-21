@@ -1,16 +1,17 @@
-import { PerBuildMinOptions } from "./bundlib-options";
+import { MinOption, MinString, PerBuildMinOptions } from "./bundlib-options";
+import { Nullable } from "./helper-types";
 import { createObject, setProp } from "./helpers";
+import { createInList } from "./in-list";
 import { isArray, isBool, isNull } from "./type-check";
-import { Nullable } from "./types";
-
-export type MinString = "main" | "module" | "browser" | "bin";
-export type MinOption = Nullable<MinString | MinString[] | boolean>;
 
 export type MinGlobal = Record<MinString, boolean>;
 
-export function isMinString(value: any): value is MinString {
-  return value === "main" || value === "module" || value === "browser" || value === "bin";
-}
+export const isMinString = createInList<MinString>(
+  "main",
+  "module",
+  "browser",
+  "bin",
+);
 
 export function isValidMinOption(value: any): value is MinOption {
   return isNull(value) || isBool(value) || isMinString(value) || (

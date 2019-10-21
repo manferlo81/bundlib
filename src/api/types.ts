@@ -6,7 +6,6 @@ import {
   WatcherOptions as RollupWatcherOptions,
 } from "rollup";
 
-export type Nullable<T> = T | null | undefined;
 export type RollupSourcemap = boolean | "inline";
 
 export type ModuleBuildFormat = "cjs" | "es";

@@ -1,5 +1,6 @@
 import { IsExternal, Plugin, WatchOptions as RollupWatchOptions } from "rollup";
 
+import { Nullable } from "./helper-types";
 import { createInList } from "./in-list";
 import {
   BrowserBuildFormat,
@@ -7,7 +8,6 @@ import {
   BundlibRollupModuleOutputOptions,
   BundlibRollupOptions,
   ModuleBuildFormat,
-  Nullable,
   RollupSourcemap,
 } from "./types";
 

@@ -1,4 +1,4 @@
-import { MinString } from "../../src/api/option-min";
+import { MinString } from "../../src/api/bundlib-options";
 import analize from "../tools/analize";
 
 describe("min option", () => {

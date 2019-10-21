@@ -1,5 +1,5 @@
+import { Nullable } from "./helper-types";
 import { isNull } from "./type-check";
-import { Nullable } from "./types";
 
 export function normalizeBuildFlag<K extends string>(
   build: Nullable<Partial<Record<K, any>>>,
