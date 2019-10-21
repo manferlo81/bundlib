@@ -116,7 +116,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (
     !isStringOrNull(inputOption) && !(
-      isDictionary(inputOption) && keysInList(inputOption, ["api", "bin"]) && keys(inputOption).every((key) => (
+      isDictionary(inputOption) && keysInList(inputOption, "api", "bin") && keys(inputOption).every((key) => (
         isString(inputOption[key])
       ))
     )
@@ -205,12 +205,8 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (
     !isNull(mainOptions) && (mainOptions !== false) && !(
-      isDictionary(mainOptions) && keysInList(mainOptions, [
-        "sourcemap",
-        "esModule",
-        "interop",
-        "min",
-      ])
+      isDictionary(mainOptions) &&
+      keysInList(mainOptions, "sourcemap", "esModule", "interop", "min")
     )
   ) {
     throw invalidOption(
@@ -225,10 +221,8 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (
     !isNull(moduleOptions) && (moduleOptions !== false) && !(
-      isDictionary(moduleOptions) && keysInList(moduleOptions, [
-        "sourcemap",
-        "min",
-      ])
+      isDictionary(moduleOptions) &&
+      keysInList(moduleOptions, "sourcemap", "min")
     )
   ) {
     throw invalidOption(
@@ -243,7 +237,9 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (
     !isNull(browserOptions) && (browserOptions !== false) && !(
-      isDictionary(browserOptions) && keysInList(browserOptions, [
+      isDictionary(browserOptions) &&
+      keysInList(
+        browserOptions,
         "sourcemap",
         "esModule",
         "interop",
@@ -253,7 +249,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
         "id",
         "globals",
         "extend",
-      ]) &&
+      ) &&
       isBrowserFormat(browserOptions.format) &&
       (["name", "id"] as Array<keyof typeof browserOptions>).every((key) => (
         isStringOrNull(browserOptions[key])
@@ -273,12 +269,8 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (
     !isNull(binaryOptions) && (binaryOptions !== false) && !(
-      isDictionary(binaryOptions) && keysInList(binaryOptions, [
-        "sourcemap",
-        "esModule",
-        "interop",
-        "min",
-      ])
+      isDictionary(binaryOptions) &&
+      keysInList(binaryOptions, "sourcemap", "esModule", "interop", "min")
     )
   ) {
     throw invalidOption(
@@ -293,9 +285,8 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (
     !isNull(typesOptions) && (typesOptions !== false) && !(
-      isDictionary(typesOptions) && keysInList(typesOptions, [
-        "equals",
-      ])
+      isDictionary(typesOptions) &&
+      keysInList(typesOptions, "equals")
     )
   ) {
     throw invalidOption("types", "false | { equals?: boolean }");

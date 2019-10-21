@@ -1,8 +1,6 @@
 import { IsExternal, Plugin, WatchOptions as RollupWatchOptions } from "rollup";
 
-import arrayToExternal from "./array-to-external";
-import createOutput from "./create-output";
-import keysOrNull from "./keys-or-null";
+import { createInList } from "./in-list";
 import {
   BrowserBuildFormat,
   BundlibRollupBrowseOutputOptions,
@@ -50,24 +48,16 @@ export function createModuleConfig(
   plugins: Plugin[],
   chokidar: boolean | RollupWatchOptions,
 ): BundlibRollupOptions<BundlibRollupModuleOutputOptions> {
-
-  const output = createOutput(
-    format,
-    file,
-    sourcemap,
-    esModule,
-    interop,
-  );
-
   return createConfig(
     input,
-    output,
+    { file, format, sourcemap, esModule, interop },
     external,
     plugins,
     chokidar,
   );
-
 }
+
+const requiresId = createInList("amd", "umd");
 
 export function createBrowserConfig(
   input: string,
@@ -76,6 +66,7 @@ export function createBrowserConfig(
   sourcemap: RollupSourcemap,
   esModule: boolean,
   interop: boolean,
+  isExternal: IsExternal,
   plugins: Plugin[],
   chokidar: boolean | RollupWatchOptions,
   name: string,
@@ -84,31 +75,27 @@ export function createBrowserConfig(
   id: Nullable<string>,
 ): BundlibRollupOptions<BundlibRollupBrowseOutputOptions> {
 
-  const extra: Pick<BundlibRollupBrowseOutputOptions, "name" | "extend" | "globals" | "amd"> = {
-    name,
+  const output: BundlibRollupBrowseOutputOptions = {
+    file,
+    format,
+    sourcemap,
+    esModule,
+    interop,
     extend,
+    name,
     globals: globals || {},
   };
 
-  if (id && (format === "umd" || format === "amd")) {
-    extra.amd = {
+  if (id && requiresId(format)) {
+    output.amd = {
       id,
     };
   }
 
-  const output: BundlibRollupBrowseOutputOptions = createOutput(
-    format,
-    file,
-    sourcemap,
-    esModule,
-    interop,
-    extra,
-  );
-
   return createConfig(
     input,
     output,
-    arrayToExternal(keysOrNull(globals)),
+    isExternal,
     plugins,
     chokidar,
   );

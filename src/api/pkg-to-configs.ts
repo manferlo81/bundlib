@@ -359,6 +359,7 @@ async function pkgToConfigs(
   if (browserOutput) {
 
     const { path, sourcemap, esModule, interop, format, name, extend, id, globals, min } = browserOutput;
+    const isBrowserExternal = arrayToExternal(keysOrNull(globals));
 
     configs.push(
       createBrowserConfig(
@@ -368,6 +369,7 @@ async function pkgToConfigs(
         sourcemap,
         esModule,
         interop,
+        isBrowserExternal,
         createPlugins(
           isTypescriptAPIInput,
           isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
@@ -395,6 +397,7 @@ async function pkgToConfigs(
           sourcemap,
           esModule,
           interop,
+          isBrowserExternal,
           createPlugins(
             isTypescriptAPIInput,
             isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
