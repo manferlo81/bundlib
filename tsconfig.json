@@ -5,6 +5,8 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
     "strict": true,
     "noUnusedLocals": true,
     "noImplicitReturns": true,
@@ -17,7 +19,11 @@
       ]
     }
   },
+  "include": [
+    "src/api/**/*.ts"
+  ],
   "exclude": [
-    "types"
+    "types",
+    "node_modules"
   ]
 }

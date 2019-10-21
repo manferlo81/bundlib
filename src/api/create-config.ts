@@ -1,4 +1,4 @@
-import { Plugin, WatchOptions as RollupWatchOptions } from "rollup";
+import { IsExternal, Plugin, WatchOptions as RollupWatchOptions } from "rollup";
 
 import arrayToExternal from "./array-to-external";
 import createOutput from "./create-output";
@@ -8,7 +8,6 @@ import {
   BundlibRollupBrowseOutputOptions,
   BundlibRollupModuleOutputOptions,
   BundlibRollupOptions,
-  FilterablePlugins,
   ModuleBuildFormat,
   Nullable,
   RollupSourcemap,
@@ -17,8 +16,8 @@ import {
 export function createConfig<OutputOptions extends BundlibRollupModuleOutputOptions>(
   input: string,
   output: OutputOptions,
-  external: Nullable<string[]>,
-  plugins: FilterablePlugins,
+  external: IsExternal,
+  plugins: Plugin[],
   chokidar: boolean | RollupWatchOptions,
 ): BundlibRollupOptions<OutputOptions> {
 
@@ -27,9 +26,9 @@ export function createConfig<OutputOptions extends BundlibRollupModuleOutputOpti
     input,
     output,
 
-    external: !external ? () => false : arrayToExternal(external),
+    external,
 
-    plugins: plugins.filter<Plugin>(Boolean as any),
+    plugins,
 
     watch: {
       chokidar,
@@ -47,8 +46,8 @@ export function createModuleConfig(
   sourcemap: RollupSourcemap,
   esModule: boolean,
   interop: boolean,
-  external: Nullable<string[]>,
-  plugins: FilterablePlugins,
+  external: IsExternal,
+  plugins: Plugin[],
   chokidar: boolean | RollupWatchOptions,
 ): BundlibRollupOptions<BundlibRollupModuleOutputOptions> {
 
@@ -77,7 +76,7 @@ export function createBrowserConfig(
   sourcemap: RollupSourcemap,
   esModule: boolean,
   interop: boolean,
-  plugins: FilterablePlugins,
+  plugins: Plugin[],
   chokidar: boolean | RollupWatchOptions,
   name: string,
   extend: boolean,
@@ -109,7 +108,7 @@ export function createBrowserConfig(
   return createConfig(
     input,
     output,
-    keysOrNull(globals),
+    arrayToExternal(keysOrNull(globals)),
     plugins,
     chokidar,
   );

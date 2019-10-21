@@ -14,6 +14,7 @@ import { terser } from "rollup-plugin-terser";
 import typescript2 from "rollup-plugin-typescript2";
 import mapIdExternal from "./api-plugin";
 
+import arrayToExternal from "./array-to-external";
 import { createBrowserConfig, createModuleConfig } from "./create-config";
 import { error } from "./errors";
 import extensionMatch from "./ext-match";
@@ -25,7 +26,6 @@ import {
   BundlibAPIOptions,
   BundlibRollupModuleOutputOptions,
   BundlibRollupOptions,
-  FilterablePlugins,
   RollupSourcemap,
 } from "./types";
 
@@ -110,6 +110,7 @@ async function pkgToConfigs(
   // set external modules
 
   const external = union(runtimeDeps, peerDeps, optionalDeps, builtinModules);
+  const isExternal = arrayToExternal(external);
 
   // get installed dependencies from package.json
 
@@ -141,7 +142,7 @@ async function pkgToConfigs(
     mini: boolean,
     browser: boolean,
     bin: boolean,
-  ): FilterablePlugins {
+  ): Plugin[] {
 
     const sourcemapBool = !!sourcemap;
 
@@ -151,7 +152,7 @@ async function pkgToConfigs(
 
     let shebang: string;
 
-    return [
+    const plugins = [
 
       bin && stripShebang({
         capture: (shebangFromFile) => shebang = shebangFromFile,
@@ -243,6 +244,8 @@ async function pkgToConfigs(
 
     ];
 
+    return plugins.filter<Plugin>(Boolean as any);
+
   }
 
   if (esOutput) {
@@ -257,7 +260,7 @@ async function pkgToConfigs(
         sourcemap,
         true,
         false,
-        external,
+        isExternal,
         createPlugins(
           isTypescriptAPIInput,
           isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
@@ -281,7 +284,7 @@ async function pkgToConfigs(
           sourcemap,
           true,
           false,
-          external,
+          isExternal,
           createPlugins(
             isTypescriptAPIInput,
             isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
@@ -311,7 +314,7 @@ async function pkgToConfigs(
         sourcemap,
         esModule,
         interop,
-        external,
+        isExternal,
         createPlugins(
           isTypescriptAPIInput,
           isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
@@ -335,7 +338,7 @@ async function pkgToConfigs(
           sourcemap,
           esModule,
           interop,
-          external,
+          isExternal,
           createPlugins(
             isTypescriptAPIInput,
             isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
@@ -425,7 +428,7 @@ async function pkgToConfigs(
         sourcemap,
         esModule,
         interop,
-        external,
+        isExternal,
         createPlugins(
           isTypescriptBinaryInput,
           isTypescriptBinaryInput ? typescriptExtensions : javascriptExtensions,
@@ -449,7 +452,7 @@ async function pkgToConfigs(
           sourcemap,
           esModule,
           interop,
-          external,
+          isExternal,
           createPlugins(
             isTypescriptBinaryInput,
             isTypescriptBinaryInput ? typescriptExtensions : javascriptExtensions,

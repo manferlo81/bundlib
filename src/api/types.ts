@@ -9,8 +9,6 @@ import {
 export type Nullable<T> = T | null | undefined;
 export type RollupSourcemap = boolean | "inline";
 
-export type FilterablePlugins = Array<Nullable<Plugin | false | "">>;
-
 export type ModuleBuildFormat = "cjs" | "es";
 export type BrowserBuildFormat = "iife" | "amd" | "umd";
 

@@ -9,7 +9,7 @@ import keysOrNull from "./keys-or-null";
 import { normalizeBuildFlag } from "./option-flag";
 import { isBrowserFormat } from "./option-format";
 import { isValidGlobals, normalizeBuildGlobals, normalizeGlobals } from "./option-globals";
-import { isValidMinOption, MinGlobal, normalizeBuildMin, normalizeMinOption } from "./option-min";
+import { isValidMinOption, normalizeBuildMin, normalizeMinOption } from "./option-min";
 import { isModuleOption, normalizeBuildModule, normalizeModuleOption } from "./option-module";
 import normalizeBuildName from "./option-name";
 import { normalizeBuildSourcemap, normalizeSourcemap } from "./options-sourcemap";
@@ -25,7 +25,7 @@ import {
   TypesBuildOptions,
 } from "./pkg-analized";
 import { isBool, isDictionary, isDictionaryOrNull, isNull, isString, isStringOrNull } from "./type-check";
-import { allKeysInList, invalidKeys } from "./validate-keys";
+import { invalidKeys, keysInList } from "./validate-keys";
 
 async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalized>;
 async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAnalized> {
@@ -53,7 +53,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     dependencies: runtimeDependencies,
     peerDependencies,
     optionalDependencies,
-    bundlib: bundlibOptions,
+    bundlib: bundlibOptions = {},
   } = pkg;
 
   // ensure "bundlib" field is null, undefined (or not present) or an object
@@ -66,7 +66,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   // ensure there are not unknown bundlib options
   // throw otherwise
 
-  const invalidOptions = bundlibOptions && invalidKeys(bundlibOptions, [
+  const invalidOptions = invalidKeys(bundlibOptions, [
     "input",
     "extend",
     "esModule",
@@ -109,14 +109,14 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     browser: browserOptions,
     bin: binaryOptions,
     types: typesOptions,
-  } = bundlibOptions || {} as BundlibOptions;
+  } = bundlibOptions;
 
   // ensure "input" option is valid
   // throw otherwise
 
   if (
     !isStringOrNull(inputOption) && !(
-      isDictionary(inputOption) && allKeysInList(inputOption, ["api", "bin"]) && keys(inputOption).every((key) => (
+      isDictionary(inputOption) && keysInList(inputOption, ["api", "bin"]) && keys(inputOption).every((key) => (
         isString(inputOption[key])
       ))
     )
@@ -205,7 +205,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (
     !isNull(mainOptions) && (mainOptions !== false) && !(
-      isDictionary(mainOptions) && allKeysInList(mainOptions, [
+      isDictionary(mainOptions) && keysInList(mainOptions, [
         "sourcemap",
         "esModule",
         "interop",
@@ -225,7 +225,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (
     !isNull(moduleOptions) && (moduleOptions !== false) && !(
-      isDictionary(moduleOptions) && allKeysInList(moduleOptions, [
+      isDictionary(moduleOptions) && keysInList(moduleOptions, [
         "sourcemap",
         "min",
       ])
@@ -243,7 +243,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (
     !isNull(browserOptions) && (browserOptions !== false) && !(
-      isDictionary(browserOptions) && allKeysInList(browserOptions, [
+      isDictionary(browserOptions) && keysInList(browserOptions, [
         "sourcemap",
         "esModule",
         "interop",
@@ -272,9 +272,8 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   // TODO: check for invalid keys & every option format
 
   if (
-    !isNull(binaryOptions) &&
-    (binaryOptions !== false) && !(
-      isDictionary(binaryOptions) && allKeysInList(binaryOptions, [
+    !isNull(binaryOptions) && (binaryOptions !== false) && !(
+      isDictionary(binaryOptions) && keysInList(binaryOptions, [
         "sourcemap",
         "esModule",
         "interop",
@@ -294,7 +293,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (
     !isNull(typesOptions) && (typesOptions !== false) && !(
-      isDictionary(typesOptions) && allKeysInList(typesOptions, [
+      isDictionary(typesOptions) && keysInList(typesOptions, [
         "equals",
       ])
     )
@@ -366,15 +365,11 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   const typesPath = pkgTypes || typings;
 
-  // set api input from "input" option
-  // if "input" option is an object set it from "input.api" option
+  // set api and binary input from "input" option
 
-  const apiInput = isStringOrNull(inputOption) ? inputOption : inputOption.api;
-
-  // set binary input from "input" option
-  // if "input" option is not an object set it to null so it will be set to the default value later
-
-  const binInput = isStringOrNull(inputOption) ? null : inputOption.bin;
+  const { api: apiInput, bin: binInput } = isStringOrNull(inputOption)
+    ? { api: inputOption } as InputOptions
+    : inputOption;
 
   // set input files
 
@@ -388,7 +383,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   const globalSourcemap = normalizeSourcemap(sourcemapOption);
   const globalESModule = normalizeModuleOption(esModule);
   const globalInterop = normalizeModuleOption(interop);
-  const globalMin: MinGlobal = normalizeMinOption(min);
+  const globalMin = normalizeMinOption(min);
 
   // set CommonJS Module build output options
 
@@ -442,27 +437,23 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   // set Binary build output options
 
-  const binaryOutput: CommonJSBuildOptions | null = (
-    binaryOptions === false || !pkgBin
-  )
-    ? null : {
-      path: resolve(cwd, pkgBin as string),
-      sourcemap: normalizeBuildSourcemap(
-        binaryOptions,
-        globalSourcemap,
-      ),
-      esModule: normalizeBuildModule(binaryOptions, "esModule", "bin", globalESModule),
-      interop: normalizeBuildModule(binaryOptions, "interop", "bin", globalInterop),
-      min: normalizeBuildMin(binaryOptions, "bin", globalMin),
-    };
+  const binaryOutput: CommonJSBuildOptions | null = (binaryOptions === false || !pkgBin) ? null : {
+    path: resolve(cwd, pkgBin as string),
+    sourcemap: normalizeBuildSourcemap(
+      binaryOptions,
+      globalSourcemap,
+    ),
+    esModule: normalizeBuildModule(binaryOptions, "esModule", "bin", globalESModule),
+    interop: normalizeBuildModule(binaryOptions, "interop", "bin", globalInterop),
+    min: normalizeBuildMin(binaryOptions, "bin", globalMin),
+  };
 
   // set type definitions output options
 
-  const typesOutput: TypesBuildOptions | null = (typesOptions === false || !typesPath)
-    ? null : {
-      path: resolve(cwd, typesPath),
-      equals: normalizeBuildFlag(typesOptions, "equals", !!equals),
-    };
+  const typesOutput: TypesBuildOptions | null = (typesOptions === false || !typesPath) ? null : {
+    path: resolve(cwd, typesPath),
+    equals: normalizeBuildFlag(typesOptions, "equals", !!equals),
+  };
 
   // set all output options
 

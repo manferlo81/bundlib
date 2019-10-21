@@ -1,30 +1,43 @@
 import { IsExternal } from "rollup";
 
-function arrayToExternal(modules: string[]): IsExternal {
+function arrayToExternal(modules: string[] | null): IsExternal {
 
-  const cache: Record<string, true> = {};
+  if (!modules) {
+    return () => false;
+  }
+
+  const cache: Record<string, boolean> = {};
+
+  // return modules as any;
 
   return (source: string, _: string, isResolved: boolean) => {
+
+    // ignore local and resolved modules
 
     if (isResolved || source[0] === ".") {
       return;
     }
 
-    return cache[source] || modules.some((moduleName) => {
+    // return from cache if present
+
+    if (cache.hasOwnProperty(source)) {
+      return cache[source];
+    }
+
+    // set cached value
+
+    return cache[source] = modules.some((moduleName): (boolean | void) => {
 
       if (source === moduleName) {
-        return (cache[source] = true);
+        return true;
       }
 
       const len = moduleName.length;
 
-      if (source.substr(0, len) === moduleName && source[len].match(/^[/\\]$/)) {
-        return (cache[source] = true);
-      }
-
-      return false;
+      return (source.substr(0, len) === moduleName) && /^[/\\]$/.test(source[len]);
 
     });
+
   };
 
 }

@@ -1,24 +1,21 @@
 import { keys } from "./helpers";
 
 export function invalidKeys(object: Record<string, any>, list: string[]): string[] | null {
-  const invalid = keys(object).filter((key) => (
-    list.indexOf(key) === -1
-  ));
+  const invalid = keys(object).filter(
+    (key) => list.indexOf(key) === -1,
+  );
   return invalid.length ? invalid : null;
 }
 
-export function listInList<T extends string>(input: string[], model: T[]): input is T[] {
-  return input.every((str) => (
-    (model as string[]).indexOf(str) >= 0
-  ));
+export function listInList<M extends string>(input: string[], model: M[]): input is M[] {
+  return input.every(
+    (str) => model.indexOf(str as M) !== -1,
+  );
 }
 
-export function allKeysInList<K extends string>(
-  object: Record<string, any>,
-  model: K[],
-): boolean {
-  return listInList<K>(
-    keys(object),
+export function keysInList<M extends string>(obj: Record<string, any>, model: M[]): obj is Partial<Record<M, any>> {
+  return listInList<M>(
+    keys(obj),
     model,
   );
 }

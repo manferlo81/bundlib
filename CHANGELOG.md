@@ -6,6 +6,7 @@
 
 * dependencies updated
 * removed `"bin"` option as `string` support
+* minor refactoring
 
 ## 0.12.6
 
