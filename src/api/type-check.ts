@@ -11,7 +11,7 @@ export function isString(value: any): value is string {
 }
 
 export function isBool(value: any): value is boolean {
-  return value === true || value === false;
+  return value === !!value;
 }
 
 export const isArray: <T = any>(value: any) => value is T[] = Array.isArray;

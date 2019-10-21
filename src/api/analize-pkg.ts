@@ -107,7 +107,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     main: mainOptions,
     module: moduleOptions,
     browser: browserOptions,
-    bin: binaryOptionsOrInput,
+    bin: binaryOptions,
     types: typesOptions,
   } = bundlibOptions || {} as BundlibOptions;
 
@@ -270,17 +270,11 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   // ensure "bin" option is valid
   // throw otherwise
   // TODO: check for invalid keys & every option format
-  //
-  // "bin" options as string is deprecated
-  // !isString(binaryOptionsOrInput) will be removed...
-  // FIXME: remove unnecessary line
-  // after removed it should throw if it's string
 
   if (
-    !isNull(binaryOptionsOrInput) &&
-    !isString(binaryOptionsOrInput) && // FIXME: remove in the future
-    (binaryOptionsOrInput !== false) && !(
-      isDictionary(binaryOptionsOrInput) && allKeysInList(binaryOptionsOrInput, [
+    !isNull(binaryOptions) &&
+    (binaryOptions !== false) && !(
+      isDictionary(binaryOptions) && allKeysInList(binaryOptions, [
         "sourcemap",
         "esModule",
         "interop",
@@ -336,12 +330,6 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     throw invalidPkgField("browser", "string");
   }
 
-  // use "bin" option for binary build only if it's not a string
-  // INFO: if it's a string it will be used as binary build entry point
-  // FIXME: this behavior will be removed in the future
-
-  const binaryOptions = isString(binaryOptionsOrInput) ? null : binaryOptionsOrInput;
-
   // ensure "bin" field is a supported value if needed
   // throw otherwise
 
@@ -386,15 +374,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   // set binary input from "input" option
   // if "input" option is not an object set it to null so it will be set to the default value later
 
-  let binInput = isStringOrNull(inputOption) ? null : inputOption.bin;
-
-  // if "bin" option is string it will be set as binary input
-  // for compatibility with previous versions
-  // FIXME: this behavior will be removed in the future
-
-  if (isString(binaryOptionsOrInput) && !binInput) {
-    binInput = binaryOptionsOrInput;
-  }
+  const binInput = isStringOrNull(inputOption) ? null : inputOption.bin;
 
   // set input files
 

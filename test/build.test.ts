@@ -26,7 +26,9 @@ describe("build", () => {
 
     const [config] = await createConfigs(cwd, false, {
       bin: "out/lib.cjs.js",
-      bundlib: { bin: "src/cli/index.ts" },
+      bundlib: {
+        input: { bin: "src/cli/index.ts" },
+      },
       dependencies,
     });
     const build = await rollup(config);
@@ -56,7 +58,9 @@ describe("build", () => {
     const [cjsConfig, binConfig] = await createConfigs(cwd, false, {
       main: "out/lib.cjs.js",
       bin: "bin/cli.js",
-      bundlib: { input: "src/api/index.ts", bin: "src/cli/index.ts" },
+      bundlib: {
+        input: { api: "src/api/index.ts", bin: "src/cli/index.ts" },
+      },
       dependencies,
     });
     const cjsBuild = await rollup(cjsConfig);

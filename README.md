@@ -32,11 +32,11 @@ Bundlib will use `src/index.ts` as entry file for your library by default, it ca
 
 ### CommonJS module
 
-Building a `CommonJS Module` is as simple as adding a `"main"` field to your `package.json` pointing to the output file, and `bundlib` will build it for you. [see the configuration section](#configuration) for extra options.
+Building a `CommonJS Module` is as simple as adding a `"main"` field to your `package.json` pointing to the output file, [see the configuration section](#configuration) for extra options.
 
 ### ES module
 
-To build a `ES Module` simply add a `"module"` field to your `package.json` pointing to the output file. [see the configuration section](#configuration) for extra options.
+To build a `ES Module` simply add a `"module"` field to your `package.json` pointing to the output file, [see the configuration section](#configuration) for extra options.
 
 ### IIFE, AMD and UMD build
 
@@ -48,7 +48,7 @@ Configuration is done through the `"bundlib"` field in your `package.json`. See 
 
 ***example***
 
-```json
+```javascript
 // package.json
 {
   "version": "1.0.0",
@@ -82,7 +82,7 @@ default {
 };
 ```
 
-The path to the file(s) to be used as entry point(s) for modules and binary. If a `string` is provided, it will be used as `API` entry point and `Binary` entry point will be set to the default value.
+The path to the file (or files) to be used as entry point(s) for `API` and `Binary` modules. If a `string` is provided, it will be used as `API` entry point and `Binary` entry point will be set to the default value.
 
 #### sourcemap
 
@@ -291,8 +291,6 @@ Specific options to be used in `Binary` build. They will override any correspond
 
 If it's set to `false`, it will prevent `Binary` build altogether, even if there is a `"bin"` field in `package.json`.
 
-> :warning: *This option was used to set entry point for* `Binary` *build. For compatibility reasons it still works if you set this option as* `string`*. This behavior will be removed in the future and therefore should not be used. Use* [`input`](#input) *option instead.*
-
 #### types
 
 ```typescript
@@ -461,10 +459,10 @@ interface TypesBuildOptions {
 
 ## Features
 
-* Creates a `CommonJS Module` build based on the `"main"` field in your `package.json`
-* Creates an `ES Module` build based on the `"module"` or `"jsnext:main"` field in your `package.json`
-* Creates a `Browser` build based on the `"browser"` field in your `package.json`
-* Creates an CLI `Binary` build based on the `"bin"` field in your `package.json`
+* Builds a `CommonJS Module` based on the `"main"` field in your `package.json`
+* Builds an `ES Module` based on the `"module"` (or `"jsnext:main"`) field in your `package.json`
+* Builds a `Browser` module based on the `"browser"` field in your `package.json`
+* Builds an CLI `Binary` module based on the `"bin"` field in your `package.json`
 * Exports type declarations based on the `"types"` or `"typings"` field in your `package.json`
 * Skip any build based on options
 * Sets `"dependencies"`, `"peerDependencies"` and `"optionalDependencies"` as external for `CommonJS Module`, `ES Module` and `Binary` builds
@@ -476,7 +474,7 @@ interface TypesBuildOptions {
 * Transforms `Object.assign` using [`@babel/plugin-transform-object-assign`](https://babeljs.io/docs/en/babel-plugin-transform-object-assign)
 * `React JSX` support through [`@babel/preset-react`](https://babeljs.io/docs/en/next/babel-preset-react)
 * Uses [`@babel/preset-env`](https://babeljs.io/docs/en/next/babel-preset-env)
-* Minifies build using [`Terser`](https://github.com/terser-js/terser)
+* Minifies build for production using [`Terser`](https://github.com/terser-js/terser)
 
 ## License
 

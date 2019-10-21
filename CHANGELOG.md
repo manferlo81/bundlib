@@ -5,6 +5,7 @@
 ***21-OCT-2019***
 
 * dependencies updated
+* removed `"bin"` option as `string` support
 
 ## 0.12.6
 
