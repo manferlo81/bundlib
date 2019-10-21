@@ -23,7 +23,7 @@
     "src/api/**/*.ts"
   ],
   "exclude": [
-    "types",
-    "node_modules"
+    "types/**",
+    "node_modules/**"
   ]
 }
