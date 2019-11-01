@@ -20,7 +20,10 @@
     }
   },
   "exclude": [
+    "node_modules/**",
+    "dist/**",
+    "bin/**",
     "types/**",
-    "node_modules/**"
+    "coverage/**"
   ]
 }
