@@ -1,5 +1,12 @@
 # Bundlib Changelog
 
+## 0.13.1
+
+***01-NOV-2019***
+
+* dependencies updated
+* created type definition for `filesize` until issue resolved. [issue #111](https://github.com/avoidwork/filesize.js/issues/111);
+
 ## 0.13.0
 
 ***21-OCT-2019***
