@@ -1,12 +1,12 @@
-import { IsExternal } from "rollup";
+import { IsExternal } from 'rollup'
 
 function arrayToExternal(modules: string[] | null): IsExternal {
 
   if (!modules) {
-    return () => false;
+    return () => false
   }
 
-  const cache: Record<string, boolean> = {};
+  const cache: Record<string, boolean> = {}
 
   // return modules as any;
 
@@ -14,14 +14,14 @@ function arrayToExternal(modules: string[] | null): IsExternal {
 
     // ignore local and resolved modules
 
-    if (isResolved || source[0] === ".") {
-      return;
+    if (isResolved || source[0] === '.') {
+      return
     }
 
     // return from cache if present
 
-    if (cache.hasOwnProperty(source)) {
-      return cache[source];
+    if (Object.prototype.hasOwnProperty.call(cache, source)) {
+      return cache[source]
     }
 
     // set cached value
@@ -29,17 +29,17 @@ function arrayToExternal(modules: string[] | null): IsExternal {
     return cache[source] = modules.some((moduleName): (boolean | void) => {
 
       if (source === moduleName) {
-        return true;
+        return true
       }
 
-      const len = moduleName.length;
+      const len = moduleName.length
 
-      return (source.substr(0, len) === moduleName) && /^[/\\]$/.test(source[len]);
+      return (source.substr(0, len) === moduleName) && /^[/\\]$/.test(source[len])
 
-    });
+    })
 
-  };
+  }
 
 }
 
-export default arrayToExternal;
+export default arrayToExternal

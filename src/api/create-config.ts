@@ -1,7 +1,7 @@
-import { IsExternal, Plugin, WatchOptions as RollupWatchOptions } from "rollup";
+import { IsExternal, Plugin, WatchOptions as RollupWatchOptions } from 'rollup'
 
-import { Nullable } from "./helper-types";
-import { createInList } from "./in-list";
+import { Nullable } from './helper-types'
+import { createInList } from './in-list'
 import {
   BrowserBuildFormat,
   BundlibRollupBrowseOutputOptions,
@@ -9,7 +9,7 @@ import {
   BundlibRollupOptions,
   ModuleBuildFormat,
   RollupSourcemap,
-} from "./types";
+} from './types'
 
 export function createConfig<OutputOptions extends BundlibRollupModuleOutputOptions>(
   input: string,
@@ -30,10 +30,10 @@ export function createConfig<OutputOptions extends BundlibRollupModuleOutputOpti
 
     watch: {
       chokidar,
-      exclude: ["node_modules/**"],
+      exclude: ['node_modules/**'],
     },
 
-  };
+  }
 
 }
 
@@ -54,10 +54,10 @@ export function createModuleConfig(
     external,
     plugins,
     chokidar,
-  );
+  )
 }
 
-const requiresId = createInList("amd", "umd");
+const requiresId = createInList('amd', 'umd')
 
 export function createBrowserConfig(
   input: string,
@@ -84,12 +84,12 @@ export function createBrowserConfig(
     extend,
     name,
     globals: globals || {},
-  };
+  }
 
   if (id && requiresId(format)) {
     output.amd = {
       id,
-    };
+    }
   }
 
   return createConfig(
@@ -98,6 +98,6 @@ export function createBrowserConfig(
     isExternal,
     plugins,
     chokidar,
-  );
+  )
 
 }

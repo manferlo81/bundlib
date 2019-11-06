@@ -1,7 +1,7 @@
-import { BundlibPkgJson } from "./pkg";
-import { BrowserBuildFormat, RollupSourcemap } from "./types";
+import { BundlibPkgJson } from './pkg'
+import { BrowserBuildFormat, RollupSourcemap } from './types'
 
-export type InputOptions = Record<"api" | "bin", string>;
+export type InputOptions = Record<'api' | 'bin', string>;
 
 export interface PathOptions {
   path: string;
@@ -37,7 +37,7 @@ export interface OutputOptions {
   types: TypesBuildOptions | null;
 }
 
-export type Dependencies = Record<"runtime" | "peer" | "optional", string[] | null>;
+export type Dependencies = Record<'runtime' | 'peer' | 'optional', string[] | null>;
 
 export interface PkgAnalized {
   cwd: string;

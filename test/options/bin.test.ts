@@ -1,40 +1,41 @@
-import analize from "../tools/analize";
+import analize from '../tools/analize'
 
-describe("bin option", () => {
+describe('bin option', () => {
 
-  const cwd = process.cwd();
+  const cwd = process.cwd()
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const analizeWithBin = (bin: any) => analize(cwd, {
-    bin: "out.js",
+    bin: 'out.js',
     bundlib: { bin },
-  });
+  })
 
-  test("should throw on invalid bin option", () => {
+  test('should throw on invalid bin option', () => {
 
     const invalidInputs = [
       1,
       true,
       { invalid: 100 },
-    ];
+    ]
 
-    expect.assertions(invalidInputs.length);
+    expect.assertions(invalidInputs.length)
 
     invalidInputs.forEach((bin) => {
       expect(
         analizeWithBin(bin),
       ).rejects
-        .toThrow(TypeError);
-    });
+        .toThrow(TypeError)
+    })
 
-  });
+  })
 
-  test("should prevent Binary module build if bin = false", async () => {
+  test('should prevent Binary module build if bin = false', async () => {
 
-    const { output: { bin } } = await analizeWithBin(false);
+    const { output: { bin } } = await analizeWithBin(false)
 
     expect(bin)
-      .toBeNull();
+      .toBeNull()
 
-  });
+  })
 
-});
+})

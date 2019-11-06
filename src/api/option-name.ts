@@ -1,6 +1,6 @@
-import camelcase from "camelcase";
-import { basename } from "path";
-import { Nullable } from "./helper-types";
+import camelcase from 'camelcase'
+import { basename } from 'path'
+import { Nullable } from './helper-types'
 
 function normalizeBuildName(
   cwd: string,
@@ -10,7 +10,7 @@ function normalizeBuildName(
 ): string | null {
   return browserName || nameOption || (
     pkgName && camelcase(basename(pkgName))
-  ) || camelcase(basename(cwd)) || null;
+  ) || camelcase(basename(cwd)) || null
 }
 
-export default normalizeBuildName;
+export default normalizeBuildName

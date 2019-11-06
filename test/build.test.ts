@@ -1,80 +1,82 @@
-import { rollup } from "rollup";
-import createConfigs from "./tools/create-configs";
+import { rollup } from 'rollup'
+import createConfigs from './tools/create-configs'
 
-import { dependencies } from "../package.json";
+// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+// @ts-ignore
+import { dependencies } from '../package.json'
 
-describe("build", () => {
+describe('build', () => {
 
-  const cwd = process.cwd();
+  const cwd = process.cwd()
 
-  test("should build a CommonJS module", async () => {
+  test('should build a CommonJS module', async () => {
 
     const [config] = await createConfigs(cwd, false, {
-      main: "out/lib.cjs.js",
-      bundlib: { input: "src/api/analize-pkg.ts" },
+      main: 'out/lib.cjs.js',
+      bundlib: { input: 'src/api/analize-pkg.ts' },
       dependencies,
-    });
-    const build = await rollup(config);
-    const { output: [{ code }] } = await build.generate(config.output);
+    })
+    const build = await rollup(config)
+    const { output: [{ code }] } = await build.generate(config.output)
 
     expect(typeof code)
-      .toBe("string");
+      .toBe('string')
 
-  }, 20000);
+  }, 20000)
 
-  test("should build a Binary", async () => {
+  test('should build a Binary', async () => {
 
     const [config] = await createConfigs(cwd, false, {
-      bin: "out/lib.cjs.js",
+      bin: 'out/lib.cjs.js',
       bundlib: {
-        input: { bin: "src/cli/index.ts" },
+        input: { bin: 'src/cli/index.ts' },
       },
       dependencies,
-    });
-    const build = await rollup(config);
-    const { output: [{ code }] } = await build.generate(config.output);
+    })
+    const build = await rollup(config)
+    const { output: [{ code }] } = await build.generate(config.output)
 
     expect(typeof code)
-      .toBe("string");
+      .toBe('string')
 
-  }, 20000);
+  }, 20000)
 
-  test("should build a Browser module", async () => {
+  test('should build a Browser module', async () => {
 
     const [config] = await createConfigs(cwd, false, {
-      browser: "out/lib.umd.js",
-      bundlib: { input: "src/api/validate-keys.ts", globals: null },
-    });
-    const build = await rollup(config);
-    const { output: [{ code }] } = await build.generate(config.output);
+      browser: 'out/lib.umd.js',
+      bundlib: { input: 'src/api/validate-keys.ts', globals: null },
+    })
+    const build = await rollup(config)
+    const { output: [{ code }] } = await build.generate(config.output)
 
     expect(typeof code)
-      .toBe("string");
+      .toBe('string')
 
-  }, 20000);
+  }, 20000)
 
-  test("should build a CommonJS and a Binary", async () => {
+  test('should build a CommonJS and a Binary', async () => {
 
     const [cjsConfig, binConfig] = await createConfigs(cwd, false, {
-      main: "out/lib.cjs.js",
-      bin: "bin/cli.js",
+      main: 'out/lib.cjs.js',
+      bin: 'bin/cli.js',
       bundlib: {
-        input: { api: "src/api/index.ts", bin: "src/cli/index.ts" },
+        input: { api: 'src/api/index.ts', bin: 'src/cli/index.ts' },
       },
       dependencies,
-    });
-    const cjsBuild = await rollup(cjsConfig);
-    const { output: [{ code: cjsCode }] } = await cjsBuild.generate(cjsConfig.output);
+    })
+    const cjsBuild = await rollup(cjsConfig)
+    const { output: [{ code: cjsCode }] } = await cjsBuild.generate(cjsConfig.output)
 
     expect(typeof cjsCode)
-      .toBe("string");
+      .toBe('string')
 
-    const binBuild = await rollup(binConfig);
-    const { output: [{ code: binCode }] } = await binBuild.generate(binConfig.output);
+    const binBuild = await rollup(binConfig)
+    const { output: [{ code: binCode }] } = await binBuild.generate(binConfig.output)
 
     expect(typeof binCode)
-      .toBe("string");
+      .toBe('string')
 
-  }, 20000);
+  }, 20000)
 
-});
+})
