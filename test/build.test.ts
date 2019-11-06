@@ -22,7 +22,7 @@ describe('build', () => {
     expect(typeof code)
       .toBe('string')
 
-  }, 20000)
+  }, 30000)
 
   test('should build a Binary', async () => {
 
@@ -39,7 +39,7 @@ describe('build', () => {
     expect(typeof code)
       .toBe('string')
 
-  }, 20000)
+  }, 30000)
 
   test('should build a Browser module', async () => {
 
@@ -53,7 +53,7 @@ describe('build', () => {
     expect(typeof code)
       .toBe('string')
 
-  }, 20000)
+  }, 30000)
 
   test('should build a CommonJS and a Binary', async () => {
 
@@ -77,6 +77,6 @@ describe('build', () => {
     expect(typeof binCode)
       .toBe('string')
 
-  }, 20000)
+  }, 30000)
 
 })
