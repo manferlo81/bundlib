@@ -2,6 +2,19 @@
 
 ## Changes
 
+### [0.13.1](https://github.com/manferlo81/bundlib/compare/v0.13.0...v0.13.1) (2019-11-06)
+
+
+### Bug Fixes
+
+* filesize issue [#111](https://github.com/manferlo81/bundlib/issues/111) ([3b1aed5](https://github.com/manferlo81/bundlib/commit/3b1aed5fa2f15c53055ac795001b2547eb3bb769))
+
+
+### Other Changes
+
+* setup standard-version ([c2569c3](https://github.com/manferlo81/bundlib/commit/c2569c318a6b6352c2f6c9f755397e4cb161fa72))
+* switched from tslint to [@typescript-eslint](https://github.com/typescript-eslint) ([93f9dcc](https://github.com/manferlo81/bundlib/commit/93f9dcc318453418dd601c38fdbc1a8ae6a900a1))
+
 ### [0.13.0](https://github.com/manferlo81/bundlib/compare/v0.12.6...v0.13.0) (2019-10-21)
 
 * dependencies updated
