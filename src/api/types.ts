@@ -4,12 +4,12 @@ import {
   Plugin,
   RollupOptions,
   WatcherOptions as RollupWatcherOptions,
-} from "rollup";
+} from 'rollup'
 
-export type RollupSourcemap = boolean | "inline";
+export type RollupSourcemap = boolean | 'inline';
 
-export type ModuleBuildFormat = "cjs" | "es";
-export type BrowserBuildFormat = "iife" | "amd" | "umd";
+export type ModuleBuildFormat = 'cjs' | 'es';
+export type BrowserBuildFormat = 'iife' | 'amd' | 'umd';
 
 export type BundlibBuildFormat = ModuleBuildFormat | BrowserBuildFormat;
 

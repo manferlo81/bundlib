@@ -1,4 +1,4 @@
-import { RollupWarning } from "rollup";
+import { RollupWarning } from 'rollup'
 
 export interface BundlibOptions {
   dev?: boolean;

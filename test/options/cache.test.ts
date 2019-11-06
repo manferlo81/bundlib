@@ -1,51 +1,52 @@
-import analize from "../tools/analize";
+import analize from '../tools/analize'
 
-describe("cache option", () => {
+describe('cache option', () => {
 
-  const cwd = process.cwd();
+  const cwd = process.cwd()
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const analizeWithCache = (cache: any) => analize(cwd, {
     bundlib: { cache },
-  });
+  })
 
-  test("should throw on invalid cache option", () => {
+  test('should throw on invalid cache option', () => {
 
     const invalidCacheOptions = [
       1,
-      ["string"],
+      ['string'],
       {},
       true,
-    ];
+    ]
 
-    expect.assertions(invalidCacheOptions.length);
+    expect.assertions(invalidCacheOptions.length)
 
     invalidCacheOptions.forEach((cache) => {
       expect(
         analizeWithCache(cache),
       ).rejects
-        .toThrow(TypeError);
-    });
+        .toThrow(TypeError)
+    })
 
-  });
+  })
 
-  test("should read cache option", async () => {
+  test('should read cache option', async () => {
 
-    const cacheDir = "cache-folder";
+    const cacheDir = 'cache-folder'
 
-    const { cache } = await analizeWithCache(cacheDir);
-
-    expect(cache)
-      .toMatch(new RegExp("[/\\\\]" + cacheDir + "$"));
-
-  });
-
-  test("should default if cache not provided", async () => {
-
-    const { cache } = await analize(cwd, {});
+    const { cache } = await analizeWithCache(cacheDir)
 
     expect(cache)
-      .toMatch(/[/\\]\.cache[/\\]bundlib$/);
+      .toMatch(new RegExp('[/\\\\]' + cacheDir + '$'))
 
-  });
+  })
 
-});
+  test('should default if cache not provided', async () => {
+
+    const { cache } = await analize(cwd, {})
+
+    expect(cache)
+      .toMatch(/[/\\]\.cache[/\\]bundlib$/)
+
+  })
+
+})

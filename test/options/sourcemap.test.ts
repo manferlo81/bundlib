@@ -1,150 +1,152 @@
-import analize from "../tools/analize";
+import analize from '../tools/analize'
 
-describe("sourcemap option", () => {
+describe('sourcemap option', () => {
 
-  const cwd = process.cwd();
+  const cwd = process.cwd()
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const analizedWithSourcemap = (sourcemap: any) => analize(cwd, {
-    main: "out/lib.cjs.js",
-    module: "out/lib.es.js",
-    browser: "out/lib.umd.js",
-    bin: "out/lib.bin.js",
+    main: 'out/lib.cjs.js',
+    module: 'out/lib.es.js',
+    browser: 'out/lib.umd.js',
+    bin: 'out/lib.bin.js',
     bundlib: { sourcemap },
-  });
+  })
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const analizedWithBuildSourcemap = (field: any, sourcemap: any) => analize(cwd, {
-    main: "out/lib.cjs.js",
-    module: "out/lib.es.js",
-    browser: "out/lib.umd.js",
-    bin: "out/lib.bin.js",
+    main: 'out/lib.cjs.js',
+    module: 'out/lib.es.js',
+    browser: 'out/lib.umd.js',
+    bin: 'out/lib.bin.js',
     bundlib: { [field]: { sourcemap } },
-  });
+  })
 
-  test("should throw on invalid sourcemap option", () => {
+  test('should throw on invalid sourcemap option', () => {
 
     const invalidSoucemaps = [
       100,
-      "string",
+      'string',
       {},
       [],
-    ];
+    ]
 
-    expect.assertions(invalidSoucemaps.length);
+    expect.assertions(invalidSoucemaps.length)
 
     invalidSoucemaps.forEach((sourcemap) => {
       expect(
         analizedWithSourcemap(sourcemap),
       ).rejects
-        .toThrow(TypeError);
-    });
+        .toThrow(TypeError)
+    })
 
-  });
+  })
 
-  test("should read sourcemap option", async () => {
+  test('should read sourcemap option', async () => {
 
-    const { output: { main, module: moduleOut, browser, bin } } = await analizedWithSourcemap(false);
-
-    expect(main ? main.sourcemap : null)
-      .toBe(false);
-    expect(moduleOut ? moduleOut.sourcemap : null)
-      .toBe(false);
-    expect(browser ? browser.sourcemap : null)
-      .toBe(false);
-    expect(bin ? bin.sourcemap : null)
-      .toBe(false);
-
-  });
-
-  test("should read inline sourcemap option", async () => {
-
-    const { output: { main, module: moduleOut, browser, bin } } = await analizedWithSourcemap("inline");
+    const { output: { main, module: moduleOut, browser, bin } } = await analizedWithSourcemap(false)
 
     expect(main ? main.sourcemap : null)
-      .toBe("inline");
+      .toBe(false)
     expect(moduleOut ? moduleOut.sourcemap : null)
-      .toBe("inline");
+      .toBe(false)
     expect(browser ? browser.sourcemap : null)
-      .toBe("inline");
+      .toBe(false)
     expect(bin ? bin.sourcemap : null)
-      .toBe("inline");
+      .toBe(false)
 
-  });
+  })
 
-  test("should read build sourcemap option", async () => {
+  test('should read inline sourcemap option', async () => {
 
-    const { output: { main, module: moduleOut, browser, bin } } = await analizedWithBuildSourcemap("main", false);
+    const { output: { main, module: moduleOut, browser, bin } } = await analizedWithSourcemap('inline')
 
     expect(main ? main.sourcemap : null)
-      .toBe(false);
+      .toBe('inline')
     expect(moduleOut ? moduleOut.sourcemap : null)
-      .toBe(true);
+      .toBe('inline')
     expect(browser ? browser.sourcemap : null)
-      .toBe(true);
+      .toBe('inline')
     expect(bin ? bin.sourcemap : null)
-      .toBe(true);
+      .toBe('inline')
 
-  });
+  })
 
-  test("should read build inline sourcemap option", async () => {
+  test('should read build sourcemap option', async () => {
 
-    const { output: { main, module: moduleOut, browser, bin } } = await analizedWithBuildSourcemap("module", "inline");
+    const { output: { main, module: moduleOut, browser, bin } } = await analizedWithBuildSourcemap('main', false)
 
     expect(main ? main.sourcemap : null)
-      .toBe(true);
+      .toBe(false)
     expect(moduleOut ? moduleOut.sourcemap : null)
-      .toBe("inline");
+      .toBe(true)
     expect(browser ? browser.sourcemap : null)
-      .toBe(true);
+      .toBe(true)
     expect(bin ? bin.sourcemap : null)
-      .toBe(true);
+      .toBe(true)
 
-  });
+  })
 
-  test("should default to true if no sourcemap option provided", async () => {
+  test('should read build inline sourcemap option', async () => {
+
+    const { output: { main, module: moduleOut, browser, bin } } = await analizedWithBuildSourcemap('module', 'inline')
+
+    expect(main ? main.sourcemap : null)
+      .toBe(true)
+    expect(moduleOut ? moduleOut.sourcemap : null)
+      .toBe('inline')
+    expect(browser ? browser.sourcemap : null)
+      .toBe(true)
+    expect(bin ? bin.sourcemap : null)
+      .toBe(true)
+
+  })
+
+  test('should default to true if no sourcemap option provided', async () => {
 
     const { output: { main, module: moduleOut, browser, bin } } = await analize(cwd, {
-      main: "out/lib.cjs.js",
-      module: "out/lib.es.js",
-      browser: "out/lib.umd.js",
-      bin: "out/lib.bin.js",
-    });
+      main: 'out/lib.cjs.js',
+      module: 'out/lib.es.js',
+      browser: 'out/lib.umd.js',
+      bin: 'out/lib.bin.js',
+    })
 
     expect(main ? main.sourcemap : null)
-      .toBe(true);
+      .toBe(true)
     expect(moduleOut ? moduleOut.sourcemap : null)
-      .toBe(true);
+      .toBe(true)
     expect(browser ? browser.sourcemap : null)
-      .toBe(true);
+      .toBe(true)
     expect(bin ? bin.sourcemap : null)
-      .toBe(true);
+      .toBe(true)
 
-  });
+  })
 
-  test("should read per-build sourcemap option over top-level one", async () => {
+  test('should read per-build sourcemap option over top-level one', async () => {
 
     const { output: { main, module: moduleOut, browser, bin } } = await analize(cwd, {
-      main: "out/lib.cjs.js",
-      module: "out/lib.es.js",
-      browser: "out/lib.umd.js",
-      bin: "out/lib.bin.js",
+      main: 'out/lib.cjs.js',
+      module: 'out/lib.es.js',
+      browser: 'out/lib.umd.js',
+      bin: 'out/lib.bin.js',
       bundlib: {
         sourcemap: false,
-        main: { sourcemap: "inline" },
-        module: { sourcemap: "inline" },
-        browser: { sourcemap: "inline" },
-        bin: { sourcemap: "inline" },
+        main: { sourcemap: 'inline' },
+        module: { sourcemap: 'inline' },
+        browser: { sourcemap: 'inline' },
+        bin: { sourcemap: 'inline' },
       },
-    });
+    })
 
     expect(main ? main.sourcemap : null)
-      .toBe("inline");
+      .toBe('inline')
     expect(moduleOut ? moduleOut.sourcemap : null)
-      .toBe("inline");
+      .toBe('inline')
     expect(browser ? browser.sourcemap : null)
-      .toBe("inline");
+      .toBe('inline')
     expect(bin ? bin.sourcemap : null)
-      .toBe("inline");
+      .toBe('inline')
 
-  });
+  })
 
-});
+})

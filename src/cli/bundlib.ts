@@ -1,9 +1,9 @@
-import { BundlibPkgJson, configsFromPkg } from "../api";
+import { BundlibPkgJson, configsFromPkg } from '../api'
 
-import { RollupWarning } from "rollup";
-import build from "./build";
-import { BuildCallbackObject, BundlibOptions } from "./types";
-import watch from "./watch";
+import { RollupWarning } from 'rollup'
+import build from './build'
+import { BuildCallbackObject, BundlibOptions } from './types'
+import watch from './watch'
 
 async function bundlib(
   cwd: string,
@@ -12,21 +12,21 @@ async function bundlib(
   pkg?: BundlibPkgJson,
 ): Promise<void> {
 
-  const configs = await configsFromPkg(cwd, options, pkg);
+  const configs = await configsFromPkg(cwd, options, pkg)
 
-  const { warn } = callbacks;
+  const { warn } = callbacks
 
-  const onwarn = warn ? (warning: string | RollupWarning) => warn(warning) : (() => null);
+  const onwarn = warn ? (warning: string | RollupWarning) => warn(warning) : (() => null)
 
   configs.forEach((config) => {
-    config.onwarn = onwarn;
+    config.onwarn = onwarn
   });
 
   (options.watch ? watch : build)(
     configs,
     callbacks,
-  );
+  )
 
 }
 
-export default bundlib;
+export default bundlib
