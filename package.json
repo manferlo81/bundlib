@@ -22,7 +22,8 @@
     "dev": "ts-node -P ts-node-tsconfig.json src/cli -dw",
     "build": "ts-node -P ts-node-tsconfig.json src/cli -d",
     "test": "jest --color -w 3",
-    "preversion": "npm run clean && npm run lint && npm test && npm run build"
+    "prerelease": "npm run clean && npm run lint && npm test && npm run build",
+    "release": "standard-version"
   },
   "keywords": [
     "library",
@@ -73,6 +74,7 @@
     "husky": "^3.0.9",
     "jest": "^24.9.0",
     "mock-fs": "^4.10.3",
+    "standard-version": "^7.0.0",
     "ts-jest": "^24.1.0",
     "ts-node": "^8.4.1"
   },
