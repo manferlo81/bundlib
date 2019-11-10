@@ -4,6 +4,7 @@
     "module": "esnext",
     "moduleResolution": "node",
     "esModuleInterop": true,
+    "isolatedModules": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "allowJs": true,
@@ -11,13 +12,7 @@
     "noUnusedLocals": true,
     "noImplicitReturns": true,
     "noImplicitAny": true,
-    "removeComments": true,
-    "baseUrl": ".",
-    "paths": {
-      "*": [
-        "declarations/*"
-      ]
-    }
+    "removeComments": true
   },
   "exclude": [
     "node_modules/**",
