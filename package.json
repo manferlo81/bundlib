@@ -18,7 +18,7 @@
   },
   "scripts": {
     "clean": "rimraf bin dist types coverage node_modules/.cache/bundlib node_modules/.cache/jest",
-    "lint": "eslint src/** test/**",
+    "lint": "eslint src/** __test__/**",
     "dev": "ts-node -P ts-node-tsconfig.json src/cli -dw",
     "build": "ts-node -P ts-node-tsconfig.json src/cli -d",
     "test": "jest --color -w 3",
