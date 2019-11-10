@@ -1,6 +1,6 @@
 # Bundlib Changelog
 
-## Changes
+## Version History
 
 ### [0.13.1](https://github.com/manferlo81/bundlib/compare/v0.13.0...v0.13.1) (2019-11-06)
 

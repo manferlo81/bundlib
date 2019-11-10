@@ -1,6 +1,6 @@
 {
-  "changelogHeader": "# Bundlib Changelog\n\n## Changes\n",
-  "header": "# Bundlib Changelog\n\n## Changes\n",
+  "changelogHeader": "# Bundlib Changelog\n\n## Version History\n",
+  "header": "# Bundlib Changelog\n\n## Version History\n",
   "types": [
     {
       "type": "chore",
