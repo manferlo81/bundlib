@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import builtinModules from 'builtin-modules'
 import { union } from 'lodash'
 import { basename, dirname, join as pathJoin, resolve } from 'path'
@@ -10,9 +11,9 @@ import exportEquals from 'rollup-plugin-export-equals'
 import json from 'rollup-plugin-json'
 import nodeResolve from 'rollup-plugin-node-resolve'
 import stripShebang from 'rollup-plugin-strip-shebang'
-import { terser } from 'rollup-plugin-terser'
 import typescript2 from 'rollup-plugin-typescript2'
-import mapIdExternal from './api-plugin'
+import mapIdExternal from './plugins/api-plugin'
+import { minifyPlugin, optimizePlugin } from './plugins/terser-plugin'
 
 import arrayToExternal from './array-to-external'
 import { createBrowserConfig, createModuleConfig } from './create-config'
@@ -236,11 +237,31 @@ async function pkgToConfigs(
         shebang: () => shebang || '#!/usr/bin/env node',
       }),
 
-      mini && terser({
-        sourcemap: sourcemapBool,
-        toplevel: true,
-        module: true,
-      }),
+      (mini ? minifyPlugin : optimizePlugin)(sourcemapBool),
+
+      // !mini && terser({
+      //   sourcemap: sourcemapBool,
+      //   toplevel: true,
+      //   module: true,
+      //   compress: {
+      //     passes: 2,
+      //     sequences: 2,
+      //   },
+      //   mangle: false,
+      //   output: {
+      //     beautify: true,
+      //     indent_level: 2,
+      //   },
+      // }),
+
+      // mini && terser({
+      //   sourcemap: sourcemapBool,
+      //   toplevel: true,
+      //   module: true,
+      //   compress: {
+      //     passes: 2,
+      //   },
+      // }),
 
     ]
 

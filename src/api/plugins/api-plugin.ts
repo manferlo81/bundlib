@@ -1,7 +1,7 @@
 import { dirname, join as pathJoin, relative, resolve } from 'path'
 import { Plugin } from 'rollup'
 import slash from 'slash'
-import { keys, setProp } from './helpers'
+import { keys, setProp } from '../helpers'
 
 export function mapIdExternal(cwd: string, outputDir: string, map: Record<string, string>): Plugin {
 
