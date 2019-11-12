@@ -1,7 +1,7 @@
-import { Nullable } from './helper-types'
+import { Nullable } from '../helper-types'
 import { createInList } from './in-list'
-import { isNull } from './type-check'
-import { BrowserBuildFormat } from './types'
+import { isNull } from '../type-check'
+import { BrowserBuildFormat } from '../types'
 
 export const isBrowserFormat = createInList<Nullable<BrowserBuildFormat>>(
   isNull,

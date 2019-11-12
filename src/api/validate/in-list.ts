@@ -1,4 +1,4 @@
-import { Nullable } from './helper-types'
+import { Nullable } from '../helper-types'
 
 type InListTarget = Nullable<string | number | boolean>;
 

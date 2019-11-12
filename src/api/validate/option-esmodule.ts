@@ -1,8 +1,8 @@
-import { ModuleOption, ModuleString, PerBuildModuleOptions } from './bundlib-options'
-import { Nullable } from './helper-types'
-import { createObject, setProp } from './helpers'
+import { ModuleOption, ModuleString, PerBuildModuleOptions } from '../bundlib-options'
+import { Nullable } from '../helper-types'
+import { createObject, setProp } from '../helpers'
 import { createInList } from './in-list'
-import { isArray, isBool, isNull } from './type-check'
+import { isArray, isBool, isNull } from '../type-check'
 
 export type ModuleGlobal = Record<ModuleString, boolean>;
 

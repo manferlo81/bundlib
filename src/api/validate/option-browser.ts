@@ -1,4 +1,4 @@
-import { BrowserBuildOptions } from './bundlib-options'
+import { BrowserBuildOptions } from '../bundlib-options'
 import { createInList } from './in-list'
 import { isCJSOptionKey } from './option-main'
 

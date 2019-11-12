@@ -19,20 +19,20 @@ import {
   TypesBuildOptions,
 } from './pkg-analized'
 import { isBool, isDictionary, isDictionaryOrNull, isNull, isString, isStringOrNull } from './type-check'
-import { invalidKeys, keysInList } from './validate-keys'
+import { invalidKeys, keysInList } from './validate/validate-keys'
 
-import { isBrowserOption } from './option-browser'
-import { isModuleOption, normalizeBuildModule, normalizeModuleOption } from './option-esmodule'
-import { normalizeBuildFlag } from './option-flag'
-import { isBrowserFormat } from './option-format'
-import { isValidGlobals, normalizeBuildGlobals, normalizeGlobals } from './option-globals'
-import { isInOpKey } from './option-input'
-import { isCJSOptionKey } from './option-main'
-import { isValidMinOption, normalizeBuildMin, normalizeMinOption } from './option-min'
-import { isModuleOptionKey } from './option-module'
-import normalizeBuildName from './option-name'
-import { isTypesOptionKey } from './option-types'
-import { normalizeBuildSourcemap, normalizeSourcemap } from './options-sourcemap'
+import { isBrowserOption } from './validate/option-browser'
+import { isModuleOption, normalizeBuildModule, normalizeModuleOption } from './validate/option-esmodule'
+import { normalizeBuildFlag } from './validate/option-flag'
+import { isBrowserFormat } from './validate/option-format'
+import { isValidGlobals, normalizeBuildGlobals, normalizeGlobals } from './validate/option-globals'
+import { isInOpKey } from './validate/option-input'
+import { isCJSOptionKey } from './validate/option-main'
+import { isValidMinOption, normalizeBuildMin, normalizeMinOption } from './validate/option-min'
+import { isModuleOptionKey } from './validate/option-module'
+import normalizeBuildName from './validate/option-name'
+import { isTypesOptionKey } from './validate/option-types'
+import { normalizeBuildSourcemap, normalizeSourcemap } from './validate/option-sourcemap'
 
 async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalized>;
 async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAnalized> {

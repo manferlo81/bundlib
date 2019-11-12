@@ -1,9 +1,9 @@
-import { MinOption, MinString, PerBuildMinOptions } from './bundlib-options'
-import { Nullable } from './helper-types'
-import { createObject, setProp } from './helpers'
+import { MinOption, MinString, PerBuildMinOptions } from '../bundlib-options'
+import { Nullable } from '../helper-types'
+import { createObject, setProp } from '../helpers'
 import { createInList } from './in-list'
 import { isModuleString } from './option-esmodule'
-import { isArray, isBool, isNull } from './type-check'
+import { isArray, isBool, isNull } from '../type-check'
 
 export type MinGlobal = Record<MinString, boolean>;
 

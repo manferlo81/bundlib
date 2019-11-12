@@ -1,4 +1,4 @@
-import { keys } from './helpers'
+import { keys } from '../helpers'
 import { InList } from './in-list'
 
 export function invalidKeys(object: Record<string, unknown>, list: string[]): string[] | null {
