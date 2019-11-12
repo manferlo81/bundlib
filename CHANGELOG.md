@@ -2,6 +2,33 @@
 
 ## Version History
 
+### [0.13.2](https://github.com/manferlo81/bundlib/compare/v0.13.1...v0.13.2) (2019-11-12)
+
+
+### Features
+
+* optimize output for development (--dev) ([733145c](https://github.com/manferlo81/bundlib/commit/733145c77007aef814f57c7b34aa42ba069bda48))
+
+
+### Bug Fixes
+
+* show correct name on cli help ([e4a2cd9](https://github.com/manferlo81/bundlib/commit/e4a2cd9dcc40bc5fd1d123b4698352da4ced2847))
+
+
+### Other Changes
+
+* removed unnecessary type declarations ([9f95d66](https://github.com/manferlo81/bundlib/commit/9f95d66de11a6f40c151901675ea08d962a246fd))
+* **deps:** bump commander from 4.0.0 to 4.0.1 ([1ac9878](https://github.com/manferlo81/bundlib/commit/1ac9878a2253b14d2a8f76c68584d86d40f8bcfe))
+* **deps:** bump filesize from 6.0.0 to 6.0.1 ([e9b7b20](https://github.com/manferlo81/bundlib/commit/e9b7b20106f1896d1c0091304d2486337219b5a0))
+* **deps:** bump rollup from 1.26.3 to 1.26.4 ([4745920](https://github.com/manferlo81/bundlib/commit/474592096fde91d7fd8d28f3d72633274858308f))
+* **deps:** bump rollup from 1.26.4 to 1.26.5 ([7c3db61](https://github.com/manferlo81/bundlib/commit/7c3db611e613057a77612e5861658a46660ed187))
+* **deps-dev:** bump @types/lodash from 4.14.145 to 4.14.146 ([#127](https://github.com/manferlo81/bundlib/issues/127)) ([00d5b5d](https://github.com/manferlo81/bundlib/commit/00d5b5ddab50e50d1a04ffaef7c04f3987bcc945))
+* **deps-dev:** bump @types/node from 12.12.6 to 12.12.7 ([3e98306](https://github.com/manferlo81/bundlib/commit/3e9830652fde55d3344e19c45a1753d634a63480))
+* **deps-dev:** bump @typescript-eslint/eslint-plugin ([efd0a08](https://github.com/manferlo81/bundlib/commit/efd0a0804787c37135f70d98449bedd33bf38742))
+* **deps-dev:** bump @typescript-eslint/parser from 2.6.1 to 2.7.0 ([221b3c6](https://github.com/manferlo81/bundlib/commit/221b3c68de495228de0f38f5addbb9c339613375))
+* **deps-dev:** Bump standard-version from 7.0.0 to 7.0.1 ([#126](https://github.com/manferlo81/bundlib/issues/126)) ([4635e4e](https://github.com/manferlo81/bundlib/commit/4635e4e29c4e2a0430903a69e8c668acc19c6dde))
+* **deps-dev:** bump ts-node from 8.4.1 to 8.5.0 ([7363f16](https://github.com/manferlo81/bundlib/commit/7363f163a74b61bf5f2ccd274436831c5fef0f8f))
+
 ### [0.13.1](https://github.com/manferlo81/bundlib/compare/v0.13.0...v0.13.1) (2019-11-06)
 
 
