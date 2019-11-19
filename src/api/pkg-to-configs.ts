@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import builtinModules from 'builtin-modules'
 import { union } from 'lodash'
 import { basename, dirname, join as pathJoin, resolve } from 'path'
@@ -13,7 +12,7 @@ import nodeResolve from 'rollup-plugin-node-resolve'
 import stripShebang from 'rollup-plugin-strip-shebang'
 import typescript2 from 'rollup-plugin-typescript2'
 import mapIdExternal from './plugins/api-plugin'
-import minify from './plugins/minify-plugin'
+import minify from './plugins/minify'
 import { eslint } from 'rollup-plugin-eslint'
 
 import arrayToExternal from './array-to-external'
