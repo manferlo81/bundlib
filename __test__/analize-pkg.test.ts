@@ -42,6 +42,7 @@ describe('analize', () => {
     expect(dependencies)
       .toEqual({
         runtime: null,
+        dev: null,
         peer: null,
         optional: null,
       })

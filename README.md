@@ -396,6 +396,7 @@ interface PkgAnalized {
   };
   dependencies: {
     runtime: string[] | null;
+    dev: string[] | null;
     peer: string[] | null;
     optional: string[] | null;
   };

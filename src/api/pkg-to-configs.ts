@@ -29,6 +29,7 @@ import {
   BundlibRollupOptions,
   RollupSourcemap,
 } from './types'
+import isDepInstalled from './is-dep-installed'
 
 async function pkgToConfigs(
   pkg: PkgAnalized,
@@ -36,7 +37,7 @@ async function pkgToConfigs(
 ): Promise<Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>>;
 
 async function pkgToConfigs(
-  { cwd, pkg, input, dependencies, cache, output }: PkgAnalized,
+  { cwd, input, dependencies, cache, output }: PkgAnalized,
   { dev, watch }: BundlibAPIOptions,
 ): Promise<Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>> {
 
@@ -55,6 +56,7 @@ async function pkgToConfigs(
 
   const {
     runtime: runtimeDeps,
+    dev: devDeps,
     peer: peerDeps,
     optional: optionalDeps,
   } = dependencies
@@ -113,19 +115,13 @@ async function pkgToConfigs(
   const external = union(runtimeDeps, peerDeps, optionalDeps, builtinModules)
   const isExternal = arrayToExternal(external)
 
-  // get installed dependencies from package.json
-
-  const installedDeps = union(runtimeDeps, keysOrNull(pkg.devDependencies))
-
   // determine whetehr to use "built-in" typescript module
-
   const useUserTypescript = (
     isTypescriptAPIInput || isTypescriptBinaryInput
-  ) && installedDeps.indexOf('typescript') >= 0
+  ) && isDepInstalled('typescript', runtimeDeps, devDeps)
 
   // determine whether or not to use chokidar
-
-  const useChokidar = !!watch && installedDeps.indexOf('chokidar') >= 0
+  const useChokidar = !!watch && isDepInstalled('chokidar', runtimeDeps, devDeps)
 
   let typescript = useUserTypescript
     ? null

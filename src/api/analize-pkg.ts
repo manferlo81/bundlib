@@ -58,6 +58,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     types: pkgTypes,
     typings,
     dependencies: runtimeDependencies,
+    devDependencies,
     peerDependencies,
     optionalDependencies,
     bundlib: bundlibOptions = {},
@@ -456,6 +457,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   const dependencies: Dependencies = {
     runtime: keysOrNull(runtimeDependencies),
+    dev: keysOrNull(devDependencies),
     peer: keysOrNull(peerDependencies),
     optional: keysOrNull(optionalDependencies),
   }
