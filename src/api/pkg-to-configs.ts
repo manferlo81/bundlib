@@ -14,6 +14,7 @@ import stripShebang from 'rollup-plugin-strip-shebang'
 import typescript2 from 'rollup-plugin-typescript2'
 import mapIdExternal from './plugins/api-plugin'
 import minify from './plugins/minify-plugin'
+import { eslint } from 'rollup-plugin-eslint'
 
 import arrayToExternal from './array-to-external'
 import { createBrowserConfig, createModuleConfig } from './create-config'
@@ -122,6 +123,7 @@ async function pkgToConfigs(
 
   // determine whether or not to use chokidar
   const useChokidar = !!watch && isDepInstalled('chokidar', runtimeDeps, devDeps)
+  const eslintIsInstalled = isDepInstalled('eslint', runtimeDeps, devDeps)
 
   let typescript = useUserTypescript
     ? null
@@ -150,6 +152,13 @@ async function pkgToConfigs(
     let shebang: string
 
     const plugins = [
+
+      eslintIsInstalled && eslint({
+        include: tsInclude,
+        exclude,
+        throwOnWarning: false,
+        throwOnError: true,
+      }),
 
       bin && stripShebang({
         capture: (shebangFromFile) => shebang = shebangFromFile,
