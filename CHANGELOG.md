@@ -2,6 +2,13 @@
 
 ## Version History
 
+### [0.13.3](https://github.com/manferlo81/bundlib/compare/v0.13.2...v0.13.3) (2019-11-19)
+
+
+### Features
+
+* implemented eslint plugin ([c93d9e7](https://github.com/manferlo81/bundlib/commit/c93d9e7ca03e93c93258415ea568274fc457f47b))
+
 ### [0.13.2](https://github.com/manferlo81/bundlib/compare/v0.13.1...v0.13.2) (2019-11-12)
 
 
