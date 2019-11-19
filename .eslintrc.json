@@ -38,6 +38,7 @@
       "error",
       "always-multiline"
     ],
+    "no-useless-rename": "error",
     "object-shorthand": "error",
     "@typescript-eslint/explicit-function-return-type": "off"
   }
