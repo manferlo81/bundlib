@@ -13,7 +13,7 @@ import nodeResolve from 'rollup-plugin-node-resolve'
 import stripShebang from 'rollup-plugin-strip-shebang'
 import typescript2 from 'rollup-plugin-typescript2'
 import mapIdExternal from './plugins/api-plugin'
-import { minifyPlugin, optimizePlugin } from './plugins/terser-plugin'
+import minify from './plugins/minify-plugin'
 
 import arrayToExternal from './array-to-external'
 import { createBrowserConfig, createModuleConfig } from './create-config'
@@ -237,31 +237,7 @@ async function pkgToConfigs(
         shebang: () => shebang || '#!/usr/bin/env node',
       }),
 
-      (mini ? minifyPlugin : optimizePlugin)(sourcemapBool),
-
-      // !mini && terser({
-      //   sourcemap: sourcemapBool,
-      //   toplevel: true,
-      //   module: true,
-      //   compress: {
-      //     passes: 2,
-      //     sequences: 2,
-      //   },
-      //   mangle: false,
-      //   output: {
-      //     beautify: true,
-      //     indent_level: 2,
-      //   },
-      // }),
-
-      // mini && terser({
-      //   sourcemap: sourcemapBool,
-      //   toplevel: true,
-      //   module: true,
-      //   compress: {
-      //     passes: 2,
-      //   },
-      // }),
+      mini && minify(sourcemapBool),
 
     ]
 
