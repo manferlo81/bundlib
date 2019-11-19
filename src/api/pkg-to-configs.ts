@@ -63,13 +63,18 @@ async function pkgToConfigs(
 
   // throw if "name" option required and not present
 
-  if (
-    browserOutput &&
-    (browserOutput.format === 'iife' || browserOutput.format === 'umd') &&
-    !browserOutput.name
-  ) {
-    throw error('option \'name\' is required for IIFE and UMD builds')
+  if (browserOutput) {
+    const { format, name } = browserOutput
+    if ((format === 'iife' || format === 'umd') && !name) {
+      throw error('option \'name\' is required for IIFE and UMD builds')
+    }
   }
+
+  // CHECK FOR INSTALLED MODULES
+
+  const typescriptIsInstalled = isDepInstalled('typescript', runtimeDeps, devDeps)
+  const eslintIsInstalled = isDepInstalled('eslint', runtimeDeps, devDeps)
+  const chokidarIsInstalled = isDepInstalled('chokidar', runtimeDeps, devDeps)
 
   const typescriptOnlyExtensions = ['.ts', '.tsx']
   const javascriptExtensions = ['.js', '.jsx', '.mjs', '.node']
@@ -110,19 +115,20 @@ async function pkgToConfigs(
     typesOutputDir = dirname(typesOutputDir)
   }
 
-  // set external modules
+  const isExternal = arrayToExternal(
+    union(
+      runtimeDeps,
+      peerDeps,
+      optionalDeps,
+      builtinModules,
+    ),
+  )
 
-  const external = union(runtimeDeps, peerDeps, optionalDeps, builtinModules)
-  const isExternal = arrayToExternal(external)
-
-  // determine whetehr to use "built-in" typescript module
   const useUserTypescript = (
     isTypescriptAPIInput || isTypescriptBinaryInput
-  ) && isDepInstalled('typescript', runtimeDeps, devDeps)
+  ) && typescriptIsInstalled
 
-  // determine whether or not to use chokidar
-  const useChokidar = !!watch && isDepInstalled('chokidar', runtimeDeps, devDeps)
-  const eslintIsInstalled = isDepInstalled('eslint', runtimeDeps, devDeps)
+  const useChokidar = chokidarIsInstalled && !!watch
 
   let typescript = useUserTypescript
     ? null
