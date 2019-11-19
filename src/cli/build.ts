@@ -56,6 +56,12 @@ function build(
         callbacks.error(err)
       }
 
+      if (callbacks.end) {
+        callbacks.end()
+      }
+
+      return
+
     }
 
     if (next) {
