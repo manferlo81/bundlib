@@ -2,6 +2,13 @@
 
 ## Version History
 
+### [0.13.4](https://github.com/manferlo81/bundlib/compare/v0.13.3...v0.13.4) (2019-11-20)
+
+
+### Bug Fixes
+
+* throw if error on build ([0a547d0](https://github.com/manferlo81/bundlib/commit/0a547d0fdff612901449118b6c1c44e395ce77fa))
+
 ### [0.13.3](https://github.com/manferlo81/bundlib/compare/v0.13.2...v0.13.3) (2019-11-19)
 
 

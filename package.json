@@ -1,7 +1,7 @@
 {
   "name": "bundlib",
   "displayName": "Bundlib",
-  "version": "0.13.3",
+  "version": "0.13.4",
   "description": "A javascript library bundler powered by Rollup.js and optionally Typescript",
   "main": "dist/bundlib.js",
   "module": "dist/bundlib.mjs",
