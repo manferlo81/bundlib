@@ -60,7 +60,7 @@ function build(
         callbacks.end()
       }
 
-      return
+      throw err
 
     }
 
