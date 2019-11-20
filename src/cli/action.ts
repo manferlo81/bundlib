@@ -130,6 +130,7 @@ waiting for changes...`)
     await bundlib(cwd, options, callbacks, pkg)
   } catch (err) {
     logError(err)
+    throw err
   }
 
 }
