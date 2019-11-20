@@ -162,7 +162,7 @@ async function pkgToConfigs(
         include: tsInclude,
         exclude,
         throwOnWarning: false,
-        throwOnError: true,
+        throwOnError: false,
       }),
 
       bin && stripShebang({
