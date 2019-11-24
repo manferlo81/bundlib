@@ -46,7 +46,7 @@
     "commander": "^4.0.1",
     "filesize": "^6.0.1",
     "lodash": "^4.17.15",
-    "pretty-ms": "^5.0.0",
+    "pretty-ms": "^5.1.0",
     "read-pkg": "^5.2.0",
     "rollup": "^1.27.4",
     "rollup-plugin-add-shebang": "^0.3.1",
