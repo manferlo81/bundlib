@@ -3,7 +3,7 @@ import { InList } from './in-list'
 
 export function invalidKeys(object: Record<string, unknown>, list: string[]): string[] | null {
   const invalid = keys(object).filter(
-    (key) => list.indexOf(key) === -1,
+    (key) => !list.includes(key),
   )
   return invalid.length ? invalid : null
 }

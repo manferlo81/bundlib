@@ -14,6 +14,7 @@ export function isBool(value: unknown): value is boolean {
   return value === !!value
 }
 
+// eslint-disable-next-line @typescript-eslint/unbound-method
 export const isArray: <T = unknown>(value: unknown) => value is T[] = Array.isArray
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

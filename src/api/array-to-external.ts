@@ -14,7 +14,7 @@ function arrayToExternal(modules: string[] | null): IsExternal {
 
     // ignore local and resolved modules
 
-    if (isResolved || source[0] === '.') {
+    if (isResolved || source.startsWith('.')) {
       return
     }
 

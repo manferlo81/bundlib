@@ -17,6 +17,7 @@ function build(
 
   const cache: Partial<Record<string, RollupCache>> = {}
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   oneByOne(configs, async (config, next) => {
 
     const { input, output } = config

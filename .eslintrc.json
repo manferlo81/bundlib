@@ -6,13 +6,15 @@
   },
   "extends": [
     "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:@typescript-eslint/eslint-recommended"
+    "plugin:@typescript-eslint/recommended-requiring-type-checking"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": 2018,
-    "sourceType": "module"
+    "sourceType": "module",
+    "project": "tsconfig-eslint.json"
   },
   "plugins": [
     "@typescript-eslint"
@@ -40,6 +42,14 @@
     ],
     "no-useless-rename": "error",
     "object-shorthand": "error",
+    "no-multiple-empty-lines": [
+      "error",
+      {
+        "max": 1,
+        "maxBOF": 0,
+        "maxEOF": 0
+      }
+    ],
     "@typescript-eslint/explicit-function-return-type": "off"
   }
 }

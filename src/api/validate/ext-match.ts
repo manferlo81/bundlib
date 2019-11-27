@@ -1,7 +1,7 @@
 import { extname } from 'path'
 
 function extensionMatch(filename: string, extensions: string[]): boolean {
-  return extensions.indexOf(extname(filename).toLowerCase()) >= 0
+  return extensions.includes(extname(filename).toLowerCase())
 }
 
 export default extensionMatch

@@ -2,6 +2,7 @@ export const keys: (
   <K extends string | number | symbol>(
     object: Partial<Record<K, unknown>>,
   ) => Array<K extends string ? K : string>
+  // eslint-disable-next-line @typescript-eslint/unbound-method
 ) = Object.keys
 
 export function setProp<V>(name: string, value: V, target: Record<string, V>): Record<string, V> {

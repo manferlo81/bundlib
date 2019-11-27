@@ -38,7 +38,7 @@ export function mapIdExternal(cwd: string, outputDir: string, map: Record<string
         id: (
           !relativeTarget
             ? '.'
-            : relativeTarget[0] === '.'
+            : relativeTarget.startsWith('.')
               ? relativeTarget
               : pathJoin('.', relativeTarget)
         ),
