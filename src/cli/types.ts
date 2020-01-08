@@ -1,4 +1,4 @@
-import { RollupWarning } from 'rollup'
+import { RollupError, RollupWarning } from 'rollup'
 
 export interface BundlibOptions {
   dev?: boolean;
@@ -10,6 +10,6 @@ export interface BuildCallbackObject {
   end?: () => void;
   buildStart?: (input: string, output: string) => void;
   buildEnd?: (output: string, size: number, duration: number) => void;
-  error?: (error: Error) => void;
+  error?: (error: RollupError) => void;
   warn?: (msg: string | RollupWarning) => void;
 }

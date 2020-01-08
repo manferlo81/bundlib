@@ -1,25 +1,16 @@
 import { statSync } from 'fs'
-import { RollupOptions, watch as rollupWatch } from 'rollup'
-
+import { RollupError, RollupOptions, RollupWatcherEvent, watch as rollupWatch } from 'rollup'
 import { BuildCallbackObject } from './types'
-
-interface WatchEvent {
-  code: string;
-  duration: number;
-  input: string;
-  output: string[];
-  error: Error;
-}
 
 function watch(configs: RollupOptions[], callbacks: BuildCallbackObject): void {
 
   const { start, end, buildStart, buildEnd, error } = callbacks
 
-  const ERROR = error && ((event: WatchEvent) => {
+  const ERROR = error && ((event: RollupWatcherEvent & { error: RollupError }) => {
     error(event.error)
   })
 
-  const table: Record<string, ((event: WatchEvent) => void) | null | undefined> = {
+  const table: Record<string, ((event: RollupWatcherEvent) => void) | null | undefined> = {
 
     START: start && (() => {
       start()
@@ -29,7 +20,9 @@ function watch(configs: RollupOptions[], callbacks: BuildCallbackObject): void {
       end()
     }),
 
-    BUNDLE_START: buildStart && ((event) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
+    BUNDLE_START: buildStart && ((event: RollupWatcherEvent & { output: string; input: string }) => {
       const { output: out } = event
       const { length: len } = out
       for (let i = 0; i < len; i++) {
@@ -37,7 +30,9 @@ function watch(configs: RollupOptions[], callbacks: BuildCallbackObject): void {
       }
     }),
 
-    BUNDLE_END: buildEnd && ((event) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
+    BUNDLE_END: buildEnd && ((event: RollupWatcherEvent & { output: string; duration: number }) => {
       const { output: out } = event
       const { length: len } = out
       for (let i = 0; i < len; i++) {
@@ -50,14 +45,19 @@ function watch(configs: RollupOptions[], callbacks: BuildCallbackObject): void {
       }
     }),
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
     ERROR,
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
     FATAL: ERROR,
 
   }
 
   const watcher = rollupWatch(configs)
 
-  watcher.on('event', (event: WatchEvent) => {
+  watcher.on('event', (event) => {
 
     const { code } = event
     const handle = table[code]

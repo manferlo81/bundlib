@@ -1,4 +1,5 @@
 import { bgWhite, bold, cyan, inverse, red } from 'colorette'
+import { RollupError } from 'rollup'
 
 function create(name: Extract<keyof typeof console, 'log' | 'error'>) {
   const method = console[name]
@@ -10,7 +11,7 @@ function create(name: Extract<keyof typeof console, 'log' | 'error'>) {
 export const log = create('log')
 export const error = create('error')
 
-export function logError(err: Error) {
+export function logError(err: Error | RollupError) {
   if (err.stack) {
     error(err.stack)
   }
