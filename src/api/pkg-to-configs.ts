@@ -2,34 +2,27 @@ import builtinModules from 'builtin-modules'
 import { union } from 'lodash'
 import { basename, dirname, join as pathJoin, resolve } from 'path'
 import { Plugin } from 'rollup'
-
 import addShebang from 'rollup-plugin-add-shebang'
 import babel from 'rollup-plugin-babel'
 import commonjs from 'rollup-plugin-commonjs'
+import { eslint } from 'rollup-plugin-eslint'
 import exportEquals from 'rollup-plugin-export-equals'
 import json from 'rollup-plugin-json'
 import nodeResolve from 'rollup-plugin-node-resolve'
 import stripShebang from 'rollup-plugin-strip-shebang'
 import typescript2 from 'rollup-plugin-typescript2'
-import mapIdExternal from './plugins/api-plugin'
-import minify from './plugins/minify'
-import { eslint } from 'rollup-plugin-eslint'
-
 import arrayToExternal from './array-to-external'
 import { createBrowserConfig, createModuleConfig } from './create-config'
 import { error } from './errors'
-import extensionMatch from './validate/ext-match'
 import { setProp } from './helpers'
+import isDepInstalled from './is-dep-installed'
 import keysOrNull from './keys-or-null'
 import { PkgAnalized } from './pkg-analized'
+import mapIdExternal from './plugins/api-plugin'
+import minify from './plugins/minify'
 import { renameMin, renamePre } from './rename'
-import {
-  BundlibAPIOptions,
-  BundlibRollupModuleOutputOptions,
-  BundlibRollupOptions,
-  RollupSourcemap,
-} from './types'
-import isDepInstalled from './is-dep-installed'
+import { BundlibAPIOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types'
+import extensionMatch from './validate/ext-match'
 
 async function pkgToConfigs(
   pkg: PkgAnalized,
@@ -117,9 +110,9 @@ async function pkgToConfigs(
 
   const isExternal = arrayToExternal(
     union(
-      runtimeDeps,
-      peerDeps,
-      optionalDeps,
+      keysOrNull(runtimeDeps),
+      keysOrNull(peerDeps),
+      keysOrNull(optionalDeps),
       builtinModules,
     ),
   )

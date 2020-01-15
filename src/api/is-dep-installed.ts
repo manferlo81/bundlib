@@ -1,6 +1,6 @@
-function isDepInstalled(name: string, ...list: Array<string[] | null>) {
+function isDepInstalled(name: string, ...list: Array<Record<string, string> | null>) {
   return list.some((deps) => (
-    deps && deps.includes(name)
+    deps && !!deps[name]
   ))
 }
 

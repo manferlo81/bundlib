@@ -1,25 +1,11 @@
 import { resolve } from 'path'
 import readPkg from 'read-pkg'
-
 import { BundlibOptions } from './bundlib-options'
 import { error, invalidOption, invalidPkgField } from './errors'
 import { keys } from './helpers'
-import keysOrNull from './keys-or-null'
-
 import { BundlibPkgJson } from './pkg'
-import {
-  BrowserBuildOptions,
-  CommonJSBuildOptions,
-  Dependencies,
-  ESModuleBuildOptions,
-  InputOptions,
-  OutputOptions,
-  PkgAnalized,
-  TypesBuildOptions,
-} from './pkg-analized'
+import { BrowserBuildOptions, CommonJSBuildOptions, Dependencies, ESModuleBuildOptions, InputOptions, OutputOptions, PkgAnalized, TypesBuildOptions } from './pkg-analized'
 import { isBool, isDictionary, isDictionaryOrNull, isNull, isString, isStringOrNull } from './type-check'
-import { invalidKeys, keysInList } from './validate/validate-keys'
-
 import { isBrowserOption } from './validate/option-browser'
 import { isModuleOption, normalizeBuildModule, normalizeModuleOption } from './validate/option-esmodule'
 import { normalizeBuildFlag } from './validate/option-flag'
@@ -30,8 +16,9 @@ import { isCJSOptionKey } from './validate/option-main'
 import { isValidMinOption, normalizeBuildMin, normalizeMinOption } from './validate/option-min'
 import { isModuleOptionKey } from './validate/option-module'
 import normalizeBuildName from './validate/option-name'
-import { isTypesOptionKey } from './validate/option-types'
 import { normalizeBuildSourcemap, normalizeSourcemap } from './validate/option-sourcemap'
+import { isTypesOptionKey } from './validate/option-types'
+import { invalidKeys, keysInList } from './validate/validate-keys'
 
 async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalized>;
 async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAnalized> {
@@ -455,10 +442,10 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   // set dependencies options
 
   const dependencies: Dependencies = {
-    runtime: keysOrNull(runtimeDependencies),
-    dev: keysOrNull(devDependencies),
-    peer: keysOrNull(peerDependencies),
-    optional: keysOrNull(optionalDependencies),
+    runtime: runtimeDependencies || null,
+    dev: devDependencies || null,
+    peer: peerDependencies || null,
+    optional: optionalDependencies || null,
   }
 
   // set cache option
