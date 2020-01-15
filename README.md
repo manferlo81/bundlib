@@ -395,10 +395,10 @@ interface PkgAnalized {
     types: TypesBuildOptions | null;
   };
   dependencies: {
-    runtime: string[] | null;
-    dev: string[] | null;
-    peer: string[] | null;
-    optional: string[] | null;
+    runtime: { [name: string]: string } | null;
+    dev: { [name: string]: string } | null;
+    peer: { [name: string]: string } | null;
+    optional: { [name: string]: string } | null;
   };
   cache: string;
 }
@@ -470,7 +470,7 @@ interface TypesBuildOptions {
 * Uses the user copy of `typescript` if installed
 * Uses `chokidar` if installed
 * Importing an internal file from a package `Ex: lodash/core` will be treated as external if `lodash` is included in your `"dependencies"`, `peerDependencies` or `optionalDependencies`
-* Transforms `async/await` using [`Babel`](https://babeljs.io) and [`babel-plugin-transform-async-to-promises`](https://github.com/rpetrich/babel-plugin-transform-async-to-promises) for ES5 support
+* Transforms `async/await` using [`babel-plugin-transform-async-to-promises`](https://github.com/rpetrich/babel-plugin-transform-async-to-promises) for ES5 support
 * Dynamic Import support through [`@babel/plugin-syntax-dynamic-import`](https://babeljs.io/docs/en/babel-plugin-syntax-dynamic-import)
 * Transforms `Object.assign` using [`@babel/plugin-transform-object-assign`](https://babeljs.io/docs/en/babel-plugin-transform-object-assign)
 * `React JSX` support through [`@babel/preset-react`](https://babeljs.io/docs/en/next/babel-preset-react)
