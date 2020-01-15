@@ -2,6 +2,22 @@
 
 ## Version History
 
+## [0.14.0](https://github.com/manferlo81/bundlib/compare/v0.13.4...v0.14.0) (2020-01-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* **analize:** analizePkg returns dependencies versions
+
+### Features
+
+* **analize:** analized dependencies versions ([f06b5c0](https://github.com/manferlo81/bundlib/commit/f06b5c0ef6d136ce1141e233bbb0e4c7e6456d79))
+
+
+### Bug Fixes
+
+* rollup watcher type ([ca4ae2e](https://github.com/manferlo81/bundlib/commit/ca4ae2e00b782b9dcbcecd8362d94168b8481bef))
+
 ### [0.13.4](https://github.com/manferlo81/bundlib/compare/v0.13.3...v0.13.4) (2019-11-20)
 
 ### Bug Fixes
