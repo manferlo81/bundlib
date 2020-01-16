@@ -1,6 +1,9 @@
 import { Nullable } from './helper-types'
 import { BrowserBuildFormat, RollupSourcemap } from './types'
 
+export type BuildEnvironment = 'development' | 'production' | 'dev' | 'prod';
+export type BuildType = 'main' | 'module' | 'browser' | 'bin';
+
 export type GlobalsOptions = Nullable<Record<string, string> | string[]>;
 
 export interface SourceMapOptions {
@@ -21,11 +24,10 @@ export interface InputOptions {
   bin?: Nullable<string>;
 }
 
-export type ModuleString = 'main' | 'browser' | 'bin';
+export type ModuleString = Exclude<BuildType, 'module'>;
 export type ModuleOption = Nullable<ModuleString | ModuleString[] | boolean>;
 
-export type MinString = 'main' | 'module' | 'browser' | 'bin';
-export type MinOption = Nullable<MinString | MinString[] | boolean>;
+export type MinOption = Nullable<BuildType | BuildType[] | boolean>;
 
 export interface TypesOptions {
   equals?: Nullable<boolean>;
