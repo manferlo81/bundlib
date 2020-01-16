@@ -2,8 +2,11 @@
 
 ## Version History
 
-## [0.14.0](https://github.com/manferlo81/bundlib/compare/v0.13.4...v0.14.0) (2020-01-15)
+### [0.14.1](https://github.com/manferlo81/bundlib/compare/v0.14.0...v0.14.1) (2020-01-16)
 
+* documented BREAKING CHANGES on README
+
+## [0.14.0](https://github.com/manferlo81/bundlib/compare/v0.13.4...v0.14.0) (2020-01-15)
 
 ### ⚠ BREAKING CHANGES
 
@@ -12,7 +15,6 @@
 ### Features
 
 * **analize:** analized dependencies versions ([f06b5c0](https://github.com/manferlo81/bundlib/commit/f06b5c0ef6d136ce1141e233bbb0e4c7e6456d79))
-
 
 ### Bug Fixes
 
