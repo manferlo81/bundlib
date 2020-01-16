@@ -1,4 +1,4 @@
-import { MinString } from '../../src/api/bundlib-options'
+import { BuildType } from '../../src/api/bundlib-options'
 import analize from '../tools/analize'
 
 describe('min option', () => {
@@ -15,7 +15,7 @@ describe('min option', () => {
   })
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const analizeWithBuildMin = (field: MinString, min: any) => analize(cwd, {
+  const analizeWithBuildMin = (field: BuildType, min: any) => analize(cwd, {
     main: 'main.js',
     module: 'module.js',
     browser: 'browser.js',
