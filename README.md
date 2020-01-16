@@ -6,6 +6,12 @@ A javascript library bundler powered by [Rollup.js](https://github.com/rollup/ro
 
 > :warning: Bundlib is under active development, please [file a new issue](https://github.com/manferlo81/bundlib/issues) if you find any issue or bug, suggestions are welcome as well.
 
+## BREAKING CHANGES in version 0.14.x
+
+### API
+
+* `analizePkg` result `dependencies` member contains a set of objects in the form `{ name: version }` ([*see* `PkgAnalized`](#pkganalized)) allowing more control over installed dependencies and faster dependency detection. If you are using `Bundlib` via `CLI` you won't be affected by this change.
+
 ## In this guide
 
 * [Install](#install)
