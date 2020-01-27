@@ -17,8 +17,8 @@
     "interop": true
   },
   "scripts": {
-    "dev": "ts-node -T -P ts-node-tsconfig.json src/cli -dw",
-    "build": "ts-node -T -P ts-node-tsconfig.json src/cli -d",
+    "dev": "ts-node -T -P tsconfig-ts-node.json src/cli -dw",
+    "build": "ts-node -T -P tsconfig-ts-node.json src/cli -d",
     "test": "jest --color -w 3",
     "clean": "rimraf bin dist types coverage node_modules/.cache/bundlib node_modules/.cache/jest",
     "lint": "eslint src/** __test__/**",
