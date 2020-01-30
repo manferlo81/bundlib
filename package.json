@@ -67,7 +67,7 @@
     "@types/jest": "^25.1.1",
     "@types/lodash": "^4.14.149",
     "@types/mock-fs": "^4.10.0",
-    "@types/node": "^13.5.2",
+    "@types/node": "^13.5.3",
     "@types/rollup-plugin-json": "^3.0.2",
     "@typescript-eslint/eslint-plugin": "^2.18.0",
     "@typescript-eslint/parser": "^2.18.0",
