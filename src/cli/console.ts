@@ -1,10 +1,10 @@
-import { bgWhite, bold, cyan, inverse, red } from 'colorette'
+import chalk from 'chalk'
 import { RollupError } from 'rollup'
 
 function create(name: Extract<keyof typeof console, 'log' | 'error'>) {
   const method = console[name]
   return (msg: string) => (
-    method(cyan(msg))
+    method(chalk.cyan(msg))
   )
 }
 
@@ -15,6 +15,6 @@ export function logError(err: Error | RollupError) {
   if (err.stack) {
     error(err.stack)
   }
-  const tag = bold(bgWhite(red(inverse(' error '))))
+  const tag = chalk.bold.bgWhite.red.inverse(' error ')
   error(`${tag} ${err.message || err}`)
 }

@@ -1,23 +1,28 @@
-import { bgBlack, bold, green, inverse, magenta, yellow } from 'colorette'
+import chalk from 'chalk'
 import fileSize from 'filesize'
 import { relative } from 'path'
 import prettyMs from 'pretty-ms'
 import readPkg from 'read-pkg'
 import slash from 'slash'
-
 import { BundlibPkgJson } from '../api'
-
 import bundlib from './bundlib'
 import { log, logError } from './console'
 import { BuildCallbackObject, BundlibOptions } from './types'
 
+const { bold } = chalk
+const green = bold.green
+const yellow = bold.yellow
+const magenta = bold.magenta
+
 function prjInfo(name: string, ver: string) {
-
-  const projName = bold(green(name))
-  const projVer = bold(yellow(`v${ver}`))
-
+  const projName = green(name)
+  const projVer = yellow(`v${ver}`)
   return `${projName} ${projVer}`
+}
 
+// ENABLE COLORS ON GIT BASH FOR WINDOWS
+if (!chalk.level && 'MINGW_CHOST' in process.env) {
+  chalk.level = 1
 }
 
 export async function action(displayName: string, version: string, silent: boolean, options: BundlibOptions) {
@@ -32,7 +37,7 @@ export async function action(displayName: string, version: string, silent: boole
     log(`${appInfo}
 `)
 
-    const filename = bold(yellow('package.json'))
+    const filename = yellow('package.json')
     log(`reading: ${filename}`)
 
     pkg = await readPkg({
@@ -68,10 +73,10 @@ export async function action(displayName: string, version: string, silent: boole
     Object.assign(callbacks, {
 
       buildEnd(filename, size, duration) {
-        const tag = bold(bgBlack(green(inverse(' built '))))
-        const path = bold(yellow(slash(relative(cwd, filename))))
-        const colorSize = bold(magenta(fileSize(size)))
-        const colorTime = bold(magenta(prettyMs(duration, { secondsDecimalDigits: 2 })))
+        const tag = green.bgBlack.inverse(' built ')
+        const path = yellow(slash(relative(cwd, filename)))
+        const colorSize = magenta(fileSize(size))
+        const colorTime = magenta(prettyMs(duration, { secondsDecimalDigits: 2 }))
         log(`${tag} ${path} ( ${colorSize} in ${colorTime} )`)
       },
 
@@ -90,12 +95,12 @@ export async function action(displayName: string, version: string, silent: boole
           message = msg
 
           if (plugin) {
-            message = `(plugin ${bold(magenta(plugin))}) ${message}`
+            message = `(plugin ${magenta(plugin)}) ${message}`
           }
 
         }
 
-        const tag = bold(magenta('warning:'))
+        const tag = magenta('warning:')
 
         log(`${tag} ${message}`)
 
