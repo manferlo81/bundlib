@@ -4,11 +4,11 @@ import { basename, dirname, join as pathJoin, resolve } from 'path'
 import { Plugin } from 'rollup'
 import addShebang from 'rollup-plugin-add-shebang'
 import babel from 'rollup-plugin-babel'
-import commonjs from 'rollup-plugin-commonjs'
+import commonjs from '@rollup/plugin-commonjs'
 import { eslint } from 'rollup-plugin-eslint'
 import exportEquals from 'rollup-plugin-export-equals'
-import json from 'rollup-plugin-json'
-import nodeResolve from 'rollup-plugin-node-resolve'
+import json from '@rollup/plugin-json'
+import nodeResolve from '@rollup/plugin-node-resolve'
 import stripShebang from 'rollup-plugin-strip-shebang'
 import typescript2 from 'rollup-plugin-typescript2'
 import arrayToExternal from './array-to-external'
@@ -208,7 +208,7 @@ async function pkgToConfigs(
         },
       }),
 
-      json() as Plugin,
+      json(),
 
       declarationDir && typesOutput && typesOutput.equals && exportEquals({
         file: resolve(cwd, pathJoin(declarationDir, typesFilename)),
