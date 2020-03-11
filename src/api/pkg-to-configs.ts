@@ -1,14 +1,14 @@
+import commonjs from '@rollup/plugin-commonjs'
+import json from '@rollup/plugin-json'
+import nodeResolve from '@rollup/plugin-node-resolve'
 import builtinModules from 'builtin-modules'
 import { union } from 'lodash'
 import { basename, dirname, join as pathJoin, resolve } from 'path'
 import { Plugin } from 'rollup'
 import addShebang from 'rollup-plugin-add-shebang'
 import babel from 'rollup-plugin-babel'
-import commonjs from '@rollup/plugin-commonjs'
 import { eslint } from 'rollup-plugin-eslint'
 import exportEquals from 'rollup-plugin-export-equals'
-import json from '@rollup/plugin-json'
-import nodeResolve from '@rollup/plugin-node-resolve'
 import stripShebang from 'rollup-plugin-strip-shebang'
 import typescript2 from 'rollup-plugin-typescript2'
 import arrayToExternal from './array-to-external'
@@ -65,9 +65,9 @@ async function pkgToConfigs(
 
   // CHECK FOR INSTALLED MODULES
 
-  const typescriptIsInstalled = isDepInstalled('typescript', runtimeDeps, devDeps)
-  const eslintIsInstalled = isDepInstalled('eslint', runtimeDeps, devDeps)
-  const chokidarIsInstalled = isDepInstalled('chokidar', runtimeDeps, devDeps)
+  const typescriptIsInstalled = !!isDepInstalled('typescript', runtimeDeps, devDeps)
+  const eslintIsInstalled = !!isDepInstalled('eslint', runtimeDeps, devDeps)
+  const chokidarIsInstalled = !!isDepInstalled('chokidar', runtimeDeps, devDeps)
 
   const typescriptOnlyExtensions = ['.ts', '.tsx']
   const javascriptExtensions = ['.js', '.jsx', '.mjs', '.node']
