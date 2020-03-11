@@ -1,38 +1,30 @@
-import { IsExternal, Plugin, WatchOptions as RollupWatchOptions } from 'rollup'
-
+import { ChokidarOptions, IsExternal, Plugin, WatcherOptions as RollupWatcherOptions } from 'rollup'
 import { Nullable } from './helper-types'
+import { BrowserBuildFormat, BundlibRollupBrowseOutputOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, ModuleBuildFormat, RollupSourcemap } from './types'
 import { createInList } from './validate/in-list'
-import {
-  BrowserBuildFormat,
-  BundlibRollupBrowseOutputOptions,
-  BundlibRollupModuleOutputOptions,
-  BundlibRollupOptions,
-  ModuleBuildFormat,
-  RollupSourcemap,
-} from './types'
 
 export function createConfig<OutputOptions extends BundlibRollupModuleOutputOptions>(
   input: string,
   output: OutputOptions,
   external: IsExternal,
   plugins: Plugin[],
-  chokidar: boolean | RollupWatchOptions,
+  chokidar: boolean | ChokidarOptions,
 ): BundlibRollupOptions<OutputOptions> {
 
-  return {
+  const watch: RollupWatcherOptions = {
+    exclude: ['node_modules/**'],
+  }
 
+  if (chokidar) {
+    watch.chokidar = chokidar === true ? {} : chokidar
+  }
+
+  return {
     input,
     output,
-
     external,
-
     plugins,
-
-    watch: {
-      chokidar,
-      exclude: ['node_modules/**'],
-    },
-
+    watch,
   }
 
 }
@@ -46,7 +38,7 @@ export function createModuleConfig(
   interop: boolean,
   external: IsExternal,
   plugins: Plugin[],
-  chokidar: boolean | RollupWatchOptions,
+  chokidar: boolean | ChokidarOptions,
 ): BundlibRollupOptions<BundlibRollupModuleOutputOptions> {
   return createConfig(
     input,
@@ -68,7 +60,7 @@ export function createBrowserConfig(
   interop: boolean,
   isExternal: IsExternal,
   plugins: Plugin[],
-  chokidar: boolean | RollupWatchOptions,
+  chokidar: boolean | ChokidarOptions,
   name: string,
   extend: boolean,
   globals: Nullable<Record<string, string>>,

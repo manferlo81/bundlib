@@ -6,6 +6,10 @@ A javascript library bundler powered by [Rollup.js](https://github.com/rollup/ro
 
 > :warning: Bundlib is under active development, please [file a new issue](https://github.com/manferlo81/bundlib/issues) if you find any issue or bug, suggestions are welcome as well.
 
+## BREAKING CHANGES in version 0.15.x
+
+* Rollup has to be installed separately
+
 ## BREAKING CHANGES in version 0.14.x
 
 ### API
