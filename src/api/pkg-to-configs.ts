@@ -2,7 +2,6 @@ import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
 import nodeResolve from '@rollup/plugin-node-resolve'
 import builtinModules from 'builtin-modules'
-import { union } from 'lodash'
 import { basename, dirname, join as pathJoin, resolve } from 'path'
 import { Plugin } from 'rollup'
 import addShebang from 'rollup-plugin-add-shebang'
@@ -109,12 +108,10 @@ async function pkgToConfigs(
   }
 
   const isExternal = arrayToExternal(
-    union(
-      keysOrNull(runtimeDeps),
-      keysOrNull(peerDeps),
-      keysOrNull(optionalDeps),
-      builtinModules,
-    ),
+    keysOrNull(runtimeDeps),
+    keysOrNull(peerDeps),
+    keysOrNull(optionalDeps),
+    builtinModules as string[],
   )
 
   const useUserTypescript = (

@@ -1,8 +1,13 @@
 import { IsExternal } from 'rollup'
 
-function arrayToExternal(modules: string[] | null): IsExternal {
+function arrayToExternal(...modules: Array<string[] | null>): IsExternal {
 
-  if (!modules) {
+  const filtered = modules.reduce<string[]>(
+    (result, list) => list ? [...result, ...list] : result,
+    [],
+  )
+
+  if (!filtered.length) {
     return () => false
   }
 
@@ -26,7 +31,7 @@ function arrayToExternal(modules: string[] | null): IsExternal {
 
     // set cached value
 
-    return cache[source] = modules.some((moduleName): (boolean | void) => {
+    return cache[source] = filtered.some((moduleName): (boolean | void) => {
 
       if (source === moduleName) {
         return true
