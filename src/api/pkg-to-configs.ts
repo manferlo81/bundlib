@@ -67,9 +67,9 @@ async function pkgToConfigs(
   const typescriptIsInstalled = isDepInstalled('typescript', runtimeDeps, devDeps)
   const chokidarIsInstalled = isDepInstalled('chokidar', runtimeDeps, devDeps)
 
-  const usePluginESLint = isDepInstalled('eslint', runtimeDeps, devDeps) && isDepInstalled('rollup-plugin-eslint', runtimeDeps, devDeps)
+  const usePluginESLint = isDepInstalled('rollup-plugin-eslint', runtimeDeps, devDeps)
   const usePluginJSON = isDepInstalled('@rollup/plugin-json', runtimeDeps, devDeps)
-  const usePluginBabel = isDepInstalled('@babel/core', runtimeDeps, devDeps) && isDepInstalled('rollup-plugin-babel', runtimeDeps, devDeps)
+  const usePluginBabel = isDepInstalled('rollup-plugin-babel', runtimeDeps, devDeps)
 
   const typescriptOnlyExtensions = ['.ts', '.tsx']
   const javascriptExtensions = ['.js', '.jsx', '.mjs', '.node']
