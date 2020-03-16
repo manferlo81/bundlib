@@ -10,6 +10,7 @@ A javascript library bundler powered by [Rollup.js](https://github.com/rollup/ro
 
 * Rollup has to be installed separately
 * `analizePkg` paths are not longer resolved
+* find input files and default to `index.js` instead of `index.ts`
 
 ## BREAKING CHANGES in version 0.14.x
 
@@ -39,7 +40,9 @@ npm i -D bundlib rollup
 
 ## First steps
 
-Bundlib will use `src/index.ts` as entry file for your library by default, it can be configured using the [`input`](#input) option. Add the corresponding scripts to your `package.json` and run them. [see below for CLI options](#cli).
+Bundlib will use `src/index.ts` or `src/index.tsx` as entry file for your library if you are using `typescript` or `src/index.js` otherwise, it can be configured using the [`input`](#input) option.
+
+Add the corresponding scripts to your `package.json` and run them. [see below for CLI options](#cli).
 
 ## Build
 

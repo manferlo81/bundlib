@@ -10,6 +10,7 @@ import pluginTypescript2 from 'rollup-plugin-typescript2'
 import arrayToExternal from './array-to-external'
 import { createBrowserConfig, createModuleConfig } from './create-config'
 import { error } from './errors'
+import findFirst from './find-first'
 import { setProp } from './helpers'
 import isDepInstalled from './is-dep-installed'
 import keysOrNull from './keys-or-null'
@@ -61,10 +62,31 @@ async function pkgToConfigs(
     }
   }
 
+  // const apiOutput = !!(esOutput || cjsOutput || browserOutput)
+
   // CHECK FOR INSTALLED MODULES
 
-  const typescriptIsInstalled = isDepInstalled('typescript', runtimeDeps, devDeps)
-  const chokidarIsInstalled = isDepInstalled('chokidar', runtimeDeps, devDeps)
+  const isInstalledTypescript = isDepInstalled('typescript', runtimeDeps, devDeps)
+  const isInstalledChokidar = isDepInstalled('chokidar', runtimeDeps, devDeps)
+
+  const apiInput = apiInput1 ? resolve(cwd, apiInput1) : (
+    (
+      isInstalledTypescript ? findFirst(
+        ...['index.ts', 'index.tsx'].map((fn) => resolve(cwd, 'src', fn)),
+      ) : null
+    ) ||
+    resolve(cwd, 'src', 'index.js')
+  )
+
+  const binInput = binInput1 ? resolve(cwd, binInput1) : (
+    (
+      isInstalledTypescript ? findFirst(
+        ...['index.ts'].map((fn) => resolve(cwd, 'src-bin', fn)),
+      ) : null
+    ) || resolve(cwd, 'src-bin', 'index.js')
+  )
+
+  // CHECK FOR INSTALLED PLUGINS
 
   const usePluginESLint = isDepInstalled('rollup-plugin-eslint', runtimeDeps, devDeps)
   const usePluginJSON = isDepInstalled('@rollup/plugin-json', runtimeDeps, devDeps)
@@ -72,9 +94,6 @@ async function pkgToConfigs(
 
   const typescriptOnlyExtensions = ['.ts', '.tsx']
   const javascriptExtensions = ['.js', '.jsx', '.mjs', '.node']
-
-  const apiInput = resolve(cwd, apiInput1 || 'src/index.ts')
-  const binInput = resolve(cwd, binInput1 || 'src-bin/index.ts')
 
   const isTypescriptAPIInput = extensionMatch(apiInput, typescriptOnlyExtensions)
   const isTypescriptBinaryInput = extensionMatch(binInput, typescriptOnlyExtensions)
@@ -121,9 +140,9 @@ async function pkgToConfigs(
 
   const useUserTypescript = (
     isTypescriptAPIInput || isTypescriptBinaryInput
-  ) && typescriptIsInstalled
+  ) && isInstalledTypescript
 
-  const useChokidar = chokidarIsInstalled && !!watch
+  const useChokidar = isInstalledChokidar && !!watch
 
   let typescript = useUserTypescript
     ? null
@@ -254,7 +273,7 @@ async function pkgToConfigs(
         isExternal,
         await createPlugins(
           isTypescriptAPIInput,
-          isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
+          apiExtensions,
           resolvedPath,
           sourcemap,
           production && !min,
@@ -278,7 +297,7 @@ async function pkgToConfigs(
           isExternal,
           await createPlugins(
             isTypescriptAPIInput,
-            isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
+            apiExtensions,
             resolvedPath,
             sourcemap,
             true,
@@ -309,7 +328,7 @@ async function pkgToConfigs(
         isExternal,
         await createPlugins(
           isTypescriptAPIInput,
-          isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
+          apiExtensions,
           resolvedPath,
           sourcemap,
           production && !min,
@@ -333,7 +352,7 @@ async function pkgToConfigs(
           isExternal,
           await createPlugins(
             isTypescriptAPIInput,
-            isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
+            apiExtensions,
             resolvedPath,
             sourcemap,
             true,
@@ -365,7 +384,7 @@ async function pkgToConfigs(
         isBrowserExternal,
         await createPlugins(
           isTypescriptAPIInput,
-          isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
+          apiExtensions,
           null,
           sourcemap,
           production && !min,
@@ -393,7 +412,7 @@ async function pkgToConfigs(
           isBrowserExternal,
           await createPlugins(
             isTypescriptAPIInput,
-            isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
+            apiExtensions,
             null,
             sourcemap,
             true,
@@ -428,7 +447,7 @@ async function pkgToConfigs(
         isExternal,
         await createPlugins(
           isTypescriptBinaryInput,
-          isTypescriptBinaryInput ? typescriptExtensions : javascriptExtensions,
+          binaryExtensions,
           resolvedPath,
           sourcemap,
           production && !min,
@@ -452,7 +471,7 @@ async function pkgToConfigs(
           isExternal,
           await createPlugins(
             isTypescriptBinaryInput,
-            isTypescriptBinaryInput ? typescriptExtensions : javascriptExtensions,
+            binaryExtensions,
             resolvedPath,
             sourcemap,
             true,

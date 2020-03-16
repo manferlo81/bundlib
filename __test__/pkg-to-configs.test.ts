@@ -215,6 +215,7 @@ describe('package to configs', () => {
       main: 'out/lib.js',
       types: 'out/lib.d.ts',
       bundlib: {
+        input: 'src/index.ts',
         equals: true,
       },
     })
