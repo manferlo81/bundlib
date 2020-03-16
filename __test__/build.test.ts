@@ -3,12 +3,12 @@ import createConfigs from './tools/create-configs'
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
-import { dependencies, devDependencies, peerDependencies } from '../package.json'
+import { dependencies, devDependencies, peerDependencies, optionalDependencies } from '../package.json'
 
 describe('build', () => {
 
   const cwd = process.cwd()
-  const deps = { dependencies, devDependencies, peerDependencies }
+  const deps = { dependencies, devDependencies, peerDependencies, optionalDependencies }
 
   test('should build a CommonJS module', async () => {
 

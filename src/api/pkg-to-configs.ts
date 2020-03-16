@@ -1,15 +1,15 @@
-import commonjs from '@rollup/plugin-commonjs'
-import json from '@rollup/plugin-json'
-import nodeResolve from '@rollup/plugin-node-resolve'
+import pluginCommonJS from '@rollup/plugin-commonjs'
+import pluginJSON from '@rollup/plugin-json'
+import pluginNodeResolve from '@rollup/plugin-node-resolve'
 import builtinModules from 'builtin-modules'
 import { basename, dirname, join as pathJoin, resolve } from 'path'
 import { Plugin } from 'rollup'
-import addShebang from 'rollup-plugin-add-shebang'
-import babel from 'rollup-plugin-babel'
-import { eslint } from 'rollup-plugin-eslint'
-import exportEquals from 'rollup-plugin-export-equals'
-import stripShebang from 'rollup-plugin-strip-shebang'
-import typescript2 from 'rollup-plugin-typescript2'
+import pluginAddShebang from 'rollup-plugin-add-shebang'
+import pluginBabel from 'rollup-plugin-babel'
+import { eslint as pluginESLint } from 'rollup-plugin-eslint'
+import pluginExportEquals from 'rollup-plugin-export-equals'
+import pluginStripShebang from 'rollup-plugin-strip-shebang'
+import pluginTypescript2 from 'rollup-plugin-typescript2'
 import arrayToExternal from './array-to-external'
 import { createBrowserConfig, createModuleConfig } from './create-config'
 import { error } from './errors'
@@ -17,8 +17,8 @@ import { setProp } from './helpers'
 import isDepInstalled from './is-dep-installed'
 import keysOrNull from './keys-or-null'
 import { PkgAnalized } from './pkg-analized'
-import mapIdExternal from './plugins/api-plugin'
-import minify from './plugins/minify'
+import pluginMapIdExternal from './plugins/api-plugin'
+import pluginMinify from './plugins/minify'
 import { renameMin, renamePre } from './rename'
 import { BundlibAPIOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types'
 import extensionMatch from './validate/ext-match'
@@ -64,9 +64,12 @@ async function pkgToConfigs(
 
   // CHECK FOR INSTALLED MODULES
 
-  const typescriptIsInstalled = !!isDepInstalled('typescript', runtimeDeps, devDeps)
-  const eslintIsInstalled = !!isDepInstalled('eslint', runtimeDeps, devDeps)
-  const chokidarIsInstalled = !!isDepInstalled('chokidar', runtimeDeps, devDeps)
+  const typescriptIsInstalled = isDepInstalled('typescript', runtimeDeps, devDeps)
+  const chokidarIsInstalled = isDepInstalled('chokidar', runtimeDeps, devDeps)
+
+  const usePluginESLint = isDepInstalled('eslint', runtimeDeps, devDeps) && isDepInstalled('rollup-plugin-eslint', runtimeDeps, devDeps)
+  const usePluginJSON = isDepInstalled('@rollup/plugin-json', runtimeDeps, devDeps)
+  const usePluginBabel = isDepInstalled('@babel/core', runtimeDeps, devDeps) && isDepInstalled('rollup-plugin-babel', runtimeDeps, devDeps)
 
   const typescriptOnlyExtensions = ['.ts', '.tsx']
   const javascriptExtensions = ['.js', '.jsx', '.mjs', '.node']
@@ -148,34 +151,34 @@ async function pkgToConfigs(
 
     const plugins = [
 
-      eslintIsInstalled && eslint({
+      usePluginESLint && pluginESLint({
         include: tsInclude,
         exclude,
         throwOnWarning: false,
         throwOnError: false,
       }),
 
-      bin && stripShebang({
+      bin && pluginStripShebang({
         capture: (shebangFromFile) => shebang = shebangFromFile,
         sourcemap: sourcemapBool,
       }),
 
-      bin && cjsOutput && outputFile && mapIdExternal(
+      bin && cjsOutput && outputFile && pluginMapIdExternal(
         cwd,
         dirname(outputFile),
         setProp(apiInput, cwd, {}),
       ),
 
-      nodeResolve({
+      pluginNodeResolve({
         preferBuiltins: !browser,
         extensions,
       }),
 
-      browser && commonjs({
+      browser && pluginCommonJS({
         sourceMap: sourcemapBool,
       }),
 
-      inputIsTypescript && typescript2({
+      inputIsTypescript && pluginTypescript2({
         typescript: typescript || (typescript = require(require.resolve('typescript', {
           paths: [cwd],
         }))),
@@ -205,39 +208,23 @@ async function pkgToConfigs(
         },
       }),
 
-      json(),
+      usePluginJSON && pluginJSON(),
 
-      declarationDir && typesOutput && typesOutput.equals && exportEquals({
+      declarationDir && typesOutput && typesOutput.equals && pluginExportEquals({
         file: resolve(cwd, pathJoin(declarationDir, typesFilename)),
       }),
 
-      babel({
+      usePluginBabel && pluginBabel({
         extensions,
         exclude,
-        babelrc: true,
-        presets: [
-          [
-            require.resolve('@babel/preset-env'),
-            { loose: true },
-          ],
-          require.resolve('@babel/preset-react'),
-        ],
-        plugins: [
-          require.resolve('@babel/plugin-syntax-dynamic-import'),
-          [
-            require.resolve('babel-plugin-transform-async-to-promises'),
-            { inlineHelpers: true },
-          ],
-          require.resolve('@babel/plugin-transform-object-assign'),
-        ],
       }),
 
-      bin && outputFile && addShebang({
+      bin && outputFile && pluginAddShebang({
         include: outputFile,
         shebang: () => shebang || '#!/usr/bin/env node',
       }),
 
-      mini && minify(sourcemapBool),
+      mini && pluginMinify(sourcemapBool),
 
     ]
 
