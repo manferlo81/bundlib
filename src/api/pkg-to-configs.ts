@@ -1,12 +1,9 @@
 import pluginCommonJS from '@rollup/plugin-commonjs'
-import pluginJSON from '@rollup/plugin-json'
 import pluginNodeResolve from '@rollup/plugin-node-resolve'
 import builtinModules from 'builtin-modules'
 import { basename, dirname, join as pathJoin, resolve } from 'path'
 import { Plugin } from 'rollup'
 import pluginAddShebang from 'rollup-plugin-add-shebang'
-import pluginBabel from 'rollup-plugin-babel'
-import { eslint as pluginESLint } from 'rollup-plugin-eslint'
 import pluginExportEquals from 'rollup-plugin-export-equals'
 import pluginStripShebang from 'rollup-plugin-strip-shebang'
 import pluginTypescript2 from 'rollup-plugin-typescript2'
@@ -131,7 +128,7 @@ async function pkgToConfigs(
 
   const configs: Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>> = []
 
-  function createPlugins(
+  async function createPlugins(
     inputIsTypescript: boolean,
     extensions: string[],
     outputFile: string | null,
@@ -139,7 +136,7 @@ async function pkgToConfigs(
     mini: boolean,
     browser: boolean,
     bin: boolean,
-  ): Plugin[] {
+  ): Promise<Plugin[]> {
 
     const sourcemapBool = !!sourcemap
 
@@ -149,9 +146,13 @@ async function pkgToConfigs(
 
     let shebang: string
 
+    const pluginESLint = usePluginESLint && (await import('rollup-plugin-eslint')).eslint
+    const pluginJSON = usePluginJSON && (await import('@rollup/plugin-json')).default
+    const pluginBabel = usePluginBabel && (await import('rollup-plugin-babel')).default
+
     const plugins = [
 
-      usePluginESLint && pluginESLint({
+      pluginESLint && pluginESLint({
         include: tsInclude,
         exclude,
         throwOnWarning: false,
@@ -208,13 +209,13 @@ async function pkgToConfigs(
         },
       }),
 
-      usePluginJSON && pluginJSON(),
+      pluginJSON && pluginJSON(),
 
       declarationDir && typesOutput && typesOutput.equals && pluginExportEquals({
         file: resolve(cwd, pathJoin(declarationDir, typesFilename)),
       }),
 
-      usePluginBabel && pluginBabel({
+      pluginBabel && pluginBabel({
         extensions,
         exclude,
       }),
@@ -245,7 +246,7 @@ async function pkgToConfigs(
         true,
         false,
         isExternal,
-        createPlugins(
+        await createPlugins(
           isTypescriptAPIInput,
           isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
           path,
@@ -269,7 +270,7 @@ async function pkgToConfigs(
           true,
           false,
           isExternal,
-          createPlugins(
+          await createPlugins(
             isTypescriptAPIInput,
             isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
             path,
@@ -299,7 +300,7 @@ async function pkgToConfigs(
         esModule,
         interop,
         isExternal,
-        createPlugins(
+        await createPlugins(
           isTypescriptAPIInput,
           isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
           path,
@@ -323,7 +324,7 @@ async function pkgToConfigs(
           esModule,
           interop,
           isExternal,
-          createPlugins(
+          await createPlugins(
             isTypescriptAPIInput,
             isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
             path,
@@ -354,7 +355,7 @@ async function pkgToConfigs(
         esModule,
         interop,
         isBrowserExternal,
-        createPlugins(
+        await createPlugins(
           isTypescriptAPIInput,
           isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
           null,
@@ -382,7 +383,7 @@ async function pkgToConfigs(
           esModule,
           interop,
           isBrowserExternal,
-          createPlugins(
+          await createPlugins(
             isTypescriptAPIInput,
             isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
             null,
@@ -416,7 +417,7 @@ async function pkgToConfigs(
         esModule,
         interop,
         isExternal,
-        createPlugins(
+        await createPlugins(
           isTypescriptBinaryInput,
           isTypescriptBinaryInput ? typescriptExtensions : javascriptExtensions,
           path,
@@ -440,7 +441,7 @@ async function pkgToConfigs(
           esModule,
           interop,
           isExternal,
-          createPlugins(
+          await createPlugins(
             isTypescriptBinaryInput,
             isTypescriptBinaryInput ? typescriptExtensions : javascriptExtensions,
             path,
