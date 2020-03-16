@@ -241,12 +241,13 @@ async function pkgToConfigs(
   if (esOutput) {
 
     const { path, sourcemap, min } = esOutput
+    const resolvedPath = resolve(cwd, path)
 
     configs.push(
       createModuleConfig(
         apiInput,
         'es',
-        path,
+        resolvedPath,
         sourcemap,
         true,
         false,
@@ -254,7 +255,7 @@ async function pkgToConfigs(
         await createPlugins(
           isTypescriptAPIInput,
           isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
-          path,
+          resolvedPath,
           sourcemap,
           production && !min,
           false,
@@ -270,7 +271,7 @@ async function pkgToConfigs(
         createModuleConfig(
           apiInput,
           'es',
-          renameMin(path),
+          renameMin(resolvedPath),
           sourcemap,
           true,
           false,
@@ -278,7 +279,7 @@ async function pkgToConfigs(
           await createPlugins(
             isTypescriptAPIInput,
             isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
-            path,
+            resolvedPath,
             sourcemap,
             true,
             false,
