@@ -1,4 +1,3 @@
-import { resolve } from 'path'
 import readPkg from 'read-pkg'
 import { BundlibOptions } from './bundlib-options'
 import { error, invalidOption, invalidPkgField } from './errors'
@@ -348,8 +347,8 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   // set input files
 
   const input: InputOptions = {
-    api: resolve(cwd, apiInput || 'src/index.ts'),
-    bin: resolve(cwd, binInput || 'src-bin/index.ts'),
+    api: apiInput || null,
+    bin: binInput || null,
   }
 
   // normalize global options
@@ -362,7 +361,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   // set CommonJS Module build output options
 
   const mainOutput: CommonJSBuildOptions | null = (mainOptions === false || !pkgMain) ? null : {
-    path: resolve(cwd, pkgMain),
+    path: pkgMain,
     sourcemap: normalizeBuildSourcemap(
       mainOptions,
       globalSourcemap,
@@ -375,7 +374,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   // set ES Module build output options
 
   const moduleOutput: ESModuleBuildOptions | null = (moduleOptions === false || !esModuleFile) ? null : {
-    path: resolve(cwd, esModuleFile),
+    path: esModuleFile,
     sourcemap: normalizeBuildSourcemap(
       moduleOptions,
       globalSourcemap,
@@ -386,7 +385,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   // set Browser build output options
 
   const browserOutput: BrowserBuildOptions | null = (browserOptions === false || !pkgBrowser) ? null : {
-    path: resolve(cwd, pkgBrowser as string),
+    path: pkgBrowser as string,
     sourcemap: normalizeBuildSourcemap(
       browserOptions,
       globalSourcemap,
@@ -412,7 +411,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   // set Binary build output options
 
   const binaryOutput: CommonJSBuildOptions | null = (binaryOptions === false || !pkgBin) ? null : {
-    path: resolve(cwd, pkgBin as string),
+    path: pkgBin as string,
     sourcemap: normalizeBuildSourcemap(
       binaryOptions,
       globalSourcemap,
@@ -425,7 +424,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   // set type definitions output options
 
   const typesOutput: TypesBuildOptions | null = (typesOptions === false || !typesPath) ? null : {
-    path: resolve(cwd, typesPath),
+    path: typesPath,
     equals: normalizeBuildFlag(typesOptions, 'equals', !!equals),
   }
 
@@ -450,7 +449,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   // set cache option
 
-  const cache: string = resolve(cwd, cacheOption || 'node_modules/.cache/bundlib')
+  const cache: string | null = cacheOption || null
 
   // return all options
 

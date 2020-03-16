@@ -9,6 +9,7 @@ A javascript library bundler powered by [Rollup.js](https://github.com/rollup/ro
 ## BREAKING CHANGES in version 0.15.x
 
 * Rollup has to be installed separately
+* `analizePkg` paths are not longer resolved
 
 ## BREAKING CHANGES in version 0.14.x
 
@@ -31,8 +32,10 @@ A javascript library bundler powered by [Rollup.js](https://github.com/rollup/ro
 ## Install
 
 ```bash
-npm i -D bundlib
+npm i -D bundlib rollup
 ```
+
+> :warning: You also need to install rollup as it is a peer dependency
 
 ## First steps
 
@@ -394,8 +397,8 @@ interface PkgAnalized {
   cwd: string;
   pkg: PkgJson;
   input: {
-    api: string;
-    bin: string;
+    api: string | null;
+    bin: string | null;
   };
   output: {
     main: CommonJSBuildOptions | null;
@@ -410,7 +413,7 @@ interface PkgAnalized {
     peer: { [name: string]: string } | null;
     optional: { [name: string]: string } | null;
   };
-  cache: string;
+  cache: string | null;
 }
 ```
 

@@ -28,8 +28,8 @@ describe('analize', () => {
 
     expect(input)
       .toEqual({
-        api: expect.any(String),
-        bin: expect.any(String),
+        api: null,
+        bin: null,
       })
     expect(output)
       .toEqual({
@@ -46,8 +46,8 @@ describe('analize', () => {
         peer: null,
         optional: null,
       })
-    expect(typeof cache)
-      .toBe('string')
+    expect(cache)
+      .toBeNull()
 
   })
 

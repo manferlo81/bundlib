@@ -31,8 +31,8 @@ async function pkgToConfigs(
 ): Promise<Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>> {
 
   const {
-    api: apiInput,
-    bin: binInput,
+    api: apiInput1,
+    bin: binInput1,
   } = input
 
   const {
@@ -49,6 +49,8 @@ async function pkgToConfigs(
     peer: peerDeps,
     optional: optionalDeps,
   } = dependencies
+
+  const bundlibCache = resolve(cwd, cache || 'node_modules/.cache/bundlib')
 
   // throw if "name" option required and not present
 
@@ -70,6 +72,9 @@ async function pkgToConfigs(
 
   const typescriptOnlyExtensions = ['.ts', '.tsx']
   const javascriptExtensions = ['.js', '.jsx', '.mjs', '.node']
+
+  const apiInput = resolve(cwd, apiInput1 || 'src/index.ts')
+  const binInput = resolve(cwd, binInput1 || 'src-bin/index.ts')
 
   const isTypescriptAPIInput = extensionMatch(apiInput, typescriptOnlyExtensions)
   const isTypescriptBinaryInput = extensionMatch(binInput, typescriptOnlyExtensions)
@@ -102,7 +107,7 @@ async function pkgToConfigs(
 
   const typesFilename = renamePre(basename(apiInput), 'd')
 
-  let typesOutputDir = typesOutput ? typesOutput.path : null
+  let typesOutputDir = typesOutput ? resolve(cwd, typesOutput.path) : null
   if (typesOutputDir && extensionMatch(typesOutputDir, ['.ts'])) {
     typesOutputDir = dirname(typesOutputDir)
   }
@@ -142,7 +147,7 @@ async function pkgToConfigs(
 
     const declarationDir = inputIsTypescript && !configs.length && !bin && typesOutputDir
     const tsInclude = bin ? cwdFolderContent : apiFolderContent
-    const cacheRoot = pathJoin(cache, 'rpt2')
+    const cacheRoot = pathJoin(bundlibCache, 'rpt2')
 
     let shebang: string
 
@@ -290,12 +295,13 @@ async function pkgToConfigs(
   if (cjsOutput) {
 
     const { path, sourcemap, esModule, interop, min } = cjsOutput
+    const resolvedPath = resolve(cwd, path)
 
     configs.push(
       createModuleConfig(
         apiInput,
         'cjs',
-        path,
+        resolvedPath,
         sourcemap,
         esModule,
         interop,
@@ -303,7 +309,7 @@ async function pkgToConfigs(
         await createPlugins(
           isTypescriptAPIInput,
           isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
-          path,
+          resolvedPath,
           sourcemap,
           production && !min,
           false,
@@ -319,7 +325,7 @@ async function pkgToConfigs(
         createModuleConfig(
           apiInput,
           'cjs',
-          renameMin(path),
+          renameMin(resolvedPath),
           sourcemap,
           esModule,
           interop,
@@ -327,7 +333,7 @@ async function pkgToConfigs(
           await createPlugins(
             isTypescriptAPIInput,
             isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
-            path,
+            resolvedPath,
             sourcemap,
             true,
             false,
@@ -344,13 +350,14 @@ async function pkgToConfigs(
   if (browserOutput) {
 
     const { path, sourcemap, esModule, interop, format, name, extend, id, globals, min } = browserOutput
+    const resolvedPath = resolve(cwd, path)
     const isBrowserExternal = arrayToExternal(keysOrNull(globals))
 
     configs.push(
       createBrowserConfig(
         apiInput,
         format,
-        path,
+        resolvedPath,
         sourcemap,
         esModule,
         interop,
@@ -378,7 +385,7 @@ async function pkgToConfigs(
         createBrowserConfig(
           apiInput,
           format,
-          renameMin(path),
+          renameMin(resolvedPath),
           sourcemap,
           esModule,
           interop,
@@ -407,12 +414,13 @@ async function pkgToConfigs(
   if (binaryOutput) {
 
     const { path, sourcemap, esModule, interop, min } = binaryOutput
+    const resolvedPath = resolve(cwd, path)
 
     configs.push(
       createModuleConfig(
         binInput,
         'cjs',
-        path,
+        resolvedPath,
         sourcemap,
         esModule,
         interop,
@@ -420,7 +428,7 @@ async function pkgToConfigs(
         await createPlugins(
           isTypescriptBinaryInput,
           isTypescriptBinaryInput ? typescriptExtensions : javascriptExtensions,
-          path,
+          resolvedPath,
           sourcemap,
           production && !min,
           false,
@@ -436,7 +444,7 @@ async function pkgToConfigs(
         createModuleConfig(
           binInput,
           'cjs',
-          renameMin(path),
+          renameMin(resolvedPath),
           sourcemap,
           esModule,
           interop,
@@ -444,7 +452,7 @@ async function pkgToConfigs(
           await createPlugins(
             isTypescriptBinaryInput,
             isTypescriptBinaryInput ? typescriptExtensions : javascriptExtensions,
-            path,
+            resolvedPath,
             sourcemap,
             true,
             false,

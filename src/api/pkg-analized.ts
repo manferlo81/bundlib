@@ -1,7 +1,10 @@
 import { BundlibPkgJson } from './pkg'
 import { BrowserBuildFormat, RollupSourcemap } from './types'
 
-export type InputOptions = Record<'api' | 'bin', string>;
+export interface InputOptions {
+  api: string | null;
+  bin: string | null;
+}
 
 export interface PathOptions {
   path: string;
@@ -45,5 +48,5 @@ export interface PkgAnalized {
   input: InputOptions;
   output: OutputOptions;
   dependencies: Dependencies;
-  cache: string;
+  cache: string | null;
 }
