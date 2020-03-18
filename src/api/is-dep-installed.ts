@@ -1,7 +1,5 @@
-function isDepInstalled(name: string, ...list: Array<Record<string, string> | null>): boolean {
-  return list.some(
-    (deps) => deps && Object.prototype.hasOwnProperty.call(deps, name),
-  )
+function isDepInstalled(name: string, dependencies: Record<string, unknown> | null): boolean {
+  return dependencies ? Object.prototype.hasOwnProperty.call(dependencies, name) : false
 }
 
 export default isDepInstalled
