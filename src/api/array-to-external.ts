@@ -13,9 +13,7 @@ function arrayToExternal(...modules: Array<string[] | null>): IsExternal {
 
   const cache: Record<string, boolean> = {}
 
-  // return modules as any;
-
-  return (source: string, _: string, isResolved: boolean) => {
+  return (source: string, importer: unknown, isResolved: boolean) => {
 
     // ignore local and resolved modules
 
