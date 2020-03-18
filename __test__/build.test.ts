@@ -47,6 +47,7 @@ describe('build', () => {
     const [config] = await createConfigs(cwd, false, {
       browser: 'out/lib.umd.js',
       bundlib: { input: 'src/api/helpers.ts', globals: null },
+      ...deps,
     })
     const build = await rollup(config)
     const { output: [{ code }] } = await build.generate(config.output)

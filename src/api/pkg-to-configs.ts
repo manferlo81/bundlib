@@ -1,7 +1,6 @@
 import builtinModules from 'builtin-modules'
 import { basename, dirname, join as pathJoin, resolve } from 'path'
 import { Plugin } from 'rollup'
-import pluginTypescript2 from 'rollup-plugin-typescript2'
 import arrayToExternal from './array-to-external'
 import { createBrowserConfig, createModuleConfig } from './create-config'
 import { error } from './errors'
@@ -56,17 +55,27 @@ async function pkgToConfigs(
     }
   }
 
-  // const apiOutput = !!(esOutput || cjsOutput || browserOutput)
+  // CHECK FOR INSTALLED PLUGINS
+
+  const loadPluginTypescript2 = await pluginLoader<typeof import('rollup-plugin-typescript2').default>('rollup-plugin-typescript2', ['typescript'], 'default', runtimeDeps, devDeps)
+  const loadPluginESLint = await pluginLoader<typeof import('rollup-plugin-eslint').eslint>('rollup-plugin-eslint', null, 'eslint', runtimeDeps, devDeps)
+  const loadPluginNodeResolve = await pluginLoader<typeof import('@rollup/plugin-node-resolve').default>('@rollup/plugin-node-resolve', null, 'default', runtimeDeps, devDeps)
+  const loadPluginCommonJS = await pluginLoader<typeof import('@rollup/plugin-commonjs').default>('@rollup/plugin-commonjs', null, 'default', runtimeDeps, devDeps)
+  const loadPluginJSON = await pluginLoader<typeof import('@rollup/plugin-json').default>('@rollup/plugin-json', null, 'default', runtimeDeps, devDeps)
+  const loadPluginBabel = await pluginLoader<typeof import('rollup-plugin-babel').default>('rollup-plugin-babel', null, 'default', runtimeDeps, devDeps)
+  const loadPluginTerser = await pluginLoader<typeof import('rollup-plugin-terser').terser>('rollup-plugin-terser', null, 'terser', runtimeDeps, devDeps)
+  const loadPluginStripShebang = await pluginLoader<typeof import('rollup-plugin-strip-shebang')>('rollup-plugin-strip-shebang', null, 'default', runtimeDeps, devDeps)
+  const loadPluginAddShebang = await pluginLoader<typeof import('rollup-plugin-add-shebang').default>('rollup-plugin-add-shebang', null, 'default', runtimeDeps, devDeps)
+  const loadPluginExportEquals = await pluginLoader<typeof import('rollup-plugin-export-equals')>('rollup-plugin-export-equals', null, 'default', runtimeDeps, devDeps)
 
   // CHECK FOR INSTALLED MODULES
 
-  const isInstalledTypescript = isDepInstalled('typescript', runtimeDeps, devDeps)
   const isInstalledChokidar = isDepInstalled('chokidar', runtimeDeps, devDeps)
 
   const apiInput = apiInput1 ? resolve(cwd, apiInput1) : (
     (
-      isInstalledTypescript ? findFirst(
-        ...['index.ts', 'index.tsx'].map((fn) => resolve(cwd, 'src', fn)),
+      loadPluginTypescript2 ? findFirst(
+        ...['index.ts', 'index.tsx'].map((filename) => resolve(cwd, 'src', filename)),
       ) : null
     ) ||
     resolve(cwd, 'src', 'index.js')
@@ -74,23 +83,12 @@ async function pkgToConfigs(
 
   const binInput = binInput1 ? resolve(cwd, binInput1) : (
     (
-      isInstalledTypescript ? findFirst(
-        ...['index.ts'].map((fn) => resolve(cwd, 'src-bin', fn)),
+      loadPluginTypescript2 ? findFirst(
+        ...['index.ts'].map((filename) => resolve(cwd, 'src-bin', filename)),
       ) : null
-    ) || resolve(cwd, 'src-bin', 'index.js')
+    ) ||
+    resolve(cwd, 'src-bin', 'index.js')
   )
-
-  // CHECK FOR INSTALLED PLUGINS
-
-  const loadPluginESLint = await pluginLoader<typeof import('rollup-plugin-eslint').eslint>('rollup-plugin-eslint', 'eslint', runtimeDeps, devDeps)
-  const loadPluginNodeResolve = await pluginLoader<typeof import('@rollup/plugin-node-resolve').default>('@rollup/plugin-node-resolve', 'default', runtimeDeps, devDeps)
-  const loadPluginCommonJS = await pluginLoader<typeof import('@rollup/plugin-commonjs').default>('@rollup/plugin-commonjs', 'default', runtimeDeps, devDeps)
-  const loadPluginJSON = await pluginLoader<typeof import('@rollup/plugin-json').default>('@rollup/plugin-json', 'default', runtimeDeps, devDeps)
-  const loadPluginBabel = await pluginLoader<typeof import('rollup-plugin-babel').default>('rollup-plugin-babel', 'default', runtimeDeps, devDeps)
-  const loadPluginTerser = await pluginLoader<typeof import('rollup-plugin-terser').terser>('rollup-plugin-terser', 'terser', runtimeDeps, devDeps)
-  const loadPluginStripShebang = await pluginLoader<typeof import('rollup-plugin-strip-shebang')>('rollup-plugin-strip-shebang', 'default', runtimeDeps, devDeps)
-  const loadPluginAddShebang = await pluginLoader<typeof import('rollup-plugin-add-shebang').default>('rollup-plugin-add-shebang', 'default', runtimeDeps, devDeps)
-  const loadPluginExportEquals = await pluginLoader<typeof import('rollup-plugin-export-equals')>('rollup-plugin-export-equals', 'default', runtimeDeps, devDeps)
 
   const typescriptOnlyExtensions = ['.ts', '.tsx']
   const javascriptExtensions = ['.js', '.jsx', '.mjs', '.node']
@@ -137,15 +135,7 @@ async function pkgToConfigs(
     builtinModules as string[],
   )
 
-  const useUserTypescript = (
-    isTypescriptAPIInput || isTypescriptBinaryInput
-  ) && isInstalledTypescript
-
   const useChokidar = isInstalledChokidar && !!watch
-
-  let typescript = useUserTypescript
-    ? null
-    : await import('typescript')
 
   const exclude = /node_modules/
 
@@ -198,10 +188,7 @@ async function pkgToConfigs(
         sourceMap: sourcemapBool,
       }),
 
-      inputIsTypescript && pluginTypescript2({
-        typescript: typescript || (typescript = require(require.resolve('typescript', {
-          paths: [cwd],
-        }))),
+      inputIsTypescript && loadPluginTypescript2 && loadPluginTypescript2({
         include: tsInclude,
         cacheRoot,
         useTsconfigDeclarationDir: true,
