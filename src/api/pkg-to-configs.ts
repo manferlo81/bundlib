@@ -153,7 +153,7 @@ async function pkgToConfigs(
 
     const sourcemapBool = !!sourcemap
 
-    const declarationDir = inputIsTypescript && !configs.length && !bin && typesOutputDir
+    const declarationDir = inputIsTypescript && configs.length === 0 && !bin && typesOutputDir
     const tsInclude = bin ? cwdFolderContent : apiFolderContent
     const cacheRoot = pathJoin(bundlibCache, 'rpt2')
 
@@ -195,23 +195,12 @@ async function pkgToConfigs(
         tsconfigDefaults: {
           include: tsInclude,
           exclude: [],
-          compilerOptions: {
-            esModuleInterop: true,
-            resolveJsonModule: true,
-            allowSyntheticDefaultImports: true,
-          },
         },
         tsconfigOverride: {
-          compilerOptions: {
-            target: 'esnext',
-            module: 'esnext',
-            moduleResolution: 'node',
-            sourceMap: sourcemapBool,
-            declaration: !!declarationDir,
-            declarationDir: declarationDir || '',
-            allowJs: !typesOutputDir,
-            emitDeclarationOnly: false,
-          },
+          compilerOptions: Object.assign(
+            { sourceMap: sourcemapBool, declaration: !!declarationDir },
+            declarationDir ? { declarationDir } : null,
+          ),
         },
       }),
 
