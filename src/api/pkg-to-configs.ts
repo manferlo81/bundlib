@@ -1,9 +1,6 @@
 import builtinModules from 'builtin-modules'
 import { basename, dirname, join as pathJoin, resolve } from 'path'
 import { Plugin } from 'rollup'
-import pluginAddShebang from 'rollup-plugin-add-shebang'
-import pluginExportEquals from 'rollup-plugin-export-equals'
-import pluginStripShebang from 'rollup-plugin-strip-shebang'
 import pluginTypescript2 from 'rollup-plugin-typescript2'
 import arrayToExternal from './array-to-external'
 import { createBrowserConfig, createModuleConfig } from './create-config'
@@ -91,6 +88,9 @@ async function pkgToConfigs(
   const loadPluginJSON = await pluginLoader<typeof import('@rollup/plugin-json').default>('@rollup/plugin-json', 'default', runtimeDeps, devDeps)
   const loadPluginBabel = await pluginLoader<typeof import('rollup-plugin-babel').default>('rollup-plugin-babel', 'default', runtimeDeps, devDeps)
   const loadPluginTerser = await pluginLoader<typeof import('rollup-plugin-terser').terser>('rollup-plugin-terser', 'terser', runtimeDeps, devDeps)
+  const loadPluginStripShebang = await pluginLoader<typeof import('rollup-plugin-strip-shebang')>('rollup-plugin-strip-shebang', 'default', runtimeDeps, devDeps)
+  const loadPluginAddShebang = await pluginLoader<typeof import('rollup-plugin-add-shebang').default>('rollup-plugin-add-shebang', 'default', runtimeDeps, devDeps)
+  const loadPluginExportEquals = await pluginLoader<typeof import('rollup-plugin-export-equals')>('rollup-plugin-export-equals', 'default', runtimeDeps, devDeps)
 
   const typescriptOnlyExtensions = ['.ts', '.tsx']
   const javascriptExtensions = ['.js', '.jsx', '.mjs', '.node']
@@ -178,7 +178,7 @@ async function pkgToConfigs(
         throwOnError: false,
       }),
 
-      bin && pluginStripShebang({
+      bin && loadPluginStripShebang && loadPluginStripShebang({
         capture: (shebangFromFile) => shebang = shebangFromFile,
         sourcemap: sourcemapBool,
       }),
@@ -230,7 +230,7 @@ async function pkgToConfigs(
 
       loadPluginJSON && loadPluginJSON(),
 
-      declarationDir && typesOutput && typesOutput.equals && pluginExportEquals({
+      declarationDir && typesOutput && typesOutput.equals && loadPluginExportEquals && loadPluginExportEquals({
         file: resolve(cwd, pathJoin(declarationDir, typesFilename)),
       }),
 
@@ -239,7 +239,7 @@ async function pkgToConfigs(
         exclude,
       }),
 
-      bin && outputFile && pluginAddShebang({
+      bin && outputFile && loadPluginAddShebang && loadPluginAddShebang({
         include: outputFile,
         shebang: () => shebang || '#!/usr/bin/env node',
       }),

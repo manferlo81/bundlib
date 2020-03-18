@@ -218,6 +218,9 @@ describe('package to configs', () => {
         input: 'src/index.ts',
         equals: true,
       },
+      devDependencies: {
+        'rollup-plugin-export-equals': '*',
+      },
     })
 
     expect(configs)
@@ -235,6 +238,10 @@ describe('package to configs', () => {
 
     const configs = await createConfigs(cwd, true, {
       bin: 'bin/cli.js',
+      devDependencies: {
+        'rollup-plugin-strip-shebang': '*',
+        'rollup-plugin-add-shebang': '*',
+      },
     })
 
     expect(configs)
