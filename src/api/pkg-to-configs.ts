@@ -1,5 +1,3 @@
-import pluginCommonJS from '@rollup/plugin-commonjs'
-import pluginNodeResolve from '@rollup/plugin-node-resolve'
 import builtinModules from 'builtin-modules'
 import { basename, dirname, join as pathJoin, resolve } from 'path'
 import { Plugin } from 'rollup'
@@ -89,6 +87,8 @@ async function pkgToConfigs(
   // CHECK FOR INSTALLED PLUGINS
 
   const usePluginESLint = isDepInstalled('rollup-plugin-eslint', runtimeDeps, devDeps)
+  const usePluginNodeResolve = isDepInstalled('@rollup/plugin-node-resolve', runtimeDeps, devDeps)
+  const usePluginCommonJS = isDepInstalled('@rollup/plugin-commonjs', runtimeDeps, devDeps)
   const usePluginJSON = isDepInstalled('@rollup/plugin-json', runtimeDeps, devDeps)
   const usePluginBabel = isDepInstalled('rollup-plugin-babel', runtimeDeps, devDeps)
 
@@ -171,6 +171,8 @@ async function pkgToConfigs(
     let shebang: string
 
     const pluginESLint = usePluginESLint && (await import('rollup-plugin-eslint')).eslint
+    const pluginNodeResolve = usePluginNodeResolve && (await import('@rollup/plugin-node-resolve')).default
+    const pluginCommonJS = usePluginCommonJS && (await import('@rollup/plugin-commonjs')).default
     const pluginJSON = usePluginJSON && (await import('@rollup/plugin-json')).default
     const pluginBabel = usePluginBabel && (await import('rollup-plugin-babel')).default
 
@@ -194,12 +196,12 @@ async function pkgToConfigs(
         setProp(apiInput, cwd, {}),
       ),
 
-      pluginNodeResolve({
+      pluginNodeResolve && pluginNodeResolve({
         preferBuiltins: !browser,
         extensions,
       }),
 
-      browser && pluginCommonJS({
+      browser && pluginCommonJS && pluginCommonJS({
         sourceMap: sourcemapBool,
       }),
 
