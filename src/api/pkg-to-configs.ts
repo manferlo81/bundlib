@@ -91,7 +91,7 @@ async function pkgToConfigs(
   )
 
   const typescriptOnlyExtensions = ['.ts', '.tsx']
-  const javascriptExtensions = ['.js', '.jsx', '.mjs', '.node']
+  const javascriptExtensions = ['.js', '.jsx', '.es6', '.es', '.mjs', '.node']
 
   const isTypescriptAPIInput = extensionMatch(apiInput, typescriptOnlyExtensions)
   const isTypescriptBinaryInput = extensionMatch(binInput, typescriptOnlyExtensions)
