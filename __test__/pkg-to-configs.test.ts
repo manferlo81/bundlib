@@ -347,20 +347,6 @@ describe('package to configs', () => {
 
   })
 
-  test('should set optionalDependencies as external', async () => {
-
-    const [config] = await createConfigs(cwd, true, {
-      main: 'out/lib.js',
-      optionalDependencies: {
-        lodash: '*',
-      },
-    })
-
-    expect(config.external('lodash', '', false))
-      .toBe(true)
-
-  })
-
   test('should set builtin modules as external', async () => {
 
     const [config] = await createConfigs(cwd, true, {

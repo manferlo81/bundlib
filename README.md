@@ -414,7 +414,6 @@ interface PkgAnalized {
     runtime: { [name: string]: string } | null;
     dev: { [name: string]: string } | null;
     peer: { [name: string]: string } | null;
-    optional: { [name: string]: string } | null;
   };
   cache: string | null;
 }
@@ -482,10 +481,10 @@ interface TypesBuildOptions {
 * Builds an CLI `Binary` module based on the `"bin"` field in your `package.json`
 * Exports type declarations based on the `"types"` or `"typings"` field in your `package.json`
 * Skip any build based on options
-* Sets `"dependencies"`, `"peerDependencies"` and `"optionalDependencies"` as external for `CommonJS Module`, `ES Module` and `Binary` builds
+* Sets `"dependencies"` and `"peerDependencies"` as external for `CommonJS Module`, `ES Module` and `Binary` builds
 * Uses the user copy of `typescript` if installed
 * Uses `chokidar` if installed
-* Importing an internal file from a package `Ex: lodash/core` will be treated as external if `lodash` is included in your `"dependencies"`, `peerDependencies` or `optionalDependencies`
+* Importing an internal file from a package `Ex: lodash/core` will be treated as external if `lodash` is included in your `"dependencies"` or `peerDependencies`
 * Transforms `async/await` using [`babel-plugin-transform-async-to-promises`](https://github.com/rpetrich/babel-plugin-transform-async-to-promises) for ES5 support
 * Dynamic Import support through [`@babel/plugin-syntax-dynamic-import`](https://babeljs.io/docs/en/babel-plugin-syntax-dynamic-import)
 * Transforms `Object.assign` using [`@babel/plugin-transform-object-assign`](https://babeljs.io/docs/en/babel-plugin-transform-object-assign)

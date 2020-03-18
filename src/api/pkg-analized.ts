@@ -40,7 +40,7 @@ export interface OutputOptions {
   types: TypesBuildOptions | null;
 }
 
-export type Dependencies = Record<'runtime' | 'dev' | 'peer' | 'optional', Record<string, string> | null>;
+export type Dependencies = Record<'runtime' | 'dev' | 'peer', Record<string, string> | null>;
 
 export interface PkgAnalized {
   cwd: string;

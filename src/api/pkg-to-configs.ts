@@ -46,7 +46,6 @@ async function pkgToConfigs(
     runtime: runtimeDeps,
     dev: devDeps,
     peer: peerDeps,
-    optional: optionalDeps,
   } = dependencies
 
   const bundlibCache = resolve(cwd, cache || 'node_modules/.cache/bundlib')
@@ -135,7 +134,6 @@ async function pkgToConfigs(
   const isExternal = arrayToExternal(
     keysOrNull(runtimeDeps),
     keysOrNull(peerDeps),
-    keysOrNull(optionalDeps),
     builtinModules as string[],
   )
 

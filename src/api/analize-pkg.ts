@@ -45,7 +45,6 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     dependencies: runtimeDependencies,
     devDependencies,
     peerDependencies,
-    optionalDependencies,
     bundlib: bundlibOptions = {},
   } = pkg
 
@@ -323,13 +322,6 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     throw invalidPkgField('peerDependencies', 'Object')
   }
 
-  // ensure "optionalDependencies" field is valid
-  // throw otherwise
-
-  if (!isDictionaryOrNull(optionalDependencies)) {
-    throw invalidPkgField('optionalDependencies', 'Object')
-  }
-
   // set ES Module build output file from "module" field falling back to "jsnext:main" field
 
   const esModuleFile = pkgModule || pkgJsNextMain
@@ -444,7 +436,6 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     runtime: runtimeDependencies || null,
     dev: devDependencies || null,
     peer: peerDependencies || null,
-    optional: optionalDependencies || null,
   }
 
   // set cache option

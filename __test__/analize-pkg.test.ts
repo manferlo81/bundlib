@@ -44,7 +44,6 @@ describe('analize', () => {
         runtime: null,
         dev: null,
         peer: null,
-        optional: null,
       })
     expect(cache)
       .toBeNull()
