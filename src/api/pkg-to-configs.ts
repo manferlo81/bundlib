@@ -13,12 +13,11 @@ import { setProp } from './helpers'
 import isDepInstalled from './is-dep-installed'
 import keysOrNull from './keys-or-null'
 import { PkgAnalized } from './pkg-analized'
+import pluginLoader from './plugin-loader'
 import pluginMapIdExternal from './plugins/api-plugin'
-import pluginMinify from './plugins/minify'
 import { renameMin, renamePre } from './rename'
 import { BundlibAPIOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types'
 import extensionMatch from './validate/ext-match'
-import pluginLoader from './plugin-loader'
 
 async function pkgToConfigs(
   pkg: PkgAnalized,
@@ -87,17 +86,12 @@ async function pkgToConfigs(
 
   // CHECK FOR INSTALLED PLUGINS
 
-  // const usePluginESLint = isDepInstalled('rollup-plugin-eslint', runtimeDeps, devDeps)
-  // const usePluginNodeResolve = isDepInstalled('@rollup/plugin-node-resolve', runtimeDeps, devDeps)
-  // const usePluginCommonJS = isDepInstalled('@rollup/plugin-commonjs', runtimeDeps, devDeps)
-  // const usePluginJSON = isDepInstalled('@rollup/plugin-json', runtimeDeps, devDeps)
-  // const usePluginBabel = isDepInstalled('rollup-plugin-babel', runtimeDeps, devDeps)
-
   const loadPluginESLint = await pluginLoader<typeof import('rollup-plugin-eslint').eslint>('rollup-plugin-eslint', 'eslint', runtimeDeps, devDeps)
   const loadPluginNodeResolve = await pluginLoader<typeof import('@rollup/plugin-node-resolve').default>('@rollup/plugin-node-resolve', 'default', runtimeDeps, devDeps)
   const loadPluginCommonJS = await pluginLoader<typeof import('@rollup/plugin-commonjs').default>('@rollup/plugin-commonjs', 'default', runtimeDeps, devDeps)
   const loadPluginJSON = await pluginLoader<typeof import('@rollup/plugin-json').default>('@rollup/plugin-json', 'default', runtimeDeps, devDeps)
   const loadPluginBabel = await pluginLoader<typeof import('rollup-plugin-babel').default>('rollup-plugin-babel', 'default', runtimeDeps, devDeps)
+  const loadPluginTerser = await pluginLoader<typeof import('rollup-plugin-terser').terser>('rollup-plugin-terser', 'terser', runtimeDeps, devDeps)
 
   const typescriptOnlyExtensions = ['.ts', '.tsx']
   const javascriptExtensions = ['.js', '.jsx', '.mjs', '.node']
@@ -177,12 +171,6 @@ async function pkgToConfigs(
 
     let shebang: string
 
-    // const pluginESLint = usePluginESLint && (await import('rollup-plugin-eslint')).eslint
-    // const pluginNodeResolve = usePluginNodeResolve && (await import('@rollup/plugin-node-resolve')).default
-    // const pluginCommonJS = usePluginCommonJS && (await import('@rollup/plugin-commonjs')).default
-    // const pluginJSON = usePluginJSON && (await import('@rollup/plugin-json')).default
-    // const pluginBabel = usePluginBabel && (await import('rollup-plugin-babel')).default
-
     const plugins = [
 
       loadPluginESLint && loadPluginESLint({
@@ -258,7 +246,14 @@ async function pkgToConfigs(
         shebang: () => shebang || '#!/usr/bin/env node',
       }),
 
-      mini && pluginMinify(sourcemapBool),
+      mini && loadPluginTerser && loadPluginTerser({
+        sourcemap: sourcemapBool,
+        toplevel: true,
+        module: true,
+        compress: {
+          passes: 2,
+        },
+      }),
 
     ]
 
