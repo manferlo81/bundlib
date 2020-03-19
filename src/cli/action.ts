@@ -64,6 +64,7 @@ export async function action(displayName: string, version: string, silent: boole
 
     error(err) {
       logError(err)
+      process.exit(1)
     },
 
   }
@@ -135,7 +136,7 @@ waiting for changes...`)
     await bundlib(cwd, options, callbacks, pkg)
   } catch (err) {
     logError(err)
-    throw err
+    process.exit(1)
   }
 
 }

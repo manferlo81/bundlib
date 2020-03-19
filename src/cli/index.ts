@@ -11,13 +11,11 @@ program
   .option('-d, --dev', 'create development builds')
   .option('-w, --watch', 'run bundlib in watch mode')
   .option('-s, --silent', 'prevent messages from showing in the console')
-  .action(() => {
+  .action(async () => {
     const { dev, watch, silent } = program
-    action(displayName, version, silent, {
+    await action(displayName, version, silent, {
       dev,
       watch,
-    }).catch(err => {
-      throw err
     })
   })
-  .parse(process.argv)
+  .parseAsync(process.argv)
