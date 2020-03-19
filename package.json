@@ -21,7 +21,8 @@
       "bin": "src/cli/index.ts"
     },
     "esModule": true,
-    "interop": true
+    "interop": true,
+    "project": "tsconfig-bundlib.json"
   },
   "scripts": {
     "dev": "ts-node -T -P tsconfig-ts-node.json src/cli -dw",
@@ -47,7 +48,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7.8.7",
-    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/plugin-transform-object-assign": "^7.8.3",
     "@babel/preset-env": "^7.8.7",
     "@rollup/plugin-commonjs": "^11.0.2",

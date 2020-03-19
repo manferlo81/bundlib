@@ -23,7 +23,7 @@ async function pkgToConfigs(
 ): Promise<Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>>;
 
 async function pkgToConfigs(
-  { cwd, input, dependencies, cache, output }: PkgAnalized,
+  { cwd, input, output, dependencies, cache, project }: PkgAnalized,
   { dev, watch }: BundlibAPIOptions,
 ): Promise<Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>> {
 
@@ -187,21 +187,26 @@ async function pkgToConfigs(
         sourceMap: sourcemapBool,
       }),
 
-      inputIsTypescript && loadPluginTypescript2 && loadPluginTypescript2({
-        include: tsInclude,
-        cacheRoot,
-        useTsconfigDeclarationDir: true,
-        tsconfigDefaults: {
-          include: tsInclude,
-          exclude: [],
-        },
-        tsconfigOverride: {
-          compilerOptions: Object.assign(
-            { sourceMap: sourcemapBool, declaration: !!declarationDir },
-            declarationDir ? { declarationDir } : null,
-          ),
-        },
-      }),
+      inputIsTypescript && loadPluginTypescript2 && loadPluginTypescript2(
+        Object.assign(
+          {
+            include: tsInclude,
+            cacheRoot,
+            useTsconfigDeclarationDir: true,
+            tsconfigDefaults: {
+              include: tsInclude,
+              exclude: [],
+            },
+            tsconfigOverride: {
+              compilerOptions: Object.assign(
+                { sourceMap: sourcemapBool, declaration: !!declarationDir },
+                declarationDir ? { declarationDir } : null,
+              ),
+            },
+          },
+          project ? { tsconfig: resolve(cwd, project) } : null,
+        ),
+      ),
 
       loadPluginJSON && loadPluginJSON(),
 

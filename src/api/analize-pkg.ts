@@ -72,6 +72,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     'globals',
     'min',
     'cache',
+    'project',
     'main',
     'module',
     'browser',
@@ -97,6 +98,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     globals: browserGlobals,
     min,
     cache: cacheOption,
+    project: projectOption,
     main: mainOptions,
     module: moduleOptions,
     browser: browserOptions,
@@ -190,6 +192,13 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (!isStringOrNull(cacheOption)) {
     throw invalidOption('cache', 'string')
+  }
+
+  // ensure "project" option is valid
+  // throw otherwise
+
+  if (!isStringOrNull(projectOption)) {
+    throw invalidOption('project', 'string')
   }
 
   // ensure "main" option is valid
@@ -442,6 +451,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   // set cache option
 
   const cache: StrictNullable<string> = cacheOption || null
+  const project: StrictNullable<string> = projectOption || null
 
   // return all options
 
@@ -452,6 +462,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     output,
     dependencies,
     cache,
+    project,
   }
 
 }

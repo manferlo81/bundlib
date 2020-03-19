@@ -54,4 +54,5 @@ export interface PkgAnalized {
   output: OutputOptions;
   dependencies: Dependencies;
   cache: StrictNullable<string>;
+  project: StrictNullable<string>;
 }

@@ -24,29 +24,27 @@ describe('analize', () => {
       output,
       dependencies,
       cache,
+      project,
     } = analized
 
-    expect(input)
-      .toEqual({
-        api: null,
-        bin: null,
-      })
-    expect(output)
-      .toEqual({
-        main: null,
-        module: null,
-        browser: null,
-        bin: null,
-        types: null,
-      })
-    expect(dependencies)
-      .toEqual({
-        runtime: null,
-        dev: null,
-        peer: null,
-      })
-    expect(cache)
-      .toBeNull()
+    expect(input).toEqual({
+      api: null,
+      bin: null,
+    })
+    expect(output).toEqual({
+      main: null,
+      module: null,
+      browser: null,
+      bin: null,
+      types: null,
+    })
+    expect(dependencies).toEqual({
+      runtime: null,
+      dev: null,
+      peer: null,
+    })
+    expect(cache).toBeNull()
+    expect(project).toBeNull()
 
   })
 

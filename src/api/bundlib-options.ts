@@ -61,6 +61,7 @@ export interface BundlibOptions extends
   interop?: ModuleOption;
   min?: MinOption;
   cache?: Nullable<string>;
+  project?: Nullable<string>;
 
   main?: Nullable<CommonJSBuildOptions | false>;
   module?: Nullable<ESModuleBuildOptions | false>;

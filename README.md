@@ -236,6 +236,16 @@ default "node_modules/.cache/bundlib"
 
 Defines the directory to be used for cache, relative to the project root.
 
+#### project
+
+```typescript
+cache: string;
+
+default "tsconfig.json"
+```
+
+Defines the location of typescript `tsconfig.json` file.
+
 #### main
 
 ```typescript

@@ -1,10 +1,9 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "moduleResolution": "node",
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Node",
     "esModuleInterop": true,
-    "isolatedModules": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "allowJs": true,
@@ -15,7 +14,7 @@
     "removeComments": true
   },
   "include": [
-    "src/api/**/*.ts"
+    "src/**/*.ts"
   ],
   "exclude": [
     "node_modules/**",
