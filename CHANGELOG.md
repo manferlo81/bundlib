@@ -2,6 +2,13 @@
 
 ## Version History
 
+### [0.15.1](https://github.com/manferlo81/bundlib/compare/v0.15.0...v0.15.1) (2020-03-19)
+
+
+### Bug Fixes
+
+* exit process on error ([3ea3c7e](https://github.com/manferlo81/bundlib/commit/3ea3c7e246d4c73894764b8bac125cb6b2306cbf))
+
 ## [0.15.0](https://github.com/manferlo81/bundlib/compare/v0.14.4...v0.15.0) (2020-03-19)
 
 
