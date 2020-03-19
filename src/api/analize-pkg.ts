@@ -1,6 +1,7 @@
 import readPkg from 'read-pkg'
 import { BundlibOptions } from './bundlib-options'
 import { error, invalidOption, invalidPkgField } from './errors'
+import { StrictNullable } from './helper-types'
 import { keys } from './helpers'
 import { BundlibPkgJson } from './pkg'
 import { BrowserBuildOptions, CommonJSBuildOptions, Dependencies, ESModuleBuildOptions, InputOptions, OutputOptions, PkgAnalized, TypesBuildOptions } from './pkg-analized'
@@ -352,7 +353,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   // set CommonJS Module build output options
 
-  const mainOutput: CommonJSBuildOptions | null = (mainOptions === false || !pkgMain) ? null : {
+  const mainOutput: StrictNullable<CommonJSBuildOptions> = (mainOptions === false || !pkgMain) ? null : {
     path: pkgMain,
     sourcemap: normalizeBuildSourcemap(
       mainOptions,
@@ -365,7 +366,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   // set ES Module build output options
 
-  const moduleOutput: ESModuleBuildOptions | null = (moduleOptions === false || !esModuleFile) ? null : {
+  const moduleOutput: StrictNullable<ESModuleBuildOptions> = (moduleOptions === false || !esModuleFile) ? null : {
     path: esModuleFile,
     sourcemap: normalizeBuildSourcemap(
       moduleOptions,
@@ -376,7 +377,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   // set Browser build output options
 
-  const browserOutput: BrowserBuildOptions | null = (browserOptions === false || !pkgBrowser) ? null : {
+  const browserOutput: StrictNullable<BrowserBuildOptions> = (browserOptions === false || !pkgBrowser) ? null : {
     path: pkgBrowser as string,
     sourcemap: normalizeBuildSourcemap(
       browserOptions,
@@ -402,7 +403,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   // set Binary build output options
 
-  const binaryOutput: CommonJSBuildOptions | null = (binaryOptions === false || !pkgBin) ? null : {
+  const binaryOutput: StrictNullable<CommonJSBuildOptions> = (binaryOptions === false || !pkgBin) ? null : {
     path: pkgBin as string,
     sourcemap: normalizeBuildSourcemap(
       binaryOptions,
@@ -415,7 +416,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   // set type definitions output options
 
-  const typesOutput: TypesBuildOptions | null = (typesOptions === false || !typesPath) ? null : {
+  const typesOutput: StrictNullable<TypesBuildOptions> = (typesOptions === false || !typesPath) ? null : {
     path: typesPath,
     equals: normalizeBuildFlag(typesOptions, 'equals', !!equals),
   }
@@ -440,7 +441,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   // set cache option
 
-  const cache: string | null = cacheOption || null
+  const cache: StrictNullable<string> = cacheOption || null
 
   // return all options
 

@@ -1,5 +1,5 @@
 import { ChokidarOptions, IsExternal, Plugin, WatcherOptions as RollupWatcherOptions } from 'rollup'
-import { Nullable } from './helper-types'
+import { Dictionary, Nullable } from './helper-types'
 import { BrowserBuildFormat, BundlibRollupBrowseOutputOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, ModuleBuildFormat, RollupSourcemap } from './types'
 import { createInList } from './validate/in-list'
 
@@ -63,7 +63,7 @@ export function createBrowserConfig(
   chokidar: boolean | ChokidarOptions,
   name: string,
   extend: boolean,
-  globals: Nullable<Record<string, string>>,
+  globals: Nullable<Dictionary<string>>,
   id: Nullable<string>,
 ): BundlibRollupOptions<BundlibRollupBrowseOutputOptions> {
 

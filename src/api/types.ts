@@ -1,10 +1,5 @@
-import {
-  IsExternal,
-  OutputOptions as RollupOutputOptions,
-  Plugin,
-  RollupOptions,
-  WatcherOptions as RollupWatcherOptions,
-} from 'rollup'
+import { IsExternal, OutputOptions as RollupOutputOptions, Plugin, RollupOptions, WatcherOptions as RollupWatcherOptions } from 'rollup'
+import { Dictionary } from './helper-types'
 
 export type RollupSourcemap = boolean | 'inline';
 
@@ -24,7 +19,7 @@ export interface BundlibRollupModuleOutputOptions extends RollupOutputOptions {
 export interface BundlibRollupBrowseOutputOptions extends BundlibRollupModuleOutputOptions {
   name: string;
   extend: boolean;
-  globals: Record<string, string>;
+  globals: Dictionary<string>;
   amd?: {
     id: string;
   };

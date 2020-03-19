@@ -1,6 +1,8 @@
 import { IsExternal } from 'rollup'
+import hasOwn from './has-own'
+import { Dictionary, StrictNullable } from './helper-types'
 
-function arrayToExternal(...modules: Array<string[] | null>): IsExternal {
+function arrayToExternal(...modules: Array<StrictNullable<string[]>>): IsExternal {
 
   const filtered = modules.reduce<string[]>(
     (result, list) => list ? [...result, ...list] : result,
@@ -11,7 +13,7 @@ function arrayToExternal(...modules: Array<string[] | null>): IsExternal {
     return () => false
   }
 
-  const cache: Record<string, boolean> = {}
+  const cache: Dictionary<boolean> = {}
 
   return (source: string, importer: unknown, isResolved: boolean) => {
 
@@ -23,7 +25,7 @@ function arrayToExternal(...modules: Array<string[] | null>): IsExternal {
 
     // return from cache if present
 
-    if (Object.prototype.hasOwnProperty.call(cache, source)) {
+    if (hasOwn.call(cache, source)) {
       return cache[source]
     }
 

@@ -1,16 +1,17 @@
+import { StrictNullable, Dictionary } from './helper-types'
 import { BundlibPkgJson } from './pkg'
 import { BrowserBuildFormat, RollupSourcemap } from './types'
 
 export interface InputOptions {
-  api: string | null;
-  bin: string | null;
+  api: StrictNullable<string>;
+  bin: StrictNullable<string>;
 }
 
-export interface PathOptions {
+export interface OptionsWithPath {
   path: string;
 }
 
-export interface ESModuleBuildOptions extends PathOptions {
+export interface ESModuleBuildOptions extends OptionsWithPath {
   sourcemap: RollupSourcemap;
   min: boolean;
 }
@@ -22,25 +23,29 @@ export interface CommonJSBuildOptions extends ESModuleBuildOptions {
 
 export interface BrowserBuildOptions extends CommonJSBuildOptions {
   format: BrowserBuildFormat;
-  name: string | null;
-  id: string | null;
-  globals: Record<string, string> | null;
+  name: StrictNullable<string>;
+  id: StrictNullable<string>;
+  globals: StrictNullable<Dictionary<string>>;
   extend: boolean;
 }
 
-export interface TypesBuildOptions extends PathOptions {
+export interface TypesBuildOptions extends OptionsWithPath {
   equals: boolean;
 }
 
 export interface OutputOptions {
-  main: CommonJSBuildOptions | null;
-  module: ESModuleBuildOptions | null;
-  browser: BrowserBuildOptions | null;
-  bin: CommonJSBuildOptions | null;
-  types: TypesBuildOptions | null;
+  main: StrictNullable<CommonJSBuildOptions>;
+  module: StrictNullable<ESModuleBuildOptions>;
+  browser: StrictNullable<BrowserBuildOptions>;
+  bin: StrictNullable<CommonJSBuildOptions>;
+  types: StrictNullable<TypesBuildOptions>;
 }
 
-export type Dependencies = Record<'runtime' | 'dev' | 'peer', Record<string, string> | null>;
+export interface Dependencies {
+  runtime: StrictNullable<Dictionary<string>>;
+  dev: StrictNullable<Dictionary<string>>;
+  peer: StrictNullable<Dictionary<string>>;
+}
 
 export interface PkgAnalized {
   cwd: string;
@@ -48,5 +53,5 @@ export interface PkgAnalized {
   input: InputOptions;
   output: OutputOptions;
   dependencies: Dependencies;
-  cache: string | null;
+  cache: StrictNullable<string>;
 }

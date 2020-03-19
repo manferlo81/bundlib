@@ -4,7 +4,9 @@ import { Plugin } from 'rollup'
 import arrayToExternal from './array-to-external'
 import { createBrowserConfig, createModuleConfig } from './create-config'
 import { error } from './errors'
+import { JS_EXTENSIONS, TS_EXTENSIONS, TS_ONLY_EXTENSIONS } from './extensions'
 import findFirst from './find-first'
+import { Dictionary, StrictNullable } from './helper-types'
 import { setProp } from './helpers'
 import isDepInstalled from './is-dep-installed'
 import keysOrNull from './keys-or-null'
@@ -55,7 +57,7 @@ async function pkgToConfigs(
     }
   }
 
-  const installedDeps = (runtimeDeps || devDeps) ? { ...runtimeDeps, ...devDeps } : null
+  const installedDeps: StrictNullable<Dictionary<string>> = (runtimeDeps || devDeps) ? { ...runtimeDeps, ...devDeps } : null
 
   // CHECK FOR INSTALLED PLUGINS
 
@@ -92,11 +94,8 @@ async function pkgToConfigs(
     resolve(cwd, 'src-bin', 'index.js')
   )
 
-  const typescriptOnlyExtensions = ['.ts', '.tsx']
-  const javascriptExtensions = ['.js', '.jsx', '.es6', '.es', '.mjs', '.node']
-
-  const isTypescriptAPIInput = extensionMatch(apiInput, typescriptOnlyExtensions)
-  const isTypescriptBinaryInput = extensionMatch(binInput, typescriptOnlyExtensions)
+  const isTypescriptAPIInput = extensionMatch(apiInput, TS_ONLY_EXTENSIONS)
+  const isTypescriptBinaryInput = extensionMatch(binInput, TS_ONLY_EXTENSIONS)
 
   // throw if trying to generate type definitions from javascript input
   // TODO: show warning intead of throwing
@@ -108,10 +107,8 @@ async function pkgToConfigs(
     throw error('can\'t generate types from javascript source')
   }
 
-  const typescriptExtensions = [...typescriptOnlyExtensions, ...javascriptExtensions]
-
-  const apiExtensions = isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions
-  const binaryExtensions = isTypescriptBinaryInput ? typescriptExtensions : javascriptExtensions
+  const apiExtensions = isTypescriptAPIInput ? TS_EXTENSIONS : JS_EXTENSIONS
+  const binaryExtensions = isTypescriptBinaryInput ? TS_EXTENSIONS : JS_EXTENSIONS
 
   const production = !dev
 
@@ -146,7 +143,7 @@ async function pkgToConfigs(
   function createPlugins(
     inputIsTypescript: boolean,
     extensions: string[],
-    outputFile: string | null,
+    outputFile: StrictNullable<string>,
     sourcemap: RollupSourcemap,
     mini: boolean,
     browser: boolean,
