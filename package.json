@@ -40,7 +40,7 @@
     "builtin-modules": "^3.1.0",
     "camelcase": "^5.3.1",
     "chalk": "^3.0.0",
-    "commander": "^4.1.1",
+    "commander": "^5.0.0",
     "filesize": "^6.1.0",
     "pretty-ms": "^6.0.1",
     "read-pkg": "^5.2.0",
