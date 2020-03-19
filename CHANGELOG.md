@@ -2,6 +2,31 @@
 
 ## Version History
 
+## [0.15.0](https://github.com/manferlo81/bundlib/compare/v0.14.4...v0.15.0) (2020-03-19)
+
+
+### ⚠ BREAKING CHANGES
+
+* `rollup` has to be installed separately
+
+### Features
+
+* analizePkg no longer returns resolved paths ([ad8e8ba](https://github.com/manferlo81/bundlib/commit/ad8e8ba43c8dec13870d449ea083db238034e05b))
+* eslint, babel & json as optional plugins ([a4d28be](https://github.com/manferlo81/bundlib/commit/a4d28befb23efc24e0f36f09a0b6bca37ea84ea5))
+* find input files ([b551b7d](https://github.com/manferlo81/bundlib/commit/b551b7d2f387e0828bfd74259034e8f4211add5e))
+* implemented "project" option ([0bd3b36](https://github.com/manferlo81/bundlib/commit/0bd3b36c8a8d1be55e3790c3b17becd4d2101117))
+* load optional plugins using dynamic import ([05057a1](https://github.com/manferlo81/bundlib/commit/05057a10c7c86f602698ac9717e950990af4a51d))
+* optional commonjs & node-resolve plugins ([4390e57](https://github.com/manferlo81/bundlib/commit/4390e57bfdfa35b29a4f67b8a5d4a06372b570a3))
+* optional plugins ([8095982](https://github.com/manferlo81/bundlib/commit/8095982b2c71c38f1e52329e5b1327307ecd8ef9))
+* optional terser plugin ([4c1979f](https://github.com/manferlo81/bundlib/commit/4c1979f6186234fd30098a5baad50e5d4f1cc259))
+* optional typescript plugin ([25abf20](https://github.com/manferlo81/bundlib/commit/25abf203075506b9f61008f8a61202599c869eb6))
+* rollup as peer dependency ([973edea](https://github.com/manferlo81/bundlib/commit/973edeafc11e37f04291bd25e7f1770494074321))
+
+
+### Bug Fixes
+
+* resolve esModule path ([a8e695b](https://github.com/manferlo81/bundlib/commit/a8e695ba5d01ee9efb797805b6a37f193cf7bef3))
+
 ### [0.14.4](https://github.com/manferlo81/bundlib/compare/v0.14.3...v0.14.4) (2020-03-12)
 
 
