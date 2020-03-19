@@ -1,11 +1,12 @@
 import { dirname, join as pathJoin, relative, resolve } from 'path'
 import { Plugin } from 'rollup'
 import slash from 'slash'
+import { Dictionary } from '../helper-types'
 import { keys, setProp } from '../helpers'
 
-export function mapIdExternal(cwd: string, outputDir: string, map: Record<string, string>): Plugin {
+export function mapIdExternal(cwd: string, outputDir: string, map: Dictionary<string>): Plugin {
 
-  const normalizedMap = keys(map).reduce<Record<string, string>>((result, source) => (
+  const normalizedMap = keys(map).reduce<Dictionary<string>>((result, source) => (
     setProp(
       slash(resolve(cwd, source)),
       resolve(cwd, map[source]),

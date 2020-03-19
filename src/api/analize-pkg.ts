@@ -1,7 +1,7 @@
-import { resolve } from 'path'
 import readPkg from 'read-pkg'
 import { BundlibOptions } from './bundlib-options'
 import { error, invalidOption, invalidPkgField } from './errors'
+import { StrictNullable } from './helper-types'
 import { keys } from './helpers'
 import { BundlibPkgJson } from './pkg'
 import { BrowserBuildOptions, CommonJSBuildOptions, Dependencies, ESModuleBuildOptions, InputOptions, OutputOptions, PkgAnalized, TypesBuildOptions } from './pkg-analized'
@@ -46,7 +46,6 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     dependencies: runtimeDependencies,
     devDependencies,
     peerDependencies,
-    optionalDependencies,
     bundlib: bundlibOptions = {},
   } = pkg
 
@@ -73,6 +72,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     'globals',
     'min',
     'cache',
+    'project',
     'main',
     'module',
     'browser',
@@ -98,6 +98,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     globals: browserGlobals,
     min,
     cache: cacheOption,
+    project: projectOption,
     main: mainOptions,
     module: moduleOptions,
     browser: browserOptions,
@@ -191,6 +192,13 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (!isStringOrNull(cacheOption)) {
     throw invalidOption('cache', 'string')
+  }
+
+  // ensure "project" option is valid
+  // throw otherwise
+
+  if (!isStringOrNull(projectOption)) {
+    throw invalidOption('project', 'string')
   }
 
   // ensure "main" option is valid
@@ -324,13 +332,6 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     throw invalidPkgField('peerDependencies', 'Object')
   }
 
-  // ensure "optionalDependencies" field is valid
-  // throw otherwise
-
-  if (!isDictionaryOrNull(optionalDependencies)) {
-    throw invalidPkgField('optionalDependencies', 'Object')
-  }
-
   // set ES Module build output file from "module" field falling back to "jsnext:main" field
 
   const esModuleFile = pkgModule || pkgJsNextMain
@@ -348,8 +349,8 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   // set input files
 
   const input: InputOptions = {
-    api: resolve(cwd, apiInput || 'src/index.ts'),
-    bin: resolve(cwd, binInput || 'src-bin/index.ts'),
+    api: apiInput || null,
+    bin: binInput || null,
   }
 
   // normalize global options
@@ -361,8 +362,8 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   // set CommonJS Module build output options
 
-  const mainOutput: CommonJSBuildOptions | null = (mainOptions === false || !pkgMain) ? null : {
-    path: resolve(cwd, pkgMain),
+  const mainOutput: StrictNullable<CommonJSBuildOptions> = (mainOptions === false || !pkgMain) ? null : {
+    path: pkgMain,
     sourcemap: normalizeBuildSourcemap(
       mainOptions,
       globalSourcemap,
@@ -374,8 +375,8 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   // set ES Module build output options
 
-  const moduleOutput: ESModuleBuildOptions | null = (moduleOptions === false || !esModuleFile) ? null : {
-    path: resolve(cwd, esModuleFile),
+  const moduleOutput: StrictNullable<ESModuleBuildOptions> = (moduleOptions === false || !esModuleFile) ? null : {
+    path: esModuleFile,
     sourcemap: normalizeBuildSourcemap(
       moduleOptions,
       globalSourcemap,
@@ -385,8 +386,8 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   // set Browser build output options
 
-  const browserOutput: BrowserBuildOptions | null = (browserOptions === false || !pkgBrowser) ? null : {
-    path: resolve(cwd, pkgBrowser as string),
+  const browserOutput: StrictNullable<BrowserBuildOptions> = (browserOptions === false || !pkgBrowser) ? null : {
+    path: pkgBrowser as string,
     sourcemap: normalizeBuildSourcemap(
       browserOptions,
       globalSourcemap,
@@ -411,8 +412,8 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   // set Binary build output options
 
-  const binaryOutput: CommonJSBuildOptions | null = (binaryOptions === false || !pkgBin) ? null : {
-    path: resolve(cwd, pkgBin as string),
+  const binaryOutput: StrictNullable<CommonJSBuildOptions> = (binaryOptions === false || !pkgBin) ? null : {
+    path: pkgBin as string,
     sourcemap: normalizeBuildSourcemap(
       binaryOptions,
       globalSourcemap,
@@ -424,8 +425,8 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   // set type definitions output options
 
-  const typesOutput: TypesBuildOptions | null = (typesOptions === false || !typesPath) ? null : {
-    path: resolve(cwd, typesPath),
+  const typesOutput: StrictNullable<TypesBuildOptions> = (typesOptions === false || !typesPath) ? null : {
+    path: typesPath,
     equals: normalizeBuildFlag(typesOptions, 'equals', !!equals),
   }
 
@@ -445,12 +446,12 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     runtime: runtimeDependencies || null,
     dev: devDependencies || null,
     peer: peerDependencies || null,
-    optional: optionalDependencies || null,
   }
 
   // set cache option
 
-  const cache: string = resolve(cwd, cacheOption || 'node_modules/.cache/bundlib')
+  const cache: StrictNullable<string> = cacheOption || null
+  const project: StrictNullable<string> = projectOption || null
 
   // return all options
 
@@ -461,6 +462,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     output,
     dependencies,
     cache,
+    project,
   }
 
 }

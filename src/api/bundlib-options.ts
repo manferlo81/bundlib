@@ -1,10 +1,10 @@
-import { Nullable } from './helper-types'
+import { Dictionary, Nullable } from './helper-types'
 import { BrowserBuildFormat, RollupSourcemap } from './types'
 
 export type BuildEnvironment = 'development' | 'production' | 'dev' | 'prod';
 export type BuildType = 'main' | 'module' | 'browser' | 'bin';
 
-export type GlobalsOptions = Nullable<Record<string, string> | string[]>;
+export type GlobalsOptions = Nullable<Dictionary<string> | string[]>;
 
 export interface SourceMapOptions {
   sourcemap?: Nullable<RollupSourcemap>;
@@ -61,6 +61,7 @@ export interface BundlibOptions extends
   interop?: ModuleOption;
   min?: MinOption;
   cache?: Nullable<string>;
+  project?: Nullable<string>;
 
   main?: Nullable<CommonJSBuildOptions | false>;
   module?: Nullable<ESModuleBuildOptions | false>;

@@ -36,16 +36,16 @@ describe('cache option', () => {
     const { cache } = await analizeWithCache(cacheDir)
 
     expect(cache)
-      .toMatch(new RegExp('[/\\\\]' + cacheDir + '$'))
+      .toBe(cacheDir)
 
   })
 
-  test('should default if cache not provided', async () => {
+  test('should be null if cache not provided', async () => {
 
     const { cache } = await analize(cwd, {})
 
     expect(cache)
-      .toMatch(/[/\\]\.cache[/\\]bundlib$/)
+      .toBeNull()
 
   })
 

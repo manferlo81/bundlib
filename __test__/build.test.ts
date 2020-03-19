@@ -3,18 +3,19 @@ import createConfigs from './tools/create-configs'
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
-import { dependencies } from '../package.json'
+import { dependencies, devDependencies, peerDependencies, optionalDependencies } from '../package.json'
 
 describe('build', () => {
 
   const cwd = process.cwd()
+  const deps = { dependencies, devDependencies, peerDependencies, optionalDependencies }
 
   test('should build a CommonJS module', async () => {
 
     const [config] = await createConfigs(cwd, false, {
       main: 'out/lib.cjs.js',
       bundlib: { input: 'src/api/analize-pkg.ts' },
-      dependencies,
+      ...deps,
     })
     const build = await rollup(config)
     const { output: [{ code }] } = await build.generate(config.output)
@@ -31,7 +32,7 @@ describe('build', () => {
       bundlib: {
         input: { bin: 'src/cli/index.ts' },
       },
-      dependencies,
+      ...deps,
     })
     const build = await rollup(config)
     const { output: [{ code }] } = await build.generate(config.output)
@@ -46,6 +47,7 @@ describe('build', () => {
     const [config] = await createConfigs(cwd, false, {
       browser: 'out/lib.umd.js',
       bundlib: { input: 'src/api/helpers.ts', globals: null },
+      ...deps,
     })
     const build = await rollup(config)
     const { output: [{ code }] } = await build.generate(config.output)
@@ -63,7 +65,7 @@ describe('build', () => {
       bundlib: {
         input: { api: 'src/api/index.ts', bin: 'src/cli/index.ts' },
       },
-      dependencies,
+      ...deps,
     })
     const cjsBuild = await rollup(cjsConfig)
     const { output: [{ code: cjsCode }] } = await cjsBuild.generate(cjsConfig.output)

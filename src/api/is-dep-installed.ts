@@ -1,14 +1,8 @@
-export function isDepInstalled(name: string, ...list: Array<Record<string, string> | null>): string | null {
-  return list.reduce<string | null>((result, deps) => {
-    if (!deps) {
-      return result
-    }
-    const ver = deps[name] as string | void
-    if (!ver) {
-      return result
-    }
-    return ver
-  }, null)
+import hasOwn from './has-own'
+import { Dictionary, Nullable } from './helper-types'
+
+function isDepInstalled(name: string, dependencies: Nullable<Dictionary<unknown>>): boolean {
+  return dependencies ? hasOwn.call(dependencies, name) : false
 }
 
 export default isDepInstalled

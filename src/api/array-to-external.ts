@@ -1,16 +1,21 @@
 import { IsExternal } from 'rollup'
+import hasOwn from './has-own'
+import { Dictionary, StrictNullable } from './helper-types'
 
-function arrayToExternal(modules: string[] | null): IsExternal {
+function arrayToExternal(...modules: Array<StrictNullable<string[]>>): IsExternal {
 
-  if (!modules) {
+  const filtered = modules.reduce<string[]>(
+    (result, list) => list ? [...result, ...list] : result,
+    [],
+  )
+
+  if (!filtered.length) {
     return () => false
   }
 
-  const cache: Record<string, boolean> = {}
+  const cache: Dictionary<boolean> = {}
 
-  // return modules as any;
-
-  return (source: string, _: string, isResolved: boolean) => {
+  return (source: string, importer: unknown, isResolved: boolean) => {
 
     // ignore local and resolved modules
 
@@ -20,13 +25,13 @@ function arrayToExternal(modules: string[] | null): IsExternal {
 
     // return from cache if present
 
-    if (Object.prototype.hasOwnProperty.call(cache, source)) {
+    if (hasOwn.call(cache, source)) {
       return cache[source]
     }
 
     // set cached value
 
-    return cache[source] = modules.some((moduleName): (boolean | void) => {
+    return cache[source] = filtered.some((moduleName): (boolean | void) => {
 
       if (source === moduleName) {
         return true

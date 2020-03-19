@@ -2,15 +2,15 @@
 
 [![CircleCI](https://circleci.com/gh/manferlo81/bundlib.svg?style=svg)](https://circleci.com/gh/manferlo81/bundlib) [![dependabot](https://api.dependabot.com/badges/status?host=github&repo=manferlo81/bundlib)](https://dependabot.com) [![npm](https://badgen.net/npm/v/bundlib)](https://www.npmjs.com/package/bundlib) [![codecov](https://codecov.io/gh/manferlo81/bundlib/branch/master/graph/badge.svg)](https://codecov.io/gh/manferlo81/bundlib) [![dependencies](https://badgen.net/david/dep/manferlo81/bundlib)](https://david-dm.org/manferlo81/bundlib) [![dev dependencies](https://badgen.net/david/dev/manferlo81/bundlib)](https://david-dm.org/manferlo81/bundlib?type=dev) [![packagephobia](https://badgen.net/packagephobia/install/bundlib)](https://packagephobia.now.sh/result?p=bundlib) [![types](https://img.shields.io/npm/types/bundlib.svg)](https://github.com/microsoft/typescript) [![Known Vulnerabilities](https://snyk.io/test/npm/bundlib/badge.svg)](https://snyk.io/test/npm/bundlib) [![license](https://badgen.net/github/license/manferlo81/bundlib)](LICENSE)
 
-A javascript library bundler powered by [Rollup.js](https://github.com/rollup/rollup) and optionally [Typescript](https://github.com/Microsoft/TypeScript).
+An automatic configuration manager for [Rollup.js](https://github.com/rollup/rollup).
 
 > :warning: Bundlib is under active development, please [file a new issue](https://github.com/manferlo81/bundlib/issues) if you find any issue or bug, suggestions are welcome as well.
 
-## BREAKING CHANGES in version 0.14.x
+## BREAKING CHANGES in version 0.15.x
 
-### API
-
-* `analizePkg` result `dependencies` member contains a set of objects in the form `{ name: version }` ([*see* `PkgAnalized`](#pkganalized)) allowing more control over installed dependencies and faster dependency detection. If you are using `Bundlib` via `CLI` you won't be affected by this change.
+* [Rollup](https://github.com/rollup/rollup) has to be installed separately
+* `analizePkg` paths are not longer resolved
+* find input files and default to `index.js` instead of `index.ts`
 
 ## In this guide
 
@@ -18,6 +18,7 @@ A javascript library bundler powered by [Rollup.js](https://github.com/rollup/ro
 * [First steps](#first-steps)
 * [Build](#build)
 * [Configuration](#configuration)
+* [Supported Plugins](#supported-plugins)
 * [CLI](#cli)
 * [API](#api)
 * [Types](#types-1)
@@ -30,9 +31,13 @@ A javascript library bundler powered by [Rollup.js](https://github.com/rollup/ro
 npm i -D bundlib
 ```
 
+> :warning: Rollup is a peer dependency and it has to be installed as well.
+
 ## First steps
 
-Bundlib will use `src/index.ts` as entry file for your library by default, it can be configured using the [`input`](#input) option. Add the corresponding scripts to your `package.json` and run them. [see below for CLI options](#cli).
+Bundlib will use `src/index.ts` or `src/index.tsx` as entry file for your library if you are using `typescript` (see Plugins for more information) or `src/index.js` otherwise, it can be configured using the [`input`](#input) option.
+
+Add the corresponding scripts to your `package.json` and run them. [see below for CLI options](#cli).
 
 ## Build
 
@@ -50,7 +55,49 @@ For `IIFE`, `AMD` or `UMD` builds, add a `"browser"` field to your `package.json
 
 ## Configuration
 
-Configuration is done through the `"bundlib"` field in your `package.json`. See the [list of options](#options) below.
+### Automatic Configuration
+
+Bundlib will try to configure Rollup according to you `package.json` data, other advanced options can be set using `"bundlib"` field in your `package.json`, see [Advanced Configuration](#advanced-configuration) for more information.
+
+#### "main"
+
+The `"main"` field will be used as your CommonJS Module output, if not present `CommonJS Module` build will be skipped. You can skip the build manually using the [`"main"`](#main) advanced option.
+
+#### "module" or "jsnext:main"
+
+The `"module"` field will be used as your `ES Module` output, if not present `ES Module` build will be skipped. You can skip the build manually using the [`"module"`](#module) advanced option.`"jsnext:main"` field will also be honored if `"module"` field is not present, but it is recommended to use the `"module"` field.
+
+#### "browser"
+
+The `"browser"` field will be used as your `Browser` build output, if not present `Browser` build will be skipped. You can skip the build manually using the [`"browser"`](#browser) advanced option. `Bundlib` only supports `string` type `"browser"` field, it will throw otherwise.
+
+#### "bin"
+
+The `"bin"` field will be used as your `Binary` build output, if not present `Binary` build will be skipped. You can skip the build manually using the [`"bin"`](#bin) advanced option. `Bundlib` only supports `string` type `"bin"` field, it will throw otherwise.
+
+#### "types" or "typings"
+
+The `"types"` field will be used as your types output if you are using `typescript`. You can skip types generation using the [`"types"`](#types) advanced option. `"typings"` field will also be honored if `"types"` field is not present.
+
+#### "dependencies"
+
+The `"dependencies"` field will be used to detect installed packages, it will also be added as external dependencies for your CommonJS Module, `ES Module`, and Binary builds, for Browser build dependencies will be bundled into the output unless otherwise specified using the [`"globals"`](#globals) advanced option.
+
+#### "devDependencies"
+
+The `"devDependencies"` field will be used to detect installed packages.
+
+#### "peerDependencies"
+
+The `"peerDependencies"` field will be used as external dependencies for your CommonJS Module, ES Module, and Binary builds.
+
+#### "bundlib"
+
+The `"bundlib"` field will be used for advanced configuration, see [Advanced Configuration](#advanced-configuration) for more information.
+
+### Advanced Configuration
+
+Advanced configuration is done through the `"bundlib"` field in your `package.json`. See the [list of options](#options) below.
 
 ***example***
 
@@ -83,8 +130,8 @@ interface InputOptions {
 }
 
 default {
-  api: "src/index.ts";
-  bin: "src-bin/index.ts";
+  api: "src/index.js";
+  bin: "src-bin/index.js";
 };
 ```
 
@@ -196,7 +243,7 @@ equals: boolean;
 default false;
 ```
 
-Transforms type export for CommonJS module using `export = ...` instead of `export default ...`.
+Transforms type export for `CommonJS Module` using `export = ...` instead of `export default ...`.
 
 This option can be overridden using the [`types`](#types) option.
 
@@ -225,6 +272,16 @@ default "node_modules/.cache/bundlib"
 ```
 
 Defines the directory to be used for cache, relative to the project root.
+
+#### project
+
+```typescript
+cache: string;
+
+default "tsconfig.json"
+```
+
+Defines the location of typescript `tsconfig.json` file.
 
 #### main
 
@@ -311,6 +368,30 @@ Specific options to be used for types generation. They will override any corresp
 
 If it's set to `false`, it will prevent type declarations generation altogether, even if there is a `"types"` or `"typings"` field in `package.json`.
 
+## Supported Plugins
+
+Any of the following plugins will be automatically configured if they are installed as `"dependencies"` or `"devDependencies"` in `package.json`.
+
+* `rollup-plugin-eslint`
+* `rollup-plugin-typescript2`
+* `rollup-plugin-babel`
+* `@rollup/plugin-node-resolve`
+* `@rollup/plugin-commonjs`
+* `@rollup/plugin-json`
+* `rollup-plugin-terser`
+* `rollup-plugin-strip-shebang`
+* `rollup-plugin-add-shebang`
+* `rollup-plugin-export-equals`
+
+The following plugins will be supported in the future.
+
+* `@rollup/plugin-typescript`
+* `@rollup/plugin-buble`
+* `rollup-plugin-prettier`
+* `rollup-plugin-preserve-shebang`
+
+Any plugin suggestion will be well received, please [file a new issue](https://github.com/manferlo81/bundlib/issues).
+
 ## CLI
 
 ```bash
@@ -390,8 +471,8 @@ interface PkgAnalized {
   cwd: string;
   pkg: PkgJson;
   input: {
-    api: string;
-    bin: string;
+    api: string | null;
+    bin: string | null;
   };
   output: {
     main: CommonJSBuildOptions | null;
@@ -404,9 +485,9 @@ interface PkgAnalized {
     runtime: { [name: string]: string } | null;
     dev: { [name: string]: string } | null;
     peer: { [name: string]: string } | null;
-    optional: { [name: string]: string } | null;
   };
-  cache: string;
+  cache: string | null;
+  project: string | null;
 }
 ```
 
@@ -460,29 +541,19 @@ interface TypesBuildOptions {
 }
 ```
 
-## Known Issues
-
-* [Issue #7](https://github.com/manferlo81/bundlib/issues/7)
-
 ## Features
 
 * Builds a `CommonJS Module` based on the `"main"` field in your `package.json`
 * Builds an `ES Module` based on the `"module"` (or `"jsnext:main"`) field in your `package.json`
 * Builds a `Browser` module based on the `"browser"` field in your `package.json`
-* Builds an CLI `Binary` module based on the `"bin"` field in your `package.json`
-* Exports type declarations based on the `"types"` or `"typings"` field in your `package.json`
+* Builds a `Binary` module based on the `"bin"` field in your `package.json`
+* Exports type declarations based on the `"types"` (or `"typings"`) field in your `package.json`
 * Skip any build based on options
-* Sets `"dependencies"`, `"peerDependencies"` and `"optionalDependencies"` as external for `CommonJS Module`, `ES Module` and `Binary` builds
-* Uses the user copy of `typescript` if installed
+* Sets `"dependencies"` and `"peerDependencies"` as external for `CommonJS Module`, `ES Module` and `Binary` builds
+* Uses and configures any [supported rollup plugin](#supported-plugins) if installed
 * Uses `chokidar` if installed
-* Importing an internal file from a package `Ex: lodash/core` will be treated as external if `lodash` is included in your `"dependencies"`, `peerDependencies` or `optionalDependencies`
-* Transforms `async/await` using [`babel-plugin-transform-async-to-promises`](https://github.com/rpetrich/babel-plugin-transform-async-to-promises) for ES5 support
-* Dynamic Import support through [`@babel/plugin-syntax-dynamic-import`](https://babeljs.io/docs/en/babel-plugin-syntax-dynamic-import)
-* Transforms `Object.assign` using [`@babel/plugin-transform-object-assign`](https://babeljs.io/docs/en/babel-plugin-transform-object-assign)
-* `React JSX` support through [`@babel/preset-react`](https://babeljs.io/docs/en/next/babel-preset-react)
-* Uses [`@babel/preset-env`](https://babeljs.io/docs/en/next/babel-preset-env)
-* Minifies build for production using [`Terser`](https://github.com/terser-js/terser)
+* Importing an internal file from a package `Ex: lodash/core` will be treated as external if `lodash` is included in your `"dependencies"` or `peerDependencies`
 
 ## License
 
-[MIT](LICENSE) &copy; [Manuel Fernández](https://github.com/manferlo81)
+[MIT](LICENSE) &copy; 2019 [Manuel Fernández](https://github.com/manferlo81)

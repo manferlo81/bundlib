@@ -215,7 +215,11 @@ describe('package to configs', () => {
       main: 'out/lib.js',
       types: 'out/lib.d.ts',
       bundlib: {
+        input: 'src/index.ts',
         equals: true,
+      },
+      devDependencies: {
+        'rollup-plugin-export-equals': '*',
       },
     })
 
@@ -234,6 +238,10 @@ describe('package to configs', () => {
 
     const configs = await createConfigs(cwd, true, {
       bin: 'bin/cli.js',
+      devDependencies: {
+        'rollup-plugin-strip-shebang': '*',
+        'rollup-plugin-add-shebang': '*',
+      },
     })
 
     expect(configs)
@@ -337,20 +345,6 @@ describe('package to configs', () => {
     const [config] = await createConfigs(cwd, true, {
       main: 'out/lib.js',
       peerDependencies: {
-        lodash: '*',
-      },
-    })
-
-    expect(config.external('lodash', '', false))
-      .toBe(true)
-
-  })
-
-  test('should set optionalDependencies as external', async () => {
-
-    const [config] = await createConfigs(cwd, true, {
-      main: 'out/lib.js',
-      optionalDependencies: {
         lodash: '*',
       },
     })

@@ -1,25 +1,18 @@
-import commonjs from '@rollup/plugin-commonjs'
-import json from '@rollup/plugin-json'
-import nodeResolve from '@rollup/plugin-node-resolve'
 import builtinModules from 'builtin-modules'
-import { union } from 'lodash'
 import { basename, dirname, join as pathJoin, resolve } from 'path'
 import { Plugin } from 'rollup'
-import addShebang from 'rollup-plugin-add-shebang'
-import babel from 'rollup-plugin-babel'
-import { eslint } from 'rollup-plugin-eslint'
-import exportEquals from 'rollup-plugin-export-equals'
-import stripShebang from 'rollup-plugin-strip-shebang'
-import typescript2 from 'rollup-plugin-typescript2'
 import arrayToExternal from './array-to-external'
 import { createBrowserConfig, createModuleConfig } from './create-config'
 import { error } from './errors'
+import { JS_EXTENSIONS, TS_EXTENSIONS, TS_ONLY_EXTENSIONS } from './extensions'
+import findFirst from './find-first'
+import { Dictionary, StrictNullable } from './helper-types'
 import { setProp } from './helpers'
 import isDepInstalled from './is-dep-installed'
 import keysOrNull from './keys-or-null'
 import { PkgAnalized } from './pkg-analized'
-import mapIdExternal from './plugins/api-plugin'
-import minify from './plugins/minify'
+import pluginLoader from './plugin-loader'
+import pluginMapIdExternal from './plugins/api-plugin'
 import { renameMin, renamePre } from './rename'
 import { BundlibAPIOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types'
 import extensionMatch from './validate/ext-match'
@@ -30,13 +23,13 @@ async function pkgToConfigs(
 ): Promise<Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>>;
 
 async function pkgToConfigs(
-  { cwd, input, dependencies, cache, output }: PkgAnalized,
+  { cwd, input, output, dependencies, cache, project }: PkgAnalized,
   { dev, watch }: BundlibAPIOptions,
 ): Promise<Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>> {
 
   const {
-    api: apiInput,
-    bin: binInput,
+    api: apiInput1,
+    bin: binInput1,
   } = input
 
   const {
@@ -51,8 +44,9 @@ async function pkgToConfigs(
     runtime: runtimeDeps,
     dev: devDeps,
     peer: peerDeps,
-    optional: optionalDeps,
   } = dependencies
+
+  const bundlibCache = resolve(cwd, cache || 'node_modules/.cache/bundlib')
 
   // throw if "name" option required and not present
 
@@ -63,17 +57,45 @@ async function pkgToConfigs(
     }
   }
 
+  const installedDeps: StrictNullable<Dictionary<string>> = (runtimeDeps || devDeps) ? { ...runtimeDeps, ...devDeps } : null
+
+  // CHECK FOR INSTALLED PLUGINS
+
+  const loadPluginTypescript2 = await pluginLoader<typeof import('rollup-plugin-typescript2').default>('rollup-plugin-typescript2', ['typescript'], 'default', installedDeps)
+  const loadPluginESLint = await pluginLoader<typeof import('rollup-plugin-eslint').eslint>('rollup-plugin-eslint', null, 'eslint', installedDeps)
+  const loadPluginNodeResolve = await pluginLoader<typeof import('@rollup/plugin-node-resolve').default>('@rollup/plugin-node-resolve', null, 'default', installedDeps)
+  const loadPluginCommonJS = await pluginLoader<typeof import('@rollup/plugin-commonjs').default>('@rollup/plugin-commonjs', null, 'default', installedDeps)
+  const loadPluginJSON = await pluginLoader<typeof import('@rollup/plugin-json').default>('@rollup/plugin-json', null, 'default', installedDeps)
+  const loadPluginBabel = await pluginLoader<typeof import('rollup-plugin-babel').default>('rollup-plugin-babel', null, 'default', installedDeps)
+  const loadPluginTerser = await pluginLoader<typeof import('rollup-plugin-terser').terser>('rollup-plugin-terser', null, 'terser', installedDeps)
+  const loadPluginStripShebang = await pluginLoader<typeof import('rollup-plugin-strip-shebang')>('rollup-plugin-strip-shebang', null, 'default', installedDeps)
+  const loadPluginAddShebang = await pluginLoader<typeof import('rollup-plugin-add-shebang').default>('rollup-plugin-add-shebang', null, 'default', installedDeps)
+  const loadPluginExportEquals = await pluginLoader<typeof import('rollup-plugin-export-equals')>('rollup-plugin-export-equals', null, 'default', installedDeps)
+
   // CHECK FOR INSTALLED MODULES
 
-  const typescriptIsInstalled = !!isDepInstalled('typescript', runtimeDeps, devDeps)
-  const eslintIsInstalled = !!isDepInstalled('eslint', runtimeDeps, devDeps)
-  const chokidarIsInstalled = !!isDepInstalled('chokidar', runtimeDeps, devDeps)
+  const isInstalledChokidar = isDepInstalled('chokidar', installedDeps)
 
-  const typescriptOnlyExtensions = ['.ts', '.tsx']
-  const javascriptExtensions = ['.js', '.jsx', '.mjs', '.node']
+  const apiInput = apiInput1 ? resolve(cwd, apiInput1) : (
+    (
+      loadPluginTypescript2 ? findFirst(
+        ...['index.ts', 'index.tsx'].map((filename) => resolve(cwd, 'src', filename)),
+      ) : null
+    ) ||
+    resolve(cwd, 'src', 'index.js')
+  )
 
-  const isTypescriptAPIInput = extensionMatch(apiInput, typescriptOnlyExtensions)
-  const isTypescriptBinaryInput = extensionMatch(binInput, typescriptOnlyExtensions)
+  const binInput = binInput1 ? resolve(cwd, binInput1) : (
+    (
+      loadPluginTypescript2 ? findFirst(
+        ...['index.ts'].map((filename) => resolve(cwd, 'src-bin', filename)),
+      ) : null
+    ) ||
+    resolve(cwd, 'src-bin', 'index.js')
+  )
+
+  const isTypescriptAPIInput = extensionMatch(apiInput, TS_ONLY_EXTENSIONS)
+  const isTypescriptBinaryInput = extensionMatch(binInput, TS_ONLY_EXTENSIONS)
 
   // throw if trying to generate type definitions from javascript input
   // TODO: show warning intead of throwing
@@ -85,10 +107,8 @@ async function pkgToConfigs(
     throw error('can\'t generate types from javascript source')
   }
 
-  const typescriptExtensions = [...typescriptOnlyExtensions, ...javascriptExtensions]
-
-  const apiExtensions = isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions
-  const binaryExtensions = isTypescriptBinaryInput ? typescriptExtensions : javascriptExtensions
+  const apiExtensions = isTypescriptAPIInput ? TS_EXTENSIONS : JS_EXTENSIONS
+  const binaryExtensions = isTypescriptBinaryInput ? TS_EXTENSIONS : JS_EXTENSIONS
 
   const production = !dev
 
@@ -103,29 +123,18 @@ async function pkgToConfigs(
 
   const typesFilename = renamePre(basename(apiInput), 'd')
 
-  let typesOutputDir = typesOutput ? typesOutput.path : null
+  let typesOutputDir = typesOutput ? resolve(cwd, typesOutput.path) : null
   if (typesOutputDir && extensionMatch(typesOutputDir, ['.ts'])) {
     typesOutputDir = dirname(typesOutputDir)
   }
 
   const isExternal = arrayToExternal(
-    union(
-      keysOrNull(runtimeDeps),
-      keysOrNull(peerDeps),
-      keysOrNull(optionalDeps),
-      builtinModules,
-    ),
+    keysOrNull(runtimeDeps),
+    keysOrNull(peerDeps),
+    builtinModules as string[],
   )
 
-  const useUserTypescript = (
-    isTypescriptAPIInput || isTypescriptBinaryInput
-  ) && typescriptIsInstalled
-
-  const useChokidar = chokidarIsInstalled && !!watch
-
-  let typescript = useUserTypescript
-    ? null
-    : await import('typescript')
+  const useChokidar = isInstalledChokidar && !!watch
 
   const exclude = /node_modules/
 
@@ -134,7 +143,7 @@ async function pkgToConfigs(
   function createPlugins(
     inputIsTypescript: boolean,
     extensions: string[],
-    outputFile: string | null,
+    outputFile: StrictNullable<string>,
     sourcemap: RollupSourcemap,
     mini: boolean,
     browser: boolean,
@@ -143,104 +152,86 @@ async function pkgToConfigs(
 
     const sourcemapBool = !!sourcemap
 
-    const declarationDir = inputIsTypescript && !configs.length && !bin && typesOutputDir
+    const declarationDir = inputIsTypescript && configs.length === 0 && !bin && typesOutputDir
     const tsInclude = bin ? cwdFolderContent : apiFolderContent
-    const cacheRoot = pathJoin(cache, 'rpt2')
+    const cacheRoot = pathJoin(bundlibCache, 'rpt2')
 
     let shebang: string
 
     const plugins = [
 
-      eslintIsInstalled && eslint({
+      loadPluginESLint && loadPluginESLint({
         include: tsInclude,
         exclude,
         throwOnWarning: false,
         throwOnError: false,
       }),
 
-      bin && stripShebang({
+      bin && loadPluginStripShebang && loadPluginStripShebang({
         capture: (shebangFromFile) => shebang = shebangFromFile,
         sourcemap: sourcemapBool,
       }),
 
-      bin && cjsOutput && outputFile && mapIdExternal(
+      bin && cjsOutput && outputFile && pluginMapIdExternal(
         cwd,
         dirname(outputFile),
         setProp(apiInput, cwd, {}),
       ),
 
-      nodeResolve({
+      loadPluginNodeResolve && loadPluginNodeResolve({
         preferBuiltins: !browser,
         extensions,
       }),
 
-      browser && commonjs({
+      browser && loadPluginCommonJS && loadPluginCommonJS({
         sourceMap: sourcemapBool,
       }),
 
-      inputIsTypescript && typescript2({
-        typescript: typescript || (typescript = require(require.resolve('typescript', {
-          paths: [cwd],
-        }))),
-        include: tsInclude,
-        cacheRoot,
-        useTsconfigDeclarationDir: true,
-        tsconfigDefaults: {
-          include: tsInclude,
-          exclude: [],
-          compilerOptions: {
-            esModuleInterop: true,
-            resolveJsonModule: true,
-            allowSyntheticDefaultImports: true,
+      inputIsTypescript && loadPluginTypescript2 && loadPluginTypescript2(
+        Object.assign(
+          {
+            include: tsInclude,
+            cacheRoot,
+            useTsconfigDeclarationDir: true,
+            tsconfigDefaults: {
+              include: tsInclude,
+              exclude: [],
+            },
+            tsconfigOverride: {
+              compilerOptions: Object.assign(
+                { sourceMap: sourcemapBool, declaration: !!declarationDir },
+                declarationDir ? { declarationDir } : null,
+              ),
+            },
           },
-        },
-        tsconfigOverride: {
-          compilerOptions: {
-            target: 'esnext',
-            module: 'esnext',
-            moduleResolution: 'node',
-            sourceMap: sourcemapBool,
-            declaration: !!declarationDir,
-            declarationDir: declarationDir || '',
-            allowJs: !typesOutputDir,
-            emitDeclarationOnly: false,
-          },
-        },
-      }),
+          project ? { tsconfig: resolve(cwd, project) } : null,
+        ),
+      ),
 
-      json(),
+      loadPluginJSON && loadPluginJSON(),
 
-      declarationDir && typesOutput && typesOutput.equals && exportEquals({
+      declarationDir && typesOutput && typesOutput.equals && loadPluginExportEquals && loadPluginExportEquals({
         file: resolve(cwd, pathJoin(declarationDir, typesFilename)),
       }),
 
-      babel({
+      loadPluginBabel && loadPluginBabel({
         extensions,
         exclude,
-        babelrc: true,
-        presets: [
-          [
-            require.resolve('@babel/preset-env'),
-            { loose: true },
-          ],
-          require.resolve('@babel/preset-react'),
-        ],
-        plugins: [
-          require.resolve('@babel/plugin-syntax-dynamic-import'),
-          [
-            require.resolve('babel-plugin-transform-async-to-promises'),
-            { inlineHelpers: true },
-          ],
-          require.resolve('@babel/plugin-transform-object-assign'),
-        ],
       }),
 
-      bin && outputFile && addShebang({
+      bin && outputFile && loadPluginAddShebang && loadPluginAddShebang({
         include: outputFile,
         shebang: () => shebang || '#!/usr/bin/env node',
       }),
 
-      mini && minify(sourcemapBool),
+      mini && loadPluginTerser && loadPluginTerser({
+        sourcemap: sourcemapBool,
+        toplevel: true,
+        module: true,
+        compress: {
+          passes: 2,
+        },
+      }),
 
     ]
 
@@ -251,20 +242,21 @@ async function pkgToConfigs(
   if (esOutput) {
 
     const { path, sourcemap, min } = esOutput
+    const resolvedPath = resolve(cwd, path)
 
     configs.push(
       createModuleConfig(
         apiInput,
         'es',
-        path,
+        resolvedPath,
         sourcemap,
         true,
         false,
         isExternal,
         createPlugins(
           isTypescriptAPIInput,
-          isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
-          path,
+          apiExtensions,
+          resolvedPath,
           sourcemap,
           production && !min,
           false,
@@ -280,15 +272,15 @@ async function pkgToConfigs(
         createModuleConfig(
           apiInput,
           'es',
-          renameMin(path),
+          renameMin(resolvedPath),
           sourcemap,
           true,
           false,
           isExternal,
           createPlugins(
             isTypescriptAPIInput,
-            isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
-            path,
+            apiExtensions,
+            resolvedPath,
             sourcemap,
             true,
             false,
@@ -305,20 +297,21 @@ async function pkgToConfigs(
   if (cjsOutput) {
 
     const { path, sourcemap, esModule, interop, min } = cjsOutput
+    const resolvedPath = resolve(cwd, path)
 
     configs.push(
       createModuleConfig(
         apiInput,
         'cjs',
-        path,
+        resolvedPath,
         sourcemap,
         esModule,
         interop,
         isExternal,
         createPlugins(
           isTypescriptAPIInput,
-          isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
-          path,
+          apiExtensions,
+          resolvedPath,
           sourcemap,
           production && !min,
           false,
@@ -334,15 +327,15 @@ async function pkgToConfigs(
         createModuleConfig(
           apiInput,
           'cjs',
-          renameMin(path),
+          renameMin(resolvedPath),
           sourcemap,
           esModule,
           interop,
           isExternal,
           createPlugins(
             isTypescriptAPIInput,
-            isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
-            path,
+            apiExtensions,
+            resolvedPath,
             sourcemap,
             true,
             false,
@@ -359,20 +352,21 @@ async function pkgToConfigs(
   if (browserOutput) {
 
     const { path, sourcemap, esModule, interop, format, name, extend, id, globals, min } = browserOutput
+    const resolvedPath = resolve(cwd, path)
     const isBrowserExternal = arrayToExternal(keysOrNull(globals))
 
     configs.push(
       createBrowserConfig(
         apiInput,
         format,
-        path,
+        resolvedPath,
         sourcemap,
         esModule,
         interop,
         isBrowserExternal,
         createPlugins(
           isTypescriptAPIInput,
-          isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
+          apiExtensions,
           null,
           sourcemap,
           production && !min,
@@ -393,14 +387,14 @@ async function pkgToConfigs(
         createBrowserConfig(
           apiInput,
           format,
-          renameMin(path),
+          renameMin(resolvedPath),
           sourcemap,
           esModule,
           interop,
           isBrowserExternal,
           createPlugins(
             isTypescriptAPIInput,
-            isTypescriptAPIInput ? typescriptExtensions : javascriptExtensions,
+            apiExtensions,
             null,
             sourcemap,
             true,
@@ -422,20 +416,21 @@ async function pkgToConfigs(
   if (binaryOutput) {
 
     const { path, sourcemap, esModule, interop, min } = binaryOutput
+    const resolvedPath = resolve(cwd, path)
 
     configs.push(
       createModuleConfig(
         binInput,
         'cjs',
-        path,
+        resolvedPath,
         sourcemap,
         esModule,
         interop,
         isExternal,
         createPlugins(
           isTypescriptBinaryInput,
-          isTypescriptBinaryInput ? typescriptExtensions : javascriptExtensions,
-          path,
+          binaryExtensions,
+          resolvedPath,
           sourcemap,
           production && !min,
           false,
@@ -451,15 +446,15 @@ async function pkgToConfigs(
         createModuleConfig(
           binInput,
           'cjs',
-          renameMin(path),
+          renameMin(resolvedPath),
           sourcemap,
           esModule,
           interop,
           isExternal,
           createPlugins(
             isTypescriptBinaryInput,
-            isTypescriptBinaryInput ? typescriptExtensions : javascriptExtensions,
-            path,
+            binaryExtensions,
+            resolvedPath,
             sourcemap,
             true,
             false,
