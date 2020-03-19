@@ -3,6 +3,13 @@
   "displayName": "Bundlib",
   "version": "0.14.3",
   "description": "A javascript library bundler powered by Rollup.js and optionally Typescript",
+  "keywords": [
+    "library",
+    "bundle",
+    "bundler",
+    "typescript",
+    "rollup"
+  ],
   "main": "dist/bundlib.js",
   "module": "dist/bundlib.mjs",
   "bin": "bin/bundlib-cli.js",
@@ -25,13 +32,9 @@
     "prerelease": "npm run clean && npm run lint && npm test && npm run build",
     "release": "standard-version"
   },
-  "keywords": [
-    "library",
-    "bundle",
-    "bundler",
-    "typescript",
-    "rollup"
-  ],
+  "engines": {
+    "node": ">=10"
+  },
   "dependencies": {
     "builtin-modules": "^3.1.0",
     "camelcase": "^5.3.1",

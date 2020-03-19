@@ -3,18 +3,19 @@
     [
       "@babel/preset-env",
       {
-        "loose": true
+        "loose": true,
+        "targets": {
+          "node": "10"
+        }
       }
     ]
   ],
   "plugins": [
-    "@babel/plugin-syntax-dynamic-import",
     [
       "babel-plugin-transform-async-to-promises",
       {
         "inlineHelpers": true
       }
-    ],
-    "@babel/plugin-transform-object-assign"
+    ]
   ]
 }
