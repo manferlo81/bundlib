@@ -2,6 +2,13 @@
 
 ## Version History
 
+### [0.14.4](https://github.com/manferlo81/bundlib/compare/v0.14.3...v0.14.4) (2020-03-12)
+
+
+### Features
+
+* isDepInstalled returns installed version ([44e6b8a](https://github.com/manferlo81/bundlib/commit/44e6b8a36482e8f607a7a9ee0c69b3b583617a7a))
+
 ### [0.14.3](https://github.com/manferlo81/bundlib/compare/v0.14.2...v0.14.3) (2020-03-10)
 
 ### [0.14.2](https://github.com/manferlo81/bundlib/compare/v0.14.1...v0.14.2) (2020-02-13)
