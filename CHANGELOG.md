@@ -2,6 +2,8 @@
 
 ## Version History
 
+### [0.15.2](https://github.com/manferlo81/bundlib/compare/v0.15.1...v0.15.2) (2020-03-20)
+
 ### [0.15.1](https://github.com/manferlo81/bundlib/compare/v0.15.0...v0.15.1) (2020-03-19)
 
 
