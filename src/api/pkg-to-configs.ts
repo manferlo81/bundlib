@@ -187,30 +187,27 @@ async function pkgToConfigs(
         sourceMap: sourcemapBool,
       }),
 
-      inputIsTypescript && loadPluginTypescript2 && loadPluginTypescript2(
-        Object.assign(
-          {
-            include: tsInclude,
-            cacheRoot,
-            useTsconfigDeclarationDir: true,
-            tsconfigDefaults: {
-              include: tsInclude,
-              exclude: [],
-            },
-            tsconfigOverride: {
-              compilerOptions: Object.assign(
-                { sourceMap: sourcemapBool, declaration: !!declarationDir },
-                declarationDir ? { declarationDir } : null,
-              ),
-            },
+      inputIsTypescript && loadPluginTypescript2 && loadPluginTypescript2({
+        include: tsInclude,
+        cacheRoot,
+        useTsconfigDeclarationDir: true,
+        tsconfigDefaults: {
+          include: tsInclude,
+          exclude: [],
+        },
+        tsconfigOverride: {
+          compilerOptions: {
+            sourceMap: sourcemapBool,
+            declaration: !!declarationDir,
+            ...declarationDir && { declarationDir },
           },
-          project ? { tsconfig: resolve(cwd, project) } : null,
-        ),
-      ),
+        },
+        ...project && { tsconfig: resolve(cwd, project) },
+      }),
 
       loadPluginJSON && loadPluginJSON(),
 
-      declarationDir && typesOutput && typesOutput.equals && loadPluginExportEquals && loadPluginExportEquals({
+      declarationDir && typesOutput && loadPluginExportEquals && loadPluginExportEquals({
         file: resolve(cwd, pathJoin(declarationDir, typesFilename)),
       }),
 

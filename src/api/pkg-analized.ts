@@ -29,9 +29,7 @@ export interface BrowserBuildOptions extends CommonJSBuildOptions {
   extend: boolean;
 }
 
-export interface TypesBuildOptions extends OptionsWithPath {
-  equals: boolean;
-}
+export type TypesBuildOptions = OptionsWithPath
 
 export interface OutputOptions {
   main: StrictNullable<CommonJSBuildOptions>;

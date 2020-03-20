@@ -243,6 +243,8 @@ equals: boolean;
 default false;
 ```
 
+> As of version `0.15.2` this option has no effect, It won't throw to keep compatibility with previous version but it will be ignored. Install [`rollup-plugin-export-equals` Plugin](#supported-plugins) instead.
+
 Transforms type export for `CommonJS Module` using `export = ...` instead of `export default ...`.
 
 This option can be overridden using the [`types`](#types) option.
@@ -372,23 +374,23 @@ If it's set to `false`, it will prevent type declarations generation altogether,
 
 Any of the following plugins will be automatically configured if they are installed as `"dependencies"` or `"devDependencies"` in `package.json`.
 
-* `rollup-plugin-eslint`
-* `rollup-plugin-typescript2`
-* `rollup-plugin-babel`
-* `@rollup/plugin-node-resolve`
-* `@rollup/plugin-commonjs`
-* `@rollup/plugin-json`
-* `rollup-plugin-terser`
-* `rollup-plugin-strip-shebang`
-* `rollup-plugin-add-shebang`
-* `rollup-plugin-export-equals`
+* [`rollup-plugin-eslint`](https://github.com/TrySound/rollup-plugin-eslint)
+* [`rollup-plugin-typescript2`](https://github.com/ezolenko/rollup-plugin-typescript2)
+* [`rollup-plugin-babel`](https://github.com/rollup/rollup-plugin-babel)
+* [`@rollup/plugin-node-resolve`](https://github.com/rollup/plugins/tree/master/packages/node-resolve)
+* [`@rollup/plugin-commonjs`](https://github.com/rollup/plugins/tree/master/packages/commonjs)
+* [`@rollup/plugin-json`](https://github.com/rollup/plugins/tree/master/packages/json)
+* [`rollup-plugin-terser`](https://github.com/TrySound/rollup-plugin-terser)
+* [`rollup-plugin-strip-shebang`](https://github.com/manferlo81/rollup-plugin-strip-shebang)
+* [`rollup-plugin-add-shebang`](https://github.com/ls-age/rollup-plugin-add-shebang)
+* [`rollup-plugin-export-equals`](https://github.com/manferlo81/rollup-plugin-export-equals)
 
 The following plugins will be supported in the future.
 
-* `@rollup/plugin-typescript`
-* `@rollup/plugin-buble`
-* `rollup-plugin-prettier`
-* `rollup-plugin-preserve-shebang`
+* [`@rollup/plugin-typescript`](https://github.com/rollup/plugins/tree/master/packages/typescript)
+* [`@rollup/plugin-buble`](https://github.com/rollup/plugins/tree/master/packages/buble)
+* [`rollup-plugin-prettier`](https://github.com/mjeanroy/rollup-plugin-prettier)
+* [`rollup-plugin-preserve-shebang`](https://github.com/developit/rollup-plugin-preserve-shebang)
 
 Any plugin suggestion will be well received, please [file a new issue](https://github.com/manferlo81/bundlib/issues).
 
@@ -537,7 +539,6 @@ interface BrowserBuildOptions {
 ```typescript
 interface TypesBuildOptions {
   path: string;
-  equals: boolean;
 }
 ```
 

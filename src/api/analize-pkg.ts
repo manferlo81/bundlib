@@ -91,7 +91,6 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     esModule,
     interop,
     extend,
-    equals,
     format: browserFormat,
     name: browserName,
     id: amdId,
@@ -427,7 +426,6 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   const typesOutput: StrictNullable<TypesBuildOptions> = (typesOptions === false || !typesPath) ? null : {
     path: typesPath,
-    equals: normalizeBuildFlag(typesOptions, 'equals', !!equals),
   }
 
   // set all output options
