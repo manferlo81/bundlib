@@ -1,8 +1,9 @@
 {
   "extends": "./tsconfig.json",
   "include": [
+    "__test__/**/*.ts",
     "src/api/**/*.ts",
     "src/cli/**/*.ts",
-    "__test__/**/*.ts",
+    "jest.config.js"
   ]
 }

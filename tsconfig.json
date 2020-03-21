@@ -21,7 +21,6 @@
     "dist/**",
     "bin/**",
     "types/**",
-    "coverage/**",
-    "jest.config.js"
+    "coverage/**"
   ]
 }

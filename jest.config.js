@@ -1,4 +1,4 @@
-const config = {
+module.exports = {
 
   testEnvironment: 'node',
   browser: false,
@@ -21,5 +21,3 @@ const config = {
   verbose: true,
 
 }
-
-module.exports = config
