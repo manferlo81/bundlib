@@ -181,6 +181,7 @@ async function pkgToConfigs(
       loadPluginNodeResolve && loadPluginNodeResolve({
         preferBuiltins: !browser,
         extensions,
+        rootDir: cwd,
       }),
 
       browser && loadPluginCommonJS && loadPluginCommonJS({
@@ -205,13 +206,16 @@ async function pkgToConfigs(
         ...project && { tsconfig: resolve(cwd, project) },
       }),
 
-      loadPluginJSON && loadPluginJSON(),
+      loadPluginJSON && loadPluginJSON({
+        preferConst: true,
+      }),
 
       declarationDir && typesOutput && loadPluginExportEquals && loadPluginExportEquals({
         file: resolve(cwd, pathJoin(declarationDir, typesFilename)),
       }),
 
       loadPluginBabel && loadPluginBabel({
+        include: tsInclude,
         extensions,
         exclude,
       }),
