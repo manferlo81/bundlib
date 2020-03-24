@@ -10,6 +10,7 @@ module.exports = {
   collectCoverage: true,
   collectCoverageFrom: [
     'src/api/**/*.ts',
+    '!src/api/**/*.d.ts',
   ],
   coverageDirectory: 'coverage',
   coverageReporters: [
