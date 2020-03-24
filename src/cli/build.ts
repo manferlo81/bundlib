@@ -17,14 +17,12 @@ function build(
 
   const cache: Partial<Record<string, RollupCache>> = {}
 
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   oneByOne(configs, async (config, next) => {
 
     const { input, output } = config
     const { file: outputFile, format } = output
 
-    const isModuleBuild = format === 'cjs' || format === 'es'
-    const cacheKey = `${isModuleBuild ? 'module' : 'browser'}:${input}`
+    const cacheKey = `${format}:${input}`
     config.cache = cache[cacheKey]
 
     if (callbacks.buildStart) {
@@ -36,7 +34,6 @@ function build(
       const currentTime = Date.now()
 
       const buildResult = await rollup(config)
-      // eslint-disable-next-line require-atomic-updates
       config.cache = cache[cacheKey] = buildResult.cache
       await buildResult.write(output)
 

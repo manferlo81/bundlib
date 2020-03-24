@@ -1,5 +1,5 @@
 type OneByOneNext = () => void;
-type OneByOneCallback<T> = (item: T, next: OneByOneNext | null) => void;
+type OneByOneCallback<T> = (item: T, next: OneByOneNext | null) => unknown;
 
 function oneByOne<T>(arr: ArrayLike<T>, callback: OneByOneCallback<T>): void {
 
