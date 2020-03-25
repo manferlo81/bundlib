@@ -11,7 +11,7 @@ import { setProp } from './helpers'
 import isDepInstalled from './is-dep-installed'
 import keysOrNull from './keys-or-null'
 import { PkgAnalized } from './pkg-analized'
-import pluginLoader from './plugin-loader'
+import createPluginLoader from './plugin-loader'
 import pluginMapIdExternal from './plugins/api-plugin'
 import { renameMin, renamePre } from './rename'
 import { BundlibAPIOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types'
@@ -22,6 +22,7 @@ async function pkgToConfigs(
   options: BundlibAPIOptions,
 ): Promise<Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>>;
 
+// eslint-disable-next-line @typescript-eslint/require-await
 async function pkgToConfigs(
   { cwd, input, output, dependencies, cache, project }: PkgAnalized,
   { dev, watch }: BundlibAPIOptions,
@@ -58,19 +59,21 @@ async function pkgToConfigs(
   }
 
   const installedDeps: StrictNullable<Dictionary<string>> = (runtimeDeps || devDeps) ? { ...runtimeDeps, ...devDeps } : null
+  const pluginLoader = createPluginLoader(cwd, installedDeps)
 
   // CHECK FOR INSTALLED PLUGINS
 
-  const loadPluginTypescript2 = await pluginLoader<typeof import('rollup-plugin-typescript2').default>('rollup-plugin-typescript2', ['typescript'], 'default', installedDeps)
-  const loadPluginESLint = await pluginLoader<typeof import('rollup-plugin-eslint').eslint>('rollup-plugin-eslint', null, 'eslint', installedDeps)
-  const loadPluginNodeResolve = await pluginLoader<typeof import('@rollup/plugin-node-resolve').default>('@rollup/plugin-node-resolve', null, 'default', installedDeps)
-  const loadPluginCommonJS = await pluginLoader<typeof import('@rollup/plugin-commonjs').default>('@rollup/plugin-commonjs', null, 'default', installedDeps)
-  const loadPluginJSON = await pluginLoader<typeof import('@rollup/plugin-json').default>('@rollup/plugin-json', null, 'default', installedDeps)
-  const loadPluginBabel = await pluginLoader<typeof import('rollup-plugin-babel').default>('rollup-plugin-babel', null, 'default', installedDeps)
-  const loadPluginTerser = await pluginLoader<PluginImpl>('rollup-plugin-terser', null, 'terser', installedDeps)
-  const loadPluginStripShebang = await pluginLoader<typeof import('rollup-plugin-strip-shebang')>('rollup-plugin-strip-shebang', null, 'default', installedDeps)
-  const loadPluginAddShebang = await pluginLoader<typeof import('rollup-plugin-add-shebang').default>('rollup-plugin-add-shebang', null, 'default', installedDeps)
-  const loadPluginExportEquals = await pluginLoader<typeof import('rollup-plugin-export-equals')>('rollup-plugin-export-equals', null, 'default', installedDeps)
+  const loadPluginTypescript2 = pluginLoader<typeof import('rollup-plugin-typescript2').default>('rollup-plugin-typescript2', ['typescript'], 'default')
+  const loadPluginESLint = pluginLoader<typeof import('rollup-plugin-eslint').eslint>('rollup-plugin-eslint', null, 'eslint')
+  const loadPluginNodeResolve = pluginLoader<typeof import('@rollup/plugin-node-resolve').default>('@rollup/plugin-node-resolve', null, 'default')
+  const loadPluginCommonJS = pluginLoader<typeof import('@rollup/plugin-commonjs').default>('@rollup/plugin-commonjs', null, 'default')
+  const loadPluginJSON = pluginLoader<typeof import('@rollup/plugin-json').default>('@rollup/plugin-json', null, 'default')
+  const loadPluginBabel = pluginLoader<typeof import('rollup-plugin-babel').default>('rollup-plugin-babel', null, 'default')
+  const loadPluginBuble = pluginLoader<PluginImpl>('@rollup/plugin-buble', null, 'default')
+  const loadPluginTerser = pluginLoader<PluginImpl>('rollup-plugin-terser', null, 'terser')
+  const loadPluginStripShebang = pluginLoader<typeof import('rollup-plugin-strip-shebang')>('rollup-plugin-strip-shebang', null, 'default')
+  const loadPluginAddShebang = pluginLoader<typeof import('rollup-plugin-add-shebang').default>('rollup-plugin-add-shebang', null, 'default')
+  const loadPluginExportEquals = pluginLoader<typeof import('rollup-plugin-export-equals')>('rollup-plugin-export-equals', null, 'default')
 
   // CHECK FOR INSTALLED MODULES
 
@@ -219,6 +222,8 @@ async function pkgToConfigs(
         extensions,
         exclude,
       }),
+
+      loadPluginBuble && loadPluginBuble(),
 
       bin && outputFile && loadPluginAddShebang && loadPluginAddShebang({
         include: outputFile,
