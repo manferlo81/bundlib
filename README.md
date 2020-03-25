@@ -376,7 +376,9 @@ Any of the following plugins will be automatically configured if they are instal
 
 * [`rollup-plugin-eslint`](https://github.com/TrySound/rollup-plugin-eslint)
 * [`rollup-plugin-typescript2`](https://github.com/ezolenko/rollup-plugin-typescript2)
+* [`@rollup/plugin-typescript`](https://github.com/rollup/plugins/tree/master/packages/typescript)
 * [`rollup-plugin-babel`](https://github.com/rollup/rollup-plugin-babel)
+* [`@rollup/plugin-buble`](https://github.com/rollup/plugins/tree/master/packages/buble)
 * [`@rollup/plugin-node-resolve`](https://github.com/rollup/plugins/tree/master/packages/node-resolve)
 * [`@rollup/plugin-commonjs`](https://github.com/rollup/plugins/tree/master/packages/commonjs)
 * [`@rollup/plugin-json`](https://github.com/rollup/plugins/tree/master/packages/json)
@@ -387,8 +389,6 @@ Any of the following plugins will be automatically configured if they are instal
 
 The following plugins will be supported in the future.
 
-* [`@rollup/plugin-typescript`](https://github.com/rollup/plugins/tree/master/packages/typescript)
-* [`@rollup/plugin-buble`](https://github.com/rollup/plugins/tree/master/packages/buble)
 * [`rollup-plugin-prettier`](https://github.com/mjeanroy/rollup-plugin-prettier)
 * [`rollup-plugin-preserve-shebang`](https://github.com/developit/rollup-plugin-preserve-shebang)
 

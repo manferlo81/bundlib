@@ -63,25 +63,27 @@ async function pkgToConfigs(
 
   // CHECK FOR INSTALLED PLUGINS
 
-  const loadPluginTypescript2 = pluginLoader<typeof import('rollup-plugin-typescript2').default>('rollup-plugin-typescript2', ['typescript'], 'default')
-  const loadPluginESLint = pluginLoader<typeof import('rollup-plugin-eslint').eslint>('rollup-plugin-eslint', null, 'eslint')
-  const loadPluginNodeResolve = pluginLoader<typeof import('@rollup/plugin-node-resolve').default>('@rollup/plugin-node-resolve', null, 'default')
-  const loadPluginCommonJS = pluginLoader<typeof import('@rollup/plugin-commonjs').default>('@rollup/plugin-commonjs', null, 'default')
-  const loadPluginJSON = pluginLoader<typeof import('@rollup/plugin-json').default>('@rollup/plugin-json', null, 'default')
-  const loadPluginBabel = pluginLoader<typeof import('rollup-plugin-babel').default>('rollup-plugin-babel', null, 'default')
-  const loadPluginBuble = pluginLoader<PluginImpl>('@rollup/plugin-buble', null, 'default')
-  const loadPluginTerser = pluginLoader<PluginImpl>('rollup-plugin-terser', null, 'terser')
-  const loadPluginStripShebang = pluginLoader<typeof import('rollup-plugin-strip-shebang')>('rollup-plugin-strip-shebang', null, 'default')
-  const loadPluginAddShebang = pluginLoader<typeof import('rollup-plugin-add-shebang').default>('rollup-plugin-add-shebang', null, 'default')
-  const loadPluginExportEquals = pluginLoader<typeof import('rollup-plugin-export-equals')>('rollup-plugin-export-equals', null, 'default')
+  const loadPluginTypescript2 = pluginLoader<typeof import('rollup-plugin-typescript2').default>('rollup-plugin-typescript2')
+  const loadPluginTypescript = pluginLoader<PluginImpl>('@rollup/plugin-typescript')
+  const loadPluginESLint = pluginLoader<typeof import('rollup-plugin-eslint').eslint>('rollup-plugin-eslint', 'eslint')
+  const loadPluginNodeResolve = pluginLoader<typeof import('@rollup/plugin-node-resolve').default>('@rollup/plugin-node-resolve')
+  const loadPluginCommonJS = pluginLoader<typeof import('@rollup/plugin-commonjs').default>('@rollup/plugin-commonjs')
+  const loadPluginJSON = pluginLoader<typeof import('@rollup/plugin-json').default>('@rollup/plugin-json')
+  const loadPluginBabel = pluginLoader<typeof import('rollup-plugin-babel').default>('rollup-plugin-babel')
+  const loadPluginBuble = pluginLoader<PluginImpl>('@rollup/plugin-buble')
+  const loadPluginTerser = pluginLoader<PluginImpl>('rollup-plugin-terser', 'terser')
+  const loadPluginStripShebang = pluginLoader<typeof import('rollup-plugin-strip-shebang')>('rollup-plugin-strip-shebang')
+  const loadPluginAddShebang = pluginLoader<typeof import('rollup-plugin-add-shebang').default>('rollup-plugin-add-shebang')
+  const loadPluginExportEquals = pluginLoader<typeof import('rollup-plugin-export-equals')>('rollup-plugin-export-equals')
 
   // CHECK FOR INSTALLED MODULES
 
+  const useTypescriptPlugin = !!loadPluginTypescript2 || !!loadPluginTypescript
   const isInstalledChokidar = isDepInstalled('chokidar', installedDeps)
 
   const apiInput = apiInput1 ? resolve(cwd, apiInput1) : (
     (
-      loadPluginTypescript2 ? findFirst(
+      useTypescriptPlugin ? findFirst(
         ...['index.ts', 'index.tsx'].map((filename) => resolve(cwd, 'src', filename)),
       ) : null
     ) ||
@@ -90,7 +92,7 @@ async function pkgToConfigs(
 
   const binInput = binInput1 ? resolve(cwd, binInput1) : (
     (
-      loadPluginTypescript2 ? findFirst(
+      useTypescriptPlugin ? findFirst(
         ...['index.ts'].map((filename) => resolve(cwd, 'src-bin', filename)),
       ) : null
     ) ||
@@ -208,6 +210,8 @@ async function pkgToConfigs(
         },
         ...project && { tsconfig: resolve(cwd, project) },
       }),
+
+      inputIsTypescript && loadPluginTypescript && loadPluginTypescript(),
 
       loadPluginJSON && loadPluginJSON({
         preferConst: true,
