@@ -2,6 +2,15 @@
 
 ## Version History
 
+### [0.15.3](https://github.com/manferlo81/bundlib/compare/v0.15.2...v0.15.3) (2020-03-25)
+
+
+### Features
+
+* Individual cache for every format ([794ae88](https://github.com/manferlo81/bundlib/commit/794ae8863ee2932ab7962657711b6a5917788061))
+* support @rollup/plugin-buble ([01c6802](https://github.com/manferlo81/bundlib/commit/01c6802968b0b462467edb11f78ccd90148c13fb))
+* support @rollup/plugin-typescript ([8706f33](https://github.com/manferlo81/bundlib/commit/8706f330054d4678a4d5112097c8dc6d3aa4d111))
+
 ### [0.15.2](https://github.com/manferlo81/bundlib/compare/v0.15.1...v0.15.2) (2020-03-20)
 
 ### [0.15.1](https://github.com/manferlo81/bundlib/compare/v0.15.0...v0.15.1) (2020-03-19)
