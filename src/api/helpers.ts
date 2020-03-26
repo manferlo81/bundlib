@@ -1,4 +1,4 @@
-import { Dictionary } from './helper-types'
+import { Dictionary, Nullable, StrictNullable } from './helper-types'
 
 export const keys: (
   <K extends string | number | symbol>(
@@ -6,6 +6,10 @@ export const keys: (
   ) => Array<K extends string ? K : string>
   // eslint-disable-next-line @typescript-eslint/unbound-method
 ) = Object.keys
+
+export function keysOrNull(deps: Nullable<Dictionary<unknown>>): StrictNullable<string[]> {
+  return deps ? keys(deps) : null
+}
 
 export function setProp<V>(name: string, value: V, target: Dictionary<V>): Dictionary<V> {
   target[name] = value

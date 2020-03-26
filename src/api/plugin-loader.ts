@@ -4,13 +4,13 @@ import { IsInstalled, StrictNullable } from './helper-types'
 
 function createPluginLoader(cwd: string, isInstalled: IsInstalled) {
 
-  return <T extends PluginImpl>(name: string, exportName?: string | null): StrictNullable<T> => {
-    if (!isInstalled(name)) {
+  return <T extends PluginImpl>(id: string, named?: string | null): StrictNullable<T> => {
+    if (!isInstalled(id)) {
       return null
     }
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const content = require(resolveFrom(cwd, name))
-    return exportName ? content[exportName] : ('default' in content) ? content.default : content
+    const content = require(resolveFrom(cwd, id))
+    return named ? content[named] : ('default' in content) ? content.default : content
   }
 
 }
