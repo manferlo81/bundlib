@@ -9,7 +9,7 @@ async function configsFromPkg(
   options?: Nullable<BundlibAPIOptions | false>,
   pkgJson?: BundlibPkgJson,
 ): Promise<Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>> {
-  return await pkgToConfigs(
+  return pkgToConfigs(
     await analizePkg(cwd, pkgJson),
     options || {},
   )

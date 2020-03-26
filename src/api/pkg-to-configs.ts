@@ -17,16 +17,15 @@ import { renameMin, renamePre } from './rename'
 import { BundlibAPIOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types'
 import extensionMatch from './validate/ext-match'
 
-async function pkgToConfigs(
+function pkgToConfigs(
   pkg: PkgAnalized,
   options: BundlibAPIOptions,
-): Promise<Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>>;
+): Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>
 
-// eslint-disable-next-line @typescript-eslint/require-await
-async function pkgToConfigs(
+function pkgToConfigs(
   { cwd, input, output, dependencies, cache, project }: PkgAnalized,
   { dev, watch }: BundlibAPIOptions,
-): Promise<Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>> {
+): Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>> {
 
   const {
     api: apiInput1,
