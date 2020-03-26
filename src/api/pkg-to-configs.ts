@@ -6,9 +6,9 @@ import { createBrowserConfig, createModuleConfig } from './create-config'
 import { error } from './errors'
 import { JS_EXTENSIONS, TS_EXTENSIONS, TS_ONLY_EXTENSIONS } from './extensions'
 import findFirst from './find-first'
-import { Dictionary, StrictNullable } from './helper-types'
+import { StrictNullable } from './helper-types'
 import { setProp } from './helpers'
-import isDepInstalled from './is-dep-installed'
+import createIsInstalled from './is-installed'
 import keysOrNull from './keys-or-null'
 import { PkgAnalized } from './pkg-analized'
 import createPluginLoader from './plugin-loader'
@@ -57,8 +57,8 @@ function pkgToConfigs(
     }
   }
 
-  const installedDeps: StrictNullable<Dictionary<string>> = (runtimeDeps || devDeps) ? { ...runtimeDeps, ...devDeps } : null
-  const pluginLoader = createPluginLoader(cwd, installedDeps)
+  const isInstalled = createIsInstalled(runtimeDeps, devDeps)
+  const pluginLoader = createPluginLoader(cwd, isInstalled)
 
   // CHECK FOR INSTALLED PLUGINS
 
@@ -78,7 +78,7 @@ function pkgToConfigs(
   // CHECK FOR INSTALLED MODULES
 
   const useTypescriptPlugin = !!loadPluginTypescript2 || !!loadPluginTypescript
-  const isInstalledChokidar = isDepInstalled('chokidar', installedDeps)
+  const isInstalledChokidar = isInstalled('chokidar')
 
   const apiInput = apiInput1 ? resolve(cwd, apiInput1) : (
     (

@@ -1,12 +1,11 @@
 import resolveFrom from 'resolve-from'
 import { PluginImpl } from 'rollup'
-import { Dictionary, Nullable, StrictNullable } from './helper-types'
-import isDepInstalled from './is-dep-installed'
+import { IsInstalled, StrictNullable } from './helper-types'
 
-function createPluginLoader(cwd: string, dependencies: Nullable<Dictionary<string>>) {
+function createPluginLoader(cwd: string, isInstalled: IsInstalled) {
 
   return <T extends PluginImpl>(name: string, exportName?: string | null): StrictNullable<T> => {
-    if (!isDepInstalled(name, dependencies)) {
+    if (!isInstalled(name)) {
       return null
     }
     // eslint-disable-next-line @typescript-eslint/no-var-requires
