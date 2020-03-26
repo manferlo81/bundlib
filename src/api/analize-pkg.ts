@@ -222,7 +222,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (
     !isNull(moduleOptions) && (moduleOptions !== false) && !(
-      isDictionary(moduleOptions) &&
+      isDictionary<never>(moduleOptions) &&
       keysInList(moduleOptions, isModuleOptionKey)
     )
   ) {
@@ -238,7 +238,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (
     !isNull(browserOptions) && (browserOptions !== false) && !(
-      isDictionary(browserOptions) &&
+      isDictionary<never>(browserOptions) &&
       keysInList(browserOptions, isBrowserOption) &&
       isBrowserFormat(browserOptions.format) &&
       (['name', 'id'] as Array<keyof typeof browserOptions>).every((key) => (
@@ -259,7 +259,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (
     !isNull(binaryOptions) && (binaryOptions !== false) && !(
-      isDictionary(binaryOptions) &&
+      isDictionary<never>(binaryOptions) &&
       keysInList(binaryOptions, isCJSOptionKey)
     )
   ) {
@@ -275,7 +275,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (
     !isNull(typesOptions) && (typesOptions !== false) && !(
-      isDictionary(typesOptions) &&
+      isDictionary<never>(typesOptions) &&
       keysInList(typesOptions, isTypesOptionKey)
     )
   ) {

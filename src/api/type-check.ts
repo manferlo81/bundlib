@@ -19,8 +19,7 @@ export function isBool(value: unknown): value is boolean {
 // eslint-disable-next-line @typescript-eslint/unbound-method
 export const isArray: <T = unknown>(value: unknown) => value is T[] = Array.isArray
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isDictionary<T = any>(value: unknown): value is Dictionary<T> {
+export function isDictionary<T = unknown>(value: unknown): value is Dictionary<T> {
   return isObject(value) && !isArray(value)
 }
 
