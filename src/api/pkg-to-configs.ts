@@ -156,7 +156,7 @@ function pkgToConfigs(
     const sourcemapBool = !!sourcemap
 
     const declarationDir = inputIsTypescript && configs.length === 0 && !bin && typesOutputDir
-    const tsInclude = bin ? cwdFolderContent : apiFolderContent
+    const include = bin ? cwdFolderContent : apiFolderContent
     const cacheRoot = pathJoin(bundlibCache, 'rpt2')
 
     let shebang: string
@@ -164,7 +164,7 @@ function pkgToConfigs(
     const plugins = [
 
       loadPluginESLint && loadPluginESLint({
-        include: tsInclude,
+        include,
         exclude,
         throwOnWarning: false,
         throwOnError: false,
@@ -192,11 +192,11 @@ function pkgToConfigs(
       }),
 
       inputIsTypescript && loadPluginTypescript2 && loadPluginTypescript2({
-        include: tsInclude,
+        // include,
         cacheRoot,
         useTsconfigDeclarationDir: true,
         tsconfigDefaults: {
-          include: tsInclude,
+          // include,
           exclude: [],
         },
         tsconfigOverride: {
@@ -220,7 +220,7 @@ function pkgToConfigs(
       }),
 
       loadPluginBabel && loadPluginBabel({
-        include: tsInclude,
+        include,
         extensions,
         exclude,
       }),
