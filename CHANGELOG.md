@@ -2,6 +2,13 @@
 
 ## Version History
 
+### [0.15.4](https://github.com/manferlo81/bundlib/compare/v0.15.3...v0.15.4) (2020-03-27)
+
+
+### Bug Fixes
+
+* issue after updated plugin ([64c19b0](https://github.com/manferlo81/bundlib/commit/64c19b053c42066fa0bbc6294d322994261f0049))
+
 ### [0.15.3](https://github.com/manferlo81/bundlib/compare/v0.15.2...v0.15.3) (2020-03-25)
 
 
