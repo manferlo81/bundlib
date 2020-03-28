@@ -3,6 +3,7 @@ import fileSize from 'filesize'
 import { relative } from 'path'
 import prettyMs from 'pretty-ms'
 import readPkg from 'read-pkg'
+import { RollupError } from 'rollup'
 import slash from 'slash'
 import { BundlibPkgJson } from '../api'
 import bundlib from './bundlib'
@@ -60,14 +61,12 @@ export async function action(displayName: string, version: string, silent: boole
 
   let buildIndex = 0
 
-  const callbacks: BuildCallbackObject = {
-
-    error(err) {
-      logError(err)
-      process.exit(1)
-    },
-
+  const error = options.watch ? logError : (err: RollupError) => {
+    logError(err)
+    process.exit(1)
   }
+
+  const callbacks: BuildCallbackObject = { error }
 
   if (!silent) {
 
@@ -79,10 +78,6 @@ export async function action(displayName: string, version: string, silent: boole
         const colorSize = magenta(fileSize(size))
         const colorTime = magenta(prettyMs(duration, { secondsDecimalDigits: 2 }))
         log(`${tag} ${path} ( ${colorSize} in ${colorTime} )`)
-      },
-
-      error(err) {
-        logError(err)
       },
 
       warn(warning) {
