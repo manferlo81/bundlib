@@ -1,6 +1,6 @@
-import { BrowserBuildOptions } from '../bundlib-options'
-import { createInList } from './in-list'
-import { isCJSOptionKey } from './option-main'
+import { BrowserBuildOptions } from '../bundlib-options';
+import { createInList } from './in-list';
+import { isCJSOptionKey } from './option-main';
 
 export const isBrowserOption = createInList<keyof BrowserBuildOptions>(
   isCJSOptionKey,
@@ -9,4 +9,4 @@ export const isBrowserOption = createInList<keyof BrowserBuildOptions>(
   'id',
   'extend',
   'globals',
-)
+);

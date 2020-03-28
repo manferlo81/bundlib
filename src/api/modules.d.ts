@@ -1,6 +1,6 @@
 declare module 'rollup-plugin-babel' {
 
-  import { PluginImpl } from 'rollup'
+  import { PluginImpl } from 'rollup';
 
   type MinimatchPattern = Array<string | RegExp> | string | RegExp | null;
 
@@ -16,15 +16,15 @@ declare module 'rollup-plugin-babel' {
     runtimeHelpers: boolean;
   }
 
-  const babel: PluginImpl<Partial<BabelPluginOptions>>
+  const babel: PluginImpl<Partial<BabelPluginOptions>>;
 
-  export default babel
+  export default babel;
 
 }
 
 declare module 'rollup-plugin-eslint' {
 
-  import { PluginImpl } from 'rollup'
+  import { PluginImpl } from 'rollup';
 
   type MinimatchPattern = Array<string | RegExp> | string | RegExp | null;
 
@@ -37,6 +37,6 @@ declare module 'rollup-plugin-eslint' {
     formatter: string | (() => string);
   }
 
-  const eslint: PluginImpl<Partial<EslintPluginOptions>>
+  const eslint: PluginImpl<Partial<EslintPluginOptions>>;
 
 }

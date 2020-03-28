@@ -1,14 +1,14 @@
-import analize from '../tools/analize'
+import analize from '../tools/analize';
 
 describe('types option', () => {
 
-  const cwd = process.cwd()
+  const cwd = process.cwd();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const analizeWithMain = (types: any) => analize(cwd, {
     types: 'out.js',
     bundlib: { types },
-  })
+  });
 
   test('should throw on invalid types option', () => {
 
@@ -17,26 +17,26 @@ describe('types option', () => {
       true,
       { invalid: true },
       { api: 10, bin: 11 },
-    ]
+    ];
 
-    expect.assertions(invalidMain.length)
+    expect.assertions(invalidMain.length);
 
     invalidMain.forEach((types) => {
       expect(
         analizeWithMain(types),
       ).rejects
-        .toThrow(TypeError)
-    })
+        .toThrow(TypeError);
+    });
 
-  })
+  });
 
   test('should prevent types generation if types = false', async () => {
 
-    const { output: { types } } = await analizeWithMain(false)
+    const { output: { types } } = await analizeWithMain(false);
 
     expect(types)
-      .toBeNull()
+      .toBeNull();
 
-  })
+  });
 
-})
+});

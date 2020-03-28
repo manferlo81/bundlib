@@ -1,14 +1,14 @@
-import analize from '../tools/analize'
+import analize from '../tools/analize';
 
 describe('browser option', () => {
 
-  const cwd = process.cwd()
+  const cwd = process.cwd();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const analizeWithBrowser = (browser: any) => analize(cwd, {
     browser: 'out.js',
     bundlib: { browser },
-  })
+  });
 
   test('should throw on invalid browser option', () => {
 
@@ -20,26 +20,26 @@ describe('browser option', () => {
       { name: 1 },
       { id: 1 },
       { globals: 'invalid' },
-    ]
+    ];
 
-    expect.assertions(invalidBrowser.length)
+    expect.assertions(invalidBrowser.length);
 
     invalidBrowser.forEach((browser) => {
       expect(
         analizeWithBrowser(browser),
       ).rejects
-        .toThrow(TypeError)
-    })
+        .toThrow(TypeError);
+    });
 
-  })
+  });
 
   test('should prevent Browser module build if browser = false', async () => {
 
-    const { output: { browser } } = await analizeWithBrowser(false)
+    const { output: { browser } } = await analizeWithBrowser(false);
 
     expect(browser)
-      .toBeNull()
+      .toBeNull();
 
-  })
+  });
 
-})
+});

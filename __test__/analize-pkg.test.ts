@@ -1,51 +1,51 @@
-import analize from './tools/analize'
+import analize from './tools/analize';
 
 describe('analize', () => {
 
-  const cwd = process.cwd()
+  const cwd = process.cwd();
 
   test('should analize provided package.json', async () => {
 
-    const pkg = { name: 'lib' }
-    const analized = await analize(cwd, pkg)
+    const pkg = { name: 'lib' };
+    const analized = await analize(cwd, pkg);
 
     expect(analized.pkg)
-      .toBe(pkg)
+      .toBe(pkg);
 
-  })
+  });
 
   test('should return analized package.json', async () => {
 
-    const pkg = { name: 'lib' }
+    const pkg = { name: 'lib' };
 
-    const analized = await analize(cwd, pkg)
+    const analized = await analize(cwd, pkg);
     const {
       input,
       output,
       dependencies,
       cache,
       project,
-    } = analized
+    } = analized;
 
     expect(input).toEqual({
       api: null,
       bin: null,
-    })
+    });
     expect(output).toEqual({
       main: null,
       module: null,
       browser: null,
       bin: null,
       types: null,
-    })
+    });
     expect(dependencies).toEqual({
       runtime: null,
       dev: null,
       peer: null,
-    })
-    expect(cache).toBeNull()
-    expect(project).toBeNull()
+    });
+    expect(cache).toBeNull();
+    expect(project).toBeNull();
 
-  })
+  });
 
-})
+});

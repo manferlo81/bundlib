@@ -1,8 +1,8 @@
-import analize from '../tools/analize'
+import analize from '../tools/analize';
 
 describe('id option', () => {
 
-  const cwd = process.cwd()
+  const cwd = process.cwd();
 
   test('should throw on invalid id option', () => {
 
@@ -10,9 +10,9 @@ describe('id option', () => {
       1,
       true,
       false,
-    ]
+    ];
 
-    expect.assertions(invalidIdOptions.length)
+    expect.assertions(invalidIdOptions.length);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     invalidIdOptions.forEach((id: any) => {
@@ -21,36 +21,36 @@ describe('id option', () => {
           bundlib: { id },
         }),
       ).rejects
-        .toThrow(TypeError)
-    })
+        .toThrow(TypeError);
+    });
 
-  })
+  });
 
   test('should set browser build amd id', async () => {
 
-    const id = 'libId'
+    const id = 'libId';
 
     const { output: { browser } } = await analize(cwd, {
       browser: 'out/lib.umd.js',
       bundlib: { name: 'lib', id },
-    })
+    });
 
     expect(browser ? browser.id : null)
-      .toBe(id)
+      .toBe(id);
 
-  })
+  });
 
   test('should default to null if no browser build amd id provided', async () => {
 
     const { output: { browser } } = await analize(cwd, {
       browser: 'out/lib.umd.js',
       bundlib: { name: 'lib' },
-    })
+    });
 
     expect(browser ? browser.id : false)
-      .toBeNull()
+      .toBeNull();
 
-  })
+  });
 
   test('should read per-build id option over top-level one', async () => {
 
@@ -60,11 +60,11 @@ describe('id option', () => {
         id: 'top-level',
         browser: { id: 'per-build' },
       },
-    })
+    });
 
     expect(browser ? browser.id : null)
-      .toBe('per-build')
+      .toBe('per-build');
 
-  })
+  });
 
-})
+});

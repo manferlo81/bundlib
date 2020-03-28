@@ -1,37 +1,37 @@
-import readPkg from 'read-pkg'
-import { BundlibOptions } from './bundlib-options'
-import { error, invalidOption, invalidPkgField } from './errors'
-import { StrictNullable } from './helper-types'
-import { keys } from './helpers'
-import { BundlibPkgJson } from './pkg'
-import { BrowserBuildOptions, CommonJSBuildOptions, Dependencies, ESModuleBuildOptions, InputOptions, OutputOptions, PkgAnalized, TypesBuildOptions } from './pkg-analized'
-import { isBool, isDictionary, isDictionaryOrNull, isNull, isString, isStringOrNull } from './type-check'
-import { isBrowserOption } from './validate/option-browser'
-import { isModuleOption, normalizeBuildModule, normalizeModuleOption } from './validate/option-esmodule'
-import { normalizeBuildFlag } from './validate/option-flag'
-import { isBrowserFormat } from './validate/option-format'
-import { isValidGlobals, normalizeBuildGlobals, normalizeGlobals } from './validate/option-globals'
-import { isInOpKey } from './validate/option-input'
-import { isCJSOptionKey } from './validate/option-main'
-import { isValidMinOption, normalizeBuildMin, normalizeMinOption } from './validate/option-min'
-import { isModuleOptionKey } from './validate/option-module'
-import normalizeBuildName from './validate/option-name'
-import { normalizeBuildSourcemap, normalizeSourcemap } from './validate/option-sourcemap'
-import { isTypesOptionKey } from './validate/option-types'
-import { invalidKeys, keysInList } from './validate/validate-keys'
+import readPkg from 'read-pkg';
+import { BundlibOptions } from './bundlib-options';
+import { error, invalidOption, invalidPkgField } from './errors';
+import { StrictNullable } from './helper-types';
+import { keys } from './helpers';
+import { BundlibPkgJson } from './pkg';
+import { BrowserBuildOptions, CommonJSBuildOptions, Dependencies, ESModuleBuildOptions, InputOptions, OutputOptions, PkgAnalized, TypesBuildOptions } from './pkg-analized';
+import { isBool, isDictionary, isDictionaryOrNull, isNull, isString, isStringOrNull } from './type-check';
+import { isBrowserOption } from './validate/option-browser';
+import { isModuleOption, normalizeBuildModule, normalizeModuleOption } from './validate/option-esmodule';
+import { normalizeBuildFlag } from './validate/option-flag';
+import { isBrowserFormat } from './validate/option-format';
+import { isValidGlobals, normalizeBuildGlobals, normalizeGlobals } from './validate/option-globals';
+import { isInOpKey } from './validate/option-input';
+import { isCJSOptionKey } from './validate/option-main';
+import { isValidMinOption, normalizeBuildMin, normalizeMinOption } from './validate/option-min';
+import { isModuleOptionKey } from './validate/option-module';
+import normalizeBuildName from './validate/option-name';
+import { normalizeBuildSourcemap, normalizeSourcemap } from './validate/option-sourcemap';
+import { isTypesOptionKey } from './validate/option-types';
+import { invalidKeys, keysInList } from './validate/validate-keys';
 
 async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalized>;
 async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAnalized> {
 
   // use provided package.json or read it from cwd
 
-  const pkg: BundlibPkgJson = inputPkg || await readPkg({ cwd, normalize: false })
+  const pkg: BundlibPkgJson = inputPkg || await readPkg({ cwd, normalize: false });
 
   // ensure the content of package.json is an object
   // throw otherwise
 
   if (!isDictionary(pkg)) {
-    throw error('Invalid package.json content')
+    throw error('Invalid package.json content');
   }
 
   const {
@@ -47,13 +47,13 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     devDependencies,
     peerDependencies,
     bundlib: bundlibOptions = {},
-  } = pkg
+  } = pkg;
 
   // ensure "bundlib" field is null, undefined (or not present) or an object
   // throw otherwise
 
   if (!isDictionaryOrNull(bundlibOptions)) {
-    throw invalidPkgField('bundlib', 'Object')
+    throw invalidPkgField('bundlib', 'Object');
   }
 
   // ensure there are not unknown bundlib options
@@ -78,11 +78,11 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     'browser',
     'bin',
     'types',
-  ] as Array<keyof BundlibOptions>)
+  ] as Array<keyof BundlibOptions>);
 
   if (invalidOptions) {
-    const optionNames = invalidOptions.map((name) => `"${name}"`).join(', ')
-    throw error(`Unknown options found: (${optionNames})`)
+    const optionNames = invalidOptions.map((name) => `"${name}"`).join(', ');
+    throw error(`Unknown options found: (${optionNames})`);
   }
 
   const {
@@ -103,7 +103,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     browser: browserOptions,
     bin: binaryOptions,
     types: typesOptions,
-  } = bundlibOptions
+  } = bundlibOptions;
 
   // ensure "input" option is valid
   // throw otherwise
@@ -115,14 +115,14 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
       ))
     )
   ) {
-    throw invalidOption('input', 'string | { api?: string, bin?: string }')
+    throw invalidOption('input', 'string | { api?: string, bin?: string }');
   }
 
   // ensure "sourcemap" option is valid
   // throw otherwise
 
   if (!isNull(sourcemapOption) && !isBool(sourcemapOption) && sourcemapOption !== 'inline') {
-    throw invalidOption('sourcemap', 'boolean | "inline"')
+    throw invalidOption('sourcemap', 'boolean | "inline"');
   }
 
   // ensure "esModule" option is valid
@@ -132,7 +132,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     throw invalidOption(
       'esModule',
       'boolean | "main" | "browser" | "bin" | Array<"main" | "browser" | "bin">',
-    )
+    );
   }
 
   // ensure "interop" option is valid
@@ -142,28 +142,28 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     throw invalidOption(
       'interop',
       'boolean | "main" | "browser" | "bin" | Array<"main" | "browser" | "bin">',
-    )
+    );
   }
 
   // ensure "format" option is valid
   // throw otherwise
 
   if (!isBrowserFormat(browserFormat)) {
-    throw invalidOption('format', '"amd" | "iife" | "amd"')
+    throw invalidOption('format', '"amd" | "iife" | "amd"');
   }
 
   // ensure "name" option is valid
   // throw otherwise
 
   if (!isStringOrNull(browserName)) {
-    throw invalidOption('name', 'string')
+    throw invalidOption('name', 'string');
   }
 
   // ensure "id" option is valid
   // throw otherwise
 
   if (!isStringOrNull(amdId)) {
-    throw invalidOption('id', 'string')
+    throw invalidOption('id', 'string');
   }
 
   // ensure "globals" option is valid
@@ -173,7 +173,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     throw invalidOption(
       'globals',
       'Object<string, string> | string[]',
-    )
+    );
   }
 
   // ensure "min" option is valid
@@ -183,21 +183,21 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     throw invalidOption(
       'min',
       'boolean | "main" | "module" | "browser" | "bin" | Array<"main" | "module" | "browser" | "bin">',
-    )
+    );
   }
 
   // ensure "cache" option is valid
   // throw otherwise
 
   if (!isStringOrNull(cacheOption)) {
-    throw invalidOption('cache', 'string')
+    throw invalidOption('cache', 'string');
   }
 
   // ensure "project" option is valid
   // throw otherwise
 
   if (!isStringOrNull(projectOption)) {
-    throw invalidOption('project', 'string')
+    throw invalidOption('project', 'string');
   }
 
   // ensure "main" option is valid
@@ -213,7 +213,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     throw invalidOption(
       'main',
       'false | { sourcemap?: boolean | "inline", esModule?: boolean, interop?: boolean, min?: boolean }',
-    )
+    );
   }
 
   // ensure "module" option is valid
@@ -229,7 +229,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     throw invalidOption(
       'module',
       'false | { sourcemap?: boolean | "inline", min?: boolean }',
-    )
+    );
   }
 
   // ensure "browser" option is valid
@@ -250,7 +250,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     throw invalidOption(
       'browser',
       'false | { sourcemap?: boolean | "inline", esModule?: boolean, interop?: boolean, min?: boolean, ... }',
-    )
+    );
   }
 
   // ensure "bin" option is valid
@@ -266,7 +266,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     throw invalidOption(
       'bin',
       'false | { sourcemap?: boolean | "inline", esModule?: boolean, interop?: boolean, min?: boolean }',
-    )
+    );
   }
 
   // ensure "types" option is valid
@@ -279,85 +279,85 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
       keysInList(typesOptions, isTypesOptionKey)
     )
   ) {
-    throw invalidOption('types', 'false | { equals?: boolean }')
+    throw invalidOption('types', 'false | { equals?: boolean }');
   }
 
   // ensure "main" field is a supported value
   // throw otherwise
 
   if ((mainOptions !== false) && !isStringOrNull(pkgMain)) {
-    throw invalidPkgField('main', 'string')
+    throw invalidPkgField('main', 'string');
   }
 
   // ensure "module" field is a supported value if needed
   // throw otherwise
 
   if ((moduleOptions !== false) && !isStringOrNull(pkgModule)) {
-    throw invalidPkgField('module', 'string')
+    throw invalidPkgField('module', 'string');
   }
 
   // ensure "jsnext:main" field is a supported value if needed  and "module" field not present
   // throw otherwise
 
   if (!pkgModule && (moduleOptions !== false) && !isStringOrNull(pkgJsNextMain)) {
-    throw invalidPkgField('jsnext:main', 'string')
+    throw invalidPkgField('jsnext:main', 'string');
   }
 
   // ensure "browser" field is a supported value if needed
   // throw otherwise
 
   if ((browserOptions !== false) && !isStringOrNull(pkgBrowser)) {
-    throw invalidPkgField('browser', 'string')
+    throw invalidPkgField('browser', 'string');
   }
 
   // ensure "bin" field is a supported value if needed
   // throw otherwise
 
   if ((binaryOptions !== false) && !isStringOrNull(pkgBin)) {
-    throw invalidPkgField('bin', 'string')
+    throw invalidPkgField('bin', 'string');
   }
 
   // ensure "dependencies" field is valid
   // throw otherwise
 
   if (!isDictionaryOrNull(runtimeDependencies)) {
-    throw invalidPkgField('dependencies', 'Object')
+    throw invalidPkgField('dependencies', 'Object');
   }
 
   // ensure "peerDependencies" field is valid
   // throw otherwise
 
   if (!isDictionaryOrNull(peerDependencies)) {
-    throw invalidPkgField('peerDependencies', 'Object')
+    throw invalidPkgField('peerDependencies', 'Object');
   }
 
   // set ES Module build output file from "module" field falling back to "jsnext:main" field
 
-  const esModuleFile = pkgModule || pkgJsNextMain
+  const esModuleFile = pkgModule || pkgJsNextMain;
 
   // set types definition output file from "types" field falling back to "typings" field
 
-  const typesPath = pkgTypes || typings
+  const typesPath = pkgTypes || typings;
 
   // set api and binary input from "input" option
 
   const { api: apiInput, bin: binInput } = isStringOrNull(inputOption)
     ? { api: inputOption } as InputOptions
-    : inputOption
+    : inputOption;
 
   // set input files
 
   const input: InputOptions = {
     api: apiInput || null,
     bin: binInput || null,
-  }
+  };
 
   // normalize global options
 
-  const globalSourcemap = normalizeSourcemap(sourcemapOption)
-  const globalESModule = normalizeModuleOption(esModule)
-  const globalInterop = normalizeModuleOption(interop)
-  const globalMin = normalizeMinOption(min)
+  const globalSourcemap = normalizeSourcemap(sourcemapOption);
+  const globalESModule = normalizeModuleOption(esModule);
+  const globalInterop = normalizeModuleOption(interop);
+  const globalMin = normalizeMinOption(min);
 
   // set CommonJS Module build output options
 
@@ -370,7 +370,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     esModule: normalizeBuildModule(mainOptions, 'esModule', 'main', globalESModule),
     interop: normalizeBuildModule(mainOptions, 'interop', 'main', globalInterop),
     min: normalizeBuildMin(mainOptions, 'main', globalMin),
-  }
+  };
 
   // set ES Module build output options
 
@@ -381,7 +381,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
       globalSourcemap,
     ),
     min: normalizeBuildMin(moduleOptions, 'module', globalMin),
-  }
+  };
 
   // set Browser build output options
 
@@ -407,7 +407,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
       normalizeGlobals(browserGlobals),
     ),
     extend: normalizeBuildFlag(browserOptions, 'extend', !!extend),
-  }
+  };
 
   // set Binary build output options
 
@@ -420,13 +420,13 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     esModule: normalizeBuildModule(binaryOptions, 'esModule', 'bin', globalESModule),
     interop: normalizeBuildModule(binaryOptions, 'interop', 'bin', globalInterop),
     min: normalizeBuildMin(binaryOptions, 'bin', globalMin),
-  }
+  };
 
   // set type definitions output options
 
   const typesOutput: StrictNullable<TypesBuildOptions> = (typesOptions === false || !typesPath) ? null : {
     path: typesPath,
-  }
+  };
 
   // set all output options
 
@@ -436,7 +436,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     browser: browserOutput,
     bin: binaryOutput,
     types: typesOutput,
-  }
+  };
 
   // set dependencies options
 
@@ -444,12 +444,12 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     runtime: runtimeDependencies || null,
     dev: devDependencies || null,
     peer: peerDependencies || null,
-  }
+  };
 
   // set cache option
 
-  const cache: StrictNullable<string> = cacheOption || null
-  const project: StrictNullable<string> = projectOption || null
+  const cache: StrictNullable<string> = cacheOption || null;
+  const project: StrictNullable<string> = projectOption || null;
 
   // return all options
 
@@ -461,8 +461,8 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     dependencies,
     cache,
     project,
-  }
+  };
 
 }
 
-export default analizePkg
+export default analizePkg;

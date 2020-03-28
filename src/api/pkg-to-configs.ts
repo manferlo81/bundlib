@@ -1,25 +1,25 @@
-import builtinModules from 'builtin-modules'
-import { basename, dirname, join as pathJoin, resolve } from 'path'
-import { Plugin, PluginImpl } from 'rollup'
-import arrayToExternal from './array-to-external'
-import { createBrowserConfig, createModuleConfig } from './create-config'
-import { error } from './errors'
-import { JS_EXTENSIONS, TS_EXTENSIONS, TS_ONLY_EXTENSIONS } from './extensions'
-import findFirst from './find-first'
-import { StrictNullable } from './helper-types'
-import { keysOrNull, setProp } from './helpers'
-import createIsInstalled from './is-installed'
-import { PkgAnalized } from './pkg-analized'
-import createPluginLoader from './plugin-loader'
-import pluginMapIdExternal from './plugins/api-plugin'
-import { renameMin, renamePre } from './rename'
-import { BundlibAPIOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types'
-import extensionMatch from './validate/ext-match'
+import builtinModules from 'builtin-modules';
+import { basename, dirname, join as pathJoin, resolve } from 'path';
+import { Plugin, PluginImpl } from 'rollup';
+import arrayToExternal from './array-to-external';
+import { createBrowserConfig, createModuleConfig } from './create-config';
+import { error } from './errors';
+import { JS_EXTENSIONS, TS_EXTENSIONS, TS_ONLY_EXTENSIONS } from './extensions';
+import findFirst from './find-first';
+import { StrictNullable } from './helper-types';
+import { keysOrNull, setProp } from './helpers';
+import createIsInstalled from './is-installed';
+import { PkgAnalized } from './pkg-analized';
+import createPluginLoader from './plugin-loader';
+import pluginMapIdExternal from './plugins/api-plugin';
+import { renameMin, renamePre } from './rename';
+import { BundlibAPIOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types';
+import extensionMatch from './validate/ext-match';
 
 function pkgToConfigs(
   pkg: PkgAnalized,
   options: BundlibAPIOptions,
-): Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>
+): Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>;
 
 function pkgToConfigs(
   { cwd, input, output, dependencies, cache, project }: PkgAnalized,
@@ -29,7 +29,7 @@ function pkgToConfigs(
   const {
     api: apiInput1,
     bin: binInput1,
-  } = input
+  } = input;
 
   const {
     main: cjsOutput,
@@ -37,47 +37,47 @@ function pkgToConfigs(
     browser: browserOutput,
     bin: binaryOutput,
     types: typesOutput,
-  } = output
+  } = output;
 
   const {
     runtime: runtimeDeps,
     dev: devDeps,
     peer: peerDeps,
-  } = dependencies
+  } = dependencies;
 
-  const bundlibCache = resolve(cwd, cache || 'node_modules/.cache/bundlib')
+  const bundlibCache = resolve(cwd, cache || 'node_modules/.cache/bundlib');
 
   // throw if "name" option required and not present
 
   if (browserOutput) {
-    const { format, name } = browserOutput
+    const { format, name } = browserOutput;
     if ((format === 'iife' || format === 'umd') && !name) {
-      throw error('option \'name\' is required for IIFE and UMD builds')
+      throw error('option \'name\' is required for IIFE and UMD builds');
     }
   }
 
-  const isInstalled = createIsInstalled(runtimeDeps, devDeps)
-  const pluginLoader = createPluginLoader(cwd, isInstalled)
+  const isInstalled = createIsInstalled(runtimeDeps, devDeps);
+  const pluginLoader = createPluginLoader(cwd, isInstalled);
 
   // CHECK FOR INSTALLED PLUGINS
 
-  const loadPluginTypescript2 = pluginLoader<typeof import('rollup-plugin-typescript2').default>('rollup-plugin-typescript2')
-  const loadPluginTypescript = pluginLoader<PluginImpl>('@rollup/plugin-typescript')
-  const loadPluginESLint = pluginLoader<typeof import('rollup-plugin-eslint').eslint>('rollup-plugin-eslint', 'eslint')
-  const loadPluginNodeResolve = pluginLoader<typeof import('@rollup/plugin-node-resolve').default>('@rollup/plugin-node-resolve')
-  const loadPluginCommonJS = pluginLoader<typeof import('@rollup/plugin-commonjs').default>('@rollup/plugin-commonjs')
-  const loadPluginJSON = pluginLoader<typeof import('@rollup/plugin-json').default>('@rollup/plugin-json')
-  const loadPluginBabel = pluginLoader<typeof import('rollup-plugin-babel').default>('rollup-plugin-babel')
-  const loadPluginBuble = pluginLoader<PluginImpl>('@rollup/plugin-buble')
-  const loadPluginTerser = pluginLoader<PluginImpl>('rollup-plugin-terser', 'terser')
-  const loadPluginStripShebang = pluginLoader<typeof import('rollup-plugin-strip-shebang')>('rollup-plugin-strip-shebang')
-  const loadPluginAddShebang = pluginLoader<typeof import('rollup-plugin-add-shebang').default>('rollup-plugin-add-shebang')
-  const loadPluginExportEquals = pluginLoader<typeof import('rollup-plugin-export-equals')>('rollup-plugin-export-equals')
+  const loadPluginTypescript2 = pluginLoader<typeof import('rollup-plugin-typescript2').default>('rollup-plugin-typescript2');
+  const loadPluginTypescript = pluginLoader<PluginImpl>('@rollup/plugin-typescript');
+  const loadPluginESLint = pluginLoader<typeof import('rollup-plugin-eslint').eslint>('rollup-plugin-eslint', 'eslint');
+  const loadPluginNodeResolve = pluginLoader<typeof import('@rollup/plugin-node-resolve').default>('@rollup/plugin-node-resolve');
+  const loadPluginCommonJS = pluginLoader<typeof import('@rollup/plugin-commonjs').default>('@rollup/plugin-commonjs');
+  const loadPluginJSON = pluginLoader<typeof import('@rollup/plugin-json').default>('@rollup/plugin-json');
+  const loadPluginBabel = pluginLoader<typeof import('rollup-plugin-babel').default>('rollup-plugin-babel');
+  const loadPluginBuble = pluginLoader<PluginImpl>('@rollup/plugin-buble');
+  const loadPluginTerser = pluginLoader<PluginImpl>('rollup-plugin-terser', 'terser');
+  const loadPluginStripShebang = pluginLoader<typeof import('rollup-plugin-strip-shebang')>('rollup-plugin-strip-shebang');
+  const loadPluginAddShebang = pluginLoader<typeof import('rollup-plugin-add-shebang').default>('rollup-plugin-add-shebang');
+  const loadPluginExportEquals = pluginLoader<typeof import('rollup-plugin-export-equals')>('rollup-plugin-export-equals');
 
   // CHECK FOR INSTALLED MODULES
 
-  const useTypescriptPlugin = !!loadPluginTypescript2 || !!loadPluginTypescript
-  const isInstalledChokidar = isInstalled('chokidar')
+  const useTypescriptPlugin = !!loadPluginTypescript2 || !!loadPluginTypescript;
+  const isInstalledChokidar = isInstalled('chokidar');
 
   const apiInput = apiInput1 ? resolve(cwd, apiInput1) : (
     (
@@ -86,7 +86,7 @@ function pkgToConfigs(
       ) : null
     ) ||
     resolve(cwd, 'src', 'index.js')
-  )
+  );
 
   const binInput = binInput1 ? resolve(cwd, binInput1) : (
     (
@@ -95,10 +95,10 @@ function pkgToConfigs(
       ) : null
     ) ||
     resolve(cwd, 'src-bin', 'index.js')
-  )
+  );
 
-  const isTypescriptAPIInput = extensionMatch(apiInput, TS_ONLY_EXTENSIONS)
-  const isTypescriptBinaryInput = extensionMatch(binInput, TS_ONLY_EXTENSIONS)
+  const isTypescriptAPIInput = extensionMatch(apiInput, TS_ONLY_EXTENSIONS);
+  const isTypescriptBinaryInput = extensionMatch(binInput, TS_ONLY_EXTENSIONS);
 
   // throw if trying to generate type definitions from javascript input
   // TODO: show warning intead of throwing
@@ -107,41 +107,41 @@ function pkgToConfigs(
     typesOutput &&
     !isTypescriptAPIInput
   ) {
-    throw error('can\'t generate types from javascript source')
+    throw error('can\'t generate types from javascript source');
   }
 
-  const apiExtensions = isTypescriptAPIInput ? TS_EXTENSIONS : JS_EXTENSIONS
-  const binaryExtensions = isTypescriptBinaryInput ? TS_EXTENSIONS : JS_EXTENSIONS
+  const apiExtensions = isTypescriptAPIInput ? TS_EXTENSIONS : JS_EXTENSIONS;
+  const binaryExtensions = isTypescriptBinaryInput ? TS_EXTENSIONS : JS_EXTENSIONS;
 
-  const production = !dev
+  const production = !dev;
 
-  const apiFolder = dirname(apiInput)
+  const apiFolder = dirname(apiInput);
 
   const apiFolderContent = apiExtensions.map((ext) => (
     resolve(apiFolder, `**/*${ext}`)
-  ))
+  ));
   const cwdFolderContent = binaryExtensions.map((ext) => (
     resolve(cwd, `**/*${ext}`)
-  ))
+  ));
 
-  const typesFilename = renamePre(basename(apiInput), 'd')
+  const typesFilename = renamePre(basename(apiInput), 'd');
 
-  let typesOutputDir = typesOutput ? resolve(cwd, typesOutput.path) : null
+  let typesOutputDir = typesOutput ? resolve(cwd, typesOutput.path) : null;
   if (typesOutputDir && extensionMatch(typesOutputDir, ['.ts'])) {
-    typesOutputDir = dirname(typesOutputDir)
+    typesOutputDir = dirname(typesOutputDir);
   }
 
   const isExternal = arrayToExternal(
     keysOrNull(runtimeDeps),
     keysOrNull(peerDeps),
     builtinModules as string[],
-  )
+  );
 
-  const useChokidar = isInstalledChokidar && !!watch
+  const useChokidar = isInstalledChokidar && !!watch;
 
-  const exclude = /node_modules/
+  const exclude = /node_modules/;
 
-  const configs: Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>> = []
+  const configs: Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>> = [];
 
   function createPlugins(
     inputIsTypescript: boolean,
@@ -153,13 +153,13 @@ function pkgToConfigs(
     bin: boolean,
   ): Plugin[] {
 
-    const sourcemapBool = !!sourcemap
+    const sourcemapBool = !!sourcemap;
 
-    const declarationDir = inputIsTypescript && configs.length === 0 && !bin && typesOutputDir
-    const include = bin ? cwdFolderContent : apiFolderContent
-    const cacheRoot = pathJoin(bundlibCache, 'rpt2')
+    const declarationDir = inputIsTypescript && configs.length === 0 && !bin && typesOutputDir;
+    const include = bin ? cwdFolderContent : apiFolderContent;
+    const cacheRoot = pathJoin(bundlibCache, 'rpt2');
 
-    let shebang: string
+    let shebang: string;
 
     const plugins = [
 
@@ -241,16 +241,16 @@ function pkgToConfigs(
         },
       }),
 
-    ]
+    ];
 
-    return plugins.filter<Plugin>(Boolean as unknown as (val: unknown) => val is Plugin)
+    return plugins.filter<Plugin>(Boolean as unknown as (val: unknown) => val is Plugin);
 
   }
 
   if (esOutput) {
 
-    const { path, sourcemap, min } = esOutput
-    const resolvedPath = resolve(cwd, path)
+    const { path, sourcemap, min } = esOutput;
+    const resolvedPath = resolve(cwd, path);
 
     configs.push(
       createModuleConfig(
@@ -272,7 +272,7 @@ function pkgToConfigs(
         ),
         useChokidar,
       ),
-    )
+    );
 
     if (min) {
 
@@ -296,7 +296,7 @@ function pkgToConfigs(
           ),
           useChokidar,
         ),
-      )
+      );
 
     }
 
@@ -304,8 +304,8 @@ function pkgToConfigs(
 
   if (cjsOutput) {
 
-    const { path, sourcemap, esModule, interop, min } = cjsOutput
-    const resolvedPath = resolve(cwd, path)
+    const { path, sourcemap, esModule, interop, min } = cjsOutput;
+    const resolvedPath = resolve(cwd, path);
 
     configs.push(
       createModuleConfig(
@@ -327,7 +327,7 @@ function pkgToConfigs(
         ),
         useChokidar,
       ),
-    )
+    );
 
     if (min) {
 
@@ -351,7 +351,7 @@ function pkgToConfigs(
           ),
           useChokidar,
         ),
-      )
+      );
 
     }
 
@@ -359,9 +359,9 @@ function pkgToConfigs(
 
   if (browserOutput) {
 
-    const { path, sourcemap, esModule, interop, format, name, extend, id, globals, min } = browserOutput
-    const resolvedPath = resolve(cwd, path)
-    const isBrowserExternal = arrayToExternal(keysOrNull(globals))
+    const { path, sourcemap, esModule, interop, format, name, extend, id, globals, min } = browserOutput;
+    const resolvedPath = resolve(cwd, path);
+    const isBrowserExternal = arrayToExternal(keysOrNull(globals));
 
     configs.push(
       createBrowserConfig(
@@ -387,7 +387,7 @@ function pkgToConfigs(
         globals,
         id,
       ),
-    )
+    );
 
     if (min) {
 
@@ -415,7 +415,7 @@ function pkgToConfigs(
           globals,
           id,
         ),
-      )
+      );
 
     }
 
@@ -423,8 +423,8 @@ function pkgToConfigs(
 
   if (binaryOutput) {
 
-    const { path, sourcemap, esModule, interop, min } = binaryOutput
-    const resolvedPath = resolve(cwd, path)
+    const { path, sourcemap, esModule, interop, min } = binaryOutput;
+    const resolvedPath = resolve(cwd, path);
 
     configs.push(
       createModuleConfig(
@@ -446,7 +446,7 @@ function pkgToConfigs(
         ),
         useChokidar,
       ),
-    )
+    );
 
     if (min) {
 
@@ -470,14 +470,14 @@ function pkgToConfigs(
           ),
           useChokidar,
         ),
-      )
+      );
 
     }
 
   }
 
-  return configs
+  return configs;
 
 }
 
-export default pkgToConfigs
+export default pkgToConfigs;

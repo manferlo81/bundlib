@@ -3,27 +3,27 @@ type OneByOneCallback<T> = (item: T, next: OneByOneNext | null) => unknown;
 
 function oneByOne<T>(arr: ArrayLike<T>, callback: OneByOneCallback<T>): void {
 
-  let index = 0
-  const len = arr.length
-  const last = len - 1
+  let index = 0;
+  const len = arr.length;
+  const last = len - 1;
 
   const next: OneByOneNext = () => {
 
     if (index > last) {
-      return
+      return;
     }
 
     callback(
       arr[index],
       (index < last) ? next : null,
-    )
+    );
 
-    index++
+    index++;
 
-  }
+  };
 
-  next()
+  next();
 
 }
 
-export default oneByOne
+export default oneByOne;

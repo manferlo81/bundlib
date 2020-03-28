@@ -1,4 +1,4 @@
-import { Nullable } from '../helper-types'
+import { Nullable } from '../helper-types';
 
 type InListTarget = Nullable<string | number | boolean>;
 
@@ -9,5 +9,5 @@ export function createInList<M extends InListTarget>(...model: Array<M | InList<
     model.some(
       (inList) => (typeof inList === 'function') ? inList(str) : (str === inList),
     )
-  )
+  );
 }

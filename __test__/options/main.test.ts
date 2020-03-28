@@ -1,14 +1,14 @@
-import analize from '../tools/analize'
+import analize from '../tools/analize';
 
 describe('main option', () => {
 
-  const cwd = process.cwd()
+  const cwd = process.cwd();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const analizeWithMain = (main: any) => analize(cwd, {
     main: 'out.js',
     bundlib: { main },
-  })
+  });
 
   test('should throw on invalid main option', () => {
 
@@ -17,26 +17,26 @@ describe('main option', () => {
       true,
       { invalid: true },
       { api: 10, bin: 11 },
-    ]
+    ];
 
-    expect.assertions(invalidMain.length)
+    expect.assertions(invalidMain.length);
 
     invalidMain.forEach((main) => {
       expect(
         analizeWithMain(main),
       ).rejects
-        .toThrow(TypeError)
-    })
+        .toThrow(TypeError);
+    });
 
-  })
+  });
 
   test('should prevent CommonJS module build if main = false', async () => {
 
-    const { output: { main } } = await analizeWithMain(false)
+    const { output: { main } } = await analizeWithMain(false);
 
     expect(main)
-      .toBeNull()
+      .toBeNull();
 
-  })
+  });
 
-})
+});

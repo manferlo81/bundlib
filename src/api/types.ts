@@ -1,5 +1,5 @@
-import { IsExternal, OutputOptions as RollupOutputOptions, Plugin, RollupOptions, WatcherOptions as RollupWatcherOptions } from 'rollup'
-import { Dictionary } from './helper-types'
+import { IsExternal, OutputOptions as RollupOutputOptions, Plugin, RollupOptions, WatcherOptions as RollupWatcherOptions } from 'rollup';
+import { Dictionary } from './helper-types';
 
 export type RollupSourcemap = boolean | 'inline';
 

@@ -1,8 +1,8 @@
-import { dirname, join as pathJoin, relative, resolve } from 'path'
-import { Plugin } from 'rollup'
-import slash from 'slash'
-import { Dictionary } from '../helper-types'
-import { keys, setProp } from '../helpers'
+import { dirname, join as pathJoin, relative, resolve } from 'path';
+import { Plugin } from 'rollup';
+import slash from 'slash';
+import { Dictionary } from '../helper-types';
+import { keys, setProp } from '../helpers';
 
 export function mapIdExternal(cwd: string, outputDir: string, map: Dictionary<string>): Plugin {
 
@@ -12,7 +12,7 @@ export function mapIdExternal(cwd: string, outputDir: string, map: Dictionary<st
       resolve(cwd, map[source]),
       result,
     )
-  ), {})
+  ), {});
 
   return {
 
@@ -20,20 +20,20 @@ export function mapIdExternal(cwd: string, outputDir: string, map: Dictionary<st
 
     resolveId(moduleId, from) {
 
-      const resolved = !from ? moduleId : pathJoin(dirname(from), moduleId)
+      const resolved = !from ? moduleId : pathJoin(dirname(from), moduleId);
 
       const target = normalizedMap[slash(resolved)]
         || normalizedMap[slash(resolved + '.ts')]
-        || normalizedMap[slash(pathJoin(resolved, 'index.ts'))]
+        || normalizedMap[slash(pathJoin(resolved, 'index.ts'))];
 
       if (!target) {
-        return null
+        return null;
       }
 
       const relativeTarget = relative(
         outputDir,
         target,
-      )
+      );
 
       return {
         id: (
@@ -45,11 +45,11 @@ export function mapIdExternal(cwd: string, outputDir: string, map: Dictionary<st
         ),
         external: true,
         moduleSideEffects: false,
-      }
+      };
     },
 
-  }
+  };
 
 }
 
-export default mapIdExternal
+export default mapIdExternal;

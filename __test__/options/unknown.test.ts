@@ -1,8 +1,8 @@
-import analize from '../tools/analize'
+import analize from '../tools/analize';
 
 describe('unknown options', () => {
 
-  const cwd = process.cwd()
+  const cwd = process.cwd();
 
   test('should throw on unknown option', () => {
 
@@ -12,9 +12,9 @@ describe('unknown options', () => {
       'umd',
       'option1',
       'option2',
-    ]
+    ];
 
-    expect.assertions(invalidOptions.length)
+    expect.assertions(invalidOptions.length);
 
     invalidOptions.forEach((option) => {
       expect(
@@ -22,9 +22,9 @@ describe('unknown options', () => {
           bundlib: { [option]: true },
         }),
       ).rejects
-        .toThrow(TypeError)
-    })
+        .toThrow(TypeError);
+    });
 
-  })
+  });
 
-})
+});

@@ -1,6 +1,6 @@
-import { StrictNullable, Dictionary } from './helper-types'
-import { BundlibPkgJson } from './pkg'
-import { BrowserBuildFormat, RollupSourcemap } from './types'
+import { StrictNullable, Dictionary } from './helper-types';
+import { BundlibPkgJson } from './pkg';
+import { BrowserBuildFormat, RollupSourcemap } from './types';
 
 export interface InputOptions {
   api: StrictNullable<string>;
@@ -29,7 +29,7 @@ export interface BrowserBuildOptions extends CommonJSBuildOptions {
   extend: boolean;
 }
 
-export type TypesBuildOptions = OptionsWithPath
+export type TypesBuildOptions = OptionsWithPath;
 
 export interface OutputOptions {
   main: StrictNullable<CommonJSBuildOptions>;

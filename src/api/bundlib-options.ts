@@ -1,5 +1,5 @@
-import { Dictionary, Nullable } from './helper-types'
-import { BrowserBuildFormat, RollupSourcemap } from './types'
+import { Dictionary, Nullable } from './helper-types';
+import { BrowserBuildFormat, RollupSourcemap } from './types';
 
 export type BuildEnvironment = 'development' | 'production' | 'dev' | 'prod';
 export type BuildType = 'main' | 'module' | 'browser' | 'bin';
