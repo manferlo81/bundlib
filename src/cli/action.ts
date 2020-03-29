@@ -1,14 +1,15 @@
 import chalk from 'chalk';
+import { EventEmitter } from 'events';
 import fileSize from 'filesize';
 import { relative } from 'path';
 import prettyMs from 'pretty-ms';
 import readPkg from 'read-pkg';
 import { RollupError } from 'rollup';
 import slash from 'slash';
-import { BundlibPkgJson } from '../api';
+import { BundlibAPIOptions, BundlibPkgJson } from '../api';
 import bundlib from './bundlib';
 import { log, logError } from './console';
-import { BuildCallbackObject, BundlibOptions } from './types';
+import { BUILD_END, END, ERROR, START, WARN } from './events';
 
 const { bold } = chalk;
 const green = bold.green;
@@ -26,112 +27,98 @@ if (!chalk.level && 'MINGW_CHOST' in process.env) {
   chalk.level = 1;
 }
 
-export async function action(displayName: string, version: string, silent: boolean, options: BundlibOptions) {
+export async function action(displayName: string, version: string, silent: boolean, options: BundlibAPIOptions) {
 
   const cwd = process.cwd();
 
-  let pkg: BundlibPkgJson | undefined;
+  const pkg: BundlibPkgJson = await readPkg({
+    cwd,
+    normalize: false,
+  });
 
   if (!silent) {
 
-    const appInfo = prjInfo(displayName, version);
-    log(`${appInfo}
+    log(`${prjInfo(displayName, version)}
 `);
 
-    const filename = yellow('package.json');
-    log(`reading: ${filename}`);
-
-    pkg = await readPkg({
-      cwd,
-      normalize: false,
-    });
+    // TODO: Show detected modules & plugins with versions
 
     const { name: prjName, displayName: prjDispName, version: prjVer } = pkg;
-    const prjInfoName = prjDispName as (string | undefined) || prjName;
+    const prjInfoName = prjDispName || prjName;
 
     if (prjInfoName && prjVer) {
-
-      const info = prjInfo(prjInfoName, prjVer);
-      log(`building: ${info}
+      log(`building: ${prjInfo(prjInfoName, prjVer)}
 `);
-
     }
 
   }
 
   let buildIndex = 0;
 
-  const error = options.watch ? logError : (err: RollupError) => {
+  const showError = options.watch ? logError : (err: RollupError) => {
     logError(err);
     process.exit(1);
   };
 
-  const callbacks: BuildCallbackObject = { error };
+  const emitter = new EventEmitter();
+  emitter.on(ERROR, showError);
 
   if (!silent) {
 
-    Object.assign(callbacks, {
+    emitter.on(BUILD_END, (filename: string, size: number, duration: number) => {
+      const tag = green.bgBlack.inverse(' built ');
+      const path = yellow(slash(relative(cwd, filename)));
+      const colorSize = magenta(fileSize(size));
+      const colorTime = magenta(prettyMs(duration, { secondsDecimalDigits: 2 }));
+      log(`${tag} ${path} ( ${colorSize} in ${colorTime} )`);
+    });
 
-      buildEnd(filename, size, duration) {
-        const tag = green.bgBlack.inverse(' built ');
-        const path = yellow(slash(relative(cwd, filename)));
-        const colorSize = magenta(fileSize(size));
-        const colorTime = magenta(prettyMs(duration, { secondsDecimalDigits: 2 }));
-        log(`${tag} ${path} ( ${colorSize} in ${colorTime} )`);
-      },
+    emitter.on(WARN, (warning: string | { plugin: string; message: string }) => {
 
-      warn(warning) {
+      let message = warning;
 
-        let message = warning;
-
-        if (typeof message === 'object') {
-
-          const { plugin, message: msg } = message;
-
-          message = msg;
-
-          if (plugin) {
-            message = `(plugin ${magenta(plugin)}) ${message}`;
-          }
-
+      if (typeof message === 'object') {
+        const { plugin, message: msg } = message;
+        message = msg;
+        if (plugin) {
+          message = `(plugin ${magenta(plugin)}) ${message}`;
         }
+      }
 
-        const tag = magenta('warning:');
+      const tag = magenta('warning:');
+      log(`${tag} ${message}`);
 
-        log(`${tag} ${message}`);
-
-      },
-
-    } as BuildCallbackObject);
+    });
 
     if (options.watch) {
 
-      Object.assign(callbacks, {
-
-        start() {
-          if (buildIndex) {
-            log(`rebuilding...
+      emitter.on(START, () => {
+        if (buildIndex) {
+          log(`rebuilding...
 `);
-          }
-          buildIndex++;
-        },
+        }
+        buildIndex++;
+      });
 
-        end() {
-          log(`
+      emitter.on(END, () => {
+        log(`
 waiting for changes...`);
-        },
 
-      } as BuildCallbackObject);
+      });
 
     }
 
   }
 
   try {
-    await bundlib(cwd, options, callbacks, pkg);
+    await bundlib(
+      cwd,
+      options,
+      emitter,
+      pkg,
+    );
   } catch (err) {
-    logError(err);
-    process.exit(1);
+    showError(err);
   }
 
 }

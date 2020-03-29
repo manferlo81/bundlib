@@ -1,19 +1,16 @@
+import { EventEmitter } from 'events';
 import { statSync } from 'fs';
 import { rollup, RollupCache } from 'rollup';
-
 import { BundlibRollupModuleOutputOptions, BundlibRollupOptions } from '../api/types';
-
+import { BUILD_END, BUILD_START, END, ERROR, START } from './events';
 import oneByOne from './one-by-one';
-import { BuildCallbackObject } from './types';
 
 function build(
   configs: Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>,
-  callbacks: BuildCallbackObject,
+  emitter: EventEmitter,
 ): void {
 
-  if (callbacks.start) {
-    callbacks.start();
-  }
+  emitter.emit(START);
 
   const cache: Partial<Record<string, RollupCache>> = {};
 
@@ -25,9 +22,7 @@ function build(
     const cacheKey = `${format}:${input}`;
     config.cache = cache[cacheKey];
 
-    if (callbacks.buildStart) {
-      callbacks.buildStart(input, outputFile);
-    }
+    emitter.emit(BUILD_START, input, outputFile);
 
     try {
 
@@ -40,23 +35,12 @@ function build(
       const { size } = statSync(outputFile);
       const totalTime = Date.now() - currentTime;
 
-      if (callbacks.buildEnd) {
-        callbacks.buildEnd(
-          outputFile,
-          size,
-          totalTime,
-        );
-      }
+      emitter.emit(BUILD_END, outputFile, size, totalTime);
 
     } catch (err) {
 
-      if (callbacks.error) {
-        callbacks.error(err);
-      }
-
-      if (callbacks.end) {
-        callbacks.end();
-      }
+      emitter.emit(ERROR, err);
+      emitter.emit(END);
 
       throw err;
 
@@ -66,9 +50,7 @@ function build(
       return next();
     }
 
-    if (callbacks.end) {
-      callbacks.end();
-    }
+    emitter.emit(END);
 
   });
 
