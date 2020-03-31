@@ -57,7 +57,7 @@ For `IIFE`, `AMD` or `UMD` builds, add a `"browser"` field to your `package.json
 
 ### Automatic Configuration
 
-Bundlib will try to configure Rollup according to you `package.json` data, other advanced options can be set using `"bundlib"` field in your `package.json`, see [Advanced Configuration](#advanced-configuration) for more information.
+Bundlib will configure Rollup according to you `package.json` data, other advanced options can be set using `"bundlib"` field in your `package.json`, see [Advanced Configuration](#advanced-configuration) for more information.
 
 #### "main"
 
@@ -97,9 +97,9 @@ The `"bundlib"` field will be used for advanced configuration, see [Advanced Con
 
 ### Advanced Configuration
 
-Advanced configuration is done through the `"bundlib"` field in your `package.json`. See the [list of options](#options) below.
+Advanced configuration is done through the `"bundlib"` field in your `package.json`. Pass an `object` with the options or a `string` as a path relative to the project root pointing to a json file containing the options. See the [list of options](#options) below.
 
-***example***
+***example (as object)***
 
 ```javascript
 // package.json
@@ -115,9 +115,32 @@ Advanced configuration is done through the `"bundlib"` field in your `package.js
 }
 ```
 
+***example (as string)***
+
+```javascript
+// package.json
+{
+  "version": "1.0.0",
+  "name": "my-lib",
+  "browser" : "dist/my-lib.amd.js",
+  // ...
+  "bundlib": "bundlib.json"
+  // ...
+}
+```
+
+then...
+
+```javascript
+// bundlib.json
+{
+  "format": "amd"
+}
+```
+
 ### Options
 
-The `"bundlib"` field in `package.json` may contain any of the following properties. Any invalid or unknown option will cause `Bundlib` to throw at build time. Any option or sub-option set to `null` will be ignored.
+The option object may contain any of the following properties. Any invalid or unknown option will cause `Bundlib` to throw at build time. Any option or sub-option set to `null` will be ignored.
 
 #### input
 

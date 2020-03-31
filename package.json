@@ -15,15 +15,7 @@
   "bin": "bin/bundlib-cli.js",
   "types": "types/index.d.ts",
   "typings": "types/index.d.ts",
-  "bundlib": {
-    "input": {
-      "api": "src/api/index.ts",
-      "bin": "src/cli/index.ts"
-    },
-    "esModule": true,
-    "interop": true,
-    "project": "tsconfig-bundlib.json"
-  },
+  "bundlib": "bundlib.json",
   "scripts": {
     "dev": "ts-node -T -P tsconfig-ts-node.json src/cli -dw",
     "build": "ts-node -T -P tsconfig-ts-node.json src/cli -d",
@@ -42,10 +34,11 @@
     "chalk": "^3.0.0",
     "commander": "^5.0.0",
     "filesize": "^6.1.0",
+    "load-json-file": "^6.2.0",
     "pretty-ms": "^6.0.1",
-    "read-pkg": "^5.2.0",
     "resolve-from": "^5.0.0",
-    "slash": "^3.0.0"
+    "slash": "^3.0.0",
+    "type-fest": "^0.12.0"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",

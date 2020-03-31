@@ -1,11 +1,12 @@
-import readPkg from 'read-pkg';
+import loadJson from 'load-json-file';
 import { BundlibOptions } from './bundlib-options';
 import { error, invalidOption, invalidPkgField } from './errors';
-import { StrictNullable } from './helper-types';
+import { Dictionary, Nullable, StrictNullable } from './helper-types';
 import { keys } from './helpers';
 import { BundlibPkgJson } from './pkg';
 import { BrowserBuildOptions, CommonJSBuildOptions, Dependencies, ESModuleBuildOptions, InputOptions, OutputOptions, PkgAnalized, TypesBuildOptions } from './pkg-analized';
-import { isBool, isDictionary, isDictionaryOrNull, isNull, isString, isStringOrNull } from './type-check';
+import readPkg from './read-pkg';
+import { isBool, isDictionary, isDictionaryOrNull, isNull, isOneOf, isString, isStringOrNull } from './type-check';
 import { isBrowserOption } from './validate/option-browser';
 import { isModuleOption, normalizeBuildModule, normalizeModuleOption } from './validate/option-esmodule';
 import { normalizeBuildFlag } from './validate/option-flag';
@@ -25,7 +26,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   // use provided package.json or read it from cwd
 
-  const pkg: BundlibPkgJson = inputPkg || await readPkg({ cwd, normalize: false });
+  const pkg: BundlibPkgJson = inputPkg || await readPkg(cwd);
 
   // ensure the content of package.json is an object
   // throw otherwise
@@ -46,20 +47,22 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     dependencies: runtimeDependencies,
     devDependencies,
     peerDependencies,
-    bundlib: bundlibOptions = {},
+    bundlib: bundlibOptions0,
   } = pkg;
 
   // ensure "bundlib" field is null, undefined (or not present) or an object
   // throw otherwise
 
-  if (!isDictionaryOrNull(bundlibOptions)) {
+  if (!isOneOf<Nullable<BundlibOptions | string>>(bundlibOptions0, isDictionary, isString, isNull)) {
     throw invalidPkgField('bundlib', 'Object');
   }
+
+  const bundlibOptions = isString(bundlibOptions0) ? await loadJson<BundlibOptions>(bundlibOptions0) : bundlibOptions0;
 
   // ensure there are not unknown bundlib options
   // throw otherwise
 
-  const invalidOptions = invalidKeys(bundlibOptions, [
+  const invalidOptions = bundlibOptions && invalidKeys(bundlibOptions as Dictionary<unknown>, [
     'input',
     'extend',
     'esModule',
@@ -103,7 +106,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     browser: browserOptions,
     bin: binaryOptions,
     types: typesOptions,
-  } = bundlibOptions;
+  } = bundlibOptions || {} as BundlibOptions;
 
   // ensure "input" option is valid
   // throw otherwise

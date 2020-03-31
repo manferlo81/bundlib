@@ -1,4 +1,4 @@
-import { PackageJson } from 'read-pkg';
+import { PackageJson } from 'type-fest';
 import { BundlibOptions } from './bundlib-options';
 
 interface ImprovedPackageJson extends PackageJson {
@@ -7,5 +7,5 @@ interface ImprovedPackageJson extends PackageJson {
 }
 
 export interface BundlibPkgJson extends ImprovedPackageJson {
-  bundlib?: BundlibOptions;
+  bundlib?: BundlibOptions | string;
 }

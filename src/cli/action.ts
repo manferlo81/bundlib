@@ -3,10 +3,10 @@ import { EventEmitter } from 'events';
 import fileSize from 'filesize';
 import { relative } from 'path';
 import prettyMs from 'pretty-ms';
-import readPkg from 'read-pkg';
 import { RollupError } from 'rollup';
 import slash from 'slash';
 import { BundlibAPIOptions, BundlibPkgJson } from '../api';
+import readPkg from '../api/read-pkg';
 import bundlib from './bundlib';
 import { log, logError } from './console';
 import { BUILD_END, END, ERROR, START, WARN } from './events';
@@ -31,10 +31,7 @@ export async function action(displayName: string, version: string, silent: boole
 
   const cwd = process.cwd();
 
-  const pkg: BundlibPkgJson = await readPkg({
-    cwd,
-    normalize: false,
-  });
+  const pkg: BundlibPkgJson = await readPkg(cwd);
 
   if (!silent) {
 
