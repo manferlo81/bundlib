@@ -1,17 +1,25 @@
 import { IsExternal } from 'rollup';
-import { hasOwn } from './helpers';
-import { Dictionary, StrictNullable } from './helper-types';
+import { Dictionary, Nullable } from './helper-types';
+import { hasOwn, keys, keysToObject } from './helpers';
+import { isArray } from './type-check';
 
-export function arrayToExternal(...modules: Array<StrictNullable<string[]>>): IsExternal {
+export function createIsExternal(...dependencies: Array<Nullable<string[] | Dictionary<unknown>>>): IsExternal {
 
-  const filtered = modules.reduce<string[]>(
-    (result, list) => list ? [...result, ...list] : result,
-    [],
-  );
+  const filtered = dependencies.filter((dep): dep is string[] | Dictionary<unknown> => !!dep);
 
   if (!filtered.length) {
     return () => false;
   }
+
+  const asObj = filtered.reduce<Dictionary<unknown>>(
+    (result, dep) => isArray(dep) ? { ...result, ...keysToObject(dep, true) } : { ...result, ...dep },
+    {},
+  );
+
+  const asList = filtered.reduce<string[]>(
+    (result, dep) => isArray(dep) ? [...result, ...dep] : [...result, ...keys(dep)],
+    [],
+  );
 
   const cache: Dictionary<boolean> = {};
 
@@ -31,17 +39,23 @@ export function arrayToExternal(...modules: Array<StrictNullable<string[]>>): Is
 
     // set cached value
 
-    return cache[source] = filtered.some((moduleName): (boolean | void) => {
+    if (asObj[source]) {
+      return cache[source] = true;
+    }
 
-      if (source === moduleName) {
-        return true;
-      }
+    const l = asList.length;
+    for (let i = 0; i < l; i++) {
 
+      const moduleName = asList[i];
       const len = moduleName.length;
 
-      return (source.substr(0, len) === moduleName) && /^[/\\]$/.test(source[len]);
+      if ((source.substr(0, len) === moduleName) && /^[/\\]$/.test(source[len])) {
+        return cache[source] = true;
+      }
 
-    });
+    }
+
+    return false;
 
   };
 

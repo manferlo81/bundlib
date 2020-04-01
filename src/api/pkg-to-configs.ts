@@ -1,13 +1,13 @@
 import builtinModules from 'builtin-modules';
 import { basename, dirname, join as pathJoin, resolve } from 'path';
 import { Plugin, PluginImpl } from 'rollup';
-import { arrayToExternal } from './array-to-external';
+import { createIsExternal } from './array-to-external';
 import { createBrowserConfig, createModuleConfig } from './create-config';
 import { error } from './errors';
 import { JS_EXTENSIONS, TS_EXTENSIONS, TS_ONLY_EXTENSIONS } from './extensions';
 import { findFirst } from './find-first';
 import { StrictNullable } from './helper-types';
-import { keysOrNull, setProp } from './helpers';
+import { setProp } from './helpers';
 import { createIsInstalled } from './is-installed';
 import { PkgAnalized } from './pkg-analized';
 import { createPluginLoader } from './plugin-loader';
@@ -77,7 +77,6 @@ export function pkgToConfigs(
   // CHECK FOR INSTALLED MODULES
 
   const useTypescriptPlugin = !!loadPluginTypescript2 || !!loadPluginTypescript;
-  const isInstalledChokidar = isInstalled('chokidar');
 
   const apiInput = apiInput1 ? resolve(cwd, apiInput1) : (
     (
@@ -96,6 +95,8 @@ export function pkgToConfigs(
     ) ||
     resolve(cwd, 'src-bin', 'index.js')
   );
+
+  const isInstalledChokidar = isInstalled('chokidar');
 
   const isTypescriptAPIInput = extensionMatch(apiInput, TS_ONLY_EXTENSIONS);
   const isTypescriptBinaryInput = extensionMatch(binInput, TS_ONLY_EXTENSIONS);
@@ -131,9 +132,9 @@ export function pkgToConfigs(
     typesOutputDir = dirname(typesOutputDir);
   }
 
-  const isExternal = arrayToExternal(
-    keysOrNull(runtimeDeps),
-    keysOrNull(peerDeps),
+  const isExternal = createIsExternal(
+    runtimeDeps,
+    peerDeps,
     builtinModules as string[],
   );
 
@@ -361,7 +362,7 @@ export function pkgToConfigs(
 
     const { path, sourcemap, esModule, interop, format, name, extend, id, globals, min } = browserOutput;
     const resolvedPath = resolve(cwd, path);
-    const isBrowserExternal = arrayToExternal(keysOrNull(globals));
+    const isBrowserExternal = createIsExternal(globals);
 
     configs.push(
       createBrowserConfig(

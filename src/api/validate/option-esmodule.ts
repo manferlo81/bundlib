@@ -1,8 +1,8 @@
 import { ModuleOption, ModuleString, PerBuildModuleOptions } from '../bundlib-options';
 import { Nullable } from '../helper-types';
-import { createObject, setProp } from '../helpers';
-import { createInList } from './in-list';
+import { keysToObject, setProp } from '../helpers';
 import { isArray, isBool, isNull } from '../type-check';
+import { createInList } from './in-list';
 
 export type ModuleGlobal = Record<ModuleString, boolean>;
 
@@ -20,10 +20,10 @@ export function isModuleOption(value: unknown): value is ModuleOption {
 
 export function normalizeModuleOption(option: ModuleOption): ModuleGlobal {
   const keys: ModuleString[] = ['main', 'browser', 'bin'];
-  return !option ? createObject(keys, false)
-    : option === true ? createObject(keys, true)
-      : isArray(option) ? option.reduce((result, field) => setProp(field, true, result), createObject(keys, false))
-        : setProp(option, true, createObject(keys, false));
+  return !option ? keysToObject(keys, false)
+    : option === true ? keysToObject(keys, true)
+      : isArray(option) ? option.reduce((result, field) => setProp(field, true, result), keysToObject(keys, false))
+        : setProp(option, true, keysToObject(keys, false));
 }
 
 export function normalizeBuildModule(
