@@ -5,9 +5,9 @@ import { relative } from 'path';
 import prettyMs from 'pretty-ms';
 import { RollupError } from 'rollup';
 import slash from 'slash';
-import { BundlibAPIOptions, BundlibPkgJson } from '../api';
+import { BundlibPkgJson } from '../api';
 import { readPkg } from '../api/read-pkg';
-import bundlib from './bundlib';
+import { bundlib } from './bundlib';
 import { log, logError } from './console';
 import { BUILD_END, END, ERROR, START, WARN } from './events';
 
@@ -27,10 +27,15 @@ if (!chalk.level && 'MINGW_CHOST' in process.env) {
   chalk.level = 1;
 }
 
-export async function action(displayName: string, version: string, silent: boolean, options: BundlibAPIOptions) {
+export async function action(
+  displayName: string,
+  version: string,
+  dev: boolean,
+  watch: boolean,
+  silent: boolean,
+) {
 
   const cwd = process.cwd();
-
   const pkg: BundlibPkgJson = await readPkg(cwd);
 
   if (!silent) {
@@ -52,7 +57,7 @@ export async function action(displayName: string, version: string, silent: boole
 
   let buildIndex = 0;
 
-  const showError = options.watch ? logError : (err: RollupError) => {
+  const showError = watch ? logError : (err: RollupError) => {
     logError(err);
     process.exit(1);
   };
@@ -70,24 +75,18 @@ export async function action(displayName: string, version: string, silent: boole
       log(`${tag} ${path} ( ${colorSize} in ${colorTime} )`);
     });
 
-    emitter.on(WARN, (warning: string | { plugin: string; message: string }) => {
+    emitter.on(WARN, (warning: { plugin: string; message: string }) => {
 
-      let message = warning;
-
-      if (typeof message === 'object') {
-        const { plugin, message: msg } = message;
-        message = msg;
-        if (plugin) {
-          message = `(plugin ${magenta(plugin)}) ${message}`;
-        }
-      }
+      const { plugin, message } = warning;
 
       const tag = magenta('warning:');
-      log(`${tag} ${message}`);
+      const msg = `${plugin ? `( plugin ${magenta(plugin)} ) ` : ''}${message}`;
+
+      log(`${tag} ${msg}`);
 
     });
 
-    if (options.watch) {
+    if (watch) {
 
       emitter.on(START, () => {
         if (buildIndex) {
@@ -110,7 +109,8 @@ waiting for changes...`);
   try {
     await bundlib(
       cwd,
-      options,
+      dev,
+      watch,
       emitter,
       pkg,
     );

@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 
 import program from 'commander';
-import { name, displayName, version } from '../../package.json';
-
+import { displayName, name, version } from '../../package.json';
 import { action } from './action';
 
 program
@@ -13,9 +12,6 @@ program
   .option('-s, --silent', 'prevent messages from showing in the console')
   .action(async () => {
     const { dev, watch, silent } = program;
-    await action(displayName, version, silent, {
-      dev,
-      watch,
-    });
+    await action(displayName, version, dev, watch, silent);
   })
   .parseAsync(process.argv);

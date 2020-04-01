@@ -1,4 +1,4 @@
-import { ChokidarOptions, IsExternal, Plugin, WatcherOptions as RollupWatcherOptions } from 'rollup';
+import { ChokidarOptions, IsExternal, Plugin, WarningHandlerWithDefault, WatcherOptions as RollupWatcherOptions } from 'rollup';
 import { Dictionary, Nullable } from './helper-types';
 import { BrowserBuildFormat, BundlibRollupBrowseOutputOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, ModuleBuildFormat, RollupSourcemap } from './types';
 import { createInList } from './validate/in-list';
@@ -8,6 +8,7 @@ export function createConfig<OutputOptions extends BundlibRollupModuleOutputOpti
   output: OutputOptions,
   external: IsExternal,
   plugins: Plugin[],
+  onwarn: Nullable<WarningHandlerWithDefault>,
   chokidar: boolean | ChokidarOptions,
 ): BundlibRollupOptions<OutputOptions> {
 
@@ -19,13 +20,19 @@ export function createConfig<OutputOptions extends BundlibRollupModuleOutputOpti
     watch.chokidar = chokidar === true ? {} : chokidar;
   }
 
-  return {
+  const config: BundlibRollupOptions<OutputOptions> = {
     input,
     output,
     external,
     plugins,
     watch,
   };
+
+  if (onwarn) {
+    config.onwarn = onwarn;
+  }
+
+  return config;
 
 }
 
@@ -38,6 +45,7 @@ export function createModuleConfig(
   interop: boolean,
   external: IsExternal,
   plugins: Plugin[],
+  onwarn: Nullable<WarningHandlerWithDefault>,
   chokidar: boolean | ChokidarOptions,
 ): BundlibRollupOptions<BundlibRollupModuleOutputOptions> {
   return createConfig(
@@ -45,6 +53,7 @@ export function createModuleConfig(
     { file, format, sourcemap, esModule, interop },
     external,
     plugins,
+    onwarn,
     chokidar,
   );
 }
@@ -60,6 +69,7 @@ export function createBrowserConfig(
   interop: boolean,
   isExternal: IsExternal,
   plugins: Plugin[],
+  onwarn: Nullable<WarningHandlerWithDefault>,
   chokidar: boolean | ChokidarOptions,
   name: string,
   extend: boolean,
@@ -89,6 +99,7 @@ export function createBrowserConfig(
     output,
     isExternal,
     plugins,
+    onwarn,
     chokidar,
   );
 

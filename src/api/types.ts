@@ -1,4 +1,4 @@
-import { IsExternal, OutputOptions as RollupOutputOptions, Plugin, RollupOptions, WatcherOptions as RollupWatcherOptions } from 'rollup';
+import { IsExternal, OutputOptions as RollupOutputOptions, Plugin, RollupOptions, WarningHandlerWithDefault, WatcherOptions as RollupWatcherOptions } from 'rollup';
 import { Dictionary } from './helper-types';
 
 export type RollupSourcemap = boolean | 'inline' | 'hidden';
@@ -36,4 +36,5 @@ export interface BundlibRollupOptions<OutputOptions extends BundlibRollupModuleO
 export interface BundlibAPIOptions {
   dev?: boolean;
   watch?: boolean;
+  onwarn?: WarningHandlerWithDefault;
 }

@@ -23,7 +23,7 @@ export function pkgToConfigs(
 
 export function pkgToConfigs(
   { cwd, input, output, dependencies, cache, project }: PkgAnalized,
-  { dev, watch }: BundlibAPIOptions,
+  { dev, watch, onwarn }: BundlibAPIOptions,
 ): Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>> {
 
   const {
@@ -271,6 +271,7 @@ export function pkgToConfigs(
           false,
           false,
         ),
+        onwarn,
         useChokidar,
       ),
     );
@@ -295,6 +296,7 @@ export function pkgToConfigs(
             false,
             false,
           ),
+          onwarn,
           useChokidar,
         ),
       );
@@ -326,6 +328,7 @@ export function pkgToConfigs(
           false,
           false,
         ),
+        onwarn,
         useChokidar,
       ),
     );
@@ -350,6 +353,7 @@ export function pkgToConfigs(
             false,
             false,
           ),
+          onwarn,
           useChokidar,
         ),
       );
@@ -382,6 +386,7 @@ export function pkgToConfigs(
           true,
           false,
         ),
+        onwarn,
         useChokidar,
         name as string,
         extend,
@@ -410,6 +415,7 @@ export function pkgToConfigs(
             true,
             false,
           ),
+          onwarn,
           useChokidar,
           name as string,
           extend,
@@ -445,6 +451,7 @@ export function pkgToConfigs(
           false,
           true,
         ),
+        onwarn,
         useChokidar,
       ),
     );
@@ -469,6 +476,7 @@ export function pkgToConfigs(
             false,
             true,
           ),
+          onwarn,
           useChokidar,
         ),
       );
