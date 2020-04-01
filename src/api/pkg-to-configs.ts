@@ -1,27 +1,27 @@
 import builtinModules from 'builtin-modules';
 import { basename, dirname, join as pathJoin, resolve } from 'path';
 import { Plugin, PluginImpl } from 'rollup';
-import arrayToExternal from './array-to-external';
+import { arrayToExternal } from './array-to-external';
 import { createBrowserConfig, createModuleConfig } from './create-config';
 import { error } from './errors';
 import { JS_EXTENSIONS, TS_EXTENSIONS, TS_ONLY_EXTENSIONS } from './extensions';
-import findFirst from './find-first';
+import { findFirst } from './find-first';
 import { StrictNullable } from './helper-types';
 import { keysOrNull, setProp } from './helpers';
-import createIsInstalled from './is-installed';
+import { createIsInstalled } from './is-installed';
 import { PkgAnalized } from './pkg-analized';
-import createPluginLoader from './plugin-loader';
-import pluginMapIdExternal from './plugins/api-plugin';
+import { createPluginLoader } from './plugin-loader';
+import { mapIdExternal as pluginMapIdExternal } from './plugins/api-plugin';
 import { renameMin, renamePre } from './rename';
 import { BundlibAPIOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types';
-import extensionMatch from './validate/ext-match';
+import { extensionMatch } from './validate/ext-match';
 
-function pkgToConfigs(
+export function pkgToConfigs(
   pkg: PkgAnalized,
   options: BundlibAPIOptions,
 ): Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>;
 
-function pkgToConfigs(
+export function pkgToConfigs(
   { cwd, input, output, dependencies, cache, project }: PkgAnalized,
   { dev, watch }: BundlibAPIOptions,
 ): Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>> {
@@ -479,5 +479,3 @@ function pkgToConfigs(
   return configs;
 
 }
-
-export default pkgToConfigs;

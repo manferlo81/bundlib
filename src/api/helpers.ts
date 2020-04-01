@@ -7,6 +7,9 @@ export const keys: (
   // eslint-disable-next-line @typescript-eslint/unbound-method
 ) = Object.keys;
 
+// eslint-disable-next-line @typescript-eslint/unbound-method
+export const hasOwn = Object.prototype.hasOwnProperty;
+
 export function keysOrNull(deps: Nullable<Dictionary<unknown>>): StrictNullable<string[]> {
   return deps ? keys(deps) : null;
 }

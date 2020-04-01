@@ -1,7 +1,7 @@
 type OneByOneNext = () => void;
 type OneByOneCallback<T> = (item: T, next: OneByOneNext | null) => unknown;
 
-function oneByOne<T>(arr: ArrayLike<T>, callback: OneByOneCallback<T>): void {
+export function oneByOne<T>(arr: ArrayLike<T>, callback: OneByOneCallback<T>): void {
 
   let index = 0;
   const len = arr.length;
@@ -25,5 +25,3 @@ function oneByOne<T>(arr: ArrayLike<T>, callback: OneByOneCallback<T>): void {
   next();
 
 }
-
-export default oneByOne;

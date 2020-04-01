@@ -1,7 +1,7 @@
 import { existsSync } from 'fs';
 import { StrictNullable } from './helper-types';
 
-function findFirst(...filenames: string[]): StrictNullable<string> {
+export function findFirst(...filenames: string[]): StrictNullable<string> {
   for (const filename of filenames) {
     if (existsSync(filename)) {
       return filename;
@@ -9,5 +9,3 @@ function findFirst(...filenames: string[]): StrictNullable<string> {
   }
   return null;
 }
-
-export default findFirst;

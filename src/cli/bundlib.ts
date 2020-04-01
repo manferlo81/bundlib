@@ -1,9 +1,9 @@
 import { EventEmitter } from 'events';
 import { RollupWarning } from 'rollup';
 import { BundlibAPIOptions, BundlibPkgJson, configsFromPkg } from '../api';
-import build from './build';
+import { build } from './build';
 import { WARN } from './events';
-import watch from './watch';
+import { watch } from './watch';
 
 async function bundlib(
   cwd: string,

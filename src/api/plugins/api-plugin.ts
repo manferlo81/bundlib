@@ -51,5 +51,3 @@ export function mapIdExternal(cwd: string, outputDir: string, map: Dictionary<st
   };
 
 }
-
-export default mapIdExternal;

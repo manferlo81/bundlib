@@ -3,9 +3,9 @@ import { statSync } from 'fs';
 import { rollup, RollupCache } from 'rollup';
 import { BundlibRollupModuleOutputOptions, BundlibRollupOptions } from '../api/types';
 import { BUILD_END, BUILD_START, END, ERROR, START } from './events';
-import oneByOne from './one-by-one';
+import { oneByOne } from './one-by-one';
 
-function build(
+export function build(
   configs: Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>,
   emitter: EventEmitter,
 ): void {
@@ -55,5 +55,3 @@ function build(
   });
 
 }
-
-export default build;

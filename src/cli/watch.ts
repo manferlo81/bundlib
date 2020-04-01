@@ -3,7 +3,7 @@ import { statSync } from 'fs';
 import { RollupOptions, watch as rollupWatch } from 'rollup';
 import { BUILD_END, BUILD_START, END, ERROR, START } from './events';
 
-function watch(
+export function watch(
   configs: RollupOptions[],
   emitter: EventEmitter,
 ): void {
@@ -45,5 +45,3 @@ function watch(
   });
 
 }
-
-export default watch;

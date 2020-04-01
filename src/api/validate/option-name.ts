@@ -2,7 +2,7 @@ import camelcase from 'camelcase';
 import { basename } from 'path';
 import { Nullable, StrictNullable } from '../helper-types';
 
-function normalizeBuildName(
+export function normalizeBuildName(
   cwd: string,
   browserName: Nullable<string>,
   nameOption: Nullable<string>,
@@ -12,5 +12,3 @@ function normalizeBuildName(
     pkgName && camelcase(basename(pkgName))
   ) || camelcase(basename(cwd)) || null;
 }
-
-export default normalizeBuildName;

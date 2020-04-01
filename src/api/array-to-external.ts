@@ -1,8 +1,8 @@
 import { IsExternal } from 'rollup';
-import hasOwn from './has-own';
+import { hasOwn } from './helpers';
 import { Dictionary, StrictNullable } from './helper-types';
 
-function arrayToExternal(...modules: Array<StrictNullable<string[]>>): IsExternal {
+export function arrayToExternal(...modules: Array<StrictNullable<string[]>>): IsExternal {
 
   const filtered = modules.reduce<string[]>(
     (result, list) => list ? [...result, ...list] : result,
@@ -46,5 +46,3 @@ function arrayToExternal(...modules: Array<StrictNullable<string[]>>): IsExterna
   };
 
 }
-
-export default arrayToExternal;

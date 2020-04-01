@@ -2,7 +2,7 @@ import resolveFrom from 'resolve-from';
 import { PluginImpl } from 'rollup';
 import { IsInstalled, StrictNullable } from './helper-types';
 
-function createPluginLoader(cwd: string, isInstalled: IsInstalled) {
+export function createPluginLoader(cwd: string, isInstalled: IsInstalled) {
 
   return <T extends PluginImpl>(id: string, named?: string | null): StrictNullable<T> => {
     if (!isInstalled(id)) {
@@ -14,5 +14,3 @@ function createPluginLoader(cwd: string, isInstalled: IsInstalled) {
   };
 
 }
-
-export default createPluginLoader;
