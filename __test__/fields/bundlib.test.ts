@@ -24,4 +24,22 @@ describe('package.json bundlib field', () => {
 
   });
 
+  test('should use bundlib option as object', async () => {
+
+    const name = 'name';
+    const { output: { browser } } = await analize(cwd, { browser: 'out.js', bundlib: { name } });
+
+    expect(browser).toMatchObject({ name });
+
+  });
+
+  test('should use bundlib option as string', async () => {
+
+    const name = 'bundlib';
+    const { output: { browser } } = await analize(cwd, { browser: 'out.js', bundlib: 'bundlib.json' });
+
+    expect(browser).toMatchObject({ name });
+
+  });
+
 });
