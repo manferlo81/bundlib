@@ -20,6 +20,7 @@
     "dev": "ts-node -T -P tsconfig-ts-node.json src/cli -dw",
     "build": "ts-node -T -P tsconfig-ts-node.json src/cli -d",
     "test": "jest --color -w 3",
+    "test:watch": "npm test -- --watch-all",
     "clean": "rimraf bin dist types coverage node_modules/.cache/bundlib node_modules/.cache/jest",
     "lint": "eslint src/** __test__/**",
     "prerelease": "npm run clean && npm run lint && npm test && npm run build",
