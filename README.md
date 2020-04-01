@@ -22,7 +22,6 @@ An automatic configuration manager for [Rollup.js](https://github.com/rollup/rol
 * [CLI](#cli)
 * [API](#api)
 * [Types](#types-1)
-* [Known Issues](#known-issues)
 * [Features](#features)
 
 ## Install
@@ -163,12 +162,12 @@ The path to the file (or files) to be used as entry point(s) for `API` and `Bina
 #### sourcemap
 
 ```typescript
-sourcemap: boolean | "inline";
+sourcemap: boolean | 'inline' | 'hidden';
 
 default true;
 ```
 
-Whether or not to generate source maps. Anything other than `false` or `"inline"` will default to `true`.
+Whether or not to generate source maps, See [Rollup documentation](https://rollupjs.org/guide/en/#outputsourcemap) for more information. If not specified or set to `null` it will default to `true`.
 
 This option can be overridden using `per-build` options. See [`main`](#main), [`module`](#module), [`browser`](#browser) and [`bin`](#bin) options.
 

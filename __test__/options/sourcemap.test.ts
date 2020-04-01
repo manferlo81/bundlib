@@ -57,18 +57,35 @@ describe('sourcemap option', () => {
 
   });
 
-  test('should read inline sourcemap option', async () => {
+  test('should read "inline" sourcemap option', async () => {
 
-    const { output: { main, module: moduleOut, browser, bin } } = await analizedWithSourcemap('inline');
+    const sourcemap = 'inline';
+    const { output: { main, module: moduleOut, browser, bin } } = await analizedWithSourcemap(sourcemap);
 
     expect(main ? main.sourcemap : null)
-      .toBe('inline');
+      .toBe(sourcemap);
     expect(moduleOut ? moduleOut.sourcemap : null)
-      .toBe('inline');
+      .toBe(sourcemap);
     expect(browser ? browser.sourcemap : null)
-      .toBe('inline');
+      .toBe(sourcemap);
     expect(bin ? bin.sourcemap : null)
-      .toBe('inline');
+      .toBe(sourcemap);
+
+  });
+
+  test('should read "hidden" sourcemap option', async () => {
+
+    const sourcemap = 'hidden';
+    const { output: { main, module: moduleOut, browser, bin } } = await analizedWithSourcemap(sourcemap);
+
+    expect(main ? main.sourcemap : null)
+      .toBe(sourcemap);
+    expect(moduleOut ? moduleOut.sourcemap : null)
+      .toBe(sourcemap);
+    expect(browser ? browser.sourcemap : null)
+      .toBe(sourcemap);
+    expect(bin ? bin.sourcemap : null)
+      .toBe(sourcemap);
 
   });
 

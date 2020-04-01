@@ -4,7 +4,7 @@ import { isNull } from '../type-check';
 import { RollupSourcemap } from '../types';
 
 export function normalizeSourcemap(sourcemap: unknown): RollupSourcemap {
-  return sourcemap === 'inline' ? 'inline' : (sourcemap !== false);
+  return sourcemap === 'inline' || sourcemap === 'hidden' ? sourcemap : (sourcemap !== false);
 }
 
 export function normalizeBuildSourcemap(
