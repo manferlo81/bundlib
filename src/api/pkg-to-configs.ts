@@ -1,13 +1,13 @@
 import builtinModules from 'builtin-modules';
 import { basename, dirname, join as pathJoin, resolve } from 'path';
 import { Plugin, PluginImpl } from 'rollup';
-import { createIsExternal } from './array-to-external';
 import { createBrowserConfig, createModuleConfig } from './create-config';
 import { error } from './errors';
 import { JS_EXTENSIONS, TS_EXTENSIONS, TS_ONLY_EXTENSIONS } from './extensions';
 import { findFirst } from './find-first';
 import { StrictNullable } from './helper-types';
 import { setProp } from './helpers';
+import { createIsExternal } from './is-external';
 import { createIsInstalled } from './is-installed';
 import { PkgAnalized } from './pkg-analized';
 import { createPluginLoader } from './plugin-loader';

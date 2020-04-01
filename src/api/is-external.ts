@@ -48,14 +48,23 @@ export function createIsExternal(...dependencies: Array<Nullable<string[] | Dict
 
       const moduleName = asList[i];
       const len = moduleName.length;
+      const partialSource = source.substr(0, len);
 
-      if ((source.substr(0, len) === moduleName) && /^[/\\]$/.test(source[len])) {
-        return cache[source] = true;
+      if (/^[/\\]$/.test(source[len])) {
+
+        if (hasOwn.call(cache, partialSource)) {
+          return cache[partialSource];
+        }
+
+        if (partialSource === moduleName) {
+          return cache[partialSource] = cache[source] = true;
+        }
+
       }
 
     }
 
-    return false;
+    return cache[source] = false;
 
   };
 
