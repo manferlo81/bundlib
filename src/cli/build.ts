@@ -1,13 +1,13 @@
-import { EventEmitter } from 'events';
 import { statSync } from 'fs';
 import { rollup, RollupCache } from 'rollup';
 import { BundlibRollupModuleOutputOptions, BundlibRollupOptions } from '../api/types';
 import { BUILD_END, BUILD_START, END, ERROR, START } from './events';
 import { oneByOne } from './one-by-one';
+import { BundlibEventEmitter } from './types';
 
 export function build(
   configs: Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>,
-  emitter: EventEmitter,
+  emitter: BundlibEventEmitter,
 ): void {
 
   emitter.emit(START);
@@ -22,7 +22,7 @@ export function build(
     const cacheKey = `${format}:${input}`;
     config.cache = cache[cacheKey];
 
-    emitter.emit(BUILD_START, input, outputFile);
+    emitter.emit(BUILD_START, outputFile);
 
     try {
 

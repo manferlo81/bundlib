@@ -3,13 +3,14 @@ import { EventEmitter } from 'events';
 import fileSize from 'filesize';
 import { relative } from 'path';
 import prettyMs from 'pretty-ms';
-import { RollupError } from 'rollup';
+import { RollupError, RollupWarning } from 'rollup';
 import slash from 'slash';
 import { BundlibPkgJson } from '../api';
 import { readPkg } from '../api/read-pkg';
 import { bundlib } from './bundlib';
 import { log, logError } from './console';
-import { BUILD_END, END, ERROR, START, WARN } from './events';
+import { BUILD_END, END, ERROR, REBUILD, WARN } from './events';
+import { BundlibEventEmitter } from './types';
 
 const { bold } = chalk;
 const green = bold.green;
@@ -55,14 +56,12 @@ export async function action(
 
   }
 
-  let buildIndex = 0;
-
   const showError = watch ? logError : (err: RollupError) => {
     logError(err);
     process.exit(1);
   };
 
-  const emitter = new EventEmitter();
+  const emitter: BundlibEventEmitter = new EventEmitter();
   emitter.on(ERROR, showError);
 
   if (!silent) {
@@ -75,7 +74,7 @@ export async function action(
       log(`${tag} ${path} ( ${colorSize} in ${colorTime} )`);
     });
 
-    emitter.on(WARN, (warning: { plugin: string; message: string }) => {
+    emitter.on(WARN, (warning: RollupWarning) => {
 
       const { plugin, message } = warning;
 
@@ -88,12 +87,9 @@ export async function action(
 
     if (watch) {
 
-      emitter.on(START, () => {
-        if (buildIndex) {
-          log(`rebuilding...
+      emitter.on(REBUILD, () => {
+        log(`rebuilding...
 `);
-        }
-        buildIndex++;
       });
 
       emitter.on(END, () => {

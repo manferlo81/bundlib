@@ -1,46 +1,65 @@
-import { EventEmitter } from 'events';
 import { statSync } from 'fs';
-import { RollupOptions, watch as rollupWatch } from 'rollup';
-import { BUILD_END, BUILD_START, END, ERROR, START } from './events';
+import { RollupOptions, RollupWatcherEvent, watch as rollupWatch } from 'rollup';
+import { BUILD_END, BUILD_START, END, ERROR, REBUILD, START } from './events';
+import { BundlibEventEmitter } from './types';
 
 export function watch(
   configs: RollupOptions[],
-  emitter: EventEmitter,
+  emitter: BundlibEventEmitter,
 ): void {
 
-  const watcher = rollupWatch(configs);
+  let buildIndex = 0;
 
-  watcher.on('event', (event) => {
-    if (event.code === 'START') {
+  const handlers: { [K in RollupWatcherEvent['code']]: (event: Extract<RollupWatcherEvent, { code: K }>) => void } = {
+
+    START() {
+      if (buildIndex) {
+        emitter.emit(REBUILD, buildIndex);
+      }
+      buildIndex++;
       emitter.emit(START);
-    } else if (event.code === 'END') {
+    },
+
+    END() {
       emitter.emit(END);
-    } else if (event.code === 'BUNDLE_START') {
-      const { output: out } = event;
-      const { length: len } = out;
+    },
+
+    BUNDLE_START(e) {
+      const { length: len } = e.output;
       for (let i = 0; i < len; i++) {
         emitter.emit(
           BUILD_START,
-          out[i],
+          e.output[i],
         );
       }
-    } else if (event.code === 'BUNDLE_END') {
-      const { output: out } = event;
-      const { length: len } = out;
+    },
+
+    BUNDLE_END(e) {
+      const { length: len } = e.output;
       for (let i = 0; i < len; i++) {
-        const stats = statSync(out[i]);
+        const stats = statSync(e.output[i]);
         emitter.emit(
           BUILD_END,
-          out[i],
+          e.output[i],
           stats.size,
-          event.duration,
+          e.duration,
         );
       }
-    } else if (event.code === 'ERROR') {
+    },
+
+    ERROR(e) {
       emitter.emit(
         ERROR,
-        event.error,
+        e.error,
       );
+    },
+
+  };
+
+  rollupWatch(configs).on('event', (event) => {
+    const handleEvent = handlers[event.code];
+    if (handleEvent) {
+      handleEvent(event as never);
     }
   });
 
