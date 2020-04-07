@@ -1,5 +1,7 @@
 import { analizePkg, BundlibPkgJson } from '../../src/api';
 
+jest.mock('cosmiconfig');
+
 const analize = (cwd: string, pkg?: BundlibPkgJson) => (
   pkg ? analizePkg(cwd, pkg) : analizePkg(cwd)
 );

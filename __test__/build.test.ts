@@ -5,6 +5,8 @@ import createConfigs from './tools/create-configs';
 // @ts-ignore
 import { dependencies, devDependencies, peerDependencies, optionalDependencies } from '../package.json';
 
+jest.mock('rollup');
+
 describe('build', () => {
 
   const cwd = process.cwd();
