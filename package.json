@@ -15,7 +15,6 @@
   "bin": "bin/bundlib-cli.js",
   "types": "types/index.d.ts",
   "typings": "types/index.d.ts",
-  "bundlib": "bundlib.json",
   "scripts": {
     "dev": "ts-node -T -P tsconfig-ts-node.json src/cli -dw",
     "build": "ts-node -T -P tsconfig-ts-node.json src/cli -d",
@@ -34,6 +33,7 @@
     "camelcase": "^6.0.0",
     "chalk": "^4.0.0",
     "commander": "^5.0.0",
+    "cosmiconfig": "^6.0.0",
     "filesize": "^6.1.0",
     "load-json-file": "^6.2.0",
     "pretty-ms": "^6.0.1",

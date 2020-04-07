@@ -1,0 +1,6 @@
+input:
+  api: src/api/index.ts
+  bin: src/cli/index.ts
+esModule: true
+interop: true
+project: tsconfig-bundlib.json

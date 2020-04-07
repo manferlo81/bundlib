@@ -1,8 +1,8 @@
-import loadJson from 'load-json-file';
 import { BundlibOptions } from './bundlib-options';
 import { error, invalidOption, invalidPkgField } from './errors';
 import { Dictionary, Nullable, StrictNullable } from './helper-types';
 import { keys } from './helpers';
+import { loadOptions } from './options-manager';
 import { BundlibPkgJson } from './pkg';
 import { BrowserBuildOptions, CommonJSBuildOptions, Dependencies, ESModuleBuildOptions, InputOptions, OutputOptions, PkgAnalized, TypesBuildOptions } from './pkg-analized';
 import { readPkg } from './read-pkg';
@@ -57,7 +57,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     throw invalidPkgField('bundlib', 'Object | string');
   }
 
-  const bundlibOptions = isString(pkgBundlibOptions) ? await loadJson<BundlibOptions>(pkgBundlibOptions) : pkgBundlibOptions;
+  const bundlibOptions = await loadOptions(cwd, pkgBundlibOptions);
 
   // ensure there are not unknown bundlib options
   // throw otherwise
