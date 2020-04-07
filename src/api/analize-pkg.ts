@@ -1,12 +1,12 @@
 import { BundlibOptions } from './bundlib-options';
 import { error, invalidOption, invalidPkgField } from './errors';
-import { Dictionary, Nullable, StrictNullable } from './helper-types';
+import { StrictNullable } from './helper-types';
 import { keys } from './helpers';
 import { loadOptions } from './options-manager';
 import { BundlibPkgJson } from './pkg';
 import { BrowserBuildOptions, CommonJSBuildOptions, Dependencies, ESModuleBuildOptions, InputOptions, OutputOptions, PkgAnalized, TypesBuildOptions } from './pkg-analized';
 import { readPkg } from './read-pkg';
-import { isBool, isDictionary, isDictionaryOrNull, isNull, isOneOf, isString, isStringOrNull } from './type-check';
+import { isBool, isDictionary, isDictionaryOrNull, isNull, isString, isStringOrNull } from './type-check';
 import { isBrowserOption } from './validate/option-browser';
 import { isModuleOption, normalizeBuildModule, normalizeModuleOption } from './validate/option-esmodule';
 import { normalizeBuildFlag } from './validate/option-flag';
@@ -53,16 +53,17 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   // ensure "bundlib" field is null, undefined (or not present) or an object
   // throw otherwise
 
-  if (!isOneOf<Nullable<BundlibOptions | string>>(pkgBundlibOptions, isDictionary, isString, isNull)) {
+  const bundlibOptions = await loadOptions(cwd, pkgBundlibOptions);
+
+  // if (!isOneOf<Nullable<BundlibOptions | string>>(pkgBundlibOptions, isDictionary, isString, isNull)) {
+  if (!isDictionary(bundlibOptions)) {
     throw invalidPkgField('bundlib', 'Object | string');
   }
-
-  const bundlibOptions = await loadOptions(cwd, pkgBundlibOptions);
 
   // ensure there are not unknown bundlib options
   // throw otherwise
 
-  const invalidOptions = invalidKeys(bundlibOptions as Dictionary<unknown>, [
+  const invalidOptions = invalidKeys(bundlibOptions, [
     'input',
     'extend',
     'esModule',

@@ -2,16 +2,13 @@ import { cosmiconfig } from 'cosmiconfig';
 import { resolve } from 'path';
 import slash from 'slash';
 import { BundlibOptions } from './bundlib-options';
-import { PRODUCT_NAME } from './consts';
+import { OPTION_FILE_PATHS, PRODUCT_NAME } from './consts';
 import { isString } from './type-check';
-
-const searchPlaces = ['', '.json', '.yaml', '.yml', '.js'].map((ext) => `.${PRODUCT_NAME}rc${ext}`)
-  .concat(`${PRODUCT_NAME}.config.js`);
 
 export async function loadOptions(cwd: string, options: BundlibOptions | string | null | undefined): Promise<BundlibOptions> {
 
   const manager = cosmiconfig(PRODUCT_NAME, {
-    searchPlaces,
+    searchPlaces: OPTION_FILE_PATHS,
   });
 
   if (options) {
