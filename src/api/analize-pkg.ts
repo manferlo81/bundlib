@@ -62,7 +62,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   // ensure there are not unknown bundlib options
   // throw otherwise
 
-  const invalidOptions = bundlibOptions && invalidKeys(bundlibOptions as Dictionary<unknown>, [
+  const invalidOptions = invalidKeys(bundlibOptions as Dictionary<unknown>, [
     'input',
     'extend',
     'esModule',
@@ -106,7 +106,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     browser: browserOptions,
     bin: binaryOptions,
     types: typesOptions,
-  } = bundlibOptions || {} as BundlibOptions;
+  } = bundlibOptions;
 
   // ensure "input" option is valid
   // throw otherwise
