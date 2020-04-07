@@ -6,7 +6,7 @@ import { PRODUCT_NAME } from './consts';
 import { isString } from './type-check';
 
 const searchPlaces = ['', '.json', '.yaml', '.yml', '.js'].map((ext) => `.${PRODUCT_NAME}rc${ext}`)
-  .concat('bundlib.config.js');
+  .concat(`${PRODUCT_NAME}.config.js`);
 
 export async function loadOptions(cwd: string, options: BundlibOptions | string | null | undefined): Promise<BundlibOptions | null | undefined> {
 

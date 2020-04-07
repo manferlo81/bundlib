@@ -56,7 +56,7 @@ For `IIFE`, `AMD` or `UMD` builds, add a `"browser"` field to your `package.json
 
 ### Automatic Configuration
 
-Bundlib will configure Rollup according to you `package.json` data, other advanced options can be set using `"bundlib"` field in your `package.json`, see [Advanced Configuration](#advanced-configuration) for more information.
+Bundlib will configure Rollup according to you `package.json` data, see [Advanced Configuration](#advanced-configuration) for more information.
 
 #### "main"
 
@@ -96,7 +96,16 @@ The `"bundlib"` field will be used for advanced configuration, see [Advanced Con
 
 ### Advanced Configuration
 
-Advanced configuration is done through the `"bundlib"` field in your `package.json`. Pass an `object` with the options or a `string` as a path relative to the project root pointing to a json file containing the options. See the [list of options](#options) below.
+Advanced configuration can be done using the `"bundlib"` field in your `package.json`. Pass an `object` with the options or a `string` as a path relative to the project root pointing to a `.json`, `.yaml`, `.yml` or `.js` file containing the options, if not present `Bundlib` will try to find it using the following order...
+
+* .bundlibrc (json or yaml format)
+* .bundlibrc.json
+* .bundlibrc.yaml
+* .bundlibrc.yml
+* .bundlibrc.js
+* bundlib.config.js
+
+See the [list of options](#options) below.
 
 ***example (as object)***
 
@@ -123,7 +132,7 @@ Advanced configuration is done through the `"bundlib"` field in your `package.js
   "name": "my-lib",
   "browser" : "dist/my-lib.amd.js",
   // ...
-  "bundlib": "bundlib.json"
+  "bundlib": "custom-options.json"
   // ...
 }
 ```
@@ -131,7 +140,7 @@ Advanced configuration is done through the `"bundlib"` field in your `package.js
 then...
 
 ```javascript
-// bundlib.json
+// custom-options.json
 {
   "format": "amd"
 }
