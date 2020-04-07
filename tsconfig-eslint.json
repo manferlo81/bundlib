@@ -1,6 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "include": [
+    "__mocks__/**/*.ts",
     "__test__/**/*.ts",
     "src/api/**/*.ts",
     "src/cli/**/*.ts",
