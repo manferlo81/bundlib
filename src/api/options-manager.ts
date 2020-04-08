@@ -5,7 +5,12 @@ import { BundlibOptions } from './bundlib-options';
 import { OPTION_FILE_PATHS, PRODUCT_NAME } from './consts';
 import { isString } from './type-check';
 
-export async function loadOptions(cwd: string, options: BundlibOptions | string | null | undefined): Promise<BundlibOptions> {
+interface LoadedOptions {
+  config: BundlibOptions;
+  filepath: string | null;
+}
+
+export async function loadOptions(cwd: string, optionsFromPkgJson: BundlibOptions | string | null | undefined): Promise<LoadedOptions> {
 
   const manager = cosmiconfig(PRODUCT_NAME, {
     stopDir: cwd,
@@ -13,20 +18,20 @@ export async function loadOptions(cwd: string, options: BundlibOptions | string 
     ignoreEmptySearchPlaces: false,
   });
 
-  if (options) {
+  if (optionsFromPkgJson) {
 
-    if (!isString(options)) {
-      return options;
+    if (!isString(optionsFromPkgJson)) {
+      return { config: optionsFromPkgJson, filepath: null };
     }
 
-    const filename = resolve(cwd, options);
+    const filename = resolve(cwd, optionsFromPkgJson);
     const data = await manager.load(filename);
 
     if (!data) {
-      throw new Error(`Unknown error loading ${slash(filename)}.`);
+      throw new Error(`Unknown error loading options from ${slash(filename)}.`);
     }
 
-    return data.config as BundlibOptions || {};
+    return data;
 
   }
 
@@ -36,6 +41,6 @@ export async function loadOptions(cwd: string, options: BundlibOptions | string 
     throw new Error('Unknown error loading options.');
   }
 
-  return data.config as BundlibOptions || {};
+  return data;
 
 }

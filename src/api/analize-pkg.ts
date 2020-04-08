@@ -50,14 +50,12 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     bundlib: pkgBundlibOptions,
   } = pkg;
 
-  // ensure "bundlib" field is null, undefined (or not present) or an object
-  // throw otherwise
+  const { config: bundlibOptions, filepath: optionsFilename } = await loadOptions(cwd, pkgBundlibOptions);
 
-  const bundlibOptions = await loadOptions(cwd, pkgBundlibOptions);
-
-  // if (!isOneOf<Nullable<BundlibOptions | string>>(pkgBundlibOptions, isDictionary, isString, isNull)) {
   if (!isDictionary(bundlibOptions)) {
-    throw invalidPkgField('bundlib', 'Object | string');
+    throw optionsFilename
+      ? error(`Invalid options found on file "${optionsFilename}".`)
+      : invalidPkgField('bundlib', 'Object | string');
   }
 
   // ensure there are not unknown bundlib options
