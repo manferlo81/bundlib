@@ -10,6 +10,7 @@ export async function loadOptions(cwd: string, options: BundlibOptions | string 
   const manager = cosmiconfig(PRODUCT_NAME, {
     stopDir: cwd,
     searchPlaces: OPTION_FILE_PATHS,
+    ignoreEmptySearchPlaces: false,
   });
 
   if (options) {
@@ -25,7 +26,7 @@ export async function loadOptions(cwd: string, options: BundlibOptions | string 
       throw new Error(`Unknown error loading ${slash(filename)}.`);
     }
 
-    return data.config || {} as BundlibOptions;
+    return data.config as BundlibOptions || {};
 
   }
 
@@ -35,6 +36,6 @@ export async function loadOptions(cwd: string, options: BundlibOptions | string 
     throw new Error('Unknown error loading options.');
   }
 
-  return data.config || {} as BundlibOptions;
+  return data.config as BundlibOptions || {};
 
 }
