@@ -3,6 +3,7 @@ import { resolve } from 'path';
 import slash from 'slash';
 import { BundlibOptions } from './bundlib-options';
 import { OPTION_FILE_PATHS, PRODUCT_NAME } from './consts';
+import { error } from './errors';
 import { isString } from './type-check';
 
 interface LoadedOptions {
@@ -28,7 +29,7 @@ export async function loadOptions(cwd: string, optionsFromPkgJson: BundlibOption
     const data = await manager.load(filename);
 
     if (!data) {
-      throw new Error(`Unknown error loading options from ${slash(filename)}.`);
+      throw error<Error>(`Unknown error loading options from ${slash(filename)}.`, Error);
     }
 
     return data;
@@ -38,7 +39,7 @@ export async function loadOptions(cwd: string, optionsFromPkgJson: BundlibOption
   const data = await manager.search();
 
   if (!data) {
-    throw new Error('Unknown error loading options.');
+    throw error<Error>('Unknown error loading options.', Error);
   }
 
   return data;

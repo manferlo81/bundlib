@@ -1,5 +1,5 @@
-export function error(msg: string): TypeError {
-  return new TypeError(msg);
+export function error<E extends Error = TypeError>(msg: string, ErrorType: ErrorConstructor = TypeError): E {
+  return new ErrorType(msg) as E;
 }
 
 export function invalidPkgField(field: string, type: string): TypeError {
