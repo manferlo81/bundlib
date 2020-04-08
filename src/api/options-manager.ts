@@ -8,6 +8,7 @@ import { isString } from './type-check';
 export async function loadOptions(cwd: string, options: BundlibOptions | string | null | undefined): Promise<BundlibOptions> {
 
   const manager = cosmiconfig(PRODUCT_NAME, {
+    stopDir: cwd,
     searchPlaces: OPTION_FILE_PATHS,
   });
 
