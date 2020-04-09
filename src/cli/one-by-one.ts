@@ -1,21 +1,24 @@
-type OneByOneNext = () => void;
-type OneByOneCallback<T> = (item: T, next: OneByOneNext | null) => unknown;
+type OneByOneNext = (error?: unknown) => void;
+type OneByOneCallback<T> = (item: T, next: OneByOneNext) => unknown;
 
-export function oneByOne<T>(arr: ArrayLike<T>, callback: OneByOneCallback<T>): void {
+export function oneByOne<T>(arr: ArrayLike<T>, callback: OneByOneCallback<T>, done: OneByOneNext): void {
 
   let index = 0;
   const len = arr.length;
-  const last = len - 1;
 
-  const next: OneByOneNext = () => {
+  const next: OneByOneNext = (error) => {
 
-    if (index > last) {
-      return;
+    if (error) {
+      return done(error);
+    }
+
+    if (index >= len) {
+      return done();
     }
 
     callback(
       arr[index],
-      (index < last) ? next : null,
+      next,
     );
 
     index++;
