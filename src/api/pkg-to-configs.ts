@@ -11,7 +11,7 @@ import { createIsExternal } from './is-external';
 import { createIsInstalled } from './is-installed';
 import { PkgAnalized } from './pkg-analized';
 import { createPluginLoader } from './plugin-loader';
-import { mapIdExternal as pluginMapIdExternal } from './plugins/api-plugin';
+import { apiPlugin as pluginAPI } from './plugins/api-plugin';
 import { renameMin, renamePre } from './rename';
 import { BundlibAPIOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types';
 import { extensionMatch } from './validate/ext-match';
@@ -176,7 +176,7 @@ export function pkgToConfigs(
         sourcemap: sourcemapBool,
       }),
 
-      bin && cjsOutput && outputFile && pluginMapIdExternal(
+      bin && cjsOutput && outputFile && pluginAPI(
         cwd,
         dirname(outputFile),
         setProp(apiInput, cwd, {}),

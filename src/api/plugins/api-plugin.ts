@@ -1,43 +1,41 @@
 import { dirname, join as pathJoin, relative, resolve } from 'path';
 import { Plugin } from 'rollup';
 import slash from 'slash';
+import { error } from '../errors';
 import { Dictionary } from '../helper-types';
 import { keys, setProp } from '../helpers';
 
-export function mapIdExternal(cwd: string, outputDir: string, map: Dictionary<string>): Plugin {
+export function apiPlugin(cwd: string, outputDir: string, map: Dictionary<string>): Plugin {
 
-  const normalizedMap = keys(map).reduce<Dictionary<string>>(
-    (result, source) => setProp(
-      slash(resolve(cwd, source)),
+  const resolvedMap = keys(map).reduce<Dictionary<string>>((resolvedMap, source) => {
+    return setProp(
+      resolve(cwd, source),
       resolve(cwd, map[source]),
-      result,
-    ),
-    {},
-  );
+      resolvedMap,
+    );
+  }, {});
 
   // TODO: Fix extensions
   const extensions = ['.ts', '.js'];
 
   function findTarget(resolved: string): string | void {
 
-    const slashed = slash(resolved);
-
-    if (normalizedMap[slashed]) {
-      return normalizedMap[slashed];
+    if (resolvedMap[resolved]) {
+      return resolvedMap[resolved];
     }
 
     for (let i = 0; i < extensions.length; i++) {
 
       const ext = extensions[i];
 
-      const sourceWithExt = slashed + ext;
-      if (normalizedMap[sourceWithExt]) {
-        return normalizedMap[sourceWithExt];
+      const sourceWithExt = resolved + ext;
+      if (resolvedMap[sourceWithExt]) {
+        return resolvedMap[sourceWithExt];
       }
 
-      const sourceWithIndex = slash(pathJoin(resolved, `index${ext}`));
-      if (normalizedMap[sourceWithIndex]) {
-        return normalizedMap[sourceWithIndex];
+      const sourceWithIndex = pathJoin(resolved, `index${ext}`);
+      if (resolvedMap[sourceWithIndex]) {
+        return resolvedMap[sourceWithIndex];
       }
 
     }
@@ -54,28 +52,30 @@ export function mapIdExternal(cwd: string, outputDir: string, map: Dictionary<st
         return null;
       }
 
-      const resolved = pathJoin(
-        dirname(from),
-        moduleId,
+      const target = findTarget(
+        pathJoin(
+          dirname(from),
+          moduleId,
+        ),
       );
-
-      const target = findTarget(resolved);
 
       if (!target) {
         return null;
       }
 
-      const relativeTarget = relative(
-        outputDir,
-        target,
+      const relativeTarget = slash(
+        relative(
+          outputDir,
+          target,
+        ),
       );
 
-      const id = !relativeTarget
-        ? '.'
-        : slash(relativeTarget.startsWith('.') ? relativeTarget : `./${relativeTarget}`);
+      if (!relativeTarget) {
+        throw error(`Error while resolving ${moduleId} from ${from}`, Error);
+      }
 
       return {
-        id,
+        id: relativeTarget.startsWith('.') ? relativeTarget : `./${relativeTarget}`,
         external: true,
         moduleSideEffects: false,
       };
