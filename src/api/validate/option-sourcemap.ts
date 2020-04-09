@@ -1,4 +1,4 @@
-import { SourceMapOptions } from '../bundlib-options';
+import { WithSourcemapOption } from '../bundlib-options';
 import { Nullable } from '../helper-types';
 import { isNull } from '../type-check';
 import { RollupSourcemap } from '../types';
@@ -8,7 +8,7 @@ export function normalizeSourcemap(sourcemap: unknown): RollupSourcemap {
 }
 
 export function normalizeBuildSourcemap(
-  build: Nullable<SourceMapOptions>,
+  build: Nullable<WithSourcemapOption>,
   def: RollupSourcemap,
 ): RollupSourcemap {
   return !build || isNull(build.sourcemap)

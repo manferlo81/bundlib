@@ -1,4 +1,4 @@
-import { BuildType, MinOption, PerBuildMinOptions } from '../bundlib-options';
+import { BuildType, MinOption, WithMinOption } from '../bundlib-options';
 import { Nullable } from '../helper-types';
 import { keysToObject, setProp } from '../helpers';
 import { isArray, isBool, isNull } from '../type-check';
@@ -29,7 +29,7 @@ export function normalizeMinOption(min: MinOption): MinGlobal {
 }
 
 export function normalizeBuildMin(
-  build: Nullable<PerBuildMinOptions>,
+  build: Nullable<WithMinOption>,
   field: BuildType,
   def: MinGlobal,
 ): boolean {

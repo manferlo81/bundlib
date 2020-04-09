@@ -1,4 +1,4 @@
-import { ModuleOption, ModuleString, PerBuildModuleOptions } from '../bundlib-options';
+import { ModuleOption, ModuleString, WithModuleOptions } from '../bundlib-options';
 import { Nullable } from '../helper-types';
 import { keysToObject, setProp } from '../helpers';
 import { isArray, isBool, isNull } from '../type-check';
@@ -27,8 +27,8 @@ export function normalizeModuleOption(option: ModuleOption): ModuleGlobal {
 }
 
 export function normalizeBuildModule(
-  build: Nullable<PerBuildModuleOptions>,
-  key: keyof PerBuildModuleOptions,
+  build: Nullable<WithModuleOptions>,
+  key: keyof WithModuleOptions,
   field: ModuleString,
   def: ModuleGlobal,
 ): boolean {
