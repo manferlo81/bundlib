@@ -40,20 +40,48 @@ export interface BrowserOptions {
   globals?: GlobalsOptions;
 }
 
-export interface CommonJSBuildOptions extends
-  WithSourcemapOption, WithModuleOptions, WithMinOption {
+export interface CommonJSBuildOptions {
+  sourcemap?: Nullable<RollupSourcemap>;
+  esModule?: Nullable<boolean>;
+  interop?: Nullable<boolean>;
+  min?: Nullable<boolean>;
 }
 
-export interface ESModuleBuildOptions extends
-  WithSourcemapOption, WithMinOption {
+export interface ESModuleBuildOptions {
+  sourcemap?: Nullable<RollupSourcemap>;
+  min?: Nullable<boolean>;
 }
 
-export interface BrowserBuildOptions extends
-  WithSourcemapOption, WithModuleOptions, WithMinOption, BrowserOptions {
+export interface BrowserBuildOptions {
+  sourcemap?: Nullable<RollupSourcemap>;
+  esModule?: Nullable<boolean>;
+  interop?: Nullable<boolean>;
+  min?: Nullable<boolean>;
+  format?: Nullable<BrowserBuildFormat>;
+  name?: Nullable<string>;
+  id?: Nullable<string>;
+  extend?: Nullable<boolean>;
+  globals?: GlobalsOptions;
 }
 
-export interface BundlibOptions extends
-  WithSourcemapOption, TypesOptions, BrowserOptions {
+type SelectiveObjOption<K extends string, T> =
+  | Partial<Record<K | 'default', Nullable<T>>>
+  | T;
+
+type SelectiveOption<K extends string, T> =
+  | SelectiveObjOption<K, T>
+  | K
+  | K[];
+
+export type SelectiveSourcemap = SelectiveOption<BuildType | 'api', RollupSourcemap>;
+export type SelectiveNonModuleOption = SelectiveOption<ModuleString | 'api', boolean>;
+export type SelectiveMin = SelectiveOption<BuildType | 'api', boolean>;
+export type SelectiveProjectOption = SelectiveObjOption<BuildType | 'api', string>;
+export type SelectiveSkipOption = SelectiveOption<BuildType | 'api', boolean>;
+
+export interface BundlibOptions {
+
+  sourcemap?: Nullable<RollupSourcemap>;
 
   input?: Nullable<InputOptions | string>;
   esModule?: ModuleOption;
@@ -61,6 +89,14 @@ export interface BundlibOptions extends
   min?: MinOption;
   cache?: Nullable<string>;
   project?: Nullable<string>;
+
+  format?: Nullable<BrowserBuildFormat>;
+  name?: Nullable<string>;
+  id?: Nullable<string>;
+  extend?: Nullable<boolean>;
+  globals?: GlobalsOptions;
+
+  equals?: Nullable<boolean>;
 
   main?: Nullable<CommonJSBuildOptions | false>;
   module?: Nullable<ESModuleBuildOptions | false>;
