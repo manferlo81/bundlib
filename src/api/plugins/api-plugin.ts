@@ -64,7 +64,7 @@ export function mapIdExternal(cwd: string, outputDir: string, map: Dictionary<st
       );
 
       if (process.env.CI) {
-        console.log('resolved', resolve);
+        console.log('resolved', resolved);
         console.log('resolved (slash)', slash(resolved));
       }
 
