@@ -1,7 +1,7 @@
 import { statSync } from 'fs';
 import { rollup, RollupCache, RollupError } from 'rollup';
 import { BundlibRollupModuleOutputOptions, BundlibRollupOptions } from '../api/types';
-import { BUILD_END, BUILD_START, END, ERROR, START } from './events';
+import { BUILD_END, END, ERROR } from './events';
 import { oneByOne } from './one-by-one';
 import { BundlibEventEmitter } from './types';
 
@@ -9,8 +9,6 @@ export function build(
   configs: Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>,
   emitter: BundlibEventEmitter,
 ): void {
-
-  emitter.emit(START);
 
   const cache: Partial<Record<string, RollupCache>> = {};
 
@@ -23,8 +21,6 @@ export function build(
 
       const cacheKey = `${format}:${input}`;
       config.cache = cache[cacheKey];
-
-      emitter.emit(BUILD_START, outputFile);
 
       try {
 

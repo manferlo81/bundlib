@@ -1,7 +1,5 @@
-export const START = 'start';
-export const END = 'end';
-export const BUILD_START = 'build-start';
-export const BUILD_END = 'build-end';
-export const REBUILD = 'rebuild';
-export const WARN = 'warn';
-export const ERROR = 'error';
+export const END: 'end' = 'end';
+export const BUILD_END: 'build-end' = 'build-end';
+export const REBUILD: 'rebuild' = 'rebuild';
+export const WARN: 'warn' = 'warn';
+export const ERROR: 'error' = 'error';
