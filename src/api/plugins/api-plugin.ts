@@ -15,6 +15,10 @@ export function mapIdExternal(cwd: string, outputDir: string, map: Dictionary<st
     {},
   );
 
+  if (process.env.CI) {
+    console.log('map', normalizedMap);
+  }
+
   // TODO: Fix extensions
   const extensions = ['.ts', '.js'];
 
@@ -58,6 +62,11 @@ export function mapIdExternal(cwd: string, outputDir: string, map: Dictionary<st
         dirname(from),
         moduleId,
       );
+
+      if (process.env.CI) {
+        console.log('resolved', resolve);
+        console.log('resolved (slash)', slash(resolved));
+      }
 
       const target = findTarget(resolved);
 
