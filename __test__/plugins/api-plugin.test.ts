@@ -13,19 +13,19 @@ describe('API Plugin', () => {
     'src/itself/index.ts': 'out',
   }) as Required<Plugin>;
 
-  test('Should throw if import itself', () => {
+  test('Should return null if module import itself and let rollup deal with it', () => {
 
-    expect(() => resolveId.call(
+    expect(resolveId.call(
       null as never,
       './index',
       `${cwd}/src/itself/index.ts`,
-    )).toThrow();
+    )).toBeNull();
 
-    expect(() => resolveId.call(
+    expect(resolveId.call(
       null as never,
       '.',
       `${cwd}/src/itself/index.ts`,
-    )).toThrow();
+    )).toBeNull();
 
   });
 

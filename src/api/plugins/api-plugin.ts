@@ -1,7 +1,6 @@
-import { dirname, join as pathJoin, relative, resolve } from 'path';
+import { dirname, join, relative, resolve } from 'path';
 import { Plugin } from 'rollup';
 import slash from 'slash';
-import { error } from '../errors';
 import { Dictionary } from '../helper-types';
 import { keys, setProp } from '../helpers';
 
@@ -10,7 +9,12 @@ export function apiPlugin(cwd: string, outputDir: string, map: Dictionary<string
   const resolvedMap = keys(map).reduce<Dictionary<string>>((resolvedMap, source) => {
     return setProp(
       resolve(cwd, source),
-      resolve(cwd, map[source]),
+      slash(
+        relative(
+          outputDir,
+          resolve(cwd, map[source]),
+        ),
+      ),
       resolvedMap,
     );
   }, {});
@@ -33,7 +37,7 @@ export function apiPlugin(cwd: string, outputDir: string, map: Dictionary<string
         return resolvedMap[sourceWithExt];
       }
 
-      const sourceWithIndex = pathJoin(resolved, `index${ext}`);
+      const sourceWithIndex = join(resolved, `index${ext}`);
       if (resolvedMap[sourceWithIndex]) {
         return resolvedMap[sourceWithIndex];
       }
@@ -53,7 +57,7 @@ export function apiPlugin(cwd: string, outputDir: string, map: Dictionary<string
       }
 
       const target = findTarget(
-        pathJoin(
+        join(
           dirname(from),
           moduleId,
         ),
@@ -63,19 +67,8 @@ export function apiPlugin(cwd: string, outputDir: string, map: Dictionary<string
         return null;
       }
 
-      const relativeTarget = slash(
-        relative(
-          outputDir,
-          target,
-        ),
-      );
-
-      if (!relativeTarget) {
-        throw error(`Error while resolving ${moduleId} from ${from}`, Error);
-      }
-
       return {
-        id: relativeTarget.startsWith('.') ? relativeTarget : `./${relativeTarget}`,
+        id: target.startsWith('.') ? target : `./${target}`,
         external: true,
         moduleSideEffects: false,
       };
