@@ -1,6 +1,6 @@
-import { BundlibOptions } from './bundlib-options';
+import { BundlibOptions, TypesOptions } from './bundlib-options';
 import { error, invalidOption, invalidPkgField } from './errors';
-import { StrictNullable } from './helper-types';
+import { Dictionary, StrictNullable } from './helper-types';
 import { keys } from './helpers';
 import { loadOptions } from './options-manager';
 import { BundlibPkgJson } from './pkg';
@@ -31,7 +31,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   // ensure the content of package.json is an object
   // throw otherwise
 
-  if (!isDictionary(pkg)) {
+  if (!isDictionary<BundlibPkgJson>(pkg)) {
     throw error('Invalid package.json content');
   }
 
@@ -52,7 +52,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   const { config: bundlibOptions, filepath: optionsFilename } = await loadOptions(cwd, pkgBundlibOptions);
 
-  if (!isDictionary(bundlibOptions)) {
+  if (!isDictionary<BundlibOptions>(bundlibOptions)) {
     throw optionsFilename
       ? error(`Invalid options found on file "${optionsFilename}".`)
       : invalidPkgField('bundlib', 'Object | string');
@@ -61,7 +61,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   // ensure there are not unknown bundlib options
   // throw otherwise
 
-  const invalidOptions = invalidKeys(bundlibOptions, [
+  const invalidOptions = invalidKeys(bundlibOptions as never, [
     'input',
     'extend',
     'esModule',
@@ -112,7 +112,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (
     !isStringOrNull(inputOption) && !(
-      isDictionary<string>(inputOption) && keysInList(inputOption, isInOpKey) && keys(inputOption).every((key) => (
+      isDictionary<InputOptions>(inputOption) && keysInList(inputOption, isInOpKey) && keys(inputOption).every((key) => (
         isString(inputOption[key])
       ))
     )
@@ -208,7 +208,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (
     !isNull(mainOptions) && (mainOptions !== false) && !(
-      isDictionary<string>(mainOptions) &&
+      isDictionary<CommonJSBuildOptions>(mainOptions) &&
       keysInList(mainOptions, isCJSOptionKey)
     )
   ) {
@@ -224,7 +224,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (
     !isNull(moduleOptions) && (moduleOptions !== false) && !(
-      isDictionary<never>(moduleOptions) &&
+      isDictionary<ESModuleBuildOptions>(moduleOptions) &&
       keysInList(moduleOptions, isModuleOptionKey)
     )
   ) {
@@ -240,7 +240,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (
     !isNull(browserOptions) && (browserOptions !== false) && !(
-      isDictionary<never>(browserOptions) &&
+      isDictionary<BrowserBuildOptions>(browserOptions) &&
       keysInList(browserOptions, isBrowserOption) &&
       isBrowserFormat(browserOptions.format) &&
       (['name', 'id'] as Array<keyof typeof browserOptions>).every((key) => (
@@ -261,7 +261,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (
     !isNull(binaryOptions) && (binaryOptions !== false) && !(
-      isDictionary<never>(binaryOptions) &&
+      isDictionary<CommonJSBuildOptions>(binaryOptions) &&
       keysInList(binaryOptions, isCJSOptionKey)
     )
   ) {
@@ -277,7 +277,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (
     !isNull(typesOptions) && (typesOptions !== false) && !(
-      isDictionary<never>(typesOptions) &&
+      isDictionary<TypesOptions>(typesOptions) &&
       keysInList(typesOptions, isTypesOptionKey)
     )
   ) {
@@ -322,14 +322,14 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   // ensure "dependencies" field is valid
   // throw otherwise
 
-  if (!isDictionaryOrNull(runtimeDependencies)) {
+  if (!isDictionaryOrNull<Dictionary<string>>(runtimeDependencies)) {
     throw invalidPkgField('dependencies', 'Object');
   }
 
   // ensure "peerDependencies" field is valid
   // throw otherwise
 
-  if (!isDictionaryOrNull(peerDependencies)) {
+  if (!isDictionaryOrNull<Dictionary<string>>(peerDependencies)) {
     throw invalidPkgField('peerDependencies', 'Object');
   }
 
@@ -388,7 +388,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   // set Browser build output options
 
   const browserOutput: StrictNullable<BrowserBuildOptions> = (browserOptions === false || !pkgBrowser) ? null : {
-    path: pkgBrowser as string,
+    path: pkgBrowser,
     sourcemap: normalizeBuildSourcemap(
       browserOptions,
       topLevelSourcemap,
@@ -414,7 +414,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   // set Binary build output options
 
   const binaryOutput: StrictNullable<CommonJSBuildOptions> = (binaryOptions === false || !pkgBin) ? null : {
-    path: pkgBin as string,
+    path: pkgBin,
     sourcemap: normalizeBuildSourcemap(
       binaryOptions,
       topLevelSourcemap,

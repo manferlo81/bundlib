@@ -19,7 +19,8 @@ export function isBool(value: unknown): value is boolean {
 // eslint-disable-next-line @typescript-eslint/unbound-method
 export const isArray: <T = unknown>(value: unknown) => value is T[] = Array.isArray;
 
-export function isDictionary<T = unknown>(value: unknown): value is Dictionary<T> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function isDictionary<T extends Dictionary<any> = Dictionary<unknown>>(value: unknown): value is T {
   return isObject(value) && !isArray(value);
 }
 
@@ -37,8 +38,10 @@ export function isOneOf(value: unknown): boolean {
 }
 
 export const isStringOrNull = (value: unknown): value is Nullable<string> => isOneOf(value, isString, isNull);
-export const isDictionaryOrNull = <T = unknown>(value: unknown): value is Nullable<Dictionary<T>> => isOneOf(
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const isDictionaryOrNull = <T extends Dictionary<any> = Dictionary<unknown>>(value: unknown): value is Nullable<T> => isOneOf(
   value,
-  isDictionary as TypeCheckFunction<Dictionary<T>>,
+  isDictionary as TypeCheckFunction<T>,
   isNull,
 );

@@ -1,11 +1,19 @@
-import { PackageJson } from 'type-fest';
 import { BundlibOptions } from './bundlib-options';
+import { Dictionary } from './helper-types';
 
-interface ImprovedPackageJson extends PackageJson {
+export interface BundlibPkgJson {
+  name?: string;
   displayName?: string;
+  version?: string;
+  main?: string;
+  module?: string;
+  browser?: string;
+  bin?: string;
+  types?: string;
+  typings?: string;
+  dependencies?: Dictionary<string>;
+  devDependencies?: Dictionary<string>;
+  peerDependencies?: Dictionary<string>;
   'jsnext:main'?: string;
-}
-
-export interface BundlibPkgJson extends ImprovedPackageJson {
   bundlib?: BundlibOptions | string;
 }
