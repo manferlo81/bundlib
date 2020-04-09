@@ -1,6 +1,6 @@
 import { TypesOptions } from '../bundlib-options';
-import { createInList } from './in-list';
+import { createOneOf } from '../type-check/one-of';
 
-export const isTypesOptionKey = createInList<keyof TypesOptions>(
+export const isTypesOptionKey = createOneOf<keyof TypesOptions>(
   'equals',
 );

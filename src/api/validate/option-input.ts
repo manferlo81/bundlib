@@ -1,4 +1,4 @@
 import { InputOptions } from '../bundlib-options';
-import { createInList } from './in-list';
+import { createOneOf } from '../type-check/one-of';
 
-export const isInOpKey = createInList<keyof InputOptions>('api', 'bin');
+export const isInOpKey = createOneOf<keyof InputOptions>('api', 'bin');

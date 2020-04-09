@@ -1,13 +1,13 @@
 import { BuildType, MinOption, WithMinOption } from '../bundlib-options';
 import { Nullable } from '../helper-types';
 import { keysToObject, setProp } from '../helpers';
-import { isArray, isBool, isNull } from '../type-check';
-import { createInList } from './in-list';
+import { isArray, isBool, isNull } from '../type-check/type-check';
+import { createOneOf } from '../type-check/one-of';
 import { isModuleString } from './option-esmodule';
 
 export type MinGlobal = Record<BuildType, boolean>;
 
-export const isMinString = createInList<BuildType>(
+export const isMinString = createOneOf<BuildType>(
   isModuleString,
   'module',
 );

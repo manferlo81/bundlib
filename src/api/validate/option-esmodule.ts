@@ -1,12 +1,12 @@
 import { ModuleOption, ModuleString, WithModuleOptions } from '../bundlib-options';
 import { Nullable } from '../helper-types';
 import { keysToObject, setProp } from '../helpers';
-import { isArray, isBool, isNull } from '../type-check';
-import { createInList } from './in-list';
+import { isArray, isBool, isNull } from '../type-check/type-check';
+import { createOneOf } from '../type-check/one-of';
 
 export type ModuleGlobal = Record<ModuleString, boolean>;
 
-export const isModuleString = createInList<ModuleString>(
+export const isModuleString = createOneOf<ModuleString>(
   'main',
   'browser',
   'bin',

@@ -1,4 +1,5 @@
-import { Dictionary, Nullable, TypeCheckFunction } from './helper-types';
+import { Dictionary, Nullable } from '../helper-types';
+import { createOneOf } from './one-of';
 
 export function isNull(value: unknown): value is (null | undefined) {
   return value == null;
@@ -24,24 +25,7 @@ export function isDictionary<T extends Dictionary<any> = Dictionary<unknown>>(va
   return isObject(value) && !isArray(value);
 }
 
-export function isOneOf<T>(value: unknown, ...checks: Array<TypeCheckFunction<T>>): value is T;
-export function isOneOf(value: unknown): boolean {
-  // eslint-disable-next-line prefer-rest-params
-  const args = arguments;
-  const { length } = args;
-  for (let i = 1; i < length; i++) {
-    if (args[i](value)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-export const isStringOrNull = (value: unknown): value is Nullable<string> => isOneOf(value, isString, isNull);
+export const isStringOrNull = createOneOf<Nullable<string>>(isNull, isString);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const isDictionaryOrNull = <T extends Dictionary<any> = Dictionary<unknown>>(value: unknown): value is Nullable<T> => isOneOf(
-  value,
-  isDictionary as TypeCheckFunction<T>,
-  isNull,
-);
+export const isDictionaryOrNull = createOneOf<Nullable<Dictionary<any>>>(isNull, isDictionary);

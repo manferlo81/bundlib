@@ -1,8 +1,8 @@
 import { CommonJSBuildOptions } from '../bundlib-options';
-import { createInList } from './in-list';
+import { createOneOf } from '../type-check/one-of';
 import { isModuleOptionKey } from './option-module';
 
-export const isCJSOptionKey = createInList<keyof CommonJSBuildOptions>(
+export const isCJSOptionKey = createOneOf<keyof CommonJSBuildOptions>(
   isModuleOptionKey,
   'esModule',
   'interop',

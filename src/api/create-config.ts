@@ -1,7 +1,7 @@
 import { ChokidarOptions, IsExternal, Plugin, WarningHandlerWithDefault, WatcherOptions as RollupWatcherOptions } from 'rollup';
 import { Dictionary, Nullable } from './helper-types';
 import { BrowserBuildFormat, BundlibRollupBrowseOutputOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, ModuleBuildFormat, RollupSourcemap } from './types';
-import { createInList } from './validate/in-list';
+import { createOneOf } from './type-check/one-of';
 
 export function createConfig<OutputOptions extends BundlibRollupModuleOutputOptions>(
   input: string,
@@ -58,7 +58,7 @@ export function createModuleConfig(
   );
 }
 
-const requiresId = createInList('amd', 'umd');
+const requiresId = createOneOf('amd', 'umd');
 
 export function createBrowserConfig(
   input: string,

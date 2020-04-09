@@ -6,7 +6,7 @@ import { loadOptions } from './options-manager';
 import { BundlibPkgJson } from './pkg';
 import { BrowserBuildOptions, CommonJSBuildOptions, Dependencies, ESModuleBuildOptions, InputOptions, OutputOptions, PkgAnalized, TypesBuildOptions } from './pkg-analized';
 import { readPkg } from './read-pkg';
-import { isBool, isDictionary, isDictionaryOrNull, isNull, isString, isStringOrNull } from './type-check';
+import { isBool, isDictionary, isDictionaryOrNull, isNull, isString, isStringOrNull } from './type-check/type-check';
 import { isBrowserOption } from './validate/option-browser';
 import { isModuleOption, normalizeBuildModule, normalizeModuleOption } from './validate/option-esmodule';
 import { normalizeBuildFlag } from './validate/option-flag';
