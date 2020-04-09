@@ -6,13 +6,43 @@ import { keys, setProp } from '../helpers';
 
 export function mapIdExternal(cwd: string, outputDir: string, map: Dictionary<string>): Plugin {
 
-  const normalizedMap = keys(map).reduce<Dictionary<string>>((result, source) => (
-    setProp(
+  const normalizedMap = keys(map).reduce<Dictionary<string>>(
+    (result, source) => setProp(
       slash(resolve(cwd, source)),
       resolve(cwd, map[source]),
       result,
-    )
-  ), {});
+    ),
+    {},
+  );
+
+  // TODO: Fix extensions
+  const extensions = ['.ts', '.js'];
+
+  function findTarget(resolved: string): string | void {
+
+    const slashed = slash(resolved);
+
+    if (normalizedMap[slashed]) {
+      return normalizedMap[slashed];
+    }
+
+    for (let i = 0; i < extensions.length; i++) {
+
+      const ext = extensions[i];
+
+      const sourceWithExt = slashed + ext;
+      if (normalizedMap[sourceWithExt]) {
+        return normalizedMap[sourceWithExt];
+      }
+
+      const sourceWithIndex = slash(pathJoin(resolved, `index${ext}`));
+      if (normalizedMap[sourceWithIndex]) {
+        return normalizedMap[sourceWithIndex];
+      }
+
+    }
+
+  }
 
   return {
 
@@ -20,11 +50,16 @@ export function mapIdExternal(cwd: string, outputDir: string, map: Dictionary<st
 
     resolveId(moduleId, from) {
 
-      const resolved = !from ? moduleId : pathJoin(dirname(from), moduleId);
+      if (!from) {
+        return null;
+      }
 
-      const target = normalizedMap[slash(resolved)]
-        || normalizedMap[slash(resolved + '.ts')]
-        || normalizedMap[slash(pathJoin(resolved, 'index.ts'))];
+      const resolved = pathJoin(
+        dirname(from),
+        moduleId,
+      );
+
+      const target = findTarget(resolved);
 
       if (!target) {
         return null;
@@ -35,14 +70,12 @@ export function mapIdExternal(cwd: string, outputDir: string, map: Dictionary<st
         target,
       );
 
+      const id = !relativeTarget
+        ? '.'
+        : slash(relativeTarget.startsWith('.') ? relativeTarget : `./${relativeTarget}`);
+
       return {
-        id: (
-          !relativeTarget
-            ? '.'
-            : relativeTarget.startsWith('.')
-              ? relativeTarget
-              : pathJoin('.', relativeTarget)
-        ),
+        id,
         external: true,
         moduleSideEffects: false,
       };
