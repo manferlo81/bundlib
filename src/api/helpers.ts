@@ -19,9 +19,11 @@ export function setProp<V>(name: string, value: V, target: Dictionary<V>): Dicti
   return target;
 }
 
-export function keysToObject<K extends string, V>(keys: K[], value: V): Record<K, V> {
+export function keysToObject<K extends string, V>(keys: K[], value: V): Record<K, V>;
+export function keysToObject<K extends string, V, R extends Record<K, V>>(keys: K[], value: V, result: R): R;
+export function keysToObject<K extends string, V, R extends Record<K, V>>(keys: K[], value: V, result?: R): Record<K, V> {
   return keys.reduce(
     (result, key) => setProp(key, value, result),
-    {} as Record<K, V>,
+    result || {} as Record<K, V>,
   );
 }

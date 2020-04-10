@@ -1,7 +1,8 @@
 import { IsExternal, OutputOptions as RollupOutputOptions, Plugin, RollupOptions, WarningHandlerWithDefault, WatcherOptions as RollupWatcherOptions } from 'rollup';
 import { Dictionary } from './helper-types';
 
-export type RollupSourcemap = boolean | 'inline' | 'hidden';
+export type RollupSourcemapString = 'inline' | 'hidden';
+export type RollupSourcemap = boolean | RollupSourcemapString;
 
 export type ModuleBuildFormat = 'cjs' | 'es';
 export type BrowserBuildFormat = 'iife' | 'amd' | 'umd';

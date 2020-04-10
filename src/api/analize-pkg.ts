@@ -3,10 +3,11 @@ import { error, invalidOption, invalidPkgField } from './errors';
 import { Dictionary, StrictNullable } from './helper-types';
 import { keys } from './helpers';
 import { loadOptions } from './options-manager';
+import { normalizeBuildSourcemap2, resolveSelectiveSourcemapOption } from './options/sourcemap';
 import { BundlibPkgJson } from './pkg';
 import { BrowserBuildOptions, CommonJSBuildOptions, Dependencies, ESModuleBuildOptions, InputOptions, OutputOptions, PkgAnalized, TypesBuildOptions } from './pkg-analized';
 import { readPkg } from './read-pkg';
-import { isBool, isDictionary, isDictionaryOrNull, isNull, isString, isStringOrNull } from './type-check/type-check';
+import { isDictionary, isDictionaryOrNull, isNull, isString, isStringOrNull } from './type-check/type-check';
 import { isBrowserOption } from './validate/option-browser';
 import { isModuleOption, normalizeBuildModule, normalizeModuleOption } from './validate/option-esmodule';
 import { normalizeBuildFlag } from './validate/option-flag';
@@ -17,9 +18,8 @@ import { isCJSOptionKey } from './validate/option-main';
 import { isValidMinOption, normalizeBuildMin, normalizeMinOption } from './validate/option-min';
 import { isModuleOptionKey } from './validate/option-module';
 import { normalizeBuildName } from './validate/option-name';
-import { normalizeBuildSourcemap, normalizeSourcemap } from './validate/option-sourcemap';
 import { isTypesOptionKey } from './validate/option-types';
-import { invalidKeys, keysInList } from './validate/validate-keys';
+import { invalidKeys, keysCheck } from './validate/validate-keys';
 
 async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalized>;
 async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAnalized> {
@@ -112,7 +112,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   if (
     !isStringOrNull(inputOption) && !(
-      isDictionary<InputOptions>(inputOption) && keysInList(inputOption, isInOpKey) && keys(inputOption).every((key) => (
+      isDictionary<InputOptions>(inputOption) && keysCheck(inputOption, isInOpKey) && keys(inputOption).every((key) => (
         isString(inputOption[key])
       ))
     )
@@ -120,12 +120,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     throw invalidOption('input', 'string | { api?: string, bin?: string }');
   }
 
-  // ensure "sourcemap" option is valid
-  // throw otherwise
-
-  if (!isNull(sourcemapOption) && !isBool(sourcemapOption) && sourcemapOption !== 'inline' && sourcemapOption !== 'hidden') {
-    throw invalidOption('sourcemap', 'boolean | "inline"');
-  }
+  const topLeverSourcemap = resolveSelectiveSourcemapOption(sourcemapOption);
 
   // ensure "esModule" option is valid
   // throw otherwise
@@ -209,7 +204,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   if (
     !isNull(mainOptions) && (mainOptions !== false) && !(
       isDictionary<CommonJSBuildOptions>(mainOptions) &&
-      keysInList(mainOptions, isCJSOptionKey)
+      keysCheck(mainOptions, isCJSOptionKey)
     )
   ) {
     throw invalidOption(
@@ -225,7 +220,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   if (
     !isNull(moduleOptions) && (moduleOptions !== false) && !(
       isDictionary<ESModuleBuildOptions>(moduleOptions) &&
-      keysInList(moduleOptions, isModuleOptionKey)
+      keysCheck(moduleOptions, isModuleOptionKey)
     )
   ) {
     throw invalidOption(
@@ -241,7 +236,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   if (
     !isNull(browserOptions) && (browserOptions !== false) && !(
       isDictionary<BrowserBuildOptions>(browserOptions) &&
-      keysInList(browserOptions, isBrowserOption) &&
+      keysCheck(browserOptions, isBrowserOption) &&
       isBrowserFormat(browserOptions.format) &&
       (['name', 'id'] as Array<keyof typeof browserOptions>).every((key) => (
         isStringOrNull(browserOptions[key])
@@ -262,7 +257,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   if (
     !isNull(binaryOptions) && (binaryOptions !== false) && !(
       isDictionary<CommonJSBuildOptions>(binaryOptions) &&
-      keysInList(binaryOptions, isCJSOptionKey)
+      keysCheck(binaryOptions, isCJSOptionKey)
     )
   ) {
     throw invalidOption(
@@ -278,7 +273,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   if (
     !isNull(typesOptions) && (typesOptions !== false) && !(
       isDictionary<TypesOptions>(typesOptions) &&
-      keysInList(typesOptions, isTypesOptionKey)
+      keysCheck(typesOptions, isTypesOptionKey)
     )
   ) {
     throw invalidOption('types', 'false | { equals?: boolean }');
@@ -356,7 +351,6 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   // normalize global options
 
-  const topLevelSourcemap = normalizeSourcemap(sourcemapOption);
   const topLevelESModule = normalizeModuleOption(esModule);
   const topLevelInterop = normalizeModuleOption(interop);
   const topLevelMin = normalizeMinOption(min);
@@ -365,9 +359,9 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   const mainOutput: StrictNullable<CommonJSBuildOptions> = (mainOptions === false || !pkgMain) ? null : {
     path: pkgMain,
-    sourcemap: normalizeBuildSourcemap(
+    sourcemap: normalizeBuildSourcemap2(
       mainOptions,
-      topLevelSourcemap,
+      topLeverSourcemap.main,
     ),
     esModule: normalizeBuildModule(mainOptions, 'esModule', 'main', topLevelESModule),
     interop: normalizeBuildModule(mainOptions, 'interop', 'main', topLevelInterop),
@@ -378,9 +372,9 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   const moduleOutput: StrictNullable<ESModuleBuildOptions> = (moduleOptions === false || !esModuleFile) ? null : {
     path: esModuleFile,
-    sourcemap: normalizeBuildSourcemap(
+    sourcemap: normalizeBuildSourcemap2(
       moduleOptions,
-      topLevelSourcemap,
+      topLeverSourcemap.module,
     ),
     min: normalizeBuildMin(moduleOptions, 'module', topLevelMin),
   };
@@ -389,9 +383,9 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   const browserOutput: StrictNullable<BrowserBuildOptions> = (browserOptions === false || !pkgBrowser) ? null : {
     path: pkgBrowser,
-    sourcemap: normalizeBuildSourcemap(
+    sourcemap: normalizeBuildSourcemap2(
       browserOptions,
-      topLevelSourcemap,
+      topLeverSourcemap.browser,
     ),
     esModule: normalizeBuildModule(browserOptions, 'esModule', 'browser', topLevelESModule),
     interop: normalizeBuildModule(browserOptions, 'interop', 'browser', topLevelInterop),
@@ -415,9 +409,9 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   const binaryOutput: StrictNullable<CommonJSBuildOptions> = (binaryOptions === false || !pkgBin) ? null : {
     path: pkgBin,
-    sourcemap: normalizeBuildSourcemap(
+    sourcemap: normalizeBuildSourcemap2(
       binaryOptions,
-      topLevelSourcemap,
+      topLeverSourcemap.bin,
     ),
     esModule: normalizeBuildModule(binaryOptions, 'esModule', 'bin', topLevelESModule),
     interop: normalizeBuildModule(binaryOptions, 'interop', 'bin', topLevelInterop),

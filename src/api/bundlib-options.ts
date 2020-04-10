@@ -73,11 +73,13 @@ type SelectiveOption<K extends string, T> =
   | K
   | K[];
 
-export type SelectiveSourcemap = SelectiveOption<BuildType | 'api', RollupSourcemap>;
+export type SelectiveTypeString = BuildType | 'api';
+
+export type SelectiveSourcemap = SelectiveOption<SelectiveTypeString, RollupSourcemap>;
 export type SelectiveNonModuleOption = SelectiveOption<ModuleString | 'api', boolean>;
-export type SelectiveMin = SelectiveOption<BuildType | 'api', boolean>;
-export type SelectiveProjectOption = SelectiveObjOption<BuildType | 'api', string>;
-export type SelectiveSkipOption = SelectiveOption<BuildType | 'api', boolean>;
+export type SelectiveMin = SelectiveOption<SelectiveTypeString, boolean>;
+export type SelectiveProjectOption = SelectiveObjOption<SelectiveTypeString, string>;
+export type SelectiveSkipOption = SelectiveOption<SelectiveTypeString, boolean>;
 
 export interface BundlibOptions {
 

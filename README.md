@@ -18,6 +18,26 @@ An automatic configuration manager for [Rollup.js](https://github.com/rollup/rol
 * [First steps](#first-steps)
 * [Build](#build)
 * [Configuration](#configuration)
+* [Advanced Configuration](#advanced-configuration)
+* [Options](#options)
+  * [input](#input)
+  * [sourcemap](#sourcemap)
+  * [esModule](#esModule)
+  * [interop](#interop)
+  * [format](#format)
+  * [name](#name)
+  * [id](#id)
+  * [extend](#extend)
+  * [globals](#globals)
+  * [min](#min)
+  * [cache](#cache)
+  * [project](#project)
+  * [main](#main)
+  * [module](#module)
+  * [browser](#browser)
+  * [bin](#bin)
+  * [types](#types)
+* [Selective Options](#selective-options)
 * [Supported Plugins](#supported-plugins)
 * [CLI](#cli)
 * [API](#api)
@@ -171,14 +191,12 @@ The path to the file (or files) to be used as entry point(s) for `API` and `Bina
 #### sourcemap
 
 ```typescript
-sourcemap: boolean | 'inline' | 'hidden';
+sourcemap: boolean | 'inline' | 'hidden' | SelectiveOption<boolean | 'inline' | 'hidden'>;
 
 default true;
 ```
 
-Whether or not to generate source maps, See [Rollup documentation](https://rollupjs.org/guide/en/#outputsourcemap) for more information. If not specified or set to `null` it will default to `true`.
-
-This option can be overridden using `per-build` options. See [`main`](#main), [`module`](#module), [`browser`](#browser) and [`bin`](#bin) options.
+Whether or not to generate source maps, See [Rollup documentation](https://rollupjs.org/guide/en/#outputsourcemap) for more information. If not specified or set to `null` it will default to `true`. This option supports `object` based and `string` based selective format. See [Selective Options](#selective-options) for more information.
 
 #### esModule
 
@@ -322,14 +340,13 @@ Defines the location of typescript `tsconfig.json` file.
 main: CommonJSOptions | false;
 
 interface CommonJSOptions {
-  sourcemap?: boolean | "inline";
   esModule?: boolean | null;
   interop?: boolean | null;
   min?: boolean | null;
 }
 ```
 
-Specific options to be used in the `CommonJS` build. They will override any corresponding option set in the top-level options. See [`sourcemap`](#sourcemap), [`esModule`](#esmodule), [`interop`](#interop) and [`min`](#min) options.
+Specific options to be used in the `CommonJS` build. They will override any corresponding option set in the top-level options. See [`esModule`](#esmodule), [`interop`](#interop) and [`min`](#min) options.
 
 If it's set to `false`, it will prevent `CommonJS` build altogether, even if there is a `"main"` field in `package.json`.
 
@@ -339,12 +356,11 @@ If it's set to `false`, it will prevent `CommonJS` build altogether, even if the
 module: ESModuleOptions | false;
 
 interface ESModuleOptions {
-  sourcemap?: boolean | "inline";
   min?: boolean;
 }
 ```
 
-Specific options to be used in the `ES Module` build. They will override any corresponding option set in the top-level options. See [`sourcemap`](#sourcemap) and [`min`](#min) options.
+Specific options to be used in the `ES Module` build. They will override any corresponding option set in the top-level options. See [`min`](#min) option.
 
 If it's set to `false`, it will prevent `ES Module` build altogether, even if there is a `"module"` or `"jsnext:main"` field in `package.json`.
 
@@ -354,7 +370,6 @@ If it's set to `false`, it will prevent `ES Module` build altogether, even if th
 browser: BrowserOptions | false;
 
 interface BrowserOptions {
-  sourcemap?: boolean | "inline";
   esModule?: boolean;
   interop?: boolean;
   min?: boolean;
@@ -366,7 +381,7 @@ interface BrowserOptions {
 }
 ```
 
-Specific options to be used in the `Browser` build. They will override any corresponding option set in the top-level options. See [`sourcemap`](#sourcemap), [`esModule`](#esmodule), [`interop`](#interop), [`min`](#min), [`format`](#format), [`name`](#name), [`id`](#id), [`extend`](#extend) and [`globals`](#globals) options.
+Specific options to be used in the `Browser` build. They will override any corresponding option set in the top-level options. See [`esModule`](#esmodule), [`interop`](#interop), [`min`](#min), [`format`](#format), [`name`](#name), [`id`](#id), [`extend`](#extend) and [`globals`](#globals) options.
 
 If it's set to* `false`, it will prevent `Browser` build altogether, even if there is a `"browser"` field in `package.json`.
 
@@ -376,14 +391,13 @@ If it's set to* `false`, it will prevent `Browser` build altogether, even if the
 bin: CommonJSOptions | false;
 
 interface CommonJSOptions {
-  sourcemap?: boolean | "inline";
   esModule?: boolean;
   interop?: boolean;
   min?: boolean;
 }
 ```
 
-Specific options to be used in `Binary` build. They will override any corresponding option set in the top-level options. See [`sourcemap`](#sourcemap), [`esModule`](#esmodule), [`interop`](#interop) and [`min`](#min) options.
+Specific options to be used in `Binary` build. They will override any corresponding option set in the top-level options. See [`esModule`](#esmodule), [`interop`](#interop) and [`min`](#min) options.
 
 If it's set to `false`, it will prevent `Binary` build altogether, even if there is a `"bin"` field in `package.json`.
 
@@ -400,6 +414,40 @@ interface TypesOptions {
 Specific options to be used for types generation. They will override any corresponding option set in the top-level options. See [`equals`](#equals) option.
 
 If it's set to `false`, it will prevent type declarations generation altogether, even if there is a `"types"` or `"typings"` field in `package.json`.
+
+### Selective Options
+
+Some options support a selective format to allow for a more flexible configuration. See [`SelectiveOption`](#SelectiveOption) type for more information.
+
+Note that some options support different selective formats. `Boolean` type options support `string` based format and `object` based format while others support only `object` based format.
+
+`object` based format works by preserving the default value and overiding it with the provided configuration.
+
+***example:***
+
+Assuming `default = false`, `{ main: true }` will result in `true` for `main`, and `false` for others.
+
+You can override the default value as well using the `"default"` object key.
+
+***example:***
+
+Assuming `default = false`, `{ default: true, bin: false }` will result in `false` for `bin`, and `true` for others.
+
+The special `"api"` object key represents `main`, `module` and `browser`.
+
+***example:***
+
+Assuming `default = false`, `{ api: true }` will result in `true` for `main`, `module` and `browser`, and `false` for others.
+
+`string` based format works in a different way, it does not preserve the default value, included build types will be set to `true` and the others will be set to `false`. It can be a `string` or an `string array`.
+
+***example:***
+
+`"browser"` will result `true` for `browser` and `false` for others.
+
+`["main", "module"]` will result in `true` for `main` and `module`, and `false` for others.
+
+See [sourcemap](#sourcemap) option for more information.
 
 ## Supported Plugins
 
@@ -527,12 +575,25 @@ interface PkgAnalized {
 
 *see also:* [`CommonJSBuildOptions`](#commonjsbuildoptions), [`ESModuleBuildOptions`](#esmodulebuildoptions), [`BrowserBuildOptions`](#browserbuildoptions) & [`TypesBuildOptions`](#typesbuildoptions)
 
+### SelectiveOption
+
+```typescript
+interface ObjectBasedSelectiveOption<T> {
+  default: T;
+  [K: BuildType]: T;
+}
+
+type StringBasedSelectiveOption = BuildType | BuildType[];
+
+type BuildType = 'main' | 'module' | 'browser' | 'bin' | 'api';
+```
+
 ### CommonJSBuildOptions
 
 ```typescript
 interface CommonJSBuildOptions {
   path: string;
-  sourcemap: boolean | "inline";
+  sourcemap: boolean | 'inline';
   esModule: boolean;
   interop: boolean;
   min: boolean;
