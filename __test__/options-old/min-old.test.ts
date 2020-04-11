@@ -33,7 +33,6 @@ describe('min option', () => {
       'bin-',
       ['main-'],
       ['main', 'browser-'],
-      {},
     ];
 
     expect.assertions(invalidMinOptions.length);

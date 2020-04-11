@@ -38,11 +38,11 @@ export function resolveTypeString<K extends BuildType>(value: K | 'api'): Record
 
 }
 
-export function resolveTypeStringArray<K extends BuildType>(value: Array<K | 'api'>, invalid: () => Error): Record<K, boolean> {
+export function resolveTypeStringArray<K extends BuildType>(value: Array<K | 'api'>, invalid: Error): Record<K, boolean> {
   return value.reduce(
     (result, type) => {
       if (!isBuildTypeString(type)) {
-        throw invalid();
+        throw invalid;
       }
       if (type === 'api') {
         keysToObject(

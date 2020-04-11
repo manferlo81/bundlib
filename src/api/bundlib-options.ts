@@ -75,9 +75,10 @@ type SelectiveOption<K extends string, T> =
 
 export type SelectiveTypeString = BuildType | 'api';
 
+export type SelectiveBooleanOption = SelectiveOption<SelectiveTypeString, boolean>;
 export type SelectiveSourcemap = SelectiveOption<SelectiveTypeString, RollupSourcemap>;
-export type SelectiveNonModuleOption = SelectiveOption<ModuleString | 'api', boolean>;
-export type SelectiveMin = boolean | SelectiveTypeString | SelectiveTypeString[];
+export type SelectiveNonModuleOption = SelectiveOption<SelectiveTypeString, boolean>;
+export type SelectiveMin = SelectiveBooleanOption;
 export type SelectiveProjectOption = SelectiveObjOption<SelectiveTypeString, string>;
 export type SelectiveSkipOption = SelectiveOption<SelectiveTypeString, boolean>;
 

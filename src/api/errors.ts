@@ -6,6 +6,10 @@ export function invalidPkgField(field: string, type: string): TypeError {
   return error(`Invalid package.json "${field}" field. It has to be of type ${type}`);
 }
 
-export function invalidOption(option: string, type: string): TypeError {
+export function invalidOptionOld(option: string, type: string): TypeError {
   return error(`Invalid "${option}" option. It has to be ${type}`);
+}
+
+export function invalidOption(optionName: string, url: string): TypeError {
+  return error(`Invalid "${optionName}" option. Please check the documentation at ${url}`);
 }

@@ -1,51 +1,21 @@
 import { BuildType, SelectiveMin, WithMinOption } from '../bundlib-options';
-import { error } from '../errors';
 import { Nullable } from '../helper-types';
-import { keysToObject } from '../helpers';
-import { isArray, isNull } from '../type-check/type-check';
-import { ALL_KEYS, isBuildTypeString, resolveTypeString, resolveTypeStringArray } from './selective';
+import { isNull } from '../type-check/type-check';
+import { BooleanBuildOptions, resolveSelectiveBoolOption } from './boolean';
 
-interface MinBuildOptions {
-  main: boolean;
-  module: boolean;
-  browser: boolean;
-  bin: boolean;
-}
-
-export function resolveSelectiveMinOption(value: Nullable<SelectiveMin>): MinBuildOptions {
-
-  if (isNull(value) || value === false) {
-    return keysToObject(
-      ALL_KEYS,
-      false,
-    );
-  }
-
-  if (value === true) {
-    return keysToObject(
-      ALL_KEYS,
-      true,
-    );
-  }
-
-  if (isBuildTypeString(value)) {
-    return resolveTypeString(value);
-  }
-
-  const invalid = () => error('Invalid "min" option. Please check the documentation at https://github.com/manferlo81/bundlib#min');
-
-  if (!isArray(value)) {
-    throw invalid();
-  }
-
-  return resolveTypeStringArray(value, invalid);
-
+export function resolveSelectiveMinOption(value: Nullable<SelectiveMin>): BooleanBuildOptions {
+  return resolveSelectiveBoolOption(
+    value,
+    false,
+    'min',
+    'https://github.com/manferlo81/bundlib#min',
+  );
 }
 
 export function normalizeBuildMin(
   build: Nullable<WithMinOption>,
   field: BuildType,
-  def: MinBuildOptions,
+  def: BooleanBuildOptions,
 ): boolean {
   return (!build || isNull(build.min)) ? def[field] : build.min;
 }

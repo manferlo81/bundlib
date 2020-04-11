@@ -33,8 +33,8 @@ describe('"sourcemap" option', () => {
   });
 
   test('Should resolve specific "sourcemap" option', () => {
-    [true, false, 'inline', 'hidden'].forEach((value) => {
-      expect(resolveSelectiveSourcemapOption(value as never)).toEqual({
+    [true, false, 'inline' as 'inline', 'hidden' as 'hidden'].forEach((value) => {
+      expect(resolveSelectiveSourcemapOption(value)).toEqual({
         main: value,
         module: value,
         browser: value,
@@ -45,24 +45,24 @@ describe('"sourcemap" option', () => {
 
   test('Should resolve build type "sourcemap" option', () => {
     const values = [
-      { value: 'main', expected: { main: true, module: false, browser: false, bin: false } },
-      { value: 'module', expected: { main: false, module: true, browser: false, bin: false } },
-      { value: 'browser', expected: { main: false, module: false, browser: true, bin: false } },
-      { value: 'bin', expected: { main: false, module: false, browser: false, bin: true } },
-      { value: 'api', expected: { main: true, module: true, browser: true, bin: false } },
+      { value: 'main' as 'main', expected: { main: true, module: false, browser: false, bin: false } },
+      { value: 'module' as 'module', expected: { main: false, module: true, browser: false, bin: false } },
+      { value: 'browser' as 'browser', expected: { main: false, module: false, browser: true, bin: false } },
+      { value: 'bin' as 'bin', expected: { main: false, module: false, browser: false, bin: true } },
+      { value: 'api' as 'api', expected: { main: true, module: true, browser: true, bin: false } },
     ];
     values.forEach(({ value, expected }) => {
-      expect(resolveSelectiveSourcemapOption(value as never)).toEqual(expected);
+      expect(resolveSelectiveSourcemapOption(value)).toEqual(expected);
     });
   });
 
   test('Should resolve array of build type as "sourcemap" option', () => {
     const values = [
-      { value: ['main', 'bin'], expected: { main: true, module: false, browser: false, bin: true } },
-      { value: ['api'], expected: { main: true, module: true, browser: true, bin: false } },
+      { value: ['main', 'bin'] as ['main', 'bin'], expected: { main: true, module: false, browser: false, bin: true } },
+      { value: ['api'] as ['api'], expected: { main: true, module: true, browser: true, bin: false } },
     ];
     values.forEach(({ value: array, expected }) => {
-      expect(resolveSelectiveSourcemapOption(array as never)).toEqual(expected);
+      expect(resolveSelectiveSourcemapOption(array)).toEqual(expected);
     });
   });
 

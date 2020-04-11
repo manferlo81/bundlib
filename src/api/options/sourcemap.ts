@@ -1,5 +1,5 @@
-import { SelectiveSourcemap, WithSourcemapOption } from '../bundlib-options';
-import { error } from '../errors';
+import { BuildType, SelectiveSourcemap, WithSourcemapOption } from '../bundlib-options';
+import { invalidOption } from '../errors';
 import { Nullable } from '../helper-types';
 import { keys, keysToObject } from '../helpers';
 import { createOneOf } from '../type-check/one-of';
@@ -19,12 +19,7 @@ export const isSourcemapOption = createOneOf<Nullable<RollupSourcemap>>(
   isSourcemapString,
 );
 
-interface SourcemapBuildOptions {
-  main: RollupSourcemap;
-  module: RollupSourcemap;
-  browser: RollupSourcemap;
-  bin: RollupSourcemap;
-}
+export type SourcemapBuildOptions = Record<BuildType, RollupSourcemap>;
 
 function resolveSourcemapValue(value: Nullable<RollupSourcemap>): RollupSourcemap {
   return isSourcemapString(value) ? value : (value !== false);
@@ -50,10 +45,10 @@ export function resolveSelectiveSourcemapOption(value: Nullable<SelectiveSourcem
     return resolveTypeString(value);
   }
 
-  const invalid = () => error('Invalid "sourcemap" option. Please check the documentation at https://github.com/manferlo81/bundlib#sourcemap');
+  const invalid = invalidOption('sourcemap', 'https://github.com/manferlo81/bundlib#sourcemap');
 
   if (!isObject(value)) {
-    throw invalid();
+    throw invalid;
   }
 
   if (isArray(value)) {
@@ -61,13 +56,13 @@ export function resolveSelectiveSourcemapOption(value: Nullable<SelectiveSourcem
   }
 
   if (!keysCheck(value, isSelectiveObjectKey)) {
-    throw invalid();
+    throw invalid;
   }
 
   const { default: override, api, ...others } = value;
 
   if (!isNull(override) && !isSourcemapOption(override)) {
-    throw invalid();
+    throw invalid;
   }
 
   const result: SourcemapBuildOptions = keysToObject(
@@ -77,7 +72,7 @@ export function resolveSelectiveSourcemapOption(value: Nullable<SelectiveSourcem
 
   if (!isNull(api)) {
     if (!isSourcemapOption(api)) {
-      throw invalid();
+      throw invalid;
     }
     keysToObject(
       API_KEYS,
@@ -90,7 +85,7 @@ export function resolveSelectiveSourcemapOption(value: Nullable<SelectiveSourcem
     const sourcemap = others[type];
     if (!isNull(sourcemap)) {
       if (!isSourcemapOption(sourcemap)) {
-        throw invalid();
+        throw invalid;
       }
       result[type] = resolveSourcemapValue(sourcemap);
     }

@@ -230,6 +230,18 @@ Whether or not to add an interop block. If `interop = true` it will affect all s
 
 This option can be overridden using `per-build` options. See [`main`](#main), [`browser`](#browser) and [`bin`](#bin) options.
 
+#### min
+
+```typescript
+min: boolean | SelectiveOption;
+
+default false;
+```
+
+Defines which files should be used to build an aditional minified version, if `true` will affect all modules. The minified file will be renamed from `*.ext` to `*.min.ext`. This option will override the default behavior of the [`--dev`, `-d` *cli option*](#-dev-d) , which means only the minified version will be actually minified, the normal version will **NOT** be minified even if you don't set the [`--dev`, `-d` cli option](#-dev-d).
+
+This option supports `object` based and `string` based [`selective format`](#selective-options). See [Selective Options](#selective-options) for more information.
+
 #### format
 
 ```typescript
@@ -303,18 +315,6 @@ Transforms type export for `CommonJS Module` using `export = ...` instead of `ex
 This option can be overridden using the [`types`](#types) option.
 
 > :warning: *Note that this option should only be used when your library has a* `default` *export and no* `named` *exports, otherwise it may cause the type declarations to become invalid.*
-
-#### min
-
-```typescript
-min: boolean | StringBasedSelectiveOption;
-
-default false;
-```
-
-Defines which files should be used to build an aditional minified version, if `true` will affect all modules. The minified file will be renamed from `*.ext` to `*.min.ext`. This option will override the default behavior of the [`--dev`, `-d` *cli option*](#-dev-d) , which means only the minified version will be actually minified, the normal version will **NOT** be minified even if you don't set the [`--dev`, `-d` cli option](#-dev-d).
-
-This option supports `string` based [`selective format`](#selective-options). See [Selective Options](#selective-options) for more information.
 
 #### cache
 
