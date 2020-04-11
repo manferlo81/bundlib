@@ -3,6 +3,7 @@ import { error, invalidOption, invalidPkgField } from './errors';
 import { Dictionary, StrictNullable } from './helper-types';
 import { keys } from './helpers';
 import { loadOptions } from './options-manager';
+import { resolveSelectiveMinOption, normalizeBuildMin } from './options/min';
 import { normalizeBuildSourcemap2, resolveSelectiveSourcemapOption } from './options/sourcemap';
 import { BundlibPkgJson } from './pkg';
 import { BrowserBuildOptions, CommonJSBuildOptions, Dependencies, ESModuleBuildOptions, InputOptions, OutputOptions, PkgAnalized, TypesBuildOptions } from './pkg-analized';
@@ -15,7 +16,6 @@ import { isBrowserFormat } from './validate/option-format';
 import { isValidGlobals, normalizeBuildGlobals, normalizeGlobals } from './validate/option-globals';
 import { isInOpKey } from './validate/option-input';
 import { isCJSOptionKey } from './validate/option-main';
-import { isValidMinOption, normalizeBuildMin, normalizeMinOption } from './validate/option-min';
 import { isModuleOptionKey } from './validate/option-module';
 import { normalizeBuildName } from './validate/option-name';
 import { isTypesOptionKey } from './validate/option-types';
@@ -173,15 +173,17 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     );
   }
 
-  // ensure "min" option is valid
-  // throw otherwise
+  // // ensure "min" option is valid
+  // // throw otherwise
 
-  if (!isValidMinOption(min)) {
-    throw invalidOption(
-      'min',
-      'boolean | "main" | "module" | "browser" | "bin" | Array<"main" | "module" | "browser" | "bin">',
-    );
-  }
+  // if (!isValidMinOption(min)) {
+  //   throw invalidOption(
+  //     'min',
+  //     'boolean | "main" | "module" | "browser" | "bin" | Array<"main" | "module" | "browser" | "bin">',
+  //   );
+  // }
+
+  const topLevelMin2 = resolveSelectiveMinOption(min);
 
   // ensure "cache" option is valid
   // throw otherwise
@@ -353,7 +355,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   const topLevelESModule = normalizeModuleOption(esModule);
   const topLevelInterop = normalizeModuleOption(interop);
-  const topLevelMin = normalizeMinOption(min);
+  // const topLevelMin = normalizeMinOption(min);
 
   // set CommonJS Module build output options
 
@@ -365,7 +367,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     ),
     esModule: normalizeBuildModule(mainOptions, 'esModule', 'main', topLevelESModule),
     interop: normalizeBuildModule(mainOptions, 'interop', 'main', topLevelInterop),
-    min: normalizeBuildMin(mainOptions, 'main', topLevelMin),
+    min: normalizeBuildMin(mainOptions, 'main', topLevelMin2),
   };
 
   // set ES Module build output options
@@ -376,7 +378,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
       moduleOptions,
       topLeverSourcemap.module,
     ),
-    min: normalizeBuildMin(moduleOptions, 'module', topLevelMin),
+    min: normalizeBuildMin(moduleOptions, 'module', topLevelMin2),
   };
 
   // set Browser build output options
@@ -389,7 +391,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     ),
     esModule: normalizeBuildModule(browserOptions, 'esModule', 'browser', topLevelESModule),
     interop: normalizeBuildModule(browserOptions, 'interop', 'browser', topLevelInterop),
-    min: normalizeBuildMin(browserOptions, 'browser', topLevelMin),
+    min: normalizeBuildMin(browserOptions, 'browser', topLevelMin2),
     format: browserOptions && !isNull(browserOptions.format) ? browserOptions.format : (browserFormat || 'umd'),
     name: normalizeBuildName(
       cwd,
@@ -415,7 +417,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     ),
     esModule: normalizeBuildModule(binaryOptions, 'esModule', 'bin', topLevelESModule),
     interop: normalizeBuildModule(binaryOptions, 'interop', 'bin', topLevelInterop),
-    min: normalizeBuildMin(binaryOptions, 'bin', topLevelMin),
+    min: normalizeBuildMin(binaryOptions, 'bin', topLevelMin2),
   };
 
   // set type definitions output options

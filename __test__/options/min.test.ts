@@ -1,242 +1,69 @@
-import { BuildType } from '../../src/api/bundlib-options';
-import analize from '../tools/analize';
+import { resolveSelectiveMinOption } from '../../src/api/options/min';
 
-describe('min option', () => {
+describe('"min" option', () => {
 
-  const cwd = process.cwd();
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const analizeWithMin = (min: any) => analize(cwd, {
-    main: 'main.js',
-    module: 'module.js',
-    browser: 'browser.js',
-    bin: 'bin.js',
-    bundlib: { min },
-  });
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const analizeWithBuildMin = (field: BuildType, min: any) => analize(cwd, {
-    main: 'main.js',
-    module: 'module.js',
-    browser: 'browser.js',
-    bin: 'bin.js',
-    bundlib: { [field]: { min } },
-  });
-
-  test('should throw on invalid min option', () => {
-
-    const invalidMinOptions = [
+  test('Should throw on invalid "min" option', () => {
+    const invalids = [
+      0,
       1,
-      'main-',
-      'module-',
-      'browser-',
-      'bin-',
-      ['main-'],
-      ['main', 'browser-'],
-      {},
+      'invalid',
+      ['invalid'],
+      { cli: true },
+      { default: 'invalid' },
+      { api: 'invalid' },
+      { main: 'invalid' },
+      { module: 'invalid' },
+      { browser: 'invalid' },
+      { bin: 'invalid' },
     ];
-
-    expect.assertions(invalidMinOptions.length);
-
-    invalidMinOptions.forEach((min) => {
-      expect(
-        analizeWithMin(min),
-      ).rejects
-        .toThrow(TypeError);
+    invalids.forEach((invalid) => {
+      expect(() => resolveSelectiveMinOption(invalid as never)).toThrow();
     });
-
   });
 
-  test('should read string main min option', async () => {
-
-    const { output: { main, module: moduleOut, browser, bin } } = await analizeWithMin('main');
-
-    expect(main ? main.min : null)
-      .toBe(true);
-    expect(moduleOut ? moduleOut.min : null)
-      .toBe(false);
-    expect(browser ? browser.min : null)
-      .toBe(false);
-    expect(bin ? bin.min : null)
-      .toBe(false);
-
-  });
-
-  test('should read string module min option', async () => {
-
-    const { output: { main, module: moduleOut, browser, bin } } = await analizeWithMin('module');
-
-    expect(main ? main.min : null)
-      .toBe(false);
-    expect(moduleOut ? moduleOut.min : null)
-      .toBe(true);
-    expect(browser ? browser.min : null)
-      .toBe(false);
-    expect(bin ? bin.min : null)
-      .toBe(false);
-
-  });
-
-  test('should read string browser min option', async () => {
-
-    const { output: { main, module: moduleOut, browser, bin } } = await analizeWithMin('browser');
-
-    expect(main ? main.min : null)
-      .toBe(false);
-    expect(moduleOut ? moduleOut.min : null)
-      .toBe(false);
-    expect(browser ? browser.min : null)
-      .toBe(true);
-    expect(bin ? bin.min : null)
-      .toBe(false);
-
-  });
-
-  test('should read string bin min option', async () => {
-
-    const { output: { main, module: moduleOut, browser, bin } } = await analizeWithMin('bin');
-
-    expect(main ? main.min : null)
-      .toBe(false);
-    expect(moduleOut ? moduleOut.min : null)
-      .toBe(false);
-    expect(browser ? browser.min : null)
-      .toBe(false);
-    expect(bin ? bin.min : null)
-      .toBe(true);
-
-  });
-
-  test('should read array min option', async () => {
-
-    const { output: { main, module: moduleOut, browser, bin } } = await analizeWithMin(['module', 'bin']);
-
-    expect(main ? main.min : null)
-      .toEqual(false);
-    expect(moduleOut ? moduleOut.min : null)
-      .toEqual(true);
-    expect(browser ? browser.min : null)
-      .toEqual(false);
-    expect(bin ? bin.min : null)
-      .toEqual(true);
-
-  });
-
-  test('should read true as min option', async () => {
-
-    const { output: { main, module: moduleOut, browser, bin } } = await analizeWithMin(true);
-
-    expect(main ? main.min : null)
-      .toEqual(true);
-    expect(moduleOut ? moduleOut.min : null)
-      .toEqual(true);
-    expect(browser ? browser.min : null)
-      .toEqual(true);
-    expect(bin ? bin.min : null)
-      .toEqual(true);
-
-  });
-
-  test('should read false as min option', async () => {
-
-    const { output: { main, module: moduleOut, browser, bin } } = await analizeWithMin(false);
-
-    expect(main ? main.min : null)
-      .toEqual(false);
-    expect(moduleOut ? moduleOut.min : null)
-      .toEqual(false);
-    expect(browser ? browser.min : null)
-      .toEqual(false);
-    expect(bin ? bin.min : null)
-      .toEqual(false);
-
-  });
-
-  test('should read per-build main min option', async () => {
-
-    const { output: { main, module: moduleOut, browser, bin } } = await analizeWithBuildMin('main', true);
-
-    expect(main ? main.min : null)
-      .toEqual(true);
-    expect(moduleOut ? moduleOut.min : null)
-      .toEqual(false);
-    expect(browser ? browser.min : null)
-      .toEqual(false);
-    expect(bin ? bin.min : null)
-      .toEqual(false);
-
-  });
-
-  test('should read per-build module min option', async () => {
-
-    const { output: { main, module: moduleOut, browser, bin } } = await analizeWithBuildMin('module', true);
-
-    expect(main ? main.min : null)
-      .toEqual(false);
-    expect(moduleOut ? moduleOut.min : null)
-      .toEqual(true);
-    expect(browser ? browser.min : null)
-      .toEqual(false);
-    expect(bin ? bin.min : null)
-      .toEqual(false);
-
-  });
-
-  test('should read per-build browser min option', async () => {
-
-    const { output: { main, module: moduleOut, browser, bin } } = await analizeWithBuildMin('browser', true);
-
-    expect(main ? main.min : null)
-      .toEqual(false);
-    expect(moduleOut ? moduleOut.min : null)
-      .toEqual(false);
-    expect(browser ? browser.min : null)
-      .toEqual(true);
-    expect(bin ? bin.min : null)
-      .toEqual(false);
-
-  });
-
-  test('should read per-build bin min option', async () => {
-
-    const { output: { main, module: moduleOut, browser, bin } } = await analizeWithBuildMin('bin', true);
-
-    expect(main ? main.min : null)
-      .toEqual(false);
-    expect(moduleOut ? moduleOut.min : null)
-      .toEqual(false);
-    expect(browser ? browser.min : null)
-      .toEqual(false);
-    expect(bin ? bin.min : null)
-      .toEqual(true);
-
-  });
-
-  test('should read per-build min option over top-level one', async () => {
-
-    const { output: { main, module: moduleOut, browser, bin } } = await analize(cwd, {
-      main: 'main.js',
-      module: 'main.js',
-      browser: 'main.js',
-      bin: 'main.js',
-      bundlib: {
-        min: true,
-        main: { min: false },
-        module: { min: false },
-        browser: { min: false },
-        bin: { min: false },
-      },
+  test('Should resolve null or undefined "min" option', () => {
+    [null, undefined].forEach((value) => {
+      expect(resolveSelectiveMinOption(value)).toEqual({
+        main: false,
+        module: false,
+        browser: false,
+        bin: false,
+      });
     });
+  });
 
-    expect(main ? main.min : null)
-      .toEqual(false);
-    expect(moduleOut ? moduleOut.min : null)
-      .toEqual(false);
-    expect(browser ? browser.min : null)
-      .toEqual(false);
-    expect(bin ? bin.min : null)
-      .toEqual(false);
+  test('Should resolve boolean "min" option', () => {
+    [true, false].forEach((value) => {
+      expect(resolveSelectiveMinOption(value as never)).toEqual({
+        main: value,
+        module: value,
+        browser: value,
+        bin: value,
+      });
+    });
+  });
 
+  test('Should resolve build type "min" option', () => {
+    const values = [
+      { value: 'main', expected: { main: true, module: false, browser: false, bin: false } },
+      { value: 'module', expected: { main: false, module: true, browser: false, bin: false } },
+      { value: 'browser', expected: { main: false, module: false, browser: true, bin: false } },
+      { value: 'bin', expected: { main: false, module: false, browser: false, bin: true } },
+      { value: 'api', expected: { main: true, module: true, browser: true, bin: false } },
+    ];
+    values.forEach(({ value, expected }) => {
+      expect(resolveSelectiveMinOption(value as never)).toEqual(expected);
+    });
+  });
+
+  test('Should resolve array of build type as "min" option', () => {
+    const values = [
+      { value: ['main', 'bin'], expected: { main: true, module: false, browser: false, bin: true } },
+      { value: ['api'], expected: { main: true, module: true, browser: true, bin: false } },
+    ];
+    values.forEach(({ value: array, expected }) => {
+      expect(resolveSelectiveMinOption(array as never)).toEqual(expected);
+    });
   });
 
 });

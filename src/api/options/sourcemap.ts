@@ -1,12 +1,12 @@
-import { BuildType, SelectiveSourcemap, WithSourcemapOption } from '../bundlib-options';
+import { SelectiveSourcemap, WithSourcemapOption } from '../bundlib-options';
 import { error } from '../errors';
 import { Nullable } from '../helper-types';
 import { keys, keysToObject } from '../helpers';
 import { createOneOf } from '../type-check/one-of';
-import { isArray, isBool, isNull, isObject } from '../type-check/type-check';
+import { isArray, isNull, isObject } from '../type-check/type-check';
 import { RollupSourcemap, RollupSourcemapString } from '../types';
 import { keysCheck } from '../validate/validate-keys';
-import { isBuildTypeString, isSelectiveObjectKey } from './selective';
+import { ALL_KEYS, API_KEYS, isBuildTypeString, isSelectiveObjectKey, resolveTypeString, resolveTypeStringArray } from './selective';
 
 export const isSourcemapString = createOneOf<RollupSourcemapString>(
   'inline',
@@ -14,7 +14,8 @@ export const isSourcemapString = createOneOf<RollupSourcemapString>(
 );
 
 export const isSourcemapOption = createOneOf<Nullable<RollupSourcemap>>(
-  isBool,
+  true,
+  false,
   isSourcemapString,
 );
 
@@ -31,37 +32,22 @@ function resolveSourcemapValue(value: Nullable<RollupSourcemap>): RollupSourcema
 
 export function resolveSelectiveSourcemapOption(value: Nullable<SelectiveSourcemap>): SourcemapBuildOptions {
 
-  const apiKeys: ['main', 'module', 'browser'] = ['main', 'module', 'browser'];
-  const allKeys = [...apiKeys, 'bin'] as ['main', 'module', 'browser', 'bin'];
-
   if (isNull(value) || value === true) {
     return keysToObject(
-      allKeys,
+      ALL_KEYS,
       true,
     );
   }
 
   if (value === false || isSourcemapString(value)) {
     return keysToObject(
-      allKeys,
+      ALL_KEYS,
       value as (false | RollupSourcemapString),
     );
   }
 
   if (isBuildTypeString(value)) {
-    const base = keysToObject(
-      allKeys,
-      false,
-    );
-    if (value === 'api') {
-      return keysToObject(
-        apiKeys,
-        true,
-        base,
-      );
-    }
-    base[value] = true;
-    return base;
+    return resolveTypeString(value);
   }
 
   const invalid = () => error('Invalid "sourcemap" option. Please check the documentation at https://github.com/manferlo81/bundlib#sourcemap');
@@ -71,26 +57,7 @@ export function resolveSelectiveSourcemapOption(value: Nullable<SelectiveSourcem
   }
 
   if (isArray(value)) {
-
-    const base = keysToObject(
-      allKeys,
-      false,
-    );
-
-    const keys = value.reduce<BuildType[]>((result, type) => {
-      if (!isBuildTypeString(type)) {
-        throw new Error();
-      }
-      if (type === 'api') {
-        result.push(...apiKeys);
-      } else {
-        result.push(type);
-      }
-      return result;
-    }, []);
-
-    return keysToObject(keys, true, base);
-
+    return resolveTypeStringArray(value, invalid);
   }
 
   if (!keysCheck(value, isSelectiveObjectKey)) {
@@ -104,7 +71,7 @@ export function resolveSelectiveSourcemapOption(value: Nullable<SelectiveSourcem
   }
 
   const result: SourcemapBuildOptions = keysToObject(
-    allKeys,
+    ALL_KEYS,
     resolveSourcemapValue(override),
   );
 
@@ -113,7 +80,7 @@ export function resolveSelectiveSourcemapOption(value: Nullable<SelectiveSourcem
       throw invalid();
     }
     keysToObject(
-      apiKeys,
+      API_KEYS,
       resolveSourcemapValue(api),
       result,
     );

@@ -77,7 +77,7 @@ export type SelectiveTypeString = BuildType | 'api';
 
 export type SelectiveSourcemap = SelectiveOption<SelectiveTypeString, RollupSourcemap>;
 export type SelectiveNonModuleOption = SelectiveOption<ModuleString | 'api', boolean>;
-export type SelectiveMin = SelectiveOption<SelectiveTypeString, boolean>;
+export type SelectiveMin = boolean | SelectiveTypeString | SelectiveTypeString[];
 export type SelectiveProjectOption = SelectiveObjOption<SelectiveTypeString, string>;
 export type SelectiveSkipOption = SelectiveOption<SelectiveTypeString, boolean>;
 
@@ -88,7 +88,7 @@ export interface BundlibOptions {
   input?: Nullable<InputOptions | string>;
   esModule?: ModuleOption;
   interop?: ModuleOption;
-  min?: MinOption;
+  min?: Nullable<SelectiveMin>;
   cache?: Nullable<string>;
   project?: Nullable<string>;
 

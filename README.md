@@ -38,6 +38,8 @@ An automatic configuration manager for [Rollup.js](https://github.com/rollup/rol
   * [bin](#bin)
   * [types](#types)
 * [Selective Options](#selective-options)
+  * [Object based selective format](#object-based-selective-format)
+  * [String based selective format](#string-based-selective-format)
 * [Supported Plugins](#supported-plugins)
 * [CLI](#cli)
 * [API](#api)
@@ -196,7 +198,9 @@ sourcemap: boolean | 'inline' | 'hidden' | SelectiveOption<boolean | 'inline' | 
 default true;
 ```
 
-Whether or not to generate source maps, See [Rollup documentation](https://rollupjs.org/guide/en/#outputsourcemap) for more information. If not specified or set to `null` it will default to `true`. This option supports `object` based and `string` based selective format. See [Selective Options](#selective-options) for more information.
+Whether or not to generate source maps, See [Rollup documentation](https://rollupjs.org/guide/en/#outputsourcemap) for more information. If not specified or set to `null` it will default to `true`.
+
+This option supports `object` based and `string` based [`selective format`](#selective-options). See [Selective Options](#selective-options) for more information.
 
 #### esModule
 
@@ -303,16 +307,14 @@ This option can be overridden using the [`types`](#types) option.
 #### min
 
 ```typescript
-min: BuildType | BuildType[] | boolean;
-
-type BuildType = "main" | "module" | "browser" | "min";
+min: boolean | StringBasedSelectiveOption;
 
 default false;
 ```
 
 Defines which files should be used to build an aditional minified version, if `true` will affect all modules. The minified file will be renamed from `*.ext` to `*.min.ext`. This option will override the default behavior of the [`--dev`, `-d` *cli option*](#-dev-d) , which means only the minified version will be actually minified, the normal version will **NOT** be minified even if you don't set the [`--dev`, `-d` cli option](#-dev-d).
 
-This option can be overridden using `per-build` options. See [`main`](#main), [`module`](#module), [`browser`](#browser) and [`bin`](#bin) options.
+This option supports `string` based [`selective format`](#selective-options). See [Selective Options](#selective-options) for more information.
 
 #### cache
 
@@ -342,27 +344,12 @@ main: CommonJSOptions | false;
 interface CommonJSOptions {
   esModule?: boolean | null;
   interop?: boolean | null;
-  min?: boolean | null;
 }
 ```
 
-Specific options to be used in the `CommonJS` build. They will override any corresponding option set in the top-level options. See [`esModule`](#esmodule), [`interop`](#interop) and [`min`](#min) options.
+Specific options to be used in the `CommonJS` build. They will override any corresponding option set in the top-level options. See [`esModule`](#esmodule) ans [`interop`](#interop) options.
 
 If it's set to `false`, it will prevent `CommonJS` build altogether, even if there is a `"main"` field in `package.json`.
-
-#### module
-
-```typescript
-module: ESModuleOptions | false;
-
-interface ESModuleOptions {
-  min?: boolean;
-}
-```
-
-Specific options to be used in the `ES Module` build. They will override any corresponding option set in the top-level options. See [`min`](#min) option.
-
-If it's set to `false`, it will prevent `ES Module` build altogether, even if there is a `"module"` or `"jsnext:main"` field in `package.json`.
 
 #### browser
 
@@ -372,7 +359,6 @@ browser: BrowserOptions | false;
 interface BrowserOptions {
   esModule?: boolean;
   interop?: boolean;
-  min?: boolean;
   format?: "iife" | "amd" | "umd" ;
   name?: string;
   id?: string;
@@ -381,7 +367,7 @@ interface BrowserOptions {
 }
 ```
 
-Specific options to be used in the `Browser` build. They will override any corresponding option set in the top-level options. See [`esModule`](#esmodule), [`interop`](#interop), [`min`](#min), [`format`](#format), [`name`](#name), [`id`](#id), [`extend`](#extend) and [`globals`](#globals) options.
+Specific options to be used in the `Browser` build. They will override any corresponding option set in the top-level options. See [`esModule`](#esmodule), [`interop`](#interop), [`format`](#format), [`name`](#name), [`id`](#id), [`extend`](#extend) and [`globals`](#globals) options.
 
 If it's set to* `false`, it will prevent `Browser` build altogether, even if there is a `"browser"` field in `package.json`.
 
@@ -393,11 +379,10 @@ bin: CommonJSOptions | false;
 interface CommonJSOptions {
   esModule?: boolean;
   interop?: boolean;
-  min?: boolean;
 }
 ```
 
-Specific options to be used in `Binary` build. They will override any corresponding option set in the top-level options. See [`esModule`](#esmodule), [`interop`](#interop) and [`min`](#min) options.
+Specific options to be used in `Binary` build. They will override any corresponding option set in the top-level options. See [`esModule`](#esmodule) and [`interop`](#interop) options.
 
 If it's set to `false`, it will prevent `Binary` build altogether, even if there is a `"bin"` field in `package.json`.
 
@@ -421,11 +406,17 @@ Some options support a selective format to allow for a more flexible configurati
 
 Note that some options support different selective formats. `Boolean` type options support `string` based format and `object` based format while others support only `object` based format.
 
+See [sourcemap](#sourcemap) option.
+
+#### Object based selective format
+
 `object` based format works by preserving the default value and overiding it with the provided configuration.
 
 ***example:***
 
 Assuming `default = false`, `{ main: true }` will result in `true` for `main`, and `false` for others.
+
+##### The special `default` property
 
 You can override the default value as well using the `"default"` object key.
 
@@ -433,11 +424,15 @@ You can override the default value as well using the `"default"` object key.
 
 Assuming `default = false`, `{ default: true, bin: false }` will result in `false` for `bin`, and `true` for others.
 
+##### The special `bin` property
+
 The special `"api"` object key represents `main`, `module` and `browser`.
 
 ***example:***
 
 Assuming `default = false`, `{ api: true }` will result in `true` for `main`, `module` and `browser`, and `false` for others.
+
+#### String based selective format
 
 `string` based format works in a different way, it does not preserve the default value, included build types will be set to `true` and the others will be set to `false`. It can be a `string` or an `string array`.
 
@@ -446,8 +441,6 @@ Assuming `default = false`, `{ api: true }` will result in `true` for `main`, `m
 `"browser"` will result `true` for `browser` and `false` for others.
 
 `["main", "module"]` will result in `true` for `main` and `module`, and `false` for others.
-
-See [sourcemap](#sourcemap) option for more information.
 
 ## Supported Plugins
 
