@@ -1,4 +1,4 @@
-import { BuildType, SelectiveBooleanOption, WithModuleOptions } from '../bundlib-options';
+import { BuildType, SelectiveBooleanOption } from '../bundlib-options';
 import { invalidOption } from '../errors';
 import { Nullable } from '../helper-types';
 import { keys, keysToObject } from '../helpers';
@@ -78,11 +78,10 @@ export function resolveSelectiveBoolOption(value: Nullable<SelectiveBooleanOptio
 
 }
 
-export function normalizeBooleanOption(
-  build: Nullable<WithModuleOptions>,
-  key: keyof WithModuleOptions,
-  field: BuildType,
-  def: BooleanBuildOptions,
+export function normalizeBooleanOption<K extends string>(
+  build: Nullable<{ [X in K]?: Nullable<boolean> }>,
+  key: K,
+  def: boolean,
 ): boolean {
-  return (!build || isNull(build[key])) ? def[field] : build[key] as boolean;
+  return (!build || isNull(build[key])) ? def : build[key] as boolean;
 }

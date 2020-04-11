@@ -1,4 +1,4 @@
-import { StrictNullable, Dictionary } from './helper-types';
+import { Dictionary, StrictNullable } from './helper-types';
 import { BundlibPkgJson } from './pkg';
 import { BrowserBuildFormat, RollupSourcemap } from './types';
 
@@ -11,17 +11,14 @@ export interface OptionsWithPath {
   path: string;
 }
 
-export interface ESModuleBuildOptions extends OptionsWithPath {
+export interface ModuleBuildOptions extends OptionsWithPath {
   sourcemap: RollupSourcemap;
+  esModule: boolean;
+  interop: boolean;
   min: boolean;
 }
 
-export interface CommonJSBuildOptions extends ESModuleBuildOptions {
-  esModule: boolean;
-  interop: boolean;
-}
-
-export interface BrowserBuildOptions extends CommonJSBuildOptions {
+export interface BrowserBuildOptions extends ModuleBuildOptions {
   format: BrowserBuildFormat;
   name: StrictNullable<string>;
   id: StrictNullable<string>;
@@ -32,10 +29,10 @@ export interface BrowserBuildOptions extends CommonJSBuildOptions {
 export type TypesBuildOptions = OptionsWithPath;
 
 export interface OutputOptions {
-  main: StrictNullable<CommonJSBuildOptions>;
-  module: StrictNullable<ESModuleBuildOptions>;
+  main: StrictNullable<ModuleBuildOptions>;
+  module: StrictNullable<ModuleBuildOptions>;
   browser: StrictNullable<BrowserBuildOptions>;
-  bin: StrictNullable<CommonJSBuildOptions>;
+  bin: StrictNullable<ModuleBuildOptions>;
   types: StrictNullable<TypesBuildOptions>;
 }
 

@@ -95,7 +95,7 @@ export function resolveSelectiveSourcemapOption(value: Nullable<SelectiveSourcem
 
 }
 
-export function normalizeBuildSourcemap2(
+export function normalizeBuildSourcemap(
   build: Nullable<WithSourcemapOption>,
   def: RollupSourcemap,
 ): RollupSourcemap {
