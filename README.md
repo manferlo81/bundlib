@@ -193,7 +193,7 @@ The path to the file (or files) to be used as entry point(s) for `API` and `Bina
 #### sourcemap
 
 ```typescript
-sourcemap: boolean | 'inline' | 'hidden' | SelectiveOption<boolean | 'inline' | 'hidden'>;
+sourcemap: boolean | 'inline' | 'hidden' | SelectiveOption;
 
 default true;
 ```
@@ -205,30 +205,26 @@ This option supports `object` based and `string` based [`selective format`](#sel
 #### esModule
 
 ```typescript
-esModule: BuildType | BuildType[] | boolean;
-
-type BuildType = "main" | "browser" | "min";
+esModule: boolean | SelectiveOption;
 
 default false;
 ```
 
 Whether or not to add a `__esModule: true` property to your `non ES Module` build. If `esModule = true` it will affect all supported builds.
 
-This option can be overridden using `per-build` options. See [`main`](#main), [`browser`](#browser) and [`bin`](#bin) options.
+This option supports `object` based and `string` based [`selective format`](#selective-options). See [Selective Options](#selective-options) for more information.
 
 #### interop
 
 ```typescript
-interop: BuildType | BuildType[] | boolean;
-
-type BuildType = "main" | "browser" | "min";
+interop: boolean | SelectiveOption;
 
 default false;
 ```
 
 Whether or not to add an interop block. If `interop = true` it will affect all supported builds.
 
-This option can be overridden using `per-build` options. See [`main`](#main), [`browser`](#browser) and [`bin`](#bin) options.
+This option supports `object` based and `string` based [`selective format`](#selective-options). See [Selective Options](#selective-options) for more information.
 
 #### min
 
@@ -252,8 +248,6 @@ default "umd";
 
 Defines the format to be used for the `Browser` build.
 
-This option can be overridden using the [`browser`](#browser) option.
-
 #### name
 
 ```typescript
@@ -262,8 +256,6 @@ name: string;
 
 The name to be used to expose your library to the global scope in a `IIFE` or `UMD` browser build. If not provided it will default to the camelcased, unscoped `"name"` field in `package.json` or the camelcased directory name. If none of those can be obtained, it will throw at build time.
 
-This option can be overridden using the [`browser`](#browser) option.
-
 #### id
 
 ```typescript
@@ -271,8 +263,6 @@ id: string;
 ```
 
 Optional amd id for `AMD` or `UMD` build.
-
-This option can be overridden using the [`browser`](#browser) option.
 
 If not present, `AMD` module will be defined with no id.
 
@@ -286,8 +276,6 @@ default false;
 
 Whether or not to extend the globally exposed name on a `IIFE` or `UMD` build.
 
-This option can be overridden using the [`browser`](#browser) option.
-
 #### globals
 
 ```typescript
@@ -296,25 +284,7 @@ globals: { [name: string]: string } | string[];
 default {};
 ```
 
-Object or array to map names to globals in `Browser` build.
-
-This option can be overridden using the [`browser`](#browser) option.
-
-#### equals
-
-```typescript
-equals: boolean;
-
-default false;
-```
-
-> As of version `0.15.2` this option has no effect, It won't throw to keep compatibility with previous version but it will be ignored. Install [`rollup-plugin-export-equals` Plugin](#supported-plugins) instead.
-
-Transforms type export for `CommonJS Module` using `export = ...` instead of `export default ...`.
-
-This option can be overridden using the [`types`](#types) option.
-
-> :warning: *Note that this option should only be used when your library has a* `default` *export and no* `named` *exports, otherwise it may cause the type declarations to become invalid.*
+`Object` or `array` to map names to globals in `Browser` build.
 
 #### cache
 
@@ -329,76 +299,12 @@ Defines the directory to be used for cache, relative to the project root.
 #### project
 
 ```typescript
-cache: string;
+project: string;
 
 default "tsconfig.json"
 ```
 
-Defines the location of typescript `tsconfig.json` file.
-
-#### main
-
-```typescript
-main: CommonJSOptions | false;
-
-interface CommonJSOptions {
-  esModule?: boolean | null;
-  interop?: boolean | null;
-}
-```
-
-Specific options to be used in the `CommonJS` build. They will override any corresponding option set in the top-level options. See [`esModule`](#esmodule) ans [`interop`](#interop) options.
-
-If it's set to `false`, it will prevent `CommonJS` build altogether, even if there is a `"main"` field in `package.json`.
-
-#### browser
-
-```typescript
-browser: BrowserOptions | false;
-
-interface BrowserOptions {
-  esModule?: boolean;
-  interop?: boolean;
-  format?: "iife" | "amd" | "umd" ;
-  name?: string;
-  id?: string;
-  extend?: boolean;
-  globals?: { [name: string]: string } | string[];
-}
-```
-
-Specific options to be used in the `Browser` build. They will override any corresponding option set in the top-level options. See [`esModule`](#esmodule), [`interop`](#interop), [`format`](#format), [`name`](#name), [`id`](#id), [`extend`](#extend) and [`globals`](#globals) options.
-
-If it's set to* `false`, it will prevent `Browser` build altogether, even if there is a `"browser"` field in `package.json`.
-
-#### bin
-
-```typescript
-bin: CommonJSOptions | false;
-
-interface CommonJSOptions {
-  esModule?: boolean;
-  interop?: boolean;
-}
-```
-
-Specific options to be used in `Binary` build. They will override any corresponding option set in the top-level options. See [`esModule`](#esmodule) and [`interop`](#interop) options.
-
-If it's set to `false`, it will prevent `Binary` build altogether, even if there is a `"bin"` field in `package.json`.
-
-#### types
-
-```typescript
-types: TypesOptions | false;
-
-interface TypesOptions {
-  equals: boolean;
-}
-```
-
-Specific options to be used for types generation. They will override any corresponding option set in the top-level options. See [`equals`](#equals) option.
-
-If it's set to `false`, it will prevent type declarations generation altogether, even if there is a `"types"` or `"typings"` field in `package.json`.
+Defines the location of typescript `tsconfig.json` file, relative to the project root.
 
 ### Selective Options
 
@@ -406,13 +312,13 @@ Some options support a selective format to allow for a more flexible configurati
 
 Note that some options support different selective formats. `Boolean` type options support `string` based format and `object` based format while others support only `object` based format.
 
-See [sourcemap](#sourcemap) option.
+See [sourcemap](#sourcemap), [esModule](#esmodule), [interop](#interop) and [min](#min) options.
 
 #### Object based selective format
 
 `object` based format works by preserving the default value and overiding it with the provided configuration.
 
-***example:***
+***example***
 
 Assuming `default = false`, `{ main: true }` will result in `true` for `main`, and `false` for others.
 
@@ -420,7 +326,7 @@ Assuming `default = false`, `{ main: true }` will result in `true` for `main`, a
 
 You can override the default value as well using the `"default"` object key.
 
-***example:***
+***example***
 
 Assuming `default = false`, `{ default: true, bin: false }` will result in `false` for `bin`, and `true` for others.
 
@@ -428,7 +334,7 @@ Assuming `default = false`, `{ default: true, bin: false }` will result in `fals
 
 The special `"api"` object key represents `main`, `module` and `browser`.
 
-***example:***
+***example***
 
 Assuming `default = false`, `{ api: true }` will result in `true` for `main`, `module` and `browser`, and `false` for others.
 
@@ -436,7 +342,7 @@ Assuming `default = false`, `{ api: true }` will result in `true` for `main`, `m
 
 `string` based format works in a different way, it does not preserve the default value, included build types will be set to `true` and the others will be set to `false`. It can be a `string` or an `string array`.
 
-***example:***
+***example***
 
 `"browser"` will result `true` for `browser` and `false` for others.
 

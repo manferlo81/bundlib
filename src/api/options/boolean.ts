@@ -1,4 +1,4 @@
-import { SelectiveBooleanOption } from '../bundlib-options';
+import { BuildType, SelectiveBooleanOption, WithModuleOptions } from '../bundlib-options';
 import { invalidOption } from '../errors';
 import { Nullable } from '../helper-types';
 import { keys, keysToObject } from '../helpers';
@@ -6,12 +6,7 @@ import { isArray, isBool, isNull, isObject } from '../type-check/type-check';
 import { keysCheck } from '../validate/validate-keys';
 import { ALL_KEYS, API_KEYS, isBuildTypeString, isSelectiveObjectKey, resolveTypeString, resolveTypeStringArray } from './selective';
 
-export interface BooleanBuildOptions {
-  main: boolean;
-  module: boolean;
-  browser: boolean;
-  bin: boolean;
-}
+export type BooleanBuildOptions = Record<BuildType, boolean>;
 
 export function resolveSelectiveBoolOption(value: Nullable<SelectiveBooleanOption>, defaultValue: boolean, name: string, url: string): BooleanBuildOptions {
 
@@ -81,4 +76,13 @@ export function resolveSelectiveBoolOption(value: Nullable<SelectiveBooleanOptio
 
   return result;
 
+}
+
+export function normalizeBooleanOption(
+  build: Nullable<WithModuleOptions>,
+  key: keyof WithModuleOptions,
+  field: BuildType,
+  def: BooleanBuildOptions,
+): boolean {
+  return (!build || isNull(build[key])) ? def[field] : build[key] as boolean;
 }

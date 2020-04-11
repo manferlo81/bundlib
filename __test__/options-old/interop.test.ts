@@ -29,7 +29,6 @@ describe('interop option', () => {
       'bin-',
       ['main-'],
       ['main', 'browser-'],
-      {},
     ];
 
     expect.assertions(invalid.length);
