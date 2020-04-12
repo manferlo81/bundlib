@@ -22,7 +22,7 @@ export function pkgToConfigs(
 ): Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>;
 
 export function pkgToConfigs(
-  { cwd, input, output, dependencies, cache, project }: PkgAnalized,
+  { cwd, input, output, dependencies, cache }: PkgAnalized,
   { dev, watch, onwarn }: BundlibAPIOptions,
 ): Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>> {
 
@@ -152,6 +152,7 @@ export function pkgToConfigs(
     mini: boolean,
     browser: boolean,
     bin: boolean,
+    project: StrictNullable<string>,
   ): Plugin[] {
 
     const sourcemapBool = !!sourcemap;
@@ -270,6 +271,7 @@ export function pkgToConfigs(
           production && !min,
           false,
           false,
+          esOutput.project,
         ),
         onwarn,
         useChokidar,
@@ -295,6 +297,7 @@ export function pkgToConfigs(
             true,
             false,
             false,
+            esOutput.project,
           ),
           onwarn,
           useChokidar,
@@ -327,6 +330,7 @@ export function pkgToConfigs(
           production && !min,
           false,
           false,
+          cjsOutput.project,
         ),
         onwarn,
         useChokidar,
@@ -352,6 +356,7 @@ export function pkgToConfigs(
             true,
             false,
             false,
+            cjsOutput.project,
           ),
           onwarn,
           useChokidar,
@@ -385,6 +390,7 @@ export function pkgToConfigs(
           production && !min,
           true,
           false,
+          browserOutput.project,
         ),
         onwarn,
         useChokidar,
@@ -414,6 +420,7 @@ export function pkgToConfigs(
             true,
             true,
             false,
+            browserOutput.project,
           ),
           onwarn,
           useChokidar,
@@ -450,6 +457,7 @@ export function pkgToConfigs(
           production && !min,
           false,
           true,
+          binaryOutput.project,
         ),
         onwarn,
         useChokidar,
@@ -475,6 +483,7 @@ export function pkgToConfigs(
             true,
             false,
             true,
+            binaryOutput.project,
           ),
           onwarn,
           useChokidar,

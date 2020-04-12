@@ -16,6 +16,7 @@ export interface ModuleBuildOptions extends OptionsWithPath {
   esModule: boolean;
   interop: boolean;
   min: boolean;
+  project: StrictNullable<string>;
 }
 
 export interface BrowserBuildOptions extends ModuleBuildOptions {
@@ -49,5 +50,4 @@ export interface PkgAnalized {
   output: OutputOptions;
   dependencies: Dependencies;
   cache: StrictNullable<string>;
-  project: StrictNullable<string>;
 }

@@ -24,7 +24,6 @@ describe('analize', () => {
       output,
       dependencies,
       cache,
-      project,
     } = analized;
 
     expect(input).toEqual({
@@ -44,7 +43,6 @@ describe('analize', () => {
       peer: null,
     });
     expect(cache).toBeNull();
-    expect(project).toBeNull();
 
   });
 

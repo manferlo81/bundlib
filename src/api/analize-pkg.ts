@@ -7,6 +7,7 @@ import { normalizeBooleanOption } from './options/boolean';
 import { resolveSelectiveESModuleOption } from './options/es-module';
 import { resolveSelectiveInteropOption } from './options/interop';
 import { normalizeBuildMin, resolveSelectiveMinOption } from './options/min';
+import { resolveSelectiveProjectOption } from './options/project';
 import { normalizeBuildSourcemap, resolveSelectiveSourcemapOption } from './options/sourcemap';
 import { BundlibPkgJson } from './pkg';
 import { BrowserBuildOptions, Dependencies, InputOptions, ModuleBuildOptions, OutputOptions, PkgAnalized, TypesBuildOptions } from './pkg-analized';
@@ -165,12 +166,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     throw invalidOptionOld('cache', 'string');
   }
 
-  // ensure "project" option is valid
-  // throw otherwise
-
-  if (!isStringOrNull(projectOption)) {
-    throw invalidOptionOld('project', 'string');
-  }
+  const perBuildProjectOption = resolveSelectiveProjectOption(projectOption);
 
   // ensure "main" option is valid
   // throw otherwise
@@ -335,6 +331,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     esModule: normalizeBooleanOption(mainOptions, 'esModule', topLevelESModule.main),
     interop: normalizeBooleanOption(mainOptions, 'interop', topLevelInterop.main),
     min: normalizeBuildMin(mainOptions, 'main', topLevelMin),
+    project: perBuildProjectOption.main,
   };
 
   // set ES Module build output options
@@ -348,6 +345,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     esModule: topLevelESModule.module,
     interop: topLevelInterop.module,
     min: normalizeBuildMin(moduleOptions, 'module', topLevelMin),
+    project: perBuildProjectOption.module,
   };
 
   // set Browser build output options
@@ -374,6 +372,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
       normalizeGlobals(browserGlobals),
     ),
     extend: normalizeBuildFlag(browserOptions, 'extend', !!extend),
+    project: perBuildProjectOption.browser,
   };
 
   // set Binary build output options
@@ -387,6 +386,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     esModule: normalizeBooleanOption(binaryOptions, 'esModule', topLevelESModule.bin),
     interop: normalizeBooleanOption(binaryOptions, 'interop', topLevelInterop.bin),
     min: normalizeBuildMin(binaryOptions, 'bin', topLevelMin),
+    project: perBuildProjectOption.bin,
   };
 
   // set type definitions output options
@@ -416,7 +416,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   // set cache option
 
   const cache: StrictNullable<string> = cacheOption || null;
-  const project: StrictNullable<string> = projectOption || null;
+  // const project: StrictNullable<string> = projectOption || null;
 
   // return all options
 
@@ -427,7 +427,6 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     output,
     dependencies,
     cache,
-    project,
   };
 
 }

@@ -76,20 +76,21 @@ type SelectiveOption<K extends string, T> =
 export type SelectiveTypeString = BuildType | 'api';
 
 export type SelectiveBooleanOption = SelectiveOption<SelectiveTypeString, boolean>;
+export type SelectiveStringOption = SelectiveObjOption<SelectiveTypeString, string>;
+
 export type SelectiveSourcemap = SelectiveOption<SelectiveTypeString, RollupSourcemap>;
-export type SelectiveProjectOption = SelectiveObjOption<SelectiveTypeString, string>;
 export type SelectiveSkipOption = SelectiveOption<SelectiveTypeString, boolean>;
 
 export interface BundlibOptions {
 
-  input?: Nullable<InputOptions | string>;
+  input?: Nullable<SelectiveStringOption>;
 
   sourcemap?: Nullable<RollupSourcemap>;
   esModule?: Nullable<SelectiveBooleanOption>;
   interop?: Nullable<SelectiveBooleanOption>;
   min?: Nullable<SelectiveBooleanOption>;
   cache?: Nullable<string>;
-  project?: Nullable<string>;
+  project?: Nullable<SelectiveStringOption>;
 
   format?: Nullable<BrowserBuildFormat>;
   name?: Nullable<string>;

@@ -6,6 +6,10 @@ describe('project option', () => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const analizeWithProject = (project: any) => analize(cwd, {
+    main: 'main.js',
+    module: 'module.js',
+    browser: 'browser.js',
+    bin: 'bin.js',
     bundlib: { project },
   });
 
@@ -14,7 +18,6 @@ describe('project option', () => {
     const invalidProjectOptions = [
       1,
       ['string'],
-      {},
       true,
     ];
 
@@ -33,19 +36,23 @@ describe('project option', () => {
 
     const projectPath = 'tsconfig-2.json';
 
-    const { project } = await analizeWithProject(projectPath);
+    const { output: { main, module: moduleOutput, browser, bin } } = await analizeWithProject(projectPath);
 
-    expect(project)
-      .toBe(projectPath);
+    expect(main ? main.project : null).toBe(projectPath);
+    expect(moduleOutput ? moduleOutput.project : null).toBe(projectPath);
+    expect(browser ? browser.project : null).toBe(projectPath);
+    expect(bin ? bin.project : null).toBe(projectPath);
 
   });
 
-  test('should be null if cache not provided', async () => {
+  test('should be null if project not provided', async () => {
 
-    const { project } = await analize(cwd, {});
+    const { output: { main, module: moduleOutput, browser, bin } } = await analizeWithProject(undefined);
 
-    expect(project)
-      .toBeNull();
+    expect(main ? main.project : 0).toBeNull();
+    expect(moduleOutput ? moduleOutput.project : 0).toBeNull();
+    expect(browser ? browser.project : 0).toBeNull();
+    expect(bin ? bin.project : 0).toBeNull();
 
   });
 
