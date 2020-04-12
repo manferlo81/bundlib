@@ -27,14 +27,12 @@ export interface BrowserBuildOptions extends ModuleBuildOptions {
   extend: boolean;
 }
 
-export type TypesBuildOptions = OptionsWithPath;
-
 export interface OutputOptions {
   main: StrictNullable<ModuleBuildOptions>;
   module: StrictNullable<ModuleBuildOptions>;
   browser: StrictNullable<BrowserBuildOptions>;
   bin: StrictNullable<ModuleBuildOptions>;
-  types: StrictNullable<TypesBuildOptions>;
+  types: StrictNullable<string>;
 }
 
 export interface Dependencies {

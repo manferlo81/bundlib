@@ -10,7 +10,7 @@ import { normalizeBuildMin, resolveSelectiveMinOption } from './options/min';
 import { resolveSelectiveProjectOption } from './options/project';
 import { normalizeBuildSourcemap, resolveSelectiveSourcemapOption } from './options/sourcemap';
 import { BundlibPkgJson } from './pkg';
-import { BrowserBuildOptions, Dependencies, InputOptions, ModuleBuildOptions, OutputOptions, PkgAnalized, TypesBuildOptions } from './pkg-analized';
+import { BrowserBuildOptions, Dependencies, InputOptions, ModuleBuildOptions, OutputOptions, PkgAnalized } from './pkg-analized';
 import { readPkg } from './read-pkg';
 import { isDictionary, isDictionaryOrNull, isNull, isString, isStringOrNull } from './type-check/type-check';
 import { isBrowserOption } from './validate/option-browser';
@@ -391,9 +391,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   // set type definitions output options
 
-  const typesOutput: StrictNullable<TypesBuildOptions> = (typesOptions === false || !typesPath) ? null : {
-    path: typesPath,
-  };
+  const typesOutput: StrictNullable<string> = (typesOptions === false || !typesPath) ? null : typesPath;
 
   // set all output options
 

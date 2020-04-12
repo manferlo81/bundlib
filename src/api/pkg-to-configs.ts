@@ -127,7 +127,7 @@ export function pkgToConfigs(
 
   const typesFilename = renamePre(basename(apiInput), 'd');
 
-  let typesOutputDir = typesOutput ? resolve(cwd, typesOutput.path) : null;
+  let typesOutputDir = typesOutput ? resolve(cwd, typesOutput) : null;
   if (typesOutputDir && extensionMatch(typesOutputDir, ['.ts'])) {
     typesOutputDir = dirname(typesOutputDir);
   }
@@ -217,7 +217,7 @@ export function pkgToConfigs(
         preferConst: true,
       }),
 
-      declarationDir && typesOutput && loadPluginExportEquals && loadPluginExportEquals({
+      declarationDir && loadPluginExportEquals && loadPluginExportEquals({
         file: resolve(cwd, pathJoin(declarationDir, typesFilename)),
       }),
 

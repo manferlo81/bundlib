@@ -466,7 +466,7 @@ interface PkgAnalized {
     module: ESModuleBuildOptions | null;
     browser: BrowserBuildOptions | null;
     bin: CommonJSBuildOptions | null;
-    types: TypesBuildOptions | null;
+    types: string | null;
   };
   dependencies: {
     runtime: { [name: string]: string } | null;

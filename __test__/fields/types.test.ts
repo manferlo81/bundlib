@@ -20,7 +20,7 @@ describe('package.json types', () => {
     });
     const { types } = analized.output;
 
-    expect(typeof (types ? types.path : null)).toBe('string');
+    expect(typeof (types || null)).toBe('string');
 
   });
 
@@ -31,7 +31,7 @@ describe('package.json types', () => {
     });
     const { types } = analized.output;
 
-    expect(typeof (types ? types.path : null)).toBe('string');
+    expect(typeof (types || null)).toBe('string');
 
   });
 
@@ -45,7 +45,7 @@ describe('package.json types', () => {
     });
     const { types } = analized.output;
 
-    expect(types ? types.path : null).toMatch(new RegExp(`${inTypes}$`));
+    expect(types || null).toMatch(new RegExp(`${inTypes}$`));
 
   });
 
