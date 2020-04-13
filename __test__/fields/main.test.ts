@@ -29,11 +29,11 @@ describe('package.json main field', () => {
 
   test('should read main field', async () => {
 
-    const analized = await analizeWithMain('out/lib.js');
-    const { main } = analized.output;
+    const mainField = 'out/lib.js';
+    const analized = await analizeWithMain(mainField);
+    const { main } = analized;
 
-    expect(main ? main.path : null)
-      .toMatch(/out[\\/]lib\.js$/);
+    expect(main ? main.output : null).toBe(mainField);
 
   });
 

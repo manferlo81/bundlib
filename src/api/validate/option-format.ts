@@ -1,9 +1,9 @@
 import { Nullable } from '../helper-types';
-import { createInList } from './in-list';
-import { isNull } from '../type-check';
+import { createOneOf } from '../type-check/one-of';
+import { isNull } from '../type-check/type-check';
 import { BrowserBuildFormat } from '../types';
 
-export const isBrowserFormat = createInList<Nullable<BrowserBuildFormat>>(
+export const isBrowserFormat = createOneOf<Nullable<BrowserBuildFormat>>(
   isNull,
   'iife',
   'amd',

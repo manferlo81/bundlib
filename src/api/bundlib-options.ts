@@ -40,27 +40,65 @@ export interface BrowserOptions {
   globals?: GlobalsOptions;
 }
 
-export interface CommonJSBuildOptions extends
-  WithSourcemapOption, WithModuleOptions, WithMinOption {
+export interface CommonJSBuildOptions {
+  sourcemap?: Nullable<RollupSourcemap>;
+  esModule?: Nullable<boolean>;
+  interop?: Nullable<boolean>;
+  min?: Nullable<boolean>;
 }
 
-export interface ESModuleBuildOptions extends
-  WithSourcemapOption, WithMinOption {
+export interface ESModuleBuildOptions {
+  sourcemap?: Nullable<RollupSourcemap>;
+  min?: Nullable<boolean>;
 }
 
-export interface BrowserBuildOptions extends
-  WithSourcemapOption, WithModuleOptions, WithMinOption, BrowserOptions {
+export interface BrowserBuildOptions {
+  sourcemap?: Nullable<RollupSourcemap>;
+  esModule?: Nullable<boolean>;
+  interop?: Nullable<boolean>;
+  min?: Nullable<boolean>;
+  format?: Nullable<BrowserBuildFormat>;
+  name?: Nullable<string>;
+  id?: Nullable<string>;
+  extend?: Nullable<boolean>;
+  globals?: GlobalsOptions;
 }
 
-export interface BundlibOptions extends
-  WithSourcemapOption, TypesOptions, BrowserOptions {
+type SelectiveObjOption<K extends string, T> =
+  | Partial<Record<K | 'default', Nullable<T>>>
+  | T;
 
-  input?: Nullable<InputOptions | string>;
-  esModule?: ModuleOption;
-  interop?: ModuleOption;
-  min?: MinOption;
+type SelectiveOption<K extends string, T> =
+  | SelectiveObjOption<K, T>
+  | K
+  | K[];
+
+export type SelectiveTypeString = BuildType | 'api';
+
+export type SelectiveBooleanOption = SelectiveOption<SelectiveTypeString, boolean>;
+export type SelectiveStringOption = SelectiveObjOption<SelectiveTypeString, string>;
+
+export type SelectiveSourcemap = SelectiveOption<SelectiveTypeString, RollupSourcemap>;
+export type SelectiveSkipOption = SelectiveOption<SelectiveTypeString, boolean>;
+
+export interface BundlibOptions {
+
+  input?: Nullable<SelectiveStringOption>;
+
+  sourcemap?: Nullable<RollupSourcemap>;
+  esModule?: Nullable<SelectiveBooleanOption>;
+  interop?: Nullable<SelectiveBooleanOption>;
+  min?: Nullable<SelectiveBooleanOption>;
   cache?: Nullable<string>;
-  project?: Nullable<string>;
+  project?: Nullable<SelectiveStringOption>;
+
+  format?: Nullable<BrowserBuildFormat>;
+  name?: Nullable<string>;
+  id?: Nullable<string>;
+  extend?: Nullable<boolean>;
+  globals?: GlobalsOptions;
+
+  equals?: Nullable<boolean>;
 
   main?: Nullable<CommonJSBuildOptions | false>;
   module?: Nullable<ESModuleBuildOptions | false>;

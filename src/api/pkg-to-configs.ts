@@ -2,9 +2,9 @@ import builtinModules from 'builtin-modules';
 import { basename, dirname, join as pathJoin, resolve } from 'path';
 import { Plugin, PluginImpl } from 'rollup';
 import { createBrowserConfig, createModuleConfig } from './create-config';
-import { error } from './errors';
+import { createFincInput } from './create-input-finder';
+import { error, inputNotFound } from './errors';
 import { JS_EXTENSIONS, TS_EXTENSIONS, TS_ONLY_EXTENSIONS } from './extensions';
-import { findFirst } from './find-first';
 import { StrictNullable } from './helper-types';
 import { setProp } from './helpers';
 import { createIsExternal } from './is-external';
@@ -17,32 +17,32 @@ import { BundlibAPIOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptio
 import { extensionMatch } from './validate/ext-match';
 
 export function pkgToConfigs(
-  pkg: PkgAnalized,
+  analized: PkgAnalized,
   options: BundlibAPIOptions,
 ): Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>;
 
 export function pkgToConfigs(
-  { cwd, input, output, dependencies, cache, project }: PkgAnalized,
-  { dev, watch, onwarn }: BundlibAPIOptions,
+  analized: PkgAnalized,
+  options: BundlibAPIOptions,
 ): Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>> {
 
   const {
-    api: apiInput1,
-    bin: binInput1,
-  } = input;
-
-  const {
-    main: cjsOutput,
-    module: esOutput,
+    cwd,
+    main: commanjsOutput,
+    module: moduleOutput,
     browser: browserOutput,
     bin: binaryOutput,
     types: typesOutput,
-  } = output;
+    dependencies,
+    cache,
+  } = analized;
+
+  const { dev, watch, onwarn } = options;
 
   const {
-    runtime: runtimeDeps,
-    dev: devDeps,
-    peer: peerDeps,
+    runtime: runtimeDependencies,
+    dev: devDependencies,
+    peer: peerDependencies,
   } = dependencies;
 
   const bundlibCache = resolve(cwd, cache || 'node_modules/.cache/bundlib');
@@ -56,7 +56,7 @@ export function pkgToConfigs(
     }
   }
 
-  const isInstalled = createIsInstalled(runtimeDeps, devDeps);
+  const isInstalled = createIsInstalled(runtimeDependencies, devDependencies);
   const pluginLoader = createPluginLoader(cwd, isInstalled);
 
   // CHECK FOR INSTALLED PLUGINS
@@ -76,65 +76,17 @@ export function pkgToConfigs(
 
   // CHECK FOR INSTALLED MODULES
 
-  const useTypescriptPlugin = !!loadPluginTypescript2 || !!loadPluginTypescript;
+  const extensions = (loadPluginTypescript2 || loadPluginTypescript) ? TS_EXTENSIONS : JS_EXTENSIONS;
 
-  const apiInput = apiInput1 ? resolve(cwd, apiInput1) : (
-    (
-      useTypescriptPlugin ? findFirst(
-        ...['index.ts', 'index.tsx'].map((filename) => resolve(cwd, 'src', filename)),
-      ) : null
-    ) ||
-    resolve(cwd, 'src', 'index.js')
-  );
-
-  const binInput = binInput1 ? resolve(cwd, binInput1) : (
-    (
-      useTypescriptPlugin ? findFirst(
-        ...['index.ts'].map((filename) => resolve(cwd, 'src-bin', filename)),
-      ) : null
-    ) ||
-    resolve(cwd, 'src-bin', 'index.js')
-  );
+  const findInput = createFincInput(cwd, extensions);
 
   const isInstalledChokidar = isInstalled('chokidar');
 
-  const isTypescriptAPIInput = extensionMatch(apiInput, TS_ONLY_EXTENSIONS);
-  const isTypescriptBinaryInput = extensionMatch(binInput, TS_ONLY_EXTENSIONS);
-
-  // throw if trying to generate type definitions from javascript input
-  // TODO: show warning intead of throwing
-
-  if (
-    typesOutput &&
-    !isTypescriptAPIInput
-  ) {
-    throw error('can\'t generate types from javascript source');
-  }
-
-  const apiExtensions = isTypescriptAPIInput ? TS_EXTENSIONS : JS_EXTENSIONS;
-  const binaryExtensions = isTypescriptBinaryInput ? TS_EXTENSIONS : JS_EXTENSIONS;
-
   const production = !dev;
 
-  const apiFolder = dirname(apiInput);
-
-  const apiFolderContent = apiExtensions.map((ext) => (
-    resolve(apiFolder, `**/*${ext}`)
-  ));
-  const cwdFolderContent = binaryExtensions.map((ext) => (
-    resolve(cwd, `**/*${ext}`)
-  ));
-
-  const typesFilename = renamePre(basename(apiInput), 'd');
-
-  let typesOutputDir = typesOutput ? resolve(cwd, typesOutput.path) : null;
-  if (typesOutputDir && extensionMatch(typesOutputDir, ['.ts'])) {
-    typesOutputDir = dirname(typesOutputDir);
-  }
-
   const isExternal = createIsExternal(
-    runtimeDeps,
-    peerDeps,
+    runtimeDependencies,
+    peerDependencies,
     builtinModules as string[],
   );
 
@@ -145,19 +97,39 @@ export function pkgToConfigs(
   const configs: Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>> = [];
 
   function createPlugins(
-    inputIsTypescript: boolean,
-    extensions: string[],
+    inputFile: string,
     outputFile: StrictNullable<string>,
+    extensions: string[],
     sourcemap: RollupSourcemap,
     mini: boolean,
     browser: boolean,
     bin: boolean,
+    project: StrictNullable<string>,
   ): Plugin[] {
 
     const sourcemapBool = !!sourcemap;
 
-    const declarationDir = inputIsTypescript && configs.length === 0 && !bin && typesOutputDir;
-    const include = bin ? cwdFolderContent : apiFolderContent;
+    const inputDirectory = dirname(inputFile);
+    const inputIsTypescript = extensionMatch(inputFile, TS_ONLY_EXTENSIONS);
+
+    let declarationDir: string | null = null;
+    const typesFilename = renamePre(basename(inputFile), 'd');
+
+    if (inputIsTypescript && configs.length === 0 && !bin) {
+
+      let typesOutputDir = typesOutput ? resolve(cwd, typesOutput) : null;
+      if (typesOutputDir && extensionMatch(typesOutputDir, ['.ts'])) {
+        typesOutputDir = dirname(typesOutputDir);
+      }
+
+      declarationDir = typesOutputDir;
+    }
+
+    const include = extensions.map(
+      bin
+        ? (ext) => resolve(cwd, `**/*${ext}`)
+        : (ext) => resolve(inputDirectory, `**/*${ext}`),
+    );
     const cacheRoot = pathJoin(bundlibCache, 'rpt2');
 
     let shebang: string;
@@ -176,10 +148,10 @@ export function pkgToConfigs(
         sourcemap: sourcemapBool,
       }),
 
-      bin && cjsOutput && outputFile && pluginAPI(
+      bin && commanjsOutput && outputFile && pluginAPI(
         cwd,
         dirname(outputFile),
-        setProp(apiInput, cwd, {}),
+        setProp(inputFile, cwd, {}),
       ),
 
       loadPluginNodeResolve && loadPluginNodeResolve({
@@ -193,11 +165,9 @@ export function pkgToConfigs(
       }),
 
       inputIsTypescript && loadPluginTypescript2 && loadPluginTypescript2({
-        // include,
         cacheRoot,
         useTsconfigDeclarationDir: true,
         tsconfigDefaults: {
-          // include,
           exclude: [],
         },
         tsconfigOverride: {
@@ -216,7 +186,7 @@ export function pkgToConfigs(
         preferConst: true,
       }),
 
-      declarationDir && typesOutput && loadPluginExportEquals && loadPluginExportEquals({
+      declarationDir && loadPluginExportEquals && loadPluginExportEquals({
         file: resolve(cwd, pathJoin(declarationDir, typesFilename)),
       }),
 
@@ -248,28 +218,35 @@ export function pkgToConfigs(
 
   }
 
-  if (esOutput) {
+  if (moduleOutput) {
 
-    const { path, sourcemap, min } = esOutput;
-    const resolvedPath = resolve(cwd, path);
+    const { input, output, sourcemap, min } = moduleOutput;
+    const inputFile = findInput(input);
+
+    if (!inputFile) {
+      throw inputNotFound('ES module');
+    }
+
+    const outputFile = resolve(cwd, output);
 
     configs.push(
       createModuleConfig(
-        apiInput,
+        inputFile,
         'es',
-        resolvedPath,
+        outputFile,
         sourcemap,
         true,
         false,
         isExternal,
         createPlugins(
-          isTypescriptAPIInput,
-          apiExtensions,
-          resolvedPath,
+          inputFile,
+          outputFile,
+          extensions,
           sourcemap,
           production && !min,
           false,
           false,
+          moduleOutput.project,
         ),
         onwarn,
         useChokidar,
@@ -280,21 +257,22 @@ export function pkgToConfigs(
 
       configs.push(
         createModuleConfig(
-          apiInput,
+          inputFile,
           'es',
-          renameMin(resolvedPath),
+          renameMin(outputFile),
           sourcemap,
           true,
           false,
           isExternal,
           createPlugins(
-            isTypescriptAPIInput,
-            apiExtensions,
-            resolvedPath,
+            inputFile,
+            outputFile,
+            extensions,
             sourcemap,
             true,
             false,
             false,
+            moduleOutput.project,
           ),
           onwarn,
           useChokidar,
@@ -305,14 +283,20 @@ export function pkgToConfigs(
 
   }
 
-  if (cjsOutput) {
+  if (commanjsOutput) {
 
-    const { path, sourcemap, esModule, interop, min } = cjsOutput;
-    const resolvedPath = resolve(cwd, path);
+    const { input, output, sourcemap, esModule, interop, min } = commanjsOutput;
+    const inputFile = findInput(input);
+
+    if (!inputFile) {
+      throw inputNotFound('CommonJS module');
+    }
+
+    const resolvedPath = resolve(cwd, output);
 
     configs.push(
       createModuleConfig(
-        apiInput,
+        inputFile,
         'cjs',
         resolvedPath,
         sourcemap,
@@ -320,13 +304,14 @@ export function pkgToConfigs(
         interop,
         isExternal,
         createPlugins(
-          isTypescriptAPIInput,
-          apiExtensions,
+          inputFile,
           resolvedPath,
+          extensions,
           sourcemap,
           production && !min,
           false,
           false,
+          commanjsOutput.project,
         ),
         onwarn,
         useChokidar,
@@ -337,7 +322,7 @@ export function pkgToConfigs(
 
       configs.push(
         createModuleConfig(
-          apiInput,
+          inputFile,
           'cjs',
           renameMin(resolvedPath),
           sourcemap,
@@ -345,13 +330,14 @@ export function pkgToConfigs(
           interop,
           isExternal,
           createPlugins(
-            isTypescriptAPIInput,
-            apiExtensions,
+            inputFile,
             resolvedPath,
+            extensions,
             sourcemap,
             true,
             false,
             false,
+            commanjsOutput.project,
           ),
           onwarn,
           useChokidar,
@@ -364,13 +350,19 @@ export function pkgToConfigs(
 
   if (browserOutput) {
 
-    const { path, sourcemap, esModule, interop, format, name, extend, id, globals, min } = browserOutput;
-    const resolvedPath = resolve(cwd, path);
+    const { input, output, sourcemap, esModule, interop, format, name, extend, id, globals, min } = browserOutput;
+    const inputFile = findInput(input);
+
+    if (!inputFile) {
+      throw inputNotFound('Browser build');
+    }
+
+    const resolvedPath = resolve(cwd, output);
     const isBrowserExternal = createIsExternal(globals);
 
     configs.push(
       createBrowserConfig(
-        apiInput,
+        inputFile,
         format,
         resolvedPath,
         sourcemap,
@@ -378,13 +370,14 @@ export function pkgToConfigs(
         interop,
         isBrowserExternal,
         createPlugins(
-          isTypescriptAPIInput,
-          apiExtensions,
+          inputFile,
           null,
+          extensions,
           sourcemap,
           production && !min,
           true,
           false,
+          browserOutput.project,
         ),
         onwarn,
         useChokidar,
@@ -399,7 +392,7 @@ export function pkgToConfigs(
 
       configs.push(
         createBrowserConfig(
-          apiInput,
+          inputFile,
           format,
           renameMin(resolvedPath),
           sourcemap,
@@ -407,13 +400,14 @@ export function pkgToConfigs(
           interop,
           isBrowserExternal,
           createPlugins(
-            isTypescriptAPIInput,
-            apiExtensions,
+            inputFile,
             null,
+            extensions,
             sourcemap,
             true,
             true,
             false,
+            browserOutput.project,
           ),
           onwarn,
           useChokidar,
@@ -430,12 +424,18 @@ export function pkgToConfigs(
 
   if (binaryOutput) {
 
-    const { path, sourcemap, esModule, interop, min } = binaryOutput;
-    const resolvedPath = resolve(cwd, path);
+    const { input, output, sourcemap, esModule, interop, min } = binaryOutput;
+    const inputFile = findInput(input);
+
+    if (!inputFile) {
+      throw inputNotFound('Binary build');
+    }
+
+    const resolvedPath = resolve(cwd, output);
 
     configs.push(
       createModuleConfig(
-        binInput,
+        inputFile,
         'cjs',
         resolvedPath,
         sourcemap,
@@ -443,13 +443,14 @@ export function pkgToConfigs(
         interop,
         isExternal,
         createPlugins(
-          isTypescriptBinaryInput,
-          binaryExtensions,
+          inputFile,
           resolvedPath,
+          extensions,
           sourcemap,
           production && !min,
           false,
           true,
+          binaryOutput.project,
         ),
         onwarn,
         useChokidar,
@@ -460,7 +461,7 @@ export function pkgToConfigs(
 
       configs.push(
         createModuleConfig(
-          binInput,
+          inputFile,
           'cjs',
           renameMin(resolvedPath),
           sourcemap,
@@ -468,13 +469,14 @@ export function pkgToConfigs(
           interop,
           isExternal,
           createPlugins(
-            isTypescriptBinaryInput,
-            binaryExtensions,
+            inputFile,
             resolvedPath,
+            extensions,
             sourcemap,
             true,
             false,
             true,
+            binaryOutput.project,
           ),
           onwarn,
           useChokidar,

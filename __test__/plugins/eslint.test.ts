@@ -1,6 +1,9 @@
+import { fixturePath } from '../tools/fixture-path';
 import getPluginNames from '../tools/get-plugin-names';
 
 describe('rollup-plugin-eslint plugin', () => {
+
+  const cwd = fixturePath('export-number-js');
 
   const pluginName = 'eslint';
   const deps = { 'rollup-plugin-eslint': '*' };
@@ -14,16 +17,16 @@ describe('rollup-plugin-eslint plugin', () => {
 
   outputFields.forEach(({ field, text }) => {
 
-    test(`Should not use if not installed on ${text}`, async () => {
-      const [plugins] = await getPluginNames(process.cwd(), false, {
+    test(`Should not use on ${text} if not installed`, async () => {
+      const [plugins] = await getPluginNames(cwd, false, {
         [field]: 'output.js',
       });
       expect(plugins).not.toContain(pluginName);
     });
 
     dependenciesFields.forEach((depField) => {
-      test(`Should use if installed as "${depField}" on ${text}`, async () => {
-        const [plugins] = await getPluginNames(process.cwd(), false, {
+      test(`Should use on ${text} if installed as "${depField}"`, async () => {
+        const [plugins] = await getPluginNames(cwd, false, {
           [field]: 'output.js',
           [depField]: deps,
         });

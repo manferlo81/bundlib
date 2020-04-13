@@ -1,6 +1,9 @@
+import { fixturePath } from '../tools/fixture-path';
 import getPluginNames from '../tools/get-plugin-names';
 
 describe('rollup-plugin-add-shebang plugin', () => {
+
+  const cwd = fixturePath('export-number-js');
 
   const pluginName = 'shebang';
   const deps = { 'rollup-plugin-add-shebang': '*' };
@@ -14,7 +17,7 @@ describe('rollup-plugin-add-shebang plugin', () => {
   outputFields.forEach(({ field, text }) => {
 
     test(`Should not use if not installed on ${text}`, async () => {
-      const [plugins] = await getPluginNames(process.cwd(), false, {
+      const [plugins] = await getPluginNames(cwd, false, {
         [field]: 'output.js',
       });
       expect(plugins).not.toContain(pluginName);
@@ -22,7 +25,7 @@ describe('rollup-plugin-add-shebang plugin', () => {
 
     dependenciesFields.forEach((depField) => {
       test(`Should not use if installed as "${depField}" on ${text}`, async () => {
-        const [plugins] = await getPluginNames(process.cwd(), false, {
+        const [plugins] = await getPluginNames(cwd, false, {
           [field]: 'output.js',
           [depField]: deps,
         });
@@ -34,7 +37,7 @@ describe('rollup-plugin-add-shebang plugin', () => {
 
   dependenciesFields.forEach((depField) => {
     test(`Should use if installed as "${depField}" on Binary build`, async () => {
-      const [plugins] = await getPluginNames(process.cwd(), false, {
+      const [plugins] = await getPluginNames(cwd, false, {
         bin: 'output.js',
         [depField]: deps,
       });

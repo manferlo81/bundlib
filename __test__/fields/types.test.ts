@@ -7,7 +7,7 @@ describe('package.json types', () => {
   test('should set types to null if no type path provided', async () => {
 
     const analized = await analize(cwd, {});
-    const { types } = analized.output;
+    const { types } = analized;
 
     expect(types).toBeNull();
 
@@ -18,9 +18,9 @@ describe('package.json types', () => {
     const analized = await analize(cwd, {
       types: 'types/index.d.ts',
     });
-    const { types } = analized.output;
+    const { types } = analized;
 
-    expect(typeof (types ? types.path : null)).toBe('string');
+    expect(typeof (types || null)).toBe('string');
 
   });
 
@@ -29,23 +29,23 @@ describe('package.json types', () => {
     const analized = await analize(cwd, {
       typings: 'types',
     });
-    const { types } = analized.output;
+    const { types } = analized;
 
-    expect(typeof (types ? types.path : null)).toBe('string');
+    expect(typeof (types || null)).toBe('string');
 
   });
 
   test('should read types over typings', async () => {
 
-    const inTypes = 'types';
+    const typesField = 'types';
 
     const analized = await analize(cwd, {
       typings: 'typings',
-      types: inTypes,
+      types: typesField,
     });
-    const { types } = analized.output;
+    const { types } = analized;
 
-    expect(types ? types.path : null).toMatch(new RegExp(`${inTypes}$`));
+    expect(types || null).toBe(typesField);
 
   });
 

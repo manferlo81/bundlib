@@ -21,7 +21,7 @@
     "test": "jest --color -w 3",
     "test:watch": "npm test -- --watch-all",
     "clean": "rimraf bin dist types coverage node_modules/.cache/bundlib node_modules/.cache/jest",
-    "lint": "eslint src/** __test__/**",
+    "lint": "eslint src/**/*.ts __test__/**/*.ts __test__/**/*.js",
     "prerelease": "npm run clean && npm run lint && npm test && npm run build",
     "release": "standard-version"
   },

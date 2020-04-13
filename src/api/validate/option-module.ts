@@ -1,7 +1,7 @@
 import { ESModuleBuildOptions } from '../bundlib-options';
-import { createInList } from './in-list';
+import { createOneOf } from '../type-check/one-of';
 
-export const isModuleOptionKey = createInList<keyof ESModuleBuildOptions>(
+export const isModuleOptionKey = createOneOf<keyof ESModuleBuildOptions>(
   'sourcemap',
   'min',
 );

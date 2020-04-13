@@ -4,59 +4,74 @@
 
 An automatic configuration manager for [Rollup.js](https://github.com/rollup/rollup).
 
-> :warning: Bundlib is under active development, please [file a new issue](https://github.com/manferlo81/bundlib/issues) if you find any issue or bug, suggestions are welcome as well.
+> :warning: **Bundlib** is under active development, please [file a new issue](https://github.com/manferlo81/bundlib/issues) if you find any issue or bug, suggestions are welcome as well.
 
-## BREAKING CHANGES in version 0.15.x
+## BREAKING CHANGES in version 0.16.x
 
-* [Rollup](https://github.com/rollup/rollup) has to be installed separately
-* `analizePkg` paths are not longer resolved
-* find input files and default to `index.js` instead of `index.ts`
+* `analizePkg` result format changed, see [PkgAnalized](#pkganalized) (It only affects you if you are using **Bundlib** programmatically)
 
 ## In this guide
 
 * [Install](#install)
-* [First steps](#first-steps)
 * [Build](#build)
 * [Configuration](#configuration)
+* [Advanced Configuration](#advanced-configuration)
+* [Options](#options)
+  * [input](#input)
+  * [sourcemap](#sourcemap)
+  * [esModule](#esModule)
+  * [interop](#interop)
+  * [format](#format)
+  * [name](#name)
+  * [id](#id)
+  * [extend](#extend)
+  * [globals](#globals)
+  * [min](#min)
+  * [cache](#cache)
+  * [project](#project)
+  * [main](#main)
+  * [module](#module)
+  * [browser](#browser)
+  * [bin](#bin)
+  * [types](#types)
+* [Selective Options](#selective-options)
+  * [Object based selective format](#object-based-selective-format)
+  * [String based selective format](#string-based-selective-format)
 * [Supported Plugins](#supported-plugins)
-* [CLI](#cli)
-* [API](#api)
-* [Types](#types-1)
+* [Using the CLI tool](#using-the-cli-tool)
+* [Using **Bundlib** programmatically](#using-bundlib-programmatically)
+* [Types](#types)
 * [Features](#features)
 
 ## Install
 
 ```bash
-npm i -D bundlib
+npm i -D bundlib rollup
 ```
 
-> :warning: Rollup is a peer dependency and it has to be installed as well.
-
-## First steps
-
-Bundlib will use `src/index.ts` or `src/index.tsx` as entry file for your library if you are using `typescript` (see Plugins for more information) or `src/index.js` otherwise, it can be configured using the [`input`](#input) option.
-
-Add the corresponding scripts to your `package.json` and run them. [see below for CLI options](#cli).
+> :warning: [**Rollup**](#https://github.com/rollup/rollup) is a peer dependency and it has to be installed as well.
 
 ## Build
 
+**Bundlib** will try to find your entry point file in the **`src`** folder. You can manually set your entry points using the [`input`](#input) options.
+
 ### CommonJS module
 
-Building a `CommonJS Module` is as simple as adding a `"main"` field to your `package.json` pointing to the output file, [see the configuration section](#configuration) for extra options.
+To build a `CommonJS Module` simply add a `"main"` field to your `package.json` pointing to the output file, [see the configuration section](#configuration) for extra options.
 
 ### ES module
 
-To build a `ES Module` simply add a `"module"` field to your `package.json` pointing to the output file, [see the configuration section](#configuration) for extra options.
+To build a `ES Module` add a `"module"` field to your `package.json` pointing to the output file, [see the configuration section](#configuration) for extra options.
 
 ### IIFE, AMD and UMD build
 
-For `IIFE`, `AMD` or `UMD` builds, add a `"browser"` field to your `package.json`. The default format is `"umd"` but it can be changed to `"iife"` or `"amd"` using the [`format`](#format) or [`browser`](#browser) option, see the [configuration section](#configuration) for more info.
+For `IIFE`, `AMD` or `UMD` builds, add a `"browser"` field to your `package.json`. The default format is `"umd"` but it can be changed to `"iife"` or `"amd"` using the [`format`](#format) option, see the [configuration section](#configuration) for more info.
 
 ## Configuration
 
 ### Automatic Configuration
 
-Bundlib will configure Rollup according to you `package.json` data, see [Advanced Configuration](#advanced-configuration) for more information.
+**Bundlib** will configure Rollup according to you `package.json` data, see [Advanced Configuration](#advanced-configuration) for more information.
 
 #### "main"
 
@@ -68,11 +83,11 @@ The `"module"` field will be used as your `ES Module` output, if not present `ES
 
 #### "browser"
 
-The `"browser"` field will be used as your `Browser` build output, if not present `Browser` build will be skipped. You can skip the build manually using the [`"browser"`](#browser) advanced option. `Bundlib` only supports `string` type `"browser"` field, it will throw otherwise.
+The `"browser"` field will be used as your `Browser` build output, if not present `Browser` build will be skipped. You can skip the build manually using the [`"browser"`](#browser) advanced option. **Bundlib** only supports `string` type `"browser"` field, it will **throw** otherwise.
 
 #### "bin"
 
-The `"bin"` field will be used as your `Binary` build output, if not present `Binary` build will be skipped. You can skip the build manually using the [`"bin"`](#bin) advanced option. `Bundlib` only supports `string` type `"bin"` field, it will throw otherwise.
+The `"bin"` field will be used as your `Binary` build output, if not present `Binary` build will be skipped. You can skip the build manually using the [`"bin"`](#bin) advanced option. **Bundlib** only supports `string` type `"bin"` field, it will **throw** otherwise.
 
 #### "types" or "typings"
 
@@ -92,11 +107,56 @@ The `"peerDependencies"` field will be used as external dependencies for your Co
 
 #### "bundlib"
 
-The `"bundlib"` field will be used for advanced configuration, see [Advanced Configuration](#advanced-configuration) for more information.
+The `"bundlib"` field can be used for advanced configuration, see [Advanced Configuration](#advanced-configuration) for more information.
 
 ### Advanced Configuration
 
-Advanced configuration can be done using the `"bundlib"` field in your `package.json`. Pass an `object` with the options or a `string` as a path relative to the project root pointing to a `.json`, `.yaml`, `.yml` or `.js` file containing the options, if not present `Bundlib` will try to find it using the following order...
+Advanced configuration can be done using the `"bundlib"` field in your `package.json` or by using one of the [configuration files](#configuration-files).
+
+#### Configuration in `package.json`
+
+Set `"bundlib"` field in your `package.json` to an `object` with your configuration. See [options](#options) for more information.
+
+***example***
+
+```json
+// package.json
+{
+  "name": "my-lib",
+  "version": "1.0.0",
+  "browser" : "dist/my-lib.amd.js",
+  "bundlib": {
+    "format": "amd"
+  }
+  ...
+}
+```
+
+You can also set `"bundlib"` field in `package.json` to a `string` as a path, relative to the project root, pointing to a `.json`, `.yaml`, `.yml` or `.js` configuration file.
+
+***example***
+
+```json
+// package.json
+{
+  "name": "my-lib",
+  "version": "1.0.0",
+  "browser" : "dist/my-lib.amd.js",
+  "bundlib": "custom-options.yaml"
+  // ...
+}
+```
+
+then...
+
+```yaml
+# custom-options.yaml
+format: amd
+```
+
+#### Configuration files
+
+If `"bundlib"` field not present (or set to `null`), **Bundlib** will try to find your configuration file using the following order...
 
 * .bundlibrc (json or yaml format)
 * .bundlibrc.json
@@ -107,106 +167,67 @@ Advanced configuration can be done using the `"bundlib"` field in your `package.
 
 See the [list of options](#options) below.
 
-***example (as object)***
-
-```javascript
-// package.json
-{
-  "version": "1.0.0",
-  "name": "my-lib",
-  "browser" : "dist/my-lib.amd.js",
-  // ...
-  "bundlib": {
-    "format": "amd"
-  }
-  // ...
-}
-```
-
-***example (as string)***
-
-```javascript
-// package.json
-{
-  "version": "1.0.0",
-  "name": "my-lib",
-  "browser" : "dist/my-lib.amd.js",
-  // ...
-  "bundlib": "custom-options.json"
-  // ...
-}
-```
-
-then...
-
-```javascript
-// custom-options.json
-{
-  "format": "amd"
-}
-```
-
 ### Options
 
-The option object may contain any of the following properties. Any invalid or unknown option will cause `Bundlib` to throw at build time. Any option or sub-option set to `null` will be ignored.
+The option object may contain any of the following properties. Any invalid or unknown option will cause **Bundlib** to **throw** at build time. Any option or sub-option set to `null` will be ignored.
 
 #### input
 
 ```typescript
-input: string | InputOptions;
-
-interface InputOptions {
-  api?: string;
-  bin?: string;
-}
-
-default {
-  api: "src/index.js";
-  bin: "src-bin/index.js";
-};
+input: string | SelectiveOption;
 ```
 
-The path to the file (or files) to be used as entry point(s) for `API` and `Binary` modules. If a `string` is provided, it will be used as `API` entry point and `Binary` entry point will be set to the default value.
+The path to the files to be used as entry points for each od your builds.
+
+This option supports `object` based [`selective format`](#selective-options). See [Selective Options](#selective-options) for more information.
 
 #### sourcemap
 
 ```typescript
-sourcemap: boolean | 'inline' | 'hidden';
+sourcemap: boolean | 'inline' | 'hidden' | SelectiveOption;
 
 default true;
 ```
 
 Whether or not to generate source maps, See [Rollup documentation](https://rollupjs.org/guide/en/#outputsourcemap) for more information. If not specified or set to `null` it will default to `true`.
 
-This option can be overridden using `per-build` options. See [`main`](#main), [`module`](#module), [`browser`](#browser) and [`bin`](#bin) options.
+This option supports `object` based and `string` based [`selective format`](#selective-options). See [Selective Options](#selective-options) for more information.
 
 #### esModule
 
 ```typescript
-esModule: BuildType | BuildType[] | boolean;
-
-type BuildType = "main" | "browser" | "min";
+esModule: boolean | SelectiveOption;
 
 default false;
 ```
 
 Whether or not to add a `__esModule: true` property to your `non ES Module` build. If `esModule = true` it will affect all supported builds.
 
-This option can be overridden using `per-build` options. See [`main`](#main), [`browser`](#browser) and [`bin`](#bin) options.
+This option supports `object` based and `string` based [`selective format`](#selective-options). See [Selective Options](#selective-options) for more information.
 
 #### interop
 
 ```typescript
-interop: BuildType | BuildType[] | boolean;
-
-type BuildType = "main" | "browser" | "min";
+interop: boolean | SelectiveOption;
 
 default false;
 ```
 
 Whether or not to add an interop block. If `interop = true` it will affect all supported builds.
 
-This option can be overridden using `per-build` options. See [`main`](#main), [`browser`](#browser) and [`bin`](#bin) options.
+This option supports `object` based and `string` based [`selective format`](#selective-options). See [Selective Options](#selective-options) for more information.
+
+#### min
+
+```typescript
+min: boolean | SelectiveOption;
+
+default false;
+```
+
+Defines which files should be used to build an aditional minified version, if `true` will affect all modules. The minified file will be renamed from `*.ext` to `*.min.ext`. This option will override the default behavior of the [`--dev`, `-d` *cli option*](#-dev-d) , which means only the minified version will be actually minified, the normal version will **NOT** be minified even if you don't set the [`--dev`, `-d` cli option](#-dev-d).
+
+This option supports `object` based and `string` based [`selective format`](#selective-options). See [Selective Options](#selective-options) for more information.
 
 #### format
 
@@ -218,17 +239,13 @@ default "umd";
 
 Defines the format to be used for the `Browser` build.
 
-This option can be overridden using the [`browser`](#browser) option.
-
 #### name
 
 ```typescript
 name: string;
 ```
 
-The name to be used to expose your library to the global scope in a `IIFE` or `UMD` browser build. If not provided it will default to the camelcased, unscoped `"name"` field in `package.json` or the camelcased directory name. If none of those can be obtained, it will throw at build time.
-
-This option can be overridden using the [`browser`](#browser) option.
+The name to be used to expose your library to the global scope in a `IIFE` or `UMD` browser build. If not provided it will default to the camelcased, unscoped `"name"` field in `package.json` or the camelcased directory name. If none of those can be obtained, it will **throw** at build time.
 
 #### id
 
@@ -238,9 +255,7 @@ id: string;
 
 Optional amd id for `AMD` or `UMD` build.
 
-This option can be overridden using the [`browser`](#browser) option.
-
-If not present, `AMD` module will be defined with no id.
+If not present, `AMD` `define` method will use no id.
 
 #### extend
 
@@ -250,9 +265,7 @@ extend: boolean;
 default false;
 ```
 
-Whether or not to extend the globally exposed name on a `IIFE` or `UMD` build.
-
-This option can be overridden using the [`browser`](#browser) option.
+Whether or not to extend the globally exposed [name](#name) on a `IIFE` or `UMD` build.
 
 #### globals
 
@@ -262,39 +275,7 @@ globals: { [name: string]: string } | string[];
 default {};
 ```
 
-Object or array to map names to globals in `Browser` build.
-
-This option can be overridden using the [`browser`](#browser) option.
-
-#### equals
-
-```typescript
-equals: boolean;
-
-default false;
-```
-
-> As of version `0.15.2` this option has no effect, It won't throw to keep compatibility with previous version but it will be ignored. Install [`rollup-plugin-export-equals` Plugin](#supported-plugins) instead.
-
-Transforms type export for `CommonJS Module` using `export = ...` instead of `export default ...`.
-
-This option can be overridden using the [`types`](#types) option.
-
-> :warning: *Note that this option should only be used when your library has a* `default` *export and no* `named` *exports, otherwise it may cause the type declarations to become invalid.*
-
-#### min
-
-```typescript
-min: BuildType | BuildType[] | boolean;
-
-type BuildType = "main" | "module" | "browser" | "min";
-
-default false;
-```
-
-Defines which files should be used to build an aditional minified version, if `true` will affect all modules. The minified file will be renamed from `*.ext` to `*.min.ext`. This option will override the default behavior of the [`--dev`, `-d` *cli option*](#-dev-d) , which means only the minified version will be actually minified, the normal version will **NOT** be minified even if you don't set the [`--dev`, `-d` cli option](#-dev-d).
-
-This option can be overridden using `per-build` options. See [`main`](#main), [`module`](#module), [`browser`](#browser) and [`bin`](#bin) options.
+`Object` or `array` to map names to globals in `Browser` build.
 
 #### cache
 
@@ -309,97 +290,56 @@ Defines the directory to be used for cache, relative to the project root.
 #### project
 
 ```typescript
-cache: string;
+project: string | SelectiveOption;
 
 default "tsconfig.json"
 ```
 
-Defines the location of typescript `tsconfig.json` file.
+Defines the location of typescript `tsconfig.json` file, relative to the project root.
 
-#### main
+This option supports `object` based [`selective format`](#selective-options). See [Selective Options](#selective-options) for more information.
 
-```typescript
-main: CommonJSOptions | false;
+### Selective Options
 
-interface CommonJSOptions {
-  sourcemap?: boolean | "inline";
-  esModule?: boolean | null;
-  interop?: boolean | null;
-  min?: boolean | null;
-}
-```
+Some options support a selective format to allow for a more flexible configuration. See [`SelectiveOption`](#SelectiveOption) type for more information.
 
-Specific options to be used in the `CommonJS` build. They will override any corresponding option set in the top-level options. See [`sourcemap`](#sourcemap), [`esModule`](#esmodule), [`interop`](#interop) and [`min`](#min) options.
+Note that some options support different selective formats. `Boolean` type options support `string` based format and `object` based format while others support only `object` based format.
 
-If it's set to `false`, it will prevent `CommonJS` build altogether, even if there is a `"main"` field in `package.json`.
+See [input](#input), [sourcemap](#sourcemap), [esModule](#esmodule), [interop](#interop), [min](#min) and [project](#project) options.
 
-#### module
+#### Object based selective format
 
-```typescript
-module: ESModuleOptions | false;
+`object` based format works by preserving the default value and overiding it with the provided configuration.
 
-interface ESModuleOptions {
-  sourcemap?: boolean | "inline";
-  min?: boolean;
-}
-```
+***example***
 
-Specific options to be used in the `ES Module` build. They will override any corresponding option set in the top-level options. See [`sourcemap`](#sourcemap) and [`min`](#min) options.
+Assuming `default = false`, `{ main: true }` will result in `true` for `main`, and `false` for others.
 
-If it's set to `false`, it will prevent `ES Module` build altogether, even if there is a `"module"` or `"jsnext:main"` field in `package.json`.
+##### The special `default` property
 
-#### browser
+You can override the default value as well using the `"default"` object key.
 
-```typescript
-browser: BrowserOptions | false;
+***example***
 
-interface BrowserOptions {
-  sourcemap?: boolean | "inline";
-  esModule?: boolean;
-  interop?: boolean;
-  min?: boolean;
-  format?: "iife" | "amd" | "umd" ;
-  name?: string;
-  id?: string;
-  extend?: boolean;
-  globals?: { [name: string]: string } | string[];
-}
-```
+Assuming `default = false`, `{ default: true, bin: false }` will result in `false` for `bin`, and `true` for others.
 
-Specific options to be used in the `Browser` build. They will override any corresponding option set in the top-level options. See [`sourcemap`](#sourcemap), [`esModule`](#esmodule), [`interop`](#interop), [`min`](#min), [`format`](#format), [`name`](#name), [`id`](#id), [`extend`](#extend) and [`globals`](#globals) options.
+##### The special `bin` property
 
-If it's set to* `false`, it will prevent `Browser` build altogether, even if there is a `"browser"` field in `package.json`.
+The special `"api"` object key represents `main`, `module` and `browser`.
 
-#### bin
+***example***
 
-```typescript
-bin: CommonJSOptions | false;
+Assuming `default = false`, `{ api: true }` will result in `true` for `main`, `module` and `browser`, and `false` for others.
 
-interface CommonJSOptions {
-  sourcemap?: boolean | "inline";
-  esModule?: boolean;
-  interop?: boolean;
-  min?: boolean;
-}
-```
+#### String based selective format
 
-Specific options to be used in `Binary` build. They will override any corresponding option set in the top-level options. See [`sourcemap`](#sourcemap), [`esModule`](#esmodule), [`interop`](#interop) and [`min`](#min) options.
+`string` based format works in a different way, it does not preserve the default value, included build types will be set to `true` and the others will be set to `false`. It can be a `string` or an `string array`.
 
-If it's set to `false`, it will prevent `Binary` build altogether, even if there is a `"bin"` field in `package.json`.
+***example***
 
-#### types
+`"browser"` will result `true` for `browser` and `false` for others.
 
-```typescript
-types: TypesOptions | false;
-
-interface TypesOptions {
-  equals: boolean;
-}
-```
-
-Specific options to be used for types generation. They will override any corresponding option set in the top-level options. See [`equals`](#equals) option.
-
-If it's set to `false`, it will prevent type declarations generation altogether, even if there is a `"types"` or `"typings"` field in `package.json`.
+`["main", "module"]` will result in `true` for `main` and `module`, and `false` for others.
 
 ## Supported Plugins
 
@@ -426,7 +366,7 @@ The following plugins may be supported in the future.
 
 Any plugin suggestion will be well received, please [file a new issue](https://github.com/manferlo81/bundlib/issues).
 
-## CLI
+## Using the CLI tool
 
 ```bash
 bundlib [options]
@@ -442,7 +382,7 @@ Create development, not minified builds. Builds affected by the [`min`](#min) op
 
 #### `--watch`, `-w`
 
-Run `bundlib` in watch mode.
+Run **Bundlib** in watch mode.
 
 #### `--silent`, `-s`
 
@@ -450,13 +390,13 @@ Prevent messages from showing in the console.
 
 #### `--version`, `-v`
 
-Show `bundlib` version.
+Show **Bundlib** version.
 
 #### `--help`, `-h`
 
 Show detailed help about the CLI tool.
 
-## API
+## Using Bundlib programmatically
 
 ***example***
 
@@ -504,48 +444,33 @@ Returns a `Promise` that resolves to an array of Rollup configs based on the con
 interface PkgAnalized {
   cwd: string;
   pkg: PkgJson;
-  input: {
-    api: string | null;
-    bin: string | null;
-  };
-  output: {
-    main: CommonJSBuildOptions | null;
-    module: ESModuleBuildOptions | null;
-    browser: BrowserBuildOptions | null;
-    bin: CommonJSBuildOptions | null;
-    types: TypesBuildOptions | null;
-  };
+  main: ModuleBuildOptions | null;
+  module: ModuleBuildOptions | null;
+  browser: BrowserBuildOptions | null;
+  bin: ModuleBuildOptions | null;
+  types: string | null;
   dependencies: {
     runtime: { [name: string]: string } | null;
     dev: { [name: string]: string } | null;
     peer: { [name: string]: string } | null;
   };
   cache: string | null;
-  project: string | null;
 }
 ```
 
-*see also:* [`CommonJSBuildOptions`](#commonjsbuildoptions), [`ESModuleBuildOptions`](#esmodulebuildoptions), [`BrowserBuildOptions`](#browserbuildoptions) & [`TypesBuildOptions`](#typesbuildoptions)
+*see also:* [`ModuleBuildOptions`](#modulebuildoptions) and [`BrowserBuildOptions`](#browserbuildoptions).
 
-### CommonJSBuildOptions
+### ModuleBuildOptions
 
 ```typescript
-interface CommonJSBuildOptions {
-  path: string;
-  sourcemap: boolean | "inline";
+interface ModuleBuildOptions {
+  input: string | null;
+  output: string;
+  sourcemap: boolean | 'inline' | 'hidden';
   esModule: boolean;
   interop: boolean;
   min: boolean;
-}
-```
-
-### ESModuleBuildOptions
-
-```typescript
-interface ESModuleBuildOptions {
-  path: string;
-  sourcemap: boolean | "inline";
-  min: boolean;
+  project: string | null;
 }
 ```
 
@@ -553,8 +478,9 @@ interface ESModuleBuildOptions {
 
 ```typescript
 interface BrowserBuildOptions {
-  path: string;
-  sourcemap: boolean | "inline";
+  input: string | null;
+  output: string;
+  sourcemap: boolean | 'inline' | 'hidden';
   esModule: boolean;
   interop: boolean;
   min: boolean;
@@ -563,29 +489,34 @@ interface BrowserBuildOptions {
   id: string | null;
   globals: Record<string, string> | null;
   extend: boolean;
+  project: string | null;
 }
 ```
 
-### TypesBuildOptions
+### SelectiveOption
 
 ```typescript
-interface TypesBuildOptions {
-  path: string;
+interface ObjectBasedSelectiveOption<T> {
+  default: T;
+  [K: BuildType]: T;
 }
+
+type StringBasedSelectiveOption = BuildType | BuildType[];
+
+type BuildType = 'main' | 'module' | 'browser' | 'bin' | 'api';
 ```
 
 ## Features
 
-* Builds a `CommonJS Module` based on the `"main"` field in your `package.json`
-* Builds an `ES Module` based on the `"module"` (or `"jsnext:main"`) field in your `package.json`
-* Builds a `Browser` module based on the `"browser"` field in your `package.json`
-* Builds a `Binary` module based on the `"bin"` field in your `package.json`
-* Exports type declarations based on the `"types"` (or `"typings"`) field in your `package.json`
-* Skip any build based on options
-* Sets `"dependencies"` and `"peerDependencies"` as external for `CommonJS Module`, `ES Module` and `Binary` builds
-* Uses and configures any [supported rollup plugin](#supported-plugins) if installed
-* Uses `chokidar` if installed
-* Importing an internal file from a package `Ex: lodash/core` will be treated as external if `lodash` is included in your `"dependencies"` or `peerDependencies`
+* Uses `"main"` field in your `package.json` to build a `CommonJS Module`.
+* Uses `"module"` field in your `package.json` (or `"jsnext:main"` field) to build an `ES Module`.
+* Uses `"browser"` field in your `package.json` to build a `Browser` module. It only supports `"browser"` field as `string`, `object` format not supported.
+* Uses `"bin"` field in your `package.json` to build a `Binary` module. It only supports `"bin"` field as `string`, `object` format not supported.
+* Uses `"types"` field in your `package.json` (or `"typings"` field) as path for types declarations.
+* Uses `"dependencies"` and `"peerDependencies"` to set external modules for `CommonJS Module`, `ES Module` and `Binary` builds. Dependencies will be bundled by default in `Browser` builds, unless otherwise specified using the [`global`](#globals) option.
+* Skip any build based on options.
+* Uses and configures any installed [supported rollup plugin](#supported-plugins).
+* Uses `chokidar` for file watch if installed.
 
 ## License
 
