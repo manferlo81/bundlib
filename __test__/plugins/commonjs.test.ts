@@ -1,6 +1,9 @@
+import { fixturePath } from '../tools/fixture-path';
 import getPluginNames from '../tools/get-plugin-names';
 
 describe('@rollup/plugin-commonjs plugin', () => {
+
+  const cwd = fixturePath('export-number-js');
 
   const pluginName = 'commonjs';
   const deps = { '@rollup/plugin-commonjs': '*' };
@@ -11,16 +14,16 @@ describe('@rollup/plugin-commonjs plugin', () => {
   ];
   const dependenciesFields = ['dependencies', 'devDependencies'];
 
-  test('Should not use if not installed on Browser build', async () => {
-    const [plugins] = await getPluginNames(process.cwd(), false, {
+  test('Should not use on Browser build if not installed', async () => {
+    const [plugins] = await getPluginNames(cwd, false, {
       browser: 'output.js',
     });
     expect(plugins).not.toContain(pluginName);
   });
 
   dependenciesFields.forEach((depField) => {
-    test(`Should use if installed as "${depField}" on Browser build`, async () => {
-      const [plugins] = await getPluginNames(process.cwd(), false, {
+    test(`Should use on Browser build if installed as "${depField}"`, async () => {
+      const [plugins] = await getPluginNames(cwd, false, {
         browser: 'output.js',
         [depField]: deps,
       });
@@ -30,16 +33,16 @@ describe('@rollup/plugin-commonjs plugin', () => {
 
   outputFields.forEach(({ field, text }) => {
 
-    test(`Should not use if not installed on ${text}`, async () => {
-      const [plugins] = await getPluginNames(process.cwd(), false, {
+    test(`Should not use on ${text} if not installed`, async () => {
+      const [plugins] = await getPluginNames(cwd, false, {
         [field]: 'output.js',
       });
       expect(plugins).not.toContain(pluginName);
     });
 
     dependenciesFields.forEach((depField) => {
-      test(`Should not use if installed as "${depField}" on ${text}`, async () => {
-        const [plugins] = await getPluginNames(process.cwd(), false, {
+      test(`Should not use on ${text} if installed as "${depField}"`, async () => {
+        const [plugins] = await getPluginNames(cwd, false, {
           [field]: 'output.js',
           [depField]: deps,
         });

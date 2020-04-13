@@ -1,23 +1,22 @@
 import { BundlibOptions, TypesOptions } from './bundlib-options';
-import { error, invalidOptionOld, invalidPkgField } from './errors';
+import { error, invalidOptionOld, invalidPkgField, invalidOption } from './errors';
 import { Dictionary, StrictNullable } from './helper-types';
-import { keys } from './helpers';
 import { loadOptions } from './options-manager';
 import { normalizeBooleanOption } from './options/boolean';
 import { resolveSelectiveESModuleOption } from './options/es-module';
+import { resolveSelectiveInputOption } from './options/input';
 import { resolveSelectiveInteropOption } from './options/interop';
 import { normalizeBuildMin, resolveSelectiveMinOption } from './options/min';
 import { resolveSelectiveProjectOption } from './options/project';
 import { normalizeBuildSourcemap, resolveSelectiveSourcemapOption } from './options/sourcemap';
 import { BundlibPkgJson } from './pkg';
-import { BrowserBuildOptions, Dependencies, InputOptions, ModuleBuildOptions, OutputOptions, PkgAnalized } from './pkg-analized';
+import { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalized } from './pkg-analized';
 import { readPkg } from './read-pkg';
-import { isDictionary, isDictionaryOrNull, isNull, isString, isStringOrNull } from './type-check/type-check';
+import { isDictionary, isDictionaryOrNull, isNull, isStringOrNull } from './type-check/type-check';
 import { isBrowserOption } from './validate/option-browser';
 import { normalizeBuildFlag } from './validate/option-flag';
 import { isBrowserFormat } from './validate/option-format';
 import { isValidGlobals, normalizeBuildGlobals, normalizeGlobals } from './validate/option-globals';
-import { isInOpKey } from './validate/option-input';
 import { isCJSOptionKey } from './validate/option-main';
 import { isModuleOptionKey } from './validate/option-module';
 import { normalizeBuildName } from './validate/option-name';
@@ -27,42 +26,36 @@ import { invalidKeys, keysCheck } from './validate/validate-keys';
 async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalized>;
 async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAnalized> {
 
-  // use provided package.json or read it from cwd
-
   const pkg: BundlibPkgJson = inputPkg || await readPkg(cwd);
-
-  // ensure the content of package.json is an object
-  // throw otherwise
 
   if (!isDictionary<BundlibPkgJson>(pkg)) {
     throw error('Invalid package.json content');
   }
 
   const {
-    name: pkgName,
-    main: pkgMain,
-    module: pkgModule,
-    'jsnext:main': pkgJsNextMain,
-    browser: pkgBrowser,
-    bin: pkgBin,
-    types: pkgTypes,
+    name: packageName,
+    main: mainOutputFile,
+    module: moduleFieldValue,
+    'jsnext:main': jsNextFieldValue,
+    browser: browserOutputFile,
+    bin: binaryOutputFile,
+    types: typesFieldValue,
     typings,
     dependencies: runtimeDependencies,
     devDependencies,
     peerDependencies,
-    bundlib: pkgBundlibOptions,
   } = pkg;
 
-  const { config: bundlibOptions, filepath: optionsFilename } = await loadOptions(cwd, pkgBundlibOptions);
+  const loadedOptions = await loadOptions(cwd, pkg.bundlib);
+  const loadedBundlibOptions = loadedOptions && loadedOptions.config;
 
-  if (!isDictionary<BundlibOptions>(bundlibOptions)) {
-    throw optionsFilename
-      ? error(`Invalid options found on file "${optionsFilename}".`)
+  if (loadedOptions && !isNull(loadedBundlibOptions) && !isDictionary<BundlibOptions>(loadedBundlibOptions)) {
+    throw loadedOptions.filepath
+      ? error(`Invalid options found on file "${loadedOptions.filepath}".`)
       : invalidPkgField('bundlib', 'Object | string');
   }
 
-  // ensure there are not unknown bundlib options
-  // throw otherwise
+  const bundlibOptions = loadedBundlibOptions || {};
 
   const invalidOptions = invalidKeys(bundlibOptions as never, [
     'input',
@@ -91,91 +84,66 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   }
 
   const {
-    input: inputOption,
-    sourcemap: sourcemapOption,
-    esModule,
-    interop,
     extend,
     format: browserFormat,
     name: browserName,
     id: amdId,
     globals: browserGlobals,
-    min,
     cache: cacheOption,
-    project: projectOption,
-    main: mainOptions,
-    module: moduleOptions,
-    browser: browserOptions,
-    bin: binaryOptions,
-    types: typesOptions,
+    main: deprecatedMainOptions,
+    module: deprecatedModuleOptions,
+    browser: deprecatedBrowserOptions,
+    bin: deprecatedBinaryOptions,
+    types: deprecatedTypesOptions,
   } = bundlibOptions;
 
-  // ensure "input" option is valid
-  // throw otherwise
-
-  if (
-    !isStringOrNull(inputOption) && !(
-      isDictionary<InputOptions>(inputOption) && keysCheck(inputOption, isInOpKey) && keys(inputOption).every((key) => (
-        isString(inputOption[key])
-      ))
-    )
-  ) {
-    throw invalidOptionOld('input', 'string | { api?: string, bin?: string }');
-  }
-
-  const topLeverSourcemap = resolveSelectiveSourcemapOption(sourcemapOption);
-  const topLevelESModule = resolveSelectiveESModuleOption(esModule);
-  const topLevelInterop = resolveSelectiveInteropOption(interop);
-  const topLevelMin = resolveSelectiveMinOption(min);
-
-  // ensure "format" option is valid
-  // throw otherwise
+  const perBuildInput = resolveSelectiveInputOption(bundlibOptions.input);
+  const perBuildSourcemap = resolveSelectiveSourcemapOption(bundlibOptions.sourcemap);
+  const perBuildESModule = resolveSelectiveESModuleOption(bundlibOptions.esModule);
+  const perBuildInterop = resolveSelectiveInteropOption(bundlibOptions.interop);
+  const perBuildMin = resolveSelectiveMinOption(bundlibOptions.min);
 
   if (!isBrowserFormat(browserFormat)) {
-    throw invalidOptionOld('format', '"amd" | "iife" | "amd"');
-  }
-
-  // ensure "name" option is valid
-  // throw otherwise
-
-  if (!isStringOrNull(browserName)) {
-    throw invalidOptionOld('name', 'string');
-  }
-
-  // ensure "id" option is valid
-  // throw otherwise
-
-  if (!isStringOrNull(amdId)) {
-    throw invalidOptionOld('id', 'string');
-  }
-
-  // ensure "globals" option is valid
-  // throw otherwise
-
-  if (!isValidGlobals(browserGlobals)) {
-    throw invalidOptionOld(
-      'globals',
-      'Object<string, string> | string[]',
+    throw invalidOption(
+      'format',
+      'https://github.com/manferlo81/bundlib#format',
     );
   }
 
-  // ensure "cache" option is valid
-  // throw otherwise
-
-  if (!isStringOrNull(cacheOption)) {
-    throw invalidOptionOld('cache', 'string');
+  if (!isStringOrNull(browserName)) {
+    throw invalidOption(
+      'name',
+      'https://github.com/manferlo81/bundlib#name',
+    );
   }
 
-  const perBuildProjectOption = resolveSelectiveProjectOption(projectOption);
+  if (!isStringOrNull(amdId)) {
+    throw invalidOption(
+      'id',
+      'https://github.com/manferlo81/bundlib#id',
+    );
+  }
 
-  // ensure "main" option is valid
-  // throw otherwise
-  // TODO: check for invalid keys & every option format
+  if (!isValidGlobals(browserGlobals)) {
+    throw invalidOption(
+      'globals',
+      'https://github.com/manferlo81/bundlib#globals',
+    );
+  }
+
+  if (!isStringOrNull(cacheOption)) {
+    throw invalidOption(
+      'cache',
+      'https://github.com/manferlo81/bundlib#cache',
+    );
+  }
+
+  const perBuildProject = resolveSelectiveProjectOption(bundlibOptions.project);
 
   if (
-    !isNull(mainOptions) && (mainOptions !== false) && !(
-      isDictionary<ModuleBuildOptions>(mainOptions) &&
-      keysCheck(mainOptions, isCJSOptionKey)
+    !isNull(deprecatedMainOptions) && (deprecatedMainOptions !== false) && !(
+      isDictionary<ModuleBuildOptions>(deprecatedMainOptions) &&
+      keysCheck(deprecatedMainOptions, isCJSOptionKey)
     )
   ) {
     throw invalidOptionOld(
@@ -184,14 +152,10 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     );
   }
 
-  // ensure "module" option is valid
-  // throw otherwise
-  // TODO: check for invalid keys & every option format
-
   if (
-    !isNull(moduleOptions) && (moduleOptions !== false) && !(
-      isDictionary<ModuleBuildOptions>(moduleOptions) &&
-      keysCheck(moduleOptions, isModuleOptionKey)
+    !isNull(deprecatedModuleOptions) && (deprecatedModuleOptions !== false) && !(
+      isDictionary<ModuleBuildOptions>(deprecatedModuleOptions) &&
+      keysCheck(deprecatedModuleOptions, isModuleOptionKey)
     )
   ) {
     throw invalidOptionOld(
@@ -200,19 +164,15 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     );
   }
 
-  // ensure "browser" option is valid
-  // throw otherwise
-  // TODO: check for invalid keys & every option format
-
   if (
-    !isNull(browserOptions) && (browserOptions !== false) && !(
-      isDictionary<BrowserBuildOptions>(browserOptions) &&
-      keysCheck(browserOptions, isBrowserOption) &&
-      isBrowserFormat(browserOptions.format) &&
-      (['name', 'id'] as Array<keyof typeof browserOptions>).every((key) => (
-        isStringOrNull(browserOptions[key])
+    !isNull(deprecatedBrowserOptions) && (deprecatedBrowserOptions !== false) && !(
+      isDictionary<BrowserBuildOptions>(deprecatedBrowserOptions) &&
+      keysCheck(deprecatedBrowserOptions, isBrowserOption) &&
+      isBrowserFormat(deprecatedBrowserOptions.format) &&
+      (['name', 'id'] as Array<keyof typeof deprecatedBrowserOptions>).every((key) => (
+        isStringOrNull(deprecatedBrowserOptions[key])
       )) &&
-      isValidGlobals(browserOptions.globals)
+      isValidGlobals(deprecatedBrowserOptions.globals)
     )
   ) {
     throw invalidOptionOld(
@@ -221,14 +181,10 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     );
   }
 
-  // ensure "bin" option is valid
-  // throw otherwise
-  // TODO: check for invalid keys & every option format
-
   if (
-    !isNull(binaryOptions) && (binaryOptions !== false) && !(
-      isDictionary<ModuleBuildOptions>(binaryOptions) &&
-      keysCheck(binaryOptions, isCJSOptionKey)
+    !isNull(deprecatedBinaryOptions) && (deprecatedBinaryOptions !== false) && !(
+      isDictionary<ModuleBuildOptions>(deprecatedBinaryOptions) &&
+      keysCheck(deprecatedBinaryOptions, isCJSOptionKey)
     )
   ) {
     throw invalidOptionOld(
@@ -237,173 +193,113 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     );
   }
 
-  // ensure "types" option is valid
-  // throw otherwise
-  // TODO: check for invalid keys
-
   if (
-    !isNull(typesOptions) && (typesOptions !== false) && !(
-      isDictionary<TypesOptions>(typesOptions) &&
-      keysCheck(typesOptions, isTypesOptionKey)
+    !isNull(deprecatedTypesOptions) && (deprecatedTypesOptions !== false) && !(
+      isDictionary<TypesOptions>(deprecatedTypesOptions) &&
+      keysCheck(deprecatedTypesOptions, isTypesOptionKey)
     )
   ) {
     throw invalidOptionOld('types', 'false | { equals?: boolean }');
   }
 
-  // ensure "main" field is a supported value
-  // throw otherwise
-
-  if ((mainOptions !== false) && !isStringOrNull(pkgMain)) {
+  if ((deprecatedMainOptions !== false) && !isStringOrNull(mainOutputFile)) {
     throw invalidPkgField('main', 'string');
   }
 
-  // ensure "module" field is a supported value if needed
-  // throw otherwise
-
-  if ((moduleOptions !== false) && !isStringOrNull(pkgModule)) {
+  if ((deprecatedModuleOptions !== false) && !isStringOrNull(moduleFieldValue)) {
     throw invalidPkgField('module', 'string');
   }
 
-  // ensure "jsnext:main" field is a supported value if needed  and "module" field not present
-  // throw otherwise
-
-  if (!pkgModule && (moduleOptions !== false) && !isStringOrNull(pkgJsNextMain)) {
+  if (!moduleFieldValue && (deprecatedModuleOptions !== false) && !isStringOrNull(jsNextFieldValue)) {
     throw invalidPkgField('jsnext:main', 'string');
   }
 
-  // ensure "browser" field is a supported value if needed
-  // throw otherwise
-
-  if ((browserOptions !== false) && !isStringOrNull(pkgBrowser)) {
+  if ((deprecatedBrowserOptions !== false) && !isStringOrNull(browserOutputFile)) {
     throw invalidPkgField('browser', 'string');
   }
 
-  // ensure "bin" field is a supported value if needed
-  // throw otherwise
-
-  if ((binaryOptions !== false) && !isStringOrNull(pkgBin)) {
+  if ((deprecatedBinaryOptions !== false) && !isStringOrNull(binaryOutputFile)) {
     throw invalidPkgField('bin', 'string');
   }
-
-  // ensure "dependencies" field is valid
-  // throw otherwise
 
   if (!isDictionaryOrNull<Dictionary<string>>(runtimeDependencies)) {
     throw invalidPkgField('dependencies', 'Object');
   }
 
-  // ensure "peerDependencies" field is valid
-  // throw otherwise
-
   if (!isDictionaryOrNull<Dictionary<string>>(peerDependencies)) {
     throw invalidPkgField('peerDependencies', 'Object');
   }
 
-  // set ES Module build output file from "module" field falling back to "jsnext:main" field
+  const moduleOutputFile = moduleFieldValue || jsNextFieldValue;
 
-  const esModuleFile = pkgModule || pkgJsNextMain;
+  const typesOutputFile = typesFieldValue || typings;
 
-  // set types definition output file from "types" field falling back to "typings" field
-
-  const typesPath = pkgTypes || typings;
-
-  // set api and binary input from "input" option
-
-  const { api: apiInput, bin: binInput } = isStringOrNull(inputOption)
-    ? { api: inputOption } as InputOptions
-    : inputOption;
-
-  // set input files
-
-  const input: InputOptions = {
-    api: apiInput || null,
-    bin: binInput || null,
+  const mainOutput: StrictNullable<ModuleBuildOptions> = (deprecatedMainOptions === false || !mainOutputFile) ? null : {
+    input: perBuildInput.main,
+    path: mainOutputFile,
+    sourcemap: normalizeBuildSourcemap(
+      deprecatedMainOptions,
+      perBuildSourcemap.main,
+    ),
+    esModule: normalizeBooleanOption(deprecatedMainOptions, 'esModule', perBuildESModule.main),
+    interop: normalizeBooleanOption(deprecatedMainOptions, 'interop', perBuildInterop.main),
+    min: normalizeBuildMin(deprecatedMainOptions, 'main', perBuildMin),
+    project: perBuildProject.main,
   };
 
-  // set CommonJS Module build output options
-
-  const mainOutput: StrictNullable<ModuleBuildOptions> = (mainOptions === false || !pkgMain) ? null : {
-    path: pkgMain,
+  const moduleOutput: StrictNullable<ModuleBuildOptions> = (deprecatedModuleOptions === false || !moduleOutputFile) ? null : {
+    input: perBuildInput.module,
+    path: moduleOutputFile,
     sourcemap: normalizeBuildSourcemap(
-      mainOptions,
-      topLeverSourcemap.main,
+      deprecatedModuleOptions,
+      perBuildSourcemap.module,
     ),
-    esModule: normalizeBooleanOption(mainOptions, 'esModule', topLevelESModule.main),
-    interop: normalizeBooleanOption(mainOptions, 'interop', topLevelInterop.main),
-    min: normalizeBuildMin(mainOptions, 'main', topLevelMin),
-    project: perBuildProjectOption.main,
+    esModule: perBuildESModule.module,
+    interop: perBuildInterop.module,
+    min: normalizeBuildMin(deprecatedModuleOptions, 'module', perBuildMin),
+    project: perBuildProject.module,
   };
 
-  // set ES Module build output options
-
-  const moduleOutput: StrictNullable<ModuleBuildOptions> = (moduleOptions === false || !esModuleFile) ? null : {
-    path: esModuleFile,
+  const browserOutput: StrictNullable<BrowserBuildOptions> = (deprecatedBrowserOptions === false || !browserOutputFile) ? null : {
+    input: perBuildInput.browser,
+    path: browserOutputFile,
     sourcemap: normalizeBuildSourcemap(
-      moduleOptions,
-      topLeverSourcemap.module,
+      deprecatedBrowserOptions,
+      perBuildSourcemap.browser,
     ),
-    esModule: topLevelESModule.module,
-    interop: topLevelInterop.module,
-    min: normalizeBuildMin(moduleOptions, 'module', topLevelMin),
-    project: perBuildProjectOption.module,
-  };
-
-  // set Browser build output options
-
-  const browserOutput: StrictNullable<BrowserBuildOptions> = (browserOptions === false || !pkgBrowser) ? null : {
-    path: pkgBrowser,
-    sourcemap: normalizeBuildSourcemap(
-      browserOptions,
-      topLeverSourcemap.browser,
-    ),
-    esModule: normalizeBooleanOption(browserOptions, 'esModule', topLevelESModule.browser),
-    interop: normalizeBooleanOption(browserOptions, 'interop', topLevelInterop.browser),
-    min: normalizeBuildMin(browserOptions, 'browser', topLevelMin),
-    format: browserOptions && !isNull(browserOptions.format) ? browserOptions.format : (browserFormat || 'umd'),
+    esModule: normalizeBooleanOption(deprecatedBrowserOptions, 'esModule', perBuildESModule.browser),
+    interop: normalizeBooleanOption(deprecatedBrowserOptions, 'interop', perBuildInterop.browser),
+    min: normalizeBuildMin(deprecatedBrowserOptions, 'browser', perBuildMin),
+    format: (deprecatedBrowserOptions && !isNull(deprecatedBrowserOptions.format) ? deprecatedBrowserOptions.format : browserFormat) || 'umd',
     name: normalizeBuildName(
       cwd,
-      browserOptions ? browserOptions.name : null,
+      deprecatedBrowserOptions ? deprecatedBrowserOptions.name : null,
       browserName,
-      pkgName,
+      packageName,
     ),
-    id: browserOptions && browserOptions.id || amdId || null,
+    id: deprecatedBrowserOptions && deprecatedBrowserOptions.id || amdId || null,
     globals: normalizeBuildGlobals(
-      browserOptions,
+      deprecatedBrowserOptions,
       normalizeGlobals(browserGlobals),
     ),
-    extend: normalizeBuildFlag(browserOptions, 'extend', !!extend),
-    project: perBuildProjectOption.browser,
+    extend: normalizeBuildFlag(deprecatedBrowserOptions, 'extend', !!extend),
+    project: perBuildProject.browser,
   };
 
-  // set Binary build output options
-
-  const binaryOutput: StrictNullable<ModuleBuildOptions> = (binaryOptions === false || !pkgBin) ? null : {
-    path: pkgBin,
+  const binaryOutput: StrictNullable<ModuleBuildOptions> = (deprecatedBinaryOptions === false || !binaryOutputFile) ? null : {
+    input: perBuildInput.bin,
+    path: binaryOutputFile,
     sourcemap: normalizeBuildSourcemap(
-      binaryOptions,
-      topLeverSourcemap.bin,
+      deprecatedBinaryOptions,
+      perBuildSourcemap.bin,
     ),
-    esModule: normalizeBooleanOption(binaryOptions, 'esModule', topLevelESModule.bin),
-    interop: normalizeBooleanOption(binaryOptions, 'interop', topLevelInterop.bin),
-    min: normalizeBuildMin(binaryOptions, 'bin', topLevelMin),
-    project: perBuildProjectOption.bin,
+    esModule: normalizeBooleanOption(deprecatedBinaryOptions, 'esModule', perBuildESModule.bin),
+    interop: normalizeBooleanOption(deprecatedBinaryOptions, 'interop', perBuildInterop.bin),
+    min: normalizeBuildMin(deprecatedBinaryOptions, 'bin', perBuildMin),
+    project: perBuildProject.bin,
   };
 
-  // set type definitions output options
-
-  const typesOutput: StrictNullable<string> = (typesOptions === false || !typesPath) ? null : typesPath;
-
-  // set all output options
-
-  const output: OutputOptions = {
-    main: mainOutput,
-    module: moduleOutput,
-    browser: browserOutput,
-    bin: binaryOutput,
-    types: typesOutput,
-  };
-
-  // set dependencies options
+  const typesOutput: StrictNullable<string> = (deprecatedTypesOptions === false || !typesOutputFile) ? null : typesOutputFile;
 
   const dependencies: Dependencies = {
     runtime: runtimeDependencies || null,
@@ -411,18 +307,16 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     peer: peerDependencies || null,
   };
 
-  // set cache option
-
   const cache: StrictNullable<string> = cacheOption || null;
-  // const project: StrictNullable<string> = projectOption || null;
-
-  // return all options
 
   return {
     cwd,
     pkg,
-    input,
-    output,
+    main: mainOutput,
+    module: moduleOutput,
+    browser: browserOutput,
+    bin: binaryOutput,
+    types: typesOutput,
     dependencies,
     cache,
   };

@@ -17,87 +17,51 @@ describe('extend option', () => {
   });
 
   test('should read truthy extend option as set as boolean', async () => {
-
-    const { output: { browser } } = await analizeWithExtend(1);
-
-    expect(browser ? browser.extend : null)
-      .toBe(true);
-
+    const { browser } = await analizeWithExtend(1);
+    expect(browser ? browser.extend : null).toBe(true);
   });
 
   test('should read falsy extend option as set as boolean', async () => {
-
-    const { output: { browser } } = await analizeWithExtend(0);
-
-    expect(browser ? browser.extend : null)
-      .toBe(false);
-
+    const { browser } = await analizeWithExtend(0);
+    expect(browser ? browser.extend : null).toBe(false);
   });
 
   test('should read true extend option as set as boolean', async () => {
-
-    const { output: { browser } } = await analizeWithExtend(true);
-
-    expect(browser ? browser.extend : null)
-      .toBe(true);
-
+    const { browser } = await analizeWithExtend(true);
+    expect(browser ? browser.extend : null).toBe(true);
   });
 
   test('should read false extend option as set as boolean', async () => {
-
-    const { output: { browser } } = await analizeWithExtend(false);
-
-    expect(browser ? browser.extend : null)
-      .toBe(false);
-
+    const { browser } = await analizeWithExtend(false);
+    expect(browser ? browser.extend : null).toBe(false);
   });
 
   test('should read truthy per-build extend option as set as boolean', async () => {
-
-    const { output: { browser } } = await analizeWithBuildExtend(1);
-
-    expect(browser ? browser.extend : null)
-      .toBe(true);
-
+    const { browser } = await analizeWithBuildExtend(1);
+    expect(browser ? browser.extend : null).toBe(true);
   });
 
   test('should read falsy per-build extend option as set as boolean', async () => {
-
-    const { output: { browser } } = await analizeWithBuildExtend(0);
-
-    expect(browser ? browser.extend : null)
-      .toBe(false);
-
+    const { browser } = await analizeWithBuildExtend(0);
+    expect(browser ? browser.extend : null).toBe(false);
   });
 
   test('should read true per-build extend option as set as boolean', async () => {
-
-    const { output: { browser } } = await analizeWithBuildExtend(true);
-
-    expect(browser ? browser.extend : null)
-      .toBe(true);
-
+    const { browser } = await analizeWithBuildExtend(true);
+    expect(browser ? browser.extend : null).toBe(true);
   });
 
   test('should read false per-build extend option as set as boolean', async () => {
-
-    const { output: { browser } } = await analizeWithBuildExtend(false);
-
-    expect(browser ? browser.extend : null)
-      .toBe(false);
-
+    const { browser } = await analizeWithBuildExtend(false);
+    expect(browser ? browser.extend : null).toBe(false);
   });
 
   test('should read per-build extend option over top-level one', async () => {
-
-    const { output: { browser } } = await analize(cwd, {
+    const { browser } = await analize(cwd, {
       browser: 'browser',
       bundlib: { extend: true, browser: { extend: false } },
     });
-
-    expect(browser ? browser.extend : null)
-      .toBe(false);
-
+    expect(browser ? browser.extend : null).toBe(false);
   });
 
 });

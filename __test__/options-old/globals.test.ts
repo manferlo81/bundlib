@@ -56,7 +56,7 @@ describe('globals option', () => {
 
   test('should work with array globals option', async () => {
 
-    const { output: { browser } } = await analizeWithGlobals(['module1', 'module2']);
+    const { browser } = await analizeWithGlobals(['module1', 'module2']);
 
     expect(browser ? browser.globals : null)
       .toEqual({
@@ -68,7 +68,7 @@ describe('globals option', () => {
 
   test('should work with array per-build globals option', async () => {
 
-    const { output: { browser } } = await analizeWithBuildGlobals(['module1', 'module2']);
+    const { browser } = await analizeWithBuildGlobals(['module1', 'module2']);
 
     expect(browser ? browser.globals : null)
       .toEqual({
@@ -85,7 +85,7 @@ describe('globals option', () => {
       module2: 'mod2',
     };
 
-    const { output: { browser } } = await analizeWithGlobals(globals);
+    const { browser } = await analizeWithGlobals(globals);
 
     expect(browser ? browser.globals : null)
       .toEqual(globals);
@@ -99,7 +99,7 @@ describe('globals option', () => {
       module2: 'mod2',
     };
 
-    const { output: { browser } } = await analizeWithBuildGlobals(globals);
+    const { browser } = await analizeWithBuildGlobals(globals);
 
     expect(browser ? browser.globals : null)
       .toEqual(globals);
@@ -108,7 +108,7 @@ describe('globals option', () => {
 
   test('should set globals to null if globals option null', async () => {
 
-    const { output: { browser } } = await analizeWithGlobals(null);
+    const { browser } = await analizeWithGlobals(null);
 
     expect(browser ? browser.globals : false)
       .toBeNull();
@@ -117,7 +117,7 @@ describe('globals option', () => {
 
   test('should set globals to null if per-build globals option null', async () => {
 
-    const { output: { browser } } = await analizeWithBuildGlobals(null);
+    const { browser } = await analizeWithBuildGlobals(null);
 
     expect(browser ? browser.globals : false)
       .toBeNull();
@@ -126,7 +126,7 @@ describe('globals option', () => {
 
   test('should set globals to null if no globals option set', async () => {
 
-    const { output: { browser } } = await analize(cwd, {
+    const { browser } = await analize(cwd, {
       browser: 'browser.js',
       bundlib: {},
     });
@@ -138,7 +138,7 @@ describe('globals option', () => {
 
   test('should set per-build globals option over top-level one', async () => {
 
-    const { output: { browser } } = await analize(cwd, {
+    const { browser } = await analize(cwd, {
       browser: 'browser.js',
       bundlib: {
         globals: ['top-level'],

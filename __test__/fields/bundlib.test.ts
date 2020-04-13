@@ -15,9 +15,7 @@ describe('package.json bundlib field', () => {
 
     invalidBundlibOptions.forEach((bundlib) => {
       expect(
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-        // @ts-ignore
-        analize(cwd, { bundlib }),
+        analize(cwd, { bundlib: bundlib as never }),
       ).rejects
         .toThrow(TypeError);
     });
@@ -27,7 +25,7 @@ describe('package.json bundlib field', () => {
   test('should use bundlib option as object', async () => {
 
     const name = 'name';
-    const { output: { browser } } = await analize(cwd, { browser: 'out.js', bundlib: { name } });
+    const { browser } = await analize(cwd, { browser: 'out.js', bundlib: { name } });
 
     expect(browser).toMatchObject({ name });
 
@@ -36,7 +34,7 @@ describe('package.json bundlib field', () => {
   test('should use bundlib option as string', async () => {
 
     const name = 'bundlib';
-    const { output: { browser } } = await analize(cwd, { browser: 'out.js', bundlib: 'bundlib.json' });
+    const { browser } = await analize(cwd, { browser: 'out.js', bundlib: 'bundlib.json' });
 
     expect(browser).toMatchObject({ name });
 

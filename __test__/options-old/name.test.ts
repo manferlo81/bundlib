@@ -30,14 +30,13 @@ describe('name option', () => {
 
     const name = 'pkg-name';
 
-    const { output: { browser } } = await analize(cwd, {
+    const { browser } = await analize(cwd, {
       name,
       browser: 'out/lib.umd.js',
       bundlib: { name },
     });
 
-    expect(browser ? browser.name : null)
-      .toBe(name);
+    expect(browser ? browser.name : null).toBe(name);
 
   });
 
@@ -45,19 +44,18 @@ describe('name option', () => {
 
     const pkgName = '@scope/pkg-name';
 
-    const { output: { browser } } = await analize(cwd, {
+    const { browser } = await analize(cwd, {
       name: pkgName,
       browser: 'out/lib.umd.js',
     });
 
-    expect(browser ? browser.name : null)
-      .toBe('pkgName');
+    expect(browser ? browser.name : null).toBe('pkgName');
 
   });
 
   test('should read per-build name option over top-level one', async () => {
 
-    const { output: { browser } } = await analize(cwd, {
+    const { browser } = await analize(cwd, {
       browser: 'browser.js',
       bundlib: {
         name: 'top-level',
@@ -65,8 +63,7 @@ describe('name option', () => {
       },
     });
 
-    expect(browser ? browser.name : null)
-      .toBe('per-build');
+    expect(browser ? browser.name : null).toBe('per-build');
 
   });
 

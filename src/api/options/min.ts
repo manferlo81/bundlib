@@ -17,5 +17,5 @@ export function normalizeBuildMin(
   field: BuildType,
   def: BooleanBuildOptions,
 ): boolean {
-  return (!build || isNull(build.min)) ? def[field] : build.min;
+  return (!build || isNull(build.min)) ? def[field] : !!build.min;
 }

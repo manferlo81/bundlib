@@ -27,11 +27,11 @@ describe('package.json bin field', () => {
 
   test('should read binary output filename', async () => {
 
-    const analized = await analizeWithBin('bin/cli.js');
-    const { bin } = analized.output;
+    const binField = 'bin/cli.js';
+    const analized = await analizeWithBin(binField);
+    const { bin } = analized;
 
-    expect(bin ? bin.path : null)
-      .toMatch(/bin[\\/]cli\.js$/);
+    expect(bin ? bin.path : null).toBe(binField);
 
   });
 

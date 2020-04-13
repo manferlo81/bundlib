@@ -12,6 +12,7 @@ export interface OptionsWithPath {
 }
 
 export interface ModuleBuildOptions extends OptionsWithPath {
+  input: StrictNullable<string>;
   sourcemap: RollupSourcemap;
   esModule: boolean;
   interop: boolean;
@@ -44,8 +45,11 @@ export interface Dependencies {
 export interface PkgAnalized {
   cwd: string;
   pkg: BundlibPkgJson;
-  input: InputOptions;
-  output: OutputOptions;
+  main: StrictNullable<ModuleBuildOptions>;
+  module: StrictNullable<ModuleBuildOptions>;
+  browser: StrictNullable<BrowserBuildOptions>;
+  bin: StrictNullable<ModuleBuildOptions>;
+  types: StrictNullable<string>;
   dependencies: Dependencies;
   cache: StrictNullable<string>;
 }

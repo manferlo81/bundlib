@@ -27,11 +27,11 @@ describe('package.json browser field', () => {
 
   test('should read browser field', async () => {
 
-    const analized = await analizeWithBrowser('out/lib.js');
-    const { browser } = analized.output;
+    const browserField = 'out/lib.js';
+    const analized = await analizeWithBrowser(browserField);
+    const { browser } = analized;
 
-    expect(browser ? browser.path : null)
-      .toMatch(/out[\\/]lib\.js$/);
+    expect(browser ? browser.path : null).toBe(browserField);
 
   });
 

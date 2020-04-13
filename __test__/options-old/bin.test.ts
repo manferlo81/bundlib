@@ -21,21 +21,14 @@ describe('bin option', () => {
     expect.assertions(invalidInputs.length);
 
     invalidInputs.forEach((bin) => {
-      expect(
-        analizeWithBin(bin),
-      ).rejects
-        .toThrow(TypeError);
+      expect(analizeWithBin(bin)).rejects.toThrow(TypeError);
     });
 
   });
 
   test('should prevent Binary module build if bin = false', async () => {
-
-    const { output: { bin } } = await analizeWithBin(false);
-
-    expect(bin)
-      .toBeNull();
-
+    const { bin } = await analizeWithBin(false);
+    expect(bin).toBeNull();
   });
 
 });

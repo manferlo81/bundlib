@@ -35,91 +35,55 @@ describe('format option', () => {
   });
 
   test('should set browser format to iife', async () => {
-
     const format = 'iife';
-
-    const { output: { browser } } = await analizeWithFormat(format);
-
-    expect(browser ? browser.format : null)
-      .toBe(format);
-
+    const { browser } = await analizeWithFormat(format);
+    expect(browser ? browser.format : null).toBe(format);
   });
 
   test('should set browser format to amd', async () => {
-
     const format = 'amd';
-
-    const { output: { browser } } = await analizeWithFormat(format);
-
-    expect(browser ? browser.format : null)
-      .toBe(format);
-
+    const { browser } = await analizeWithFormat(format);
+    expect(browser ? browser.format : null).toBe(format);
   });
 
   test('should set browser format to umd', async () => {
-
     const format = 'umd';
-
-    const { output: { browser } } = await analizeWithFormat(format);
-
-    expect(browser ? browser.format : null)
-      .toBe(format);
-
+    const { browser } = await analizeWithFormat(format);
+    expect(browser ? browser.format : null).toBe(format);
   });
 
   test('should set browser format to iife from build', async () => {
-
     const format = 'iife';
-
-    const { output: { browser } } = await analizeWithBuildFormat(format);
-
-    expect(browser ? browser.format : null)
-      .toBe(format);
-
+    const { browser } = await analizeWithBuildFormat(format);
+    expect(browser ? browser.format : null).toBe(format);
   });
 
   test('should set browser format to amd from build', async () => {
-
     const format = 'amd';
-
-    const { output: { browser } } = await analizeWithBuildFormat(format);
-
-    expect(browser ? browser.format : null)
-      .toBe(format);
-
+    const { browser } = await analizeWithBuildFormat(format);
+    expect(browser ? browser.format : null).toBe(format);
   });
 
   test('should set browser format to umd from build', async () => {
-
     const format = 'umd';
-
-    const { output: { browser } } = await analizeWithBuildFormat(format);
-
-    expect(browser ? browser.format : null)
-      .toBe(format);
-
+    const { browser } = await analizeWithBuildFormat(format);
+    expect(browser ? browser.format : null).toBe(format);
   });
 
   test('should default to umd in no browser format provided', async () => {
-
-    const { output: { browser } } = await analize(cwd, { browser: 'out/lib.js' });
-
+    const { browser } = await analize(cwd, { browser: 'out/lib.js' });
     expect(browser ? browser.format : null).toBe('umd');
-
   });
 
   test('should read per-build browser format over top-level one', async () => {
-
-    const { output: { browser } } = await analize(cwd, {
+    const { browser } = await analize(cwd, {
       browser: 'out/lib.js',
       bundlib: {
         format: 'amd',
         browser: { format: 'iife' },
       },
     });
-
     expect(browser ? browser.format : null).toBe('iife');
-
   });
 
 });

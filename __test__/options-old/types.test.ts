@@ -31,12 +31,8 @@ describe('types option', () => {
   });
 
   test('should prevent types generation if types = false', async () => {
-
-    const { output: { types } } = await analizeWithMain(false);
-
-    expect(types)
-      .toBeNull();
-
+    const { types } = await analizeWithMain(false);
+    expect(types).toBeNull();
   });
 
 });

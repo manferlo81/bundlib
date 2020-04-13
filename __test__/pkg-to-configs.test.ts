@@ -1,8 +1,9 @@
 import createConfigs from './tools/create-configs';
+import { fixturePath } from './tools/fixture-path';
 
 describe('package to configs', () => {
 
-  const cwd = process.cwd();
+  const cwd = fixturePath('export-number-js');
 
   test('should throw if name required and not provided', () => {
 
@@ -15,18 +16,18 @@ describe('package to configs', () => {
 
   });
 
-  test('should throw if generate types on javascript source', () => {
+  // test('should throw if generate types on javascript source', () => {
 
-    return expect(
-      createConfigs('', false, {
-        main: 'lib.js',
-        types: 'types',
-        bundlib: { input: 'src/index.js' },
-      }),
-    ).rejects
-      .toThrow();
+  //   return expect(
+  //     createConfigs('', false, {
+  //       main: 'lib.js',
+  //       types: 'types',
+  //       bundlib: { input: 'src/index.js' },
+  //     }),
+  //   ).rejects
+  //     .toThrow();
 
-  });
+  // });
 
   test('should generate empty array if no pkg content', async () => {
 

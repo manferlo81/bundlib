@@ -52,34 +52,34 @@ describe('package.json main field', () => {
 
   test('should read module field', async () => {
 
-    const analized = await analizeWithModule('out/lib.js');
-    const { module: moduleOut } = analized.output;
+    const moduleField = 'out/lib.js';
+    const analized = await analizeWithModule(moduleField);
+    const { module: moduleOut } = analized;
 
-    expect(moduleOut ? moduleOut.path : null)
-      .toMatch(/out[\\/]lib\.js$/);
+    expect(moduleOut ? moduleOut.path : null).toBe(moduleField);
 
   });
 
   test('should fallback to jsnext:main field', async () => {
 
-    const analized = await analizeWithJSNext('out/lib.js');
-    const { module: moduleOut } = analized.output;
+    const moduleField = 'out/lib.js';
+    const analized = await analizeWithJSNext(moduleField);
+    const { module: moduleOut } = analized;
 
-    expect(moduleOut ? moduleOut.path : null)
-      .toMatch(/out[\\/]lib\.js$/);
+    expect(moduleOut ? moduleOut.path : null).toBe(moduleField);
 
   });
 
   test('should read module field over jsnext:main', async () => {
 
+    const moduleField = 'out.module.js';
     const analized = await analize(cwd, {
-      'module': 'out.module.js',
-      'jsnext:main': 'out.main.js',
+      'module': moduleField,
+      'jsnext:main': 'out.jsnext.js',
     });
-    const { module: moduleOut } = analized.output;
+    const { module: moduleOutput } = analized;
 
-    expect(moduleOut ? moduleOut.path : null)
-      .toMatch(/out\.module\.js$/);
+    expect(moduleOutput ? moduleOutput.path : null).toMatch(moduleField);
 
   });
 

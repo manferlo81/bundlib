@@ -13,3 +13,7 @@ export function invalidOptionOld(option: string, type: string): TypeError {
 export function invalidOption(optionName: string, url: string): TypeError {
   return error(`Invalid "${optionName}" option. Please check the documentation at ${url}`);
 }
+
+export function inputNotFound(type: string) {
+  return error(`Input file not found for ${type}`);
+}

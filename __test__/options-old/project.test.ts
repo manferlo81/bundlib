@@ -36,7 +36,7 @@ describe('project option', () => {
 
     const projectPath = 'tsconfig-2.json';
 
-    const { output: { main, module: moduleOutput, browser, bin } } = await analizeWithProject(projectPath);
+    const { main, module: moduleOutput, browser, bin } = await analizeWithProject(projectPath);
 
     expect(main ? main.project : null).toBe(projectPath);
     expect(moduleOutput ? moduleOutput.project : null).toBe(projectPath);
@@ -47,7 +47,7 @@ describe('project option', () => {
 
   test('should be null if project not provided', async () => {
 
-    const { output: { main, module: moduleOutput, browser, bin } } = await analizeWithProject(undefined);
+    const { main, module: moduleOutput, browser, bin } = await analizeWithProject(undefined);
 
     expect(main ? main.project : 0).toBeNull();
     expect(moduleOutput ? moduleOutput.project : 0).toBeNull();

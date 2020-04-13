@@ -20,23 +20,20 @@ describe('analize', () => {
 
     const analized = await analize(cwd, pkg);
     const {
-      input,
-      output,
+      main,
+      module: moduleBuild,
+      browser,
+      bin,
+      types,
       dependencies,
       cache,
     } = analized;
 
-    expect(input).toEqual({
-      api: null,
-      bin: null,
-    });
-    expect(output).toEqual({
-      main: null,
-      module: null,
-      browser: null,
-      bin: null,
-      types: null,
-    });
+    expect(main).toBeNull();
+    expect(moduleBuild).toBeNull();
+    expect(browser).toBeNull();
+    expect(bin).toBeNull();
+    expect(types).toBeNull();
     expect(dependencies).toEqual({
       runtime: null,
       dev: null,

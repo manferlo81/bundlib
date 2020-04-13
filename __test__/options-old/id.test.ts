@@ -30,31 +30,29 @@ describe('id option', () => {
 
     const id = 'libId';
 
-    const { output: { browser } } = await analize(cwd, {
+    const { browser } = await analize(cwd, {
       browser: 'out/lib.umd.js',
       bundlib: { name: 'lib', id },
     });
 
-    expect(browser ? browser.id : null)
-      .toBe(id);
+    expect(browser ? browser.id : null).toBe(id);
 
   });
 
   test('should default to null if no browser build amd id provided', async () => {
 
-    const { output: { browser } } = await analize(cwd, {
+    const { browser } = await analize(cwd, {
       browser: 'out/lib.umd.js',
       bundlib: { name: 'lib' },
     });
 
-    expect(browser ? browser.id : false)
-      .toBeNull();
+    expect(browser ? browser.id : false).toBeNull();
 
   });
 
   test('should read per-build id option over top-level one', async () => {
 
-    const { output: { browser } } = await analize(cwd, {
+    const { browser } = await analize(cwd, {
       browser: 'browser.js',
       bundlib: {
         id: 'top-level',
@@ -62,8 +60,7 @@ describe('id option', () => {
       },
     });
 
-    expect(browser ? browser.id : null)
-      .toBe('per-build');
+    expect(browser ? browser.id : null).toBe('per-build');
 
   });
 
