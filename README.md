@@ -4,16 +4,15 @@
 
 An automatic configuration manager for [Rollup.js](https://github.com/rollup/rollup).
 
-> :warning: Bundlib is under active development, please [file a new issue](https://github.com/manferlo81/bundlib/issues) if you find any issue or bug, suggestions are welcome as well.
+> :warning: **Bundlib** is under active development, please [file a new issue](https://github.com/manferlo81/bundlib/issues) if you find any issue or bug, suggestions are welcome as well.
 
 ## BREAKING CHANGES in version 0.16.x
 
-* `analizePkg` result format changed, see [PkgAnalized](#pkganalized) (It only affects you if you are using `Bundlib` programmatically)
+* `analizePkg` result format changed, see [PkgAnalized](#pkganalized) (It only affects you if you are using **Bundlib** programmatically)
 
 ## In this guide
 
 * [Install](#install)
-* [First steps](#first-steps)
 * [Build](#build)
 * [Configuration](#configuration)
 * [Advanced Configuration](#advanced-configuration)
@@ -40,43 +39,39 @@ An automatic configuration manager for [Rollup.js](https://github.com/rollup/rol
   * [String based selective format](#string-based-selective-format)
 * [Supported Plugins](#supported-plugins)
 * [Using the CLI tool](#using-the-cli-tool)
-* [Using `Bundlib` programmatically](#using-bundlib-programmatically)
+* [Using **Bundlib** programmatically](#using-bundlib-programmatically)
 * [Types](#types)
 * [Features](#features)
 
 ## Install
 
 ```bash
-npm i -D bundlib
+npm i -D bundlib rollup
 ```
 
-> :warning: Rollup is a peer dependency and it has to be installed as well.
-
-## First steps
-
-Bundlib will use `src/index.ts` or `src/index.tsx` as entry file for your library if you are using `typescript` (see Plugins for more information) or `src/index.js` otherwise, it can be configured using the [`input`](#input) option.
-
-Add the corresponding scripts to your `package.json` and run them. [see below for CLI options](#cli).
+> :warning: [**Rollup**](#https://github.com/rollup/rollup) is a peer dependency and it has to be installed as well.
 
 ## Build
 
+**Bundlib** will try to find your entry point file in the **`src`** folder. You can manually set your entry points using the [`input`](#input) options.
+
 ### CommonJS module
 
-Building a `CommonJS Module` is as simple as adding a `"main"` field to your `package.json` pointing to the output file, [see the configuration section](#configuration) for extra options.
+To build a `CommonJS Module` simply add a `"main"` field to your `package.json` pointing to the output file, [see the configuration section](#configuration) for extra options.
 
 ### ES module
 
-To build a `ES Module` simply add a `"module"` field to your `package.json` pointing to the output file, [see the configuration section](#configuration) for extra options.
+To build a `ES Module` add a `"module"` field to your `package.json` pointing to the output file, [see the configuration section](#configuration) for extra options.
 
 ### IIFE, AMD and UMD build
 
-For `IIFE`, `AMD` or `UMD` builds, add a `"browser"` field to your `package.json`. The default format is `"umd"` but it can be changed to `"iife"` or `"amd"` using the [`format`](#format) or [`browser`](#browser) option, see the [configuration section](#configuration) for more info.
+For `IIFE`, `AMD` or `UMD` builds, add a `"browser"` field to your `package.json`. The default format is `"umd"` but it can be changed to `"iife"` or `"amd"` using the [`format`](#format) option, see the [configuration section](#configuration) for more info.
 
 ## Configuration
 
 ### Automatic Configuration
 
-Bundlib will configure Rollup according to you `package.json` data, see [Advanced Configuration](#advanced-configuration) for more information.
+**Bundlib** will configure Rollup according to you `package.json` data, see [Advanced Configuration](#advanced-configuration) for more information.
 
 #### "main"
 
@@ -88,11 +83,11 @@ The `"module"` field will be used as your `ES Module` output, if not present `ES
 
 #### "browser"
 
-The `"browser"` field will be used as your `Browser` build output, if not present `Browser` build will be skipped. You can skip the build manually using the [`"browser"`](#browser) advanced option. `Bundlib` only supports `string` type `"browser"` field, it will **throw** otherwise.
+The `"browser"` field will be used as your `Browser` build output, if not present `Browser` build will be skipped. You can skip the build manually using the [`"browser"`](#browser) advanced option. **Bundlib** only supports `string` type `"browser"` field, it will **throw** otherwise.
 
 #### "bin"
 
-The `"bin"` field will be used as your `Binary` build output, if not present `Binary` build will be skipped. You can skip the build manually using the [`"bin"`](#bin) advanced option. `Bundlib` only supports `string` type `"bin"` field, it will **throw** otherwise.
+The `"bin"` field will be used as your `Binary` build output, if not present `Binary` build will be skipped. You can skip the build manually using the [`"bin"`](#bin) advanced option. **Bundlib** only supports `string` type `"bin"` field, it will **throw** otherwise.
 
 #### "types" or "typings"
 
@@ -161,7 +156,7 @@ format: amd
 
 #### Configuration files
 
-If `"bundlib"` field not present (or set to `null`), `Bundlib` will try to find your configuration file using the following order...
+If `"bundlib"` field not present (or set to `null`), **Bundlib** will try to find your configuration file using the following order...
 
 * .bundlibrc (json or yaml format)
 * .bundlibrc.json
@@ -174,25 +169,17 @@ See the [list of options](#options) below.
 
 ### Options
 
-The option object may contain any of the following properties. Any invalid or unknown option will cause `Bundlib` to **throw** at build time. Any option or sub-option set to `null` will be ignored.
+The option object may contain any of the following properties. Any invalid or unknown option will cause **Bundlib** to **throw** at build time. Any option or sub-option set to `null` will be ignored.
 
 #### input
 
 ```typescript
-input: string | InputOptions;
-
-interface InputOptions {
-  api?: string;
-  bin?: string;
-}
-
-default {
-  api: "src/index.js";
-  bin: "src-bin/index.js";
-};
+input: string | SelectiveOption;
 ```
 
-The path to the file (or files) to be used as entry point(s) for `API` and `Binary` modules. If a `string` is provided, it will be used as `API` entry point and `Binary` entry point will be set to the default value.
+The path to the files to be used as entry points for each od your builds.
+
+This option supports `object` based [`selective format`](#selective-options). See [Selective Options](#selective-options) for more information.
 
 #### sourcemap
 
@@ -318,7 +305,7 @@ Some options support a selective format to allow for a more flexible configurati
 
 Note that some options support different selective formats. `Boolean` type options support `string` based format and `object` based format while others support only `object` based format.
 
-See [sourcemap](#sourcemap), [esModule](#esmodule), [interop](#interop) and [min](#min) options.
+See [input](#input), [sourcemap](#sourcemap), [esModule](#esmodule), [interop](#interop), [min](#min) and [project](#project) options.
 
 #### Object based selective format
 
@@ -395,7 +382,7 @@ Create development, not minified builds. Builds affected by the [`min`](#min) op
 
 #### `--watch`, `-w`
 
-Run `bundlib` in watch mode.
+Run **Bundlib** in watch mode.
 
 #### `--silent`, `-s`
 
@@ -403,7 +390,7 @@ Prevent messages from showing in the console.
 
 #### `--version`, `-v`
 
-Show `bundlib` version.
+Show **Bundlib** version.
 
 #### `--help`, `-h`
 
@@ -457,17 +444,11 @@ Returns a `Promise` that resolves to an array of Rollup configs based on the con
 interface PkgAnalized {
   cwd: string;
   pkg: PkgJson;
-  input: {
-    api: string | null;
-    bin: string | null;
-  };
-  output: {
-    main: CommonJSBuildOptions | null;
-    module: ESModuleBuildOptions | null;
-    browser: BrowserBuildOptions | null;
-    bin: CommonJSBuildOptions | null;
-    types: string | null;
-  };
+  main: ModuleBuildOptions | null;
+  module: ModuleBuildOptions | null;
+  browser: BrowserBuildOptions | null;
+  bin: ModuleBuildOptions | null;
+  types: string | null;
   dependencies: {
     runtime: { [name: string]: string } | null;
     dev: { [name: string]: string } | null;
@@ -477,27 +458,15 @@ interface PkgAnalized {
 }
 ```
 
-*see also:* [`CommonJSBuildOptions`](#commonjsbuildoptions), [`ESModuleBuildOptions`](#esmodulebuildoptions), [`BrowserBuildOptions`](#browserbuildoptions) & [`TypesBuildOptions`](#typesbuildoptions)
+*see also:* [`ModuleBuildOptions`](#modulebuildoptions) and [`BrowserBuildOptions`](#browserbuildoptions).
 
-### CommonJSBuildOptions
-
-```typescript
-interface CommonJSBuildOptions {
-  path: string;
-  sourcemap: boolean | 'inline';
-  esModule: boolean;
-  interop: boolean;
-  min: boolean;
-  project: string | null;
-}
-```
-
-### ESModuleBuildOptions
+### ModuleBuildOptions
 
 ```typescript
-interface ESModuleBuildOptions {
-  path: string;
-  sourcemap: boolean | "inline";
+interface ModuleBuildOptions {
+  input: string | null;
+  output: string;
+  sourcemap: boolean | 'inline' | 'hidden';
   esModule: boolean;
   interop: boolean;
   min: boolean;
@@ -509,8 +478,9 @@ interface ESModuleBuildOptions {
 
 ```typescript
 interface BrowserBuildOptions {
-  path: string;
-  sourcemap: boolean | "inline";
+  input: string | null;
+  output: string;
+  sourcemap: boolean | 'inline' | 'hidden';
   esModule: boolean;
   interop: boolean;
   min: boolean;
@@ -520,14 +490,6 @@ interface BrowserBuildOptions {
   globals: Record<string, string> | null;
   extend: boolean;
   project: string | null;
-}
-```
-
-### TypesBuildOptions
-
-```typescript
-interface TypesBuildOptions {
-  path: string;
 }
 ```
 

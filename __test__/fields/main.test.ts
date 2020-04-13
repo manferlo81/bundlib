@@ -33,7 +33,7 @@ describe('package.json main field', () => {
     const analized = await analizeWithMain(mainField);
     const { main } = analized;
 
-    expect(main ? main.path : null).toBe(mainField);
+    expect(main ? main.output : null).toBe(mainField);
 
   });
 

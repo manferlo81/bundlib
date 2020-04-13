@@ -31,7 +31,7 @@ describe('package.json browser field', () => {
     const analized = await analizeWithBrowser(browserField);
     const { browser } = analized;
 
-    expect(browser ? browser.path : null).toBe(browserField);
+    expect(browser ? browser.output : null).toBe(browserField);
 
   });
 

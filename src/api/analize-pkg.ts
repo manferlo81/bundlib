@@ -1,5 +1,5 @@
 import { BundlibOptions, TypesOptions } from './bundlib-options';
-import { error, invalidOptionOld, invalidPkgField, invalidOption } from './errors';
+import { error, invalidOption, invalidOptionOld, invalidPkgField } from './errors';
 import { Dictionary, StrictNullable } from './helper-types';
 import { loadOptions } from './options-manager';
 import { normalizeBooleanOption } from './options/boolean';
@@ -234,22 +234,9 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   const typesOutputFile = typesFieldValue || typings;
 
-  const mainOutput: StrictNullable<ModuleBuildOptions> = (deprecatedMainOptions === false || !mainOutputFile) ? null : {
-    input: perBuildInput.main,
-    path: mainOutputFile,
-    sourcemap: normalizeBuildSourcemap(
-      deprecatedMainOptions,
-      perBuildSourcemap.main,
-    ),
-    esModule: normalizeBooleanOption(deprecatedMainOptions, 'esModule', perBuildESModule.main),
-    interop: normalizeBooleanOption(deprecatedMainOptions, 'interop', perBuildInterop.main),
-    min: normalizeBuildMin(deprecatedMainOptions, 'main', perBuildMin),
-    project: perBuildProject.main,
-  };
-
   const moduleOutput: StrictNullable<ModuleBuildOptions> = (deprecatedModuleOptions === false || !moduleOutputFile) ? null : {
     input: perBuildInput.module,
-    path: moduleOutputFile,
+    output: moduleOutputFile,
     sourcemap: normalizeBuildSourcemap(
       deprecatedModuleOptions,
       perBuildSourcemap.module,
@@ -260,9 +247,22 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     project: perBuildProject.module,
   };
 
+  const mainOutput: StrictNullable<ModuleBuildOptions> = (deprecatedMainOptions === false || !mainOutputFile) ? null : {
+    input: perBuildInput.main,
+    output: mainOutputFile,
+    sourcemap: normalizeBuildSourcemap(
+      deprecatedMainOptions,
+      perBuildSourcemap.main,
+    ),
+    esModule: normalizeBooleanOption(deprecatedMainOptions, 'esModule', perBuildESModule.main),
+    interop: normalizeBooleanOption(deprecatedMainOptions, 'interop', perBuildInterop.main),
+    min: normalizeBuildMin(deprecatedMainOptions, 'main', perBuildMin),
+    project: perBuildProject.main,
+  };
+
   const browserOutput: StrictNullable<BrowserBuildOptions> = (deprecatedBrowserOptions === false || !browserOutputFile) ? null : {
     input: perBuildInput.browser,
-    path: browserOutputFile,
+    output: browserOutputFile,
     sourcemap: normalizeBuildSourcemap(
       deprecatedBrowserOptions,
       perBuildSourcemap.browser,
@@ -288,7 +288,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   const binaryOutput: StrictNullable<ModuleBuildOptions> = (deprecatedBinaryOptions === false || !binaryOutputFile) ? null : {
     input: perBuildInput.bin,
-    path: binaryOutputFile,
+    output: binaryOutputFile,
     sourcemap: normalizeBuildSourcemap(
       deprecatedBinaryOptions,
       perBuildSourcemap.bin,

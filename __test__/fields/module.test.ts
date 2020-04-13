@@ -56,7 +56,7 @@ describe('package.json main field', () => {
     const analized = await analizeWithModule(moduleField);
     const { module: moduleOut } = analized;
 
-    expect(moduleOut ? moduleOut.path : null).toBe(moduleField);
+    expect(moduleOut ? moduleOut.output : null).toBe(moduleField);
 
   });
 
@@ -66,7 +66,7 @@ describe('package.json main field', () => {
     const analized = await analizeWithJSNext(moduleField);
     const { module: moduleOut } = analized;
 
-    expect(moduleOut ? moduleOut.path : null).toBe(moduleField);
+    expect(moduleOut ? moduleOut.output : null).toBe(moduleField);
 
   });
 
@@ -79,7 +79,7 @@ describe('package.json main field', () => {
     });
     const { module: moduleOutput } = analized;
 
-    expect(moduleOutput ? moduleOutput.path : null).toMatch(moduleField);
+    expect(moduleOutput ? moduleOutput.output : null).toMatch(moduleField);
 
   });
 

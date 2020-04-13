@@ -31,7 +31,7 @@ describe('package.json bin field', () => {
     const analized = await analizeWithBin(binField);
     const { bin } = analized;
 
-    expect(bin ? bin.path : null).toBe(binField);
+    expect(bin ? bin.output : null).toBe(binField);
 
   });
 

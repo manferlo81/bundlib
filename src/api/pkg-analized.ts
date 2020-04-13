@@ -2,17 +2,9 @@ import { Dictionary, StrictNullable } from './helper-types';
 import { BundlibPkgJson } from './pkg';
 import { BrowserBuildFormat, RollupSourcemap } from './types';
 
-export interface InputOptions {
-  api: StrictNullable<string>;
-  bin: StrictNullable<string>;
-}
-
-export interface OptionsWithPath {
-  path: string;
-}
-
-export interface ModuleBuildOptions extends OptionsWithPath {
+export interface ModuleBuildOptions {
   input: StrictNullable<string>;
+  output: string;
   sourcemap: RollupSourcemap;
   esModule: boolean;
   interop: boolean;
@@ -26,14 +18,6 @@ export interface BrowserBuildOptions extends ModuleBuildOptions {
   id: StrictNullable<string>;
   globals: StrictNullable<Dictionary<string>>;
   extend: boolean;
-}
-
-export interface OutputOptions {
-  main: StrictNullable<ModuleBuildOptions>;
-  module: StrictNullable<ModuleBuildOptions>;
-  browser: StrictNullable<BrowserBuildOptions>;
-  bin: StrictNullable<ModuleBuildOptions>;
-  types: StrictNullable<string>;
 }
 
 export interface Dependencies {
