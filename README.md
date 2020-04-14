@@ -19,7 +19,7 @@ An automatic configuration manager for [Rollup.js](https://github.com/rollup/rol
 * [Options](#options)
   * [input](#input)
   * [sourcemap](#sourcemap)
-  * [esModule](#esModule)
+  * [esModule](#esmodule)
   * [interop](#interop)
   * [format](#format)
   * [name](#name)
@@ -29,11 +29,6 @@ An automatic configuration manager for [Rollup.js](https://github.com/rollup/rol
   * [min](#min)
   * [cache](#cache)
   * [project](#project)
-  * [main](#main)
-  * [module](#module)
-  * [browser](#browser)
-  * [bin](#bin)
-  * [types](#types)
 * [Selective Options](#selective-options)
   * [Object based selective format](#object-based-selective-format)
   * [String based selective format](#string-based-selective-format)
@@ -71,31 +66,31 @@ For `IIFE`, `AMD` or `UMD` builds, add a `"browser"` field to your `package.json
 
 ### Automatic Configuration
 
-**Bundlib** will configure Rollup according to you `package.json` data, see [Advanced Configuration](#advanced-configuration) for more information.
+**Bundlib** will configure [**Rollup**](https://github.com/rollup/rollup) according to you `package.json` data, see [Advanced Configuration](#advanced-configuration) for more information.
 
 #### "main"
 
-The `"main"` field will be used as your CommonJS Module output, if not present `CommonJS Module` build will be skipped. You can skip the build manually using the [`"main"`](#main) advanced option.
+The `"main"` field will be used as your **CommonJS module** output, if not present, **CommonJS Module** build will be skipped. You can skip the build manually using the [`skip`](#skip) advanced option.
 
 #### "module" or "jsnext:main"
 
-The `"module"` field will be used as your `ES Module` output, if not present `ES Module` build will be skipped. You can skip the build manually using the [`"module"`](#module) advanced option.`"jsnext:main"` field will also be honored if `"module"` field is not present, but it is recommended to use the `"module"` field.
+The `"module"` field will be used as your **ES Module** output, if not present, **ES Module** build will be skipped. You can skip the build manually using the [`skip`](#skip) advanced option. `"jsnext:main"` field will also be honored if `"module"` field is not present, but it is recommended to use the `"module"` field.
 
 #### "browser"
 
-The `"browser"` field will be used as your `Browser` build output, if not present `Browser` build will be skipped. You can skip the build manually using the [`"browser"`](#browser) advanced option. **Bundlib** only supports `string` type `"browser"` field, it will **throw** otherwise.
+The `"browser"` field will be used as your **Browser** build output, if not present, **Browser** build will be skipped. You can skip the build manually using the [`skip`](#skip) advanced option. **Bundlib** only supports `string` type `"browser"` field, it will **throw** otherwise.
 
 #### "bin"
 
-The `"bin"` field will be used as your `Binary` build output, if not present `Binary` build will be skipped. You can skip the build manually using the [`"bin"`](#bin) advanced option. **Bundlib** only supports `string` type `"bin"` field, it will **throw** otherwise.
+The `"bin"` field will be used as your **Binary** build output, if not present, **Binary** build will be skipped. You can skip the build manually using the [`skip`](#skip) advanced option. **Bundlib** only supports `string` type `"bin"` field, it will **throw** otherwise.
 
 #### "types" or "typings"
 
-The `"types"` field will be used as your types output if you are using `typescript`. You can skip types generation using the [`"types"`](#types) advanced option. `"typings"` field will also be honored if `"types"` field is not present.
+The `"types"` field will be used as your **Types** output if you are using `typescript`. You can skip types generation using the [`skip`](#skip) advanced option. `"typings"` field will also be honored if `"types"` field is not present.
 
 #### "dependencies"
 
-The `"dependencies"` field will be used to detect installed packages, it will also be added as external dependencies for your CommonJS Module, `ES Module`, and Binary builds, for Browser build dependencies will be bundled into the output unless otherwise specified using the [`"globals"`](#globals) advanced option.
+The `"dependencies"` field will be used to detect installed packages, it will also be used to set external dependencies for your **CommonJS module**, **ES module**, and **Binary** builds, for **Browser** build dependencies will be bundled into the output file unless otherwise specified using the [`"globals"`](#globals) advanced option.
 
 #### "devDependencies"
 
@@ -103,7 +98,7 @@ The `"devDependencies"` field will be used to detect installed packages.
 
 #### "peerDependencies"
 
-The `"peerDependencies"` field will be used as external dependencies for your CommonJS Module, ES Module, and Binary builds.
+The `"peerDependencies"` field will be used as external dependencies for your **CommonJS module,**, **ES module**, and **Binary** builds.
 
 #### "bundlib"
 
@@ -156,7 +151,7 @@ format: amd
 
 #### Configuration files
 
-If `"bundlib"` field not present (or set to `null`), **Bundlib** will try to find your configuration file using the following order...
+If `"bundlib"` field not present, **Bundlib** will try to find your configuration file using the following order...
 
 * .bundlibrc (json or yaml format)
 * .bundlibrc.json
@@ -177,7 +172,7 @@ The option object may contain any of the following properties. Any invalid or un
 input: string | SelectiveOption;
 ```
 
-The path to the files to be used as entry points for each od your builds.
+The path to the files to be used as entry points for each of your builds.
 
 This option supports `object` based [`selective format`](#selective-options). See [Selective Options](#selective-options) for more information.
 
@@ -201,7 +196,7 @@ esModule: boolean | SelectiveOption;
 default false;
 ```
 
-Whether or not to add a `__esModule: true` property to your `non ES Module` build. If `esModule = true` it will affect all supported builds.
+Whether or not to add a `__esModule: true` property to your module. If `esModule = true` it will affect all builds.
 
 This option supports `object` based and `string` based [`selective format`](#selective-options). See [Selective Options](#selective-options) for more information.
 
@@ -213,7 +208,7 @@ interop: boolean | SelectiveOption;
 default false;
 ```
 
-Whether or not to add an interop block. If `interop = true` it will affect all supported builds.
+Whether or not to add an interop block. If `interop = true` it will affect all builds.
 
 This option supports `object` based and `string` based [`selective format`](#selective-options). See [Selective Options](#selective-options) for more information.
 
