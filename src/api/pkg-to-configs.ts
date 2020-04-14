@@ -98,13 +98,14 @@ export function pkgToConfigs(
 
   function createPlugins(
     inputFile: string,
-    outputFile: StrictNullable<string>,
+    outputFile: string,
     extensions: string[],
     sourcemap: RollupSourcemap,
     mini: boolean,
     browser: boolean,
     bin: boolean,
     project: StrictNullable<string>,
+    apiInput: StrictNullable<string>,
   ): Plugin[] {
 
     const sourcemapBool = !!sourcemap;
@@ -148,10 +149,10 @@ export function pkgToConfigs(
         sourcemap: sourcemapBool,
       }),
 
-      bin && commanjsOutput && outputFile && pluginAPI(
+      bin && apiInput && outputFile && pluginAPI(
         cwd,
         dirname(outputFile),
-        setProp(inputFile, cwd, {}),
+        setProp(apiInput, cwd, {}),
       ),
 
       loadPluginNodeResolve && loadPluginNodeResolve({
@@ -247,6 +248,7 @@ export function pkgToConfigs(
           false,
           false,
           moduleOutput.project,
+          null,
         ),
         onwarn,
         useChokidar,
@@ -273,6 +275,7 @@ export function pkgToConfigs(
             false,
             false,
             moduleOutput.project,
+            null,
           ),
           onwarn,
           useChokidar,
@@ -312,6 +315,7 @@ export function pkgToConfigs(
           false,
           false,
           commanjsOutput.project,
+          null,
         ),
         onwarn,
         useChokidar,
@@ -338,6 +342,7 @@ export function pkgToConfigs(
             false,
             false,
             commanjsOutput.project,
+            null,
           ),
           onwarn,
           useChokidar,
@@ -357,27 +362,28 @@ export function pkgToConfigs(
       throw inputNotFound('Browser build');
     }
 
-    const resolvedPath = resolve(cwd, output);
+    const outputFile = resolve(cwd, output);
     const isBrowserExternal = createIsExternal(globals);
 
     configs.push(
       createBrowserConfig(
         inputFile,
         format,
-        resolvedPath,
+        outputFile,
         sourcemap,
         esModule,
         interop,
         isBrowserExternal,
         createPlugins(
           inputFile,
-          null,
+          outputFile,
           extensions,
           sourcemap,
           production && !min,
           true,
           false,
           browserOutput.project,
+          null,
         ),
         onwarn,
         useChokidar,
@@ -394,20 +400,21 @@ export function pkgToConfigs(
         createBrowserConfig(
           inputFile,
           format,
-          renameMin(resolvedPath),
+          renameMin(outputFile),
           sourcemap,
           esModule,
           interop,
           isBrowserExternal,
           createPlugins(
             inputFile,
-            null,
+            outputFile,
             extensions,
             sourcemap,
             true,
             true,
             false,
             browserOutput.project,
+            null,
           ),
           onwarn,
           useChokidar,
@@ -451,6 +458,7 @@ export function pkgToConfigs(
           false,
           true,
           binaryOutput.project,
+          commanjsOutput ? commanjsOutput.input : null,
         ),
         onwarn,
         useChokidar,
@@ -477,6 +485,7 @@ export function pkgToConfigs(
             false,
             true,
             binaryOutput.project,
+            commanjsOutput ? commanjsOutput.input : null,
           ),
           onwarn,
           useChokidar,
