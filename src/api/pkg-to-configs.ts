@@ -117,7 +117,7 @@ export function pkgToConfigs(
 
     const cacheRoot = pathJoin(bundlibCache, 'rpt2');
 
-    let shebang: string;
+    let shebang: string | undefined;
 
     const plugins = [
 
@@ -205,7 +205,7 @@ export function pkgToConfigs(
 
   if (moduleOutput) {
 
-    const { input, output, sourcemap, esModule, interop, min } = moduleOutput;
+    const { input, output, sourcemap, esModule, interop, min, project } = moduleOutput;
     const inputFile = findInput(input);
 
     if (!inputFile) {
@@ -228,7 +228,7 @@ export function pkgToConfigs(
           production && !min,
           false,
           false,
-          moduleOutput.project,
+          project,
           null,
         ),
         onwarn,
@@ -238,20 +238,22 @@ export function pkgToConfigs(
 
     if (min) {
 
+      const minOutputFile = renameMin(outputFile);
+
       configs.push(
         createConfig(
           inputFile,
-          { ...outputBase, file: renameMin(outputFile) },
+          { ...outputBase, file: minOutputFile },
           isExternal,
           createPlugins(
             inputFile,
-            outputFile,
+            minOutputFile,
             extensions,
             sourcemap,
             true,
             false,
             false,
-            moduleOutput.project,
+            project,
             null,
           ),
           onwarn,
@@ -265,7 +267,7 @@ export function pkgToConfigs(
 
   if (commanjsOutput) {
 
-    const { input, output, sourcemap, esModule, interop, min } = commanjsOutput;
+    const { input, output, sourcemap, esModule, interop, min, project } = commanjsOutput;
     const inputFile = findInput(input);
 
     if (!inputFile) {
@@ -288,7 +290,7 @@ export function pkgToConfigs(
           production && !min,
           false,
           false,
-          commanjsOutput.project,
+          project,
           null,
         ),
         onwarn,
@@ -298,20 +300,22 @@ export function pkgToConfigs(
 
     if (min) {
 
+      const minOutputFile = renameMin(outputFile);
+
       configs.push(
         createConfig(
           inputFile,
-          { ...outputBase, file: renameMin(outputFile) },
+          { ...outputBase, file: minOutputFile },
           isExternal,
           createPlugins(
             inputFile,
-            outputFile,
+            minOutputFile,
             extensions,
             sourcemap,
             true,
             false,
             false,
-            commanjsOutput.project,
+            project,
             null,
           ),
           onwarn,
@@ -325,7 +329,7 @@ export function pkgToConfigs(
 
   if (browserOutput) {
 
-    const { input, output, sourcemap, esModule, interop, format, name, extend, id, globals, min } = browserOutput;
+    const { input, output, sourcemap, esModule, interop, format, name, extend, id, globals, min, project } = browserOutput;
     const inputFile = findInput(input);
 
     if (!inputFile) {
@@ -368,87 +372,37 @@ export function pkgToConfigs(
           production && !min,
           true,
           false,
-          browserOutput.project,
+          project,
           null,
         ),
         onwarn,
         useChokidar,
       ),
-      // createBrowserConfig(
-      //   inputFile,
-      //   format,
-      //   outputFile,
-      //   sourcemap,
-      //   esModule,
-      //   interop,
-      //   isBrowserExternal,
-      //   createPlugins(
-      //     inputFile,
-      //     outputFile,
-      //     extensions,
-      //     sourcemap,
-      //     production && !min,
-      //     true,
-      //     false,
-      //     browserOutput.project,
-      //     null,
-      //   ),
-      //   onwarn,
-      //   useChokidar,
-      //   name as string,
-      //   extend,
-      //   globals,
-      //   id,
-      // ),
     );
 
     if (min) {
 
+      const minOutputFile = renameMin(outputFile);
+
       configs.push(
         createConfig(
           inputFile,
-          { ...outputBase, file: renameMin(outputFile) },
+          { ...outputBase, file: minOutputFile },
           isBrowserExternal,
           createPlugins(
             inputFile,
-            outputFile,
+            minOutputFile,
             extensions,
             sourcemap,
             true,
             true,
             false,
-            browserOutput.project,
+            project,
             null,
           ),
           onwarn,
           useChokidar,
         ),
-        // createBrowserConfig(
-        //   inputFile,
-        //   format,
-        //   renameMin(outputFile),
-        //   sourcemap,
-        //   esModule,
-        //   interop,
-        //   isBrowserExternal,
-        //   createPlugins(
-        //     inputFile,
-        //     outputFile,
-        //     extensions,
-        //     sourcemap,
-        //     true,
-        //     true,
-        //     false,
-        //     browserOutput.project,
-        //     null,
-        //   ),
-        //   onwarn,
-        //   useChokidar,
-        //   name as string,
-        //   extend,
-        //   globals,
-        //   id,
-        // ),
       );
 
     }
@@ -457,7 +411,7 @@ export function pkgToConfigs(
 
   if (binaryOutput) {
 
-    const { input, output, sourcemap, esModule, interop, min } = binaryOutput;
+    const { input, output, sourcemap, esModule, interop, min, project } = binaryOutput;
     const inputFile = findInput(input);
 
     if (!inputFile) {
@@ -466,6 +420,7 @@ export function pkgToConfigs(
 
     const outputBase = { format: 'cjs' as 'cjs', sourcemap, esModule, interop };
     const outputFile = resolve(cwd, output);
+    const apiInputFile = commanjsOutput ? commanjsOutput.input : null;
 
     configs.push(
       createConfig(
@@ -480,8 +435,8 @@ export function pkgToConfigs(
           production && !min,
           false,
           true,
-          binaryOutput.project,
-          commanjsOutput ? commanjsOutput.input : null,
+          project,
+          apiInputFile,
         ),
         onwarn,
         useChokidar,
@@ -490,26 +445,23 @@ export function pkgToConfigs(
 
     if (min) {
 
+      const minOutputFile = renameMin(outputFile);
+
       configs.push(
         createConfig(
           inputFile,
-          { ...outputBase, file: renameMin(outputFile) },
-          // 'cjs',
-          // renameMin(outputFile),
-          // sourcemap,
-          // esModule,
-          // interop,
+          { ...outputBase, file: minOutputFile },
           isExternal,
           createPlugins(
             inputFile,
-            outputFile,
+            minOutputFile,
             extensions,
             sourcemap,
             true,
             false,
             true,
-            binaryOutput.project,
-            commanjsOutput ? commanjsOutput.input : null,
+            project,
+            apiInputFile,
           ),
           onwarn,
           useChokidar,
