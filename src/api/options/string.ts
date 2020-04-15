@@ -1,7 +1,7 @@
 import { BuildType, SelectiveStringOption } from '../bundlib-options';
 import { invalidOption } from '../errors';
 import { Nullable, StrictNullable } from '../helper-types';
-import { keys, keysToObject } from '../helpers';
+import { keys, keysToObject } from '../tools/helpers';
 import { isNull, isObject, isString, isStringOrNull } from '../type-check/type-check';
 import { keysCheck } from '../validate/validate-keys';
 import { ALL_KEYS, API_KEYS, isSelectiveObjectKey } from './selective';

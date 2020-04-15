@@ -1,5 +1,5 @@
 import { Dictionary, StrictNullable, TypeCheckFunction } from '../helper-types';
-import { keys } from '../helpers';
+import { keys } from '../tools/helpers';
 
 export function invalidKeys(object: Dictionary<unknown>, list: string[]): StrictNullable<string[]> {
   const invalid = keys(object).filter(

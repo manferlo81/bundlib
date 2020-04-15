@@ -1,6 +1,6 @@
 import { GlobalsOptions } from '../bundlib-options';
 import { Nullable } from '../helper-types';
-import { keys, setProp } from '../helpers';
+import { keys, setProp } from '../tools/helpers';
 import { isArray, isNull, isObject, isString } from '../type-check/type-check';
 
 export function isValidGlobals(value: unknown): value is GlobalsOptions {

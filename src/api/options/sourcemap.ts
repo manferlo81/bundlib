@@ -1,7 +1,7 @@
 import { BuildType, SelectiveSourcemap, WithSourcemapOption } from '../bundlib-options';
 import { invalidOption } from '../errors';
 import { Nullable } from '../helper-types';
-import { keys, keysToObject } from '../helpers';
+import { keys, keysToObject } from '../tools/helpers';
 import { createOneOf } from '../type-check/one-of';
 import { isArray, isNull, isObject } from '../type-check/type-check';
 import { RollupSourcemap, RollupSourcemapString } from '../types';

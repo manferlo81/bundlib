@@ -12,15 +12,15 @@ import { createFincInput } from './create-input-finder';
 import { error, inputNotFound } from './errors';
 import { JS_EXTENSIONS, TS_EXTENSIONS, TS_ONLY_EXTENSIONS } from './extensions';
 import { StrictNullable } from './helper-types';
-import { setProp } from './helpers';
 import { createIsExternal } from './is-external';
 import { createIsInstalled } from './is-installed';
 import { PkgAnalized } from './pkg-analized';
 import { createPluginLoader } from './plugin-loader';
 import { apiPlugin as pluginAPI } from './plugins/api-plugin';
-import { renameMin, renamePre } from './rename';
+import { extensionMatch } from './tools/ext-match';
+import { setProp } from './tools/helpers';
+import { renameMin, renamePre } from './tools/rename';
 import { BundlibAPIOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types';
-import { extensionMatch } from './validate/ext-match';
 
 export function pkgToConfigs(
   analized: PkgAnalized,

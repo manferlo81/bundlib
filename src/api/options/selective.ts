@@ -1,5 +1,5 @@
 import { BuildType, SelectiveTypeString } from '../bundlib-options';
-import { keysToObject } from '../helpers';
+import { keysToObject } from '../tools/helpers';
 import { createOneOf } from '../type-check/one-of';
 
 export const API_KEYS: ['main', 'module', 'browser'] = ['main', 'module', 'browser'];

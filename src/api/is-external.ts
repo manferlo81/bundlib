@@ -1,6 +1,6 @@
 import { IsExternal } from 'rollup';
 import { Dictionary, Nullable } from './helper-types';
-import { hasOwn, keys, keysToObject } from './helpers';
+import { hasOwn, keys, keysToObject } from './tools/helpers';
 import { isArray } from './type-check/type-check';
 
 export function createIsExternal(...dependencies: Array<Nullable<string[] | Dictionary<unknown>>>): IsExternal {

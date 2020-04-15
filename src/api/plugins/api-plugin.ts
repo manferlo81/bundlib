@@ -2,7 +2,7 @@ import { dirname, join, relative, resolve } from 'path';
 import { Plugin } from 'rollup';
 import slash from 'slash';
 import { Dictionary } from '../helper-types';
-import { keys, setProp } from '../helpers';
+import { keys, setProp } from '../tools/helpers';
 
 export function apiPlugin(cwd: string, outputDir: string, map: Dictionary<string>): Plugin {
 
