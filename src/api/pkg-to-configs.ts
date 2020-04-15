@@ -1,6 +1,12 @@
+import { RollupCommonJSOptions as CommonJSPluginOptions } from '@rollup/plugin-commonjs';
+import { RollupJsonOptions as JsonPluginOptions } from '@rollup/plugin-json';
+import { Options as NodeResolvePluginOptions } from '@rollup/plugin-node-resolve';
 import builtinModules from 'builtin-modules';
 import { basename, dirname, join as pathJoin, resolve } from 'path';
 import { Plugin, PluginImpl } from 'rollup';
+import { BabelPluginOptions } from 'rollup-plugin-babel';
+import { EslintPluginOptions } from 'rollup-plugin-eslint';
+import { RPT2Options as Typescript2PluginOptions } from 'rollup-plugin-typescript2';
 import { createConfig } from './create-config';
 import { createFincInput } from './create-input-finder';
 import { error, inputNotFound } from './errors';
@@ -50,18 +56,41 @@ export function pkgToConfigs(
   const isInstalled = createIsInstalled(runtimeDependencies, devDependencies);
   const pluginLoader = createPluginLoader(cwd, isInstalled);
 
-  const loadPluginTypescript2 = pluginLoader<typeof import('rollup-plugin-typescript2').default>('rollup-plugin-typescript2');
+  interface TersePluginOptions {
+    sourcemap?: boolean;
+    toplevel?: boolean;
+    module?: boolean;
+    compress?: {
+      passes: number;
+    };
+  }
+
+  interface StripShebangPluginOptions {
+    sourcemap?: boolean;
+    capture?: (sh: string) => void;
+  }
+
+  interface AddShebangPluginOptions {
+    include?: string;
+    shebang?: () => string;
+  }
+
+  interface EqualsPluginOptions {
+    file?: string;
+  }
+
+  const loadPluginTypescript2 = pluginLoader<PluginImpl<Typescript2PluginOptions>>('rollup-plugin-typescript2');
   const loadPluginTypescript = pluginLoader<PluginImpl>('@rollup/plugin-typescript');
-  const loadPluginESLint = pluginLoader<typeof import('rollup-plugin-eslint').eslint>('rollup-plugin-eslint', 'eslint');
-  const loadPluginNodeResolve = pluginLoader<typeof import('@rollup/plugin-node-resolve').default>('@rollup/plugin-node-resolve');
-  const loadPluginCommonJS = pluginLoader<typeof import('@rollup/plugin-commonjs').default>('@rollup/plugin-commonjs');
-  const loadPluginJSON = pluginLoader<typeof import('@rollup/plugin-json').default>('@rollup/plugin-json');
-  const loadPluginBabel = pluginLoader<typeof import('rollup-plugin-babel').default>('rollup-plugin-babel');
+  const loadPluginESLint = pluginLoader<PluginImpl<EslintPluginOptions>>('rollup-plugin-eslint', 'eslint');
+  const loadPluginNodeResolve = pluginLoader<PluginImpl<NodeResolvePluginOptions>>('@rollup/plugin-node-resolve');
+  const loadPluginCommonJS = pluginLoader<PluginImpl<CommonJSPluginOptions>>('@rollup/plugin-commonjs');
+  const loadPluginJSON = pluginLoader<PluginImpl<JsonPluginOptions>>('@rollup/plugin-json');
+  const loadPluginBabel = pluginLoader<PluginImpl<BabelPluginOptions>>('rollup-plugin-babel');
   const loadPluginBuble = pluginLoader<PluginImpl>('@rollup/plugin-buble');
-  const loadPluginTerser = pluginLoader<PluginImpl>('rollup-plugin-terser', 'terser');
-  const loadPluginStripShebang = pluginLoader<typeof import('rollup-plugin-strip-shebang')>('rollup-plugin-strip-shebang');
-  const loadPluginAddShebang = pluginLoader<typeof import('rollup-plugin-add-shebang').default>('rollup-plugin-add-shebang');
-  const loadPluginExportEquals = pluginLoader<typeof import('rollup-plugin-export-equals')>('rollup-plugin-export-equals');
+  const loadPluginTerser = pluginLoader<PluginImpl<TersePluginOptions>>('rollup-plugin-terser', 'terser');
+  const loadPluginStripShebang = pluginLoader<PluginImpl<StripShebangPluginOptions>>('rollup-plugin-strip-shebang');
+  const loadPluginAddShebang = pluginLoader<PluginImpl<AddShebangPluginOptions>>('rollup-plugin-add-shebang');
+  const loadPluginExportEquals = pluginLoader<PluginImpl<EqualsPluginOptions>>('rollup-plugin-export-equals');
 
   const extensions = (loadPluginTypescript2 || loadPluginTypescript) ? TS_EXTENSIONS : JS_EXTENSIONS;
 

@@ -4,19 +4,13 @@ declare module 'rollup-plugin-babel' {
 
   type MinimatchPattern = Array<string | RegExp> | string | RegExp | null;
 
-  interface BabelPluginOptions {
-    extensions: string[];
-    include: MinimatchPattern;
-    exclude: MinimatchPattern;
-    babelrc: boolean;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    presets: any[];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    plugins: any[];
-    runtimeHelpers: boolean;
+  export interface BabelPluginOptions {
+    include?: MinimatchPattern;
+    exclude?: MinimatchPattern;
+    extensions?: string[];
   }
 
-  const babel: PluginImpl<Partial<BabelPluginOptions>>;
+  const babel: PluginImpl<BabelPluginOptions>;
 
   export default babel;
 
@@ -28,15 +22,14 @@ declare module 'rollup-plugin-eslint' {
 
   type MinimatchPattern = Array<string | RegExp> | string | RegExp | null;
 
-  interface EslintPluginOptions {
-    fix: boolean;
-    throwOnError: boolean;
-    throwOnWarning: boolean;
-    include: MinimatchPattern;
-    exclude: MinimatchPattern;
-    formatter: string | (() => string);
+  export interface EslintPluginOptions {
+    include?: MinimatchPattern;
+    exclude?: MinimatchPattern;
+    throwOnError?: boolean;
+    throwOnWarning?: boolean;
+    fix?: boolean;
   }
 
-  const eslint: PluginImpl<Partial<EslintPluginOptions>>;
+  export const eslint: PluginImpl<EslintPluginOptions>;
 
 }
