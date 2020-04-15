@@ -241,13 +241,13 @@ export function pkgToConfigs(
       throw inputNotFound('CommonJS module');
     }
 
-    const outputBase = { format: 'cjs' as 'cjs', sourcemap, esModule, interop };
     const outputFile = resolve(cwd, output);
+    const outputOptions = { file: outputFile, format: 'cjs' as 'cjs', sourcemap, esModule, interop };
 
     configs.push(
       createConfig(
         inputFile,
-        { ...outputBase, file: outputFile },
+        outputOptions,
         isExternal,
         createPlugins(
           inputFile,
@@ -272,7 +272,7 @@ export function pkgToConfigs(
       configs.push(
         createConfig(
           inputFile,
-          { ...outputBase, file: minOutputFile },
+          { ...outputOptions, file: minOutputFile },
           isExternal,
           createPlugins(
             inputFile,
@@ -303,13 +303,13 @@ export function pkgToConfigs(
       throw inputNotFound('ES module');
     }
 
-    const outputBase = { format: 'es' as 'es', sourcemap, esModule, interop };
     const outputFile = resolve(cwd, output);
+    const outputOptions = { file: outputFile, format: 'es' as 'es', sourcemap, esModule, interop };
 
     configs.push(
       createConfig(
         inputFile,
-        { ...outputBase, file: outputFile },
+        outputOptions,
         isExternal,
         createPlugins(
           inputFile,
@@ -334,7 +334,7 @@ export function pkgToConfigs(
       configs.push(
         createConfig(
           inputFile,
-          { ...outputBase, file: minOutputFile },
+          { ...outputOptions, file: minOutputFile },
           isExternal,
           createPlugins(
             inputFile,
@@ -365,7 +365,9 @@ export function pkgToConfigs(
       throw inputNotFound('Browser build');
     }
 
-    const outputBase: Omit<BundlibRollupModuleOutputOptions, 'file'> = {
+    const outputFile = resolve(cwd, output);
+    const outputOptions: BundlibRollupModuleOutputOptions = {
+      file: outputFile,
       format,
       sourcemap,
       esModule,
@@ -378,20 +380,19 @@ export function pkgToConfigs(
       if (!name) {
         throw error('option \'name\' is required for IIFE and UMD builds');
       }
-      outputBase.name = name;
+      outputOptions.name = name;
     }
 
     if (id && (format === 'amd' || format === 'umd')) {
-      outputBase.amd = { id };
+      outputOptions.amd = { id };
     }
 
-    const outputFile = resolve(cwd, output);
     const isBrowserExternal = createIsExternal(globals);
 
     configs.push(
       createConfig(
         inputFile,
-        { ...outputBase, file: outputFile },
+        outputOptions,
         isBrowserExternal,
         createPlugins(
           inputFile,
@@ -416,7 +417,7 @@ export function pkgToConfigs(
       configs.push(
         createConfig(
           inputFile,
-          { ...outputBase, file: minOutputFile },
+          { ...outputOptions, file: minOutputFile },
           isBrowserExternal,
           createPlugins(
             inputFile,
@@ -447,14 +448,14 @@ export function pkgToConfigs(
       throw inputNotFound('Binary build');
     }
 
-    const outputBase = { format: 'cjs' as 'cjs', sourcemap, esModule, interop };
     const outputFile = resolve(cwd, output);
+    const outputOptions = { file: outputFile, format: 'cjs' as 'cjs', sourcemap, esModule, interop };
     const apiInputFile = commanjsOutput ? commanjsOutput.input : null;
 
     configs.push(
       createConfig(
         inputFile,
-        { ...outputBase, file: outputFile },
+        outputOptions,
         isExternal,
         createPlugins(
           inputFile,
@@ -479,7 +480,7 @@ export function pkgToConfigs(
       configs.push(
         createConfig(
           inputFile,
-          { ...outputBase, file: minOutputFile },
+          { ...outputOptions, file: minOutputFile },
           isExternal,
           createPlugins(
             inputFile,
