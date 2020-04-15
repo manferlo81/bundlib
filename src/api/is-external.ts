@@ -12,32 +12,23 @@ export function createIsExternal(...dependencies: Array<Nullable<string[] | Dict
   }
 
   const asObj = filtered.reduce<Dictionary<unknown>>(
-    (result, dep) => isArray(dep) ? { ...result, ...keysToObject(dep, true) } : { ...result, ...dep },
+    (result, dep) => isArray(dep) ? keysToObject(dep, true as unknown, result) : { ...result, ...dep },
     {},
   );
 
-  const asList = filtered.reduce<string[]>(
-    (result, dep) => isArray(dep) ? [...result, ...dep] : [...result, ...keys(dep)],
-    [],
-  );
+  const asList = keys(asObj);
 
   const cache: Dictionary<boolean> = {};
 
   return (source: string, importer: unknown, isResolved: boolean) => {
 
-    // ignore local and resolved modules
-
     if (isResolved || source.startsWith('.')) {
       return;
     }
 
-    // return from cache if present
-
     if (hasOwn.call(cache, source)) {
       return cache[source];
     }
-
-    // set cached value
 
     if (asObj[source]) {
       return cache[source] = true;
