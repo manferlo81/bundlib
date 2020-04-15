@@ -3,9 +3,7 @@ import { RollupError } from 'rollup';
 
 function create(name: Extract<keyof typeof console, 'log' | 'error'>) {
   const method = console[name];
-  return (msg: string) => (
-    method(chalk.cyan(msg))
-  );
+  return (msg: string) => method(chalk.cyan(msg));
 }
 
 export const log = create('log');

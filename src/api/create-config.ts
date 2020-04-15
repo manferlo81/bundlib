@@ -1,4 +1,4 @@
-import { ChokidarOptions, IsExternal, Plugin, WarningHandlerWithDefault, WatcherOptions as RollupWatcherOptions } from 'rollup';
+import { IsExternal, Plugin, WarningHandlerWithDefault, WatcherOptions as RollupWatcherOptions } from 'rollup';
 import { Nullable } from './helper-types';
 import { BundlibRollupModuleOutputOptions, BundlibRollupOptions } from './types';
 
@@ -8,7 +8,7 @@ export function createConfig<OutputOptions extends BundlibRollupModuleOutputOpti
   external: IsExternal,
   plugins: Plugin[],
   onwarn: Nullable<WarningHandlerWithDefault>,
-  chokidar: boolean | ChokidarOptions,
+  chokidar: boolean,
 ): BundlibRollupOptions<OutputOptions> {
 
   const watch: RollupWatcherOptions = {
@@ -16,7 +16,7 @@ export function createConfig<OutputOptions extends BundlibRollupModuleOutputOpti
   };
 
   if (chokidar) {
-    watch.chokidar = chokidar === true ? {} : chokidar;
+    watch.chokidar = {};
   }
 
   const config: BundlibRollupOptions<OutputOptions> = {
