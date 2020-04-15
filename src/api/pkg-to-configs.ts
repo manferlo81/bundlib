@@ -203,16 +203,16 @@ export function pkgToConfigs(
 
   }
 
-  if (moduleOutput) {
+  if (commanjsOutput) {
 
-    const { input, output, sourcemap, esModule, interop, min, project } = moduleOutput;
+    const { input, output, sourcemap, esModule, interop, min, project } = commanjsOutput;
     const inputFile = findInput(input);
 
     if (!inputFile) {
-      throw inputNotFound('ES module');
+      throw inputNotFound('CommonJS module');
     }
 
-    const outputBase = { format: 'es' as 'es', sourcemap, esModule, interop };
+    const outputBase = { format: 'cjs' as 'cjs', sourcemap, esModule, interop };
     const outputFile = resolve(cwd, output);
 
     configs.push(
@@ -265,16 +265,16 @@ export function pkgToConfigs(
 
   }
 
-  if (commanjsOutput) {
+  if (moduleOutput) {
 
-    const { input, output, sourcemap, esModule, interop, min, project } = commanjsOutput;
+    const { input, output, sourcemap, esModule, interop, min, project } = moduleOutput;
     const inputFile = findInput(input);
 
     if (!inputFile) {
-      throw inputNotFound('CommonJS module');
+      throw inputNotFound('ES module');
     }
 
-    const outputBase = { format: 'cjs' as 'cjs', sourcemap, esModule, interop };
+    const outputBase = { format: 'es' as 'es', sourcemap, esModule, interop };
     const outputFile = resolve(cwd, output);
 
     configs.push(
