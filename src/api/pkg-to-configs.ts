@@ -1,7 +1,7 @@
 import builtinModules from 'builtin-modules';
 import { basename, dirname, join as pathJoin, resolve } from 'path';
 import { Plugin, PluginImpl } from 'rollup';
-import { createBrowserConfig, createModuleConfig } from './create-config';
+import { createConfig } from './create-config';
 import { createFincInput } from './create-input-finder';
 import { error, inputNotFound } from './errors';
 import { JS_EXTENSIONS, TS_EXTENSIONS, TS_ONLY_EXTENSIONS } from './extensions';
@@ -47,19 +47,8 @@ export function pkgToConfigs(
 
   const bundlibCache = resolve(cwd, cache || 'node_modules/.cache/bundlib');
 
-  // throw if "name" option required and not present
-
-  if (browserOutput) {
-    const { format, name } = browserOutput;
-    if ((format === 'iife' || format === 'umd') && !name) {
-      throw error('option \'name\' is required for IIFE and UMD builds');
-    }
-  }
-
   const isInstalled = createIsInstalled(runtimeDependencies, devDependencies);
   const pluginLoader = createPluginLoader(cwd, isInstalled);
-
-  // CHECK FOR INSTALLED PLUGINS
 
   const loadPluginTypescript2 = pluginLoader<typeof import('rollup-plugin-typescript2').default>('rollup-plugin-typescript2');
   const loadPluginTypescript = pluginLoader<PluginImpl>('@rollup/plugin-typescript');
@@ -74,14 +63,11 @@ export function pkgToConfigs(
   const loadPluginAddShebang = pluginLoader<typeof import('rollup-plugin-add-shebang').default>('rollup-plugin-add-shebang');
   const loadPluginExportEquals = pluginLoader<typeof import('rollup-plugin-export-equals')>('rollup-plugin-export-equals');
 
-  // CHECK FOR INSTALLED MODULES
-
   const extensions = (loadPluginTypescript2 || loadPluginTypescript) ? TS_EXTENSIONS : JS_EXTENSIONS;
 
   const findInput = createFincInput(cwd, extensions);
 
-  const isInstalledChokidar = isInstalled('chokidar');
-
+  const useChokidar = isInstalled('chokidar') && !!watch;
   const production = !dev;
 
   const isExternal = createIsExternal(
@@ -89,8 +75,6 @@ export function pkgToConfigs(
     peerDependencies,
     builtinModules as string[],
   );
-
-  const useChokidar = isInstalledChokidar && !!watch;
 
   const exclude = /node_modules/;
 
@@ -126,11 +110,11 @@ export function pkgToConfigs(
       declarationDir = typesOutputDir;
     }
 
+    const includePath = bin ? cwd : inputDirectory;
     const include = extensions.map(
-      bin
-        ? (ext) => resolve(cwd, `**/*${ext}`)
-        : (ext) => resolve(inputDirectory, `**/*${ext}`),
+      (ext) => resolve(includePath, `**/*${ext}`),
     );
+
     const cacheRoot = pathJoin(bundlibCache, 'rpt2');
 
     let shebang: string;
@@ -145,7 +129,7 @@ export function pkgToConfigs(
       }),
 
       bin && loadPluginStripShebang && loadPluginStripShebang({
-        capture: (shebangFromFile) => shebang = shebangFromFile,
+        capture: (shebangFromFile: string) => shebang = shebangFromFile,
         sourcemap: sourcemapBool,
       }),
 
@@ -221,23 +205,20 @@ export function pkgToConfigs(
 
   if (moduleOutput) {
 
-    const { input, output, sourcemap, min } = moduleOutput;
+    const { input, output, sourcemap, esModule, interop, min } = moduleOutput;
     const inputFile = findInput(input);
 
     if (!inputFile) {
       throw inputNotFound('ES module');
     }
 
+    const outputBase = { format: 'es' as 'es', sourcemap, esModule, interop };
     const outputFile = resolve(cwd, output);
 
     configs.push(
-      createModuleConfig(
+      createConfig(
         inputFile,
-        'es',
-        outputFile,
-        sourcemap,
-        true,
-        false,
+        { ...outputBase, file: outputFile },
         isExternal,
         createPlugins(
           inputFile,
@@ -258,13 +239,9 @@ export function pkgToConfigs(
     if (min) {
 
       configs.push(
-        createModuleConfig(
+        createConfig(
           inputFile,
-          'es',
-          renameMin(outputFile),
-          sourcemap,
-          true,
-          false,
+          { ...outputBase, file: renameMin(outputFile) },
           isExternal,
           createPlugins(
             inputFile,
@@ -295,20 +272,17 @@ export function pkgToConfigs(
       throw inputNotFound('CommonJS module');
     }
 
-    const resolvedPath = resolve(cwd, output);
+    const outputBase = { format: 'cjs' as 'cjs', sourcemap, esModule, interop };
+    const outputFile = resolve(cwd, output);
 
     configs.push(
-      createModuleConfig(
+      createConfig(
         inputFile,
-        'cjs',
-        resolvedPath,
-        sourcemap,
-        esModule,
-        interop,
+        { ...outputBase, file: outputFile },
         isExternal,
         createPlugins(
           inputFile,
-          resolvedPath,
+          outputFile,
           extensions,
           sourcemap,
           production && !min,
@@ -325,17 +299,13 @@ export function pkgToConfigs(
     if (min) {
 
       configs.push(
-        createModuleConfig(
+        createConfig(
           inputFile,
-          'cjs',
-          renameMin(resolvedPath),
-          sourcemap,
-          esModule,
-          interop,
+          { ...outputBase, file: renameMin(outputFile) },
           isExternal,
           createPlugins(
             inputFile,
-            resolvedPath,
+            outputFile,
             extensions,
             sourcemap,
             true,
@@ -362,17 +332,33 @@ export function pkgToConfigs(
       throw inputNotFound('Browser build');
     }
 
+    const outputBase: Omit<BundlibRollupModuleOutputOptions, 'file'> = {
+      format,
+      sourcemap,
+      esModule,
+      interop,
+      extend,
+      globals: globals || {},
+    };
+
+    if (format === 'iife' || format === 'umd') {
+      if (!name) {
+        throw error('option \'name\' is required for IIFE and UMD builds');
+      }
+      outputBase.name = name;
+    }
+
+    if (id && (format === 'amd' || format === 'umd')) {
+      outputBase.amd = { id };
+    }
+
     const outputFile = resolve(cwd, output);
     const isBrowserExternal = createIsExternal(globals);
 
     configs.push(
-      createBrowserConfig(
+      createConfig(
         inputFile,
-        format,
-        outputFile,
-        sourcemap,
-        esModule,
-        interop,
+        { ...outputBase, file: outputFile },
         isBrowserExternal,
         createPlugins(
           inputFile,
@@ -387,23 +373,41 @@ export function pkgToConfigs(
         ),
         onwarn,
         useChokidar,
-        name as string,
-        extend,
-        globals,
-        id,
       ),
+      // createBrowserConfig(
+      //   inputFile,
+      //   format,
+      //   outputFile,
+      //   sourcemap,
+      //   esModule,
+      //   interop,
+      //   isBrowserExternal,
+      //   createPlugins(
+      //     inputFile,
+      //     outputFile,
+      //     extensions,
+      //     sourcemap,
+      //     production && !min,
+      //     true,
+      //     false,
+      //     browserOutput.project,
+      //     null,
+      //   ),
+      //   onwarn,
+      //   useChokidar,
+      //   name as string,
+      //   extend,
+      //   globals,
+      //   id,
+      // ),
     );
 
     if (min) {
 
       configs.push(
-        createBrowserConfig(
+        createConfig(
           inputFile,
-          format,
-          renameMin(outputFile),
-          sourcemap,
-          esModule,
-          interop,
+          { ...outputBase, file: renameMin(outputFile) },
           isBrowserExternal,
           createPlugins(
             inputFile,
@@ -418,11 +422,33 @@ export function pkgToConfigs(
           ),
           onwarn,
           useChokidar,
-          name as string,
-          extend,
-          globals,
-          id,
         ),
+        // createBrowserConfig(
+        //   inputFile,
+        //   format,
+        //   renameMin(outputFile),
+        //   sourcemap,
+        //   esModule,
+        //   interop,
+        //   isBrowserExternal,
+        //   createPlugins(
+        //     inputFile,
+        //     outputFile,
+        //     extensions,
+        //     sourcemap,
+        //     true,
+        //     true,
+        //     false,
+        //     browserOutput.project,
+        //     null,
+        //   ),
+        //   onwarn,
+        //   useChokidar,
+        //   name as string,
+        //   extend,
+        //   globals,
+        //   id,
+        // ),
       );
 
     }
@@ -438,20 +464,17 @@ export function pkgToConfigs(
       throw inputNotFound('Binary build');
     }
 
-    const resolvedPath = resolve(cwd, output);
+    const outputBase = { format: 'cjs' as 'cjs', sourcemap, esModule, interop };
+    const outputFile = resolve(cwd, output);
 
     configs.push(
-      createModuleConfig(
+      createConfig(
         inputFile,
-        'cjs',
-        resolvedPath,
-        sourcemap,
-        esModule,
-        interop,
+        { ...outputBase, file: outputFile },
         isExternal,
         createPlugins(
           inputFile,
-          resolvedPath,
+          outputFile,
           extensions,
           sourcemap,
           production && !min,
@@ -468,17 +491,18 @@ export function pkgToConfigs(
     if (min) {
 
       configs.push(
-        createModuleConfig(
+        createConfig(
           inputFile,
-          'cjs',
-          renameMin(resolvedPath),
-          sourcemap,
-          esModule,
-          interop,
+          { ...outputBase, file: renameMin(outputFile) },
+          // 'cjs',
+          // renameMin(outputFile),
+          // sourcemap,
+          // esModule,
+          // interop,
           isExternal,
           createPlugins(
             inputFile,
-            resolvedPath,
+            outputFile,
             extensions,
             sourcemap,
             true,

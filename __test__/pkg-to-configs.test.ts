@@ -1,3 +1,4 @@
+import { pkgToConfigs } from '../src/api/pkg-to-configs';
 import createConfigs from './tools/create-configs';
 import { fixturePath } from './tools/fixture-path';
 
@@ -16,18 +17,88 @@ describe('package to configs', () => {
 
   });
 
-  // test('should throw if generate types on javascript source', () => {
+  test.skip('should throw if generate types on javascript source', () => {
 
-  //   return expect(
-  //     createConfigs('', false, {
-  //       main: 'lib.js',
-  //       types: 'types',
-  //       bundlib: { input: 'src/index.js' },
-  //     }),
-  //   ).rejects
-  //     .toThrow();
+    return expect(
+      createConfigs('', false, {
+        main: 'lib.js',
+        types: 'types',
+        bundlib: { input: 'src/index.js' },
+      }),
+    ).rejects
+      .toThrow();
 
-  // });
+  });
+
+  test('Should throw if no CommonJS module input found', () => {
+
+    return expect(
+      createConfigs(fixturePath('no-input'), false, {
+        main: 'lib.js',
+      }),
+    ).rejects
+      .toThrow(' CommonJS ');
+
+  });
+
+  test('Should throw if no ES module input found', () => {
+
+    return expect(
+      createConfigs(fixturePath('no-input'), false, {
+        module: 'lib.js',
+      }),
+    ).rejects
+      .toThrow(' ES ');
+
+  });
+
+  test('Should throw if no Browser build input found', () => {
+
+    return expect(
+      createConfigs(fixturePath('no-input'), false, {
+        browser: 'lib.js',
+      }),
+    ).rejects
+      .toThrow(' Browser ');
+
+  });
+
+  test('Should throw if no Binary build input found', () => {
+
+    return expect(
+      createConfigs(fixturePath('no-input'), false, {
+        bin: 'lib.js',
+      }),
+    ).rejects
+      .toThrow(' Binary ');
+
+  });
+
+  test('Should throw if name required and not found', () => {
+
+    const base = {
+      cwd: process.cwd(),
+      browser: {
+        input: 'src/index.js',
+        output: 'out.js',
+        sourcemap: false,
+        esModule: false,
+        interop: false,
+        extend: false,
+        min: false,
+      },
+      dependencies: {},
+    };
+
+    expect(
+      () => pkgToConfigs({ ...base, browser: { ...base.browser, format: 'umd' } } as never, {}),
+    ).toThrow();
+
+    expect(
+      () => pkgToConfigs({ ...base, browser: { ...base.browser, format: 'iife' } } as never, {}),
+    ).toThrow();
+
+  });
 
   test('should generate empty array if no pkg content', async () => {
 
@@ -96,12 +167,11 @@ describe('package to configs', () => {
   test('should generate AMD build config', async () => {
 
     const format = 'amd';
-    const name = 'libName';
     const id = 'lib-id';
 
     const configs = await createConfigs(cwd, true, {
       browser: 'out/lib.js',
-      bundlib: { format, name, id, globals: {} },
+      bundlib: { format, id, globals: {} },
     });
 
     expect(configs)
@@ -110,13 +180,9 @@ describe('package to configs', () => {
     const [config] = configs;
     const { output } = config;
 
-    expect(output.format)
-      .toBe(format);
-    expect(output.name)
-      .toBe(name);
+    expect(output.format).toBe(format);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    expect(output.amd!.id)
-      .toBe(id);
+    expect(output.amd!.id).toBe(id);
 
   });
 
