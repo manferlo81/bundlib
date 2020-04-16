@@ -38,7 +38,9 @@ describe('rollup-plugin-add-shebang plugin', () => {
   dependenciesFields.forEach((depField) => {
     test(`Should use if installed as "${depField}" on Binary build`, async () => {
       const [plugins] = await getPluginNames(cwd, false, {
-        bin: 'output.js',
+        // main: 'output.main.js',
+        bin: 'output.bin.js',
+        bundlib: { input: { api: 'src/api/index.js', bin: 'src/bin/index.js' } },
         [depField]: deps,
       });
       expect(plugins).toContain(pluginName);

@@ -19,7 +19,7 @@ describe('rollup-plugin-export-equals plugin', () => {
       const [plugins] = await getPluginNames(process.cwd(), false, {
         bundlib,
         [field]: 'output.js',
-        types: 'types.d.ts',
+        types: 'index.d.ts',
       });
       expect(plugins).not.toContain(pluginName);
     });
@@ -29,7 +29,7 @@ describe('rollup-plugin-export-equals plugin', () => {
         const [plugins] = await getPluginNames(process.cwd(), false, {
           bundlib,
           [field]: 'output.js',
-          types: 'types.d.ts',
+          types: 'index.d.ts',
           [depField]: deps,
         });
         expect(plugins).toContain(pluginName);
@@ -44,7 +44,7 @@ describe('rollup-plugin-export-equals plugin', () => {
       main: 'output.js',
       module: 'output.js',
       browser: 'output.js',
-      types: 'types.d.ts',
+      types: 'index.d.ts',
       dependencies: deps,
     });
     expect(modulePlugins).toContain(pluginName);
@@ -57,7 +57,7 @@ describe('rollup-plugin-export-equals plugin', () => {
       const [plugins] = await getPluginNames(process.cwd(), false, {
         bundlib,
         bin: 'output.js',
-        types: 'types.d.ts',
+        types: 'index.d.ts',
         [depField]: deps,
       });
       expect(plugins).not.toContain(pluginName);

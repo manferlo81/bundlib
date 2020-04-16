@@ -52,7 +52,14 @@ export function pkgToConfigs(
     peer: peerDependencies,
   } = dependencies;
 
-  const bundlibCache = resolve(cwd, cache || 'node_modules/.cache/bundlib');
+  const bundlibCachePath = resolve(cwd, cache || 'node_modules/.cache/bundlib');
+  const typescriptCachePath = pathJoin(bundlibCachePath, 'rpt2');
+
+  const isExternal = createIsExternal(
+    runtimeDependencies,
+    peerDependencies,
+    builtinModules as string[],
+  );
 
   const isInstalled = createIsInstalled(runtimeDependencies, devDependencies);
   const pluginLoader = createPluginLoader(cwd, isInstalled);
@@ -93,19 +100,16 @@ export function pkgToConfigs(
   const loadPluginAddShebang = pluginLoader<PluginImpl<AddShebangPluginOptions>>('rollup-plugin-add-shebang');
   const loadPluginExportEquals = pluginLoader<PluginImpl<EqualsPluginOptions>>('rollup-plugin-export-equals');
 
+  const useChokidar = isInstalled('chokidar') && !!watch;
+  const production = !dev;
+
   const extensions = (loadPluginTypescript2 || loadPluginTypescript) ? TS_EXTENSIONS : JS_EXTENSIONS;
 
   const findInput = createFincInput(cwd, extensions);
 
-  const useChokidar = isInstalled('chokidar') && !!watch;
-  const production = !dev;
-
-  const isExternal = createIsExternal(
-    runtimeDependencies,
-    peerDependencies,
-    builtinModules as string[],
+  const include = extensions.map(
+    (ext) => resolve(cwd, `**/*${ext}`),
   );
-
   const exclude = /node_modules/;
 
   const configs: Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>> = [];
@@ -113,37 +117,33 @@ export function pkgToConfigs(
   function createPlugins(
     inputFile: string,
     outputFile: string,
-    extensions: string[],
     rollupSourcemap: RollupSourcemap,
     mini: boolean,
     browser: boolean,
     bin: boolean,
-    project: StrictNullable<string>,
     apiInput: StrictNullable<string>,
+    project: StrictNullable<string>,
   ): Plugin[] {
 
     const sourcemap = !!rollupSourcemap;
 
     const inputIsTypescript = extensionMatch(inputFile, TS_ONLY_EXTENSIONS);
-
-    let declarationDir: string | null = null;
-    const typesFilename = renamePre(basename(inputFile), TS_DEF_PREFIX);
-
-    if (inputIsTypescript && configs.length === 0 && !bin) {
-
-      let typesOutputDir = typesOutput ? resolve(cwd, typesOutput) : null;
-      if (typesOutputDir && extensionMatch(typesOutputDir, ['.ts'])) {
-        typesOutputDir = dirname(typesOutputDir);
-      }
-
-      declarationDir = typesOutputDir;
-    }
-
-    const include = extensions.map(
-      (ext) => resolve(cwd, `**/*${ext}`),
+    const typesExpectedFilename = configs.length === 0 && !bin && typesOutput && resolve(
+      cwd,
+      extensionMatch(typesOutput, ['.ts']) ? typesOutput : pathJoin(typesOutput, 'index.d.ts'),
     );
 
-    const cacheRoot = pathJoin(bundlibCache, 'rpt2');
+    if (typesExpectedFilename && !inputIsTypescript) {
+      throw error('Can\'t generate types from a non typescript file.');
+    }
+
+    const typesGeneratedFilename = renamePre(basename(inputFile), TS_DEF_PREFIX);
+
+    if (typesExpectedFilename && typesGeneratedFilename !== basename(typesExpectedFilename)) {
+      throw error('Input filenemae and types filename have to match.');
+    }
+
+    const declarationDir = typesExpectedFilename && dirname(typesExpectedFilename);
 
     let shebang: string | undefined;
 
@@ -178,7 +178,7 @@ export function pkgToConfigs(
       }),
 
       inputIsTypescript && loadPluginTypescript2 && loadPluginTypescript2({
-        cacheRoot,
+        cacheRoot: typescriptCachePath,
         useTsconfigDeclarationDir: true,
         tsconfigDefaults: {
           exclude: [],
@@ -200,7 +200,7 @@ export function pkgToConfigs(
       }),
 
       declarationDir && loadPluginExportEquals && loadPluginExportEquals({
-        file: resolve(cwd, pathJoin(declarationDir, typesFilename)),
+        file: resolve(cwd, pathJoin(declarationDir, typesGeneratedFilename)),
       }),
 
       loadPluginBabel && loadPluginBabel({
@@ -251,13 +251,12 @@ export function pkgToConfigs(
         createPlugins(
           inputFile,
           outputFile,
-          extensions,
           sourcemap,
           production && !min,
           false,
           false,
-          project,
           null,
+          project,
         ),
         onwarn,
         useChokidar,
@@ -276,13 +275,12 @@ export function pkgToConfigs(
           createPlugins(
             inputFile,
             minOutputFile,
-            extensions,
             sourcemap,
             true,
             false,
             false,
-            project,
             null,
+            project,
           ),
           onwarn,
           useChokidar,
@@ -313,13 +311,12 @@ export function pkgToConfigs(
         createPlugins(
           inputFile,
           outputFile,
-          extensions,
           sourcemap,
           production && !min,
           false,
           false,
-          project,
           null,
+          project,
         ),
         onwarn,
         useChokidar,
@@ -338,13 +335,12 @@ export function pkgToConfigs(
           createPlugins(
             inputFile,
             minOutputFile,
-            extensions,
             sourcemap,
             true,
             false,
             false,
-            project,
             null,
+            project,
           ),
           onwarn,
           useChokidar,
@@ -396,13 +392,12 @@ export function pkgToConfigs(
         createPlugins(
           inputFile,
           outputFile,
-          extensions,
           sourcemap,
           production && !min,
           true,
           false,
-          project,
           null,
+          project,
         ),
         onwarn,
         useChokidar,
@@ -421,13 +416,12 @@ export function pkgToConfigs(
           createPlugins(
             inputFile,
             minOutputFile,
-            extensions,
             sourcemap,
             true,
             true,
             false,
-            project,
             null,
+            project,
           ),
           onwarn,
           useChokidar,
@@ -459,13 +453,12 @@ export function pkgToConfigs(
         createPlugins(
           inputFile,
           outputFile,
-          extensions,
           sourcemap,
           production && !min,
           false,
           true,
-          project,
           apiInputFile,
+          project,
         ),
         onwarn,
         useChokidar,
@@ -484,13 +477,12 @@ export function pkgToConfigs(
           createPlugins(
             inputFile,
             minOutputFile,
-            extensions,
             sourcemap,
             true,
             false,
             true,
-            project,
             apiInputFile,
+            project,
           ),
           onwarn,
           useChokidar,

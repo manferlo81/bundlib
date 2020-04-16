@@ -17,16 +17,27 @@ describe('package to configs', () => {
 
   });
 
-  test.skip('should throw if generate types on javascript source', () => {
+  test('should throw if generate types on javascript source', () => {
 
     return expect(
       createConfigs('', false, {
         main: 'lib.js',
-        types: 'types',
+        types: 'types/index.d.ts',
         bundlib: { input: 'src/index.js' },
       }),
-    ).rejects
-      .toThrow();
+    ).rejects.toThrow();
+
+  });
+
+  test('should throw if input filename doesn\'t match types filename', () => {
+
+    return expect(
+      createConfigs('', false, {
+        main: 'lib.js',
+        types: 'types/types.d.ts',
+        bundlib: { input: 'src/index.ts' },
+      }),
+    ).rejects.toThrow();
 
   });
 
@@ -280,7 +291,7 @@ describe('package to configs', () => {
 
     const configs = await createConfigs(cwd, true, {
       main: 'out/lib.js',
-      types: 'out/lib.d.ts',
+      types: 'out/index.d.ts',
       bundlib: {
         input: 'src/index.ts',
         equals: true,
