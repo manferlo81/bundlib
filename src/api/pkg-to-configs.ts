@@ -114,7 +114,7 @@ export function pkgToConfigs(
     inputFile: string,
     outputFile: string,
     extensions: string[],
-    sourcemap: RollupSourcemap,
+    rollupSourcemap: RollupSourcemap,
     mini: boolean,
     browser: boolean,
     bin: boolean,
@@ -122,9 +122,8 @@ export function pkgToConfigs(
     apiInput: StrictNullable<string>,
   ): Plugin[] {
 
-    const sourcemapBool = !!sourcemap;
+    const sourcemap = !!rollupSourcemap;
 
-    const inputDirectory = dirname(inputFile);
     const inputIsTypescript = extensionMatch(inputFile, TS_ONLY_EXTENSIONS);
 
     let declarationDir: string | null = null;
@@ -140,9 +139,8 @@ export function pkgToConfigs(
       declarationDir = typesOutputDir;
     }
 
-    const includePath = bin ? cwd : inputDirectory;
     const include = extensions.map(
-      (ext) => resolve(includePath, `**/*${ext}`),
+      (ext) => resolve(cwd, `**/*${ext}`),
     );
 
     const cacheRoot = pathJoin(bundlibCache, 'rpt2');
@@ -160,7 +158,7 @@ export function pkgToConfigs(
 
       bin && loadPluginStripShebang && loadPluginStripShebang({
         capture: (shebangFromFile: string) => shebang = shebangFromFile,
-        sourcemap: sourcemapBool,
+        sourcemap,
       }),
 
       bin && apiInput && outputFile && pluginAPI(
@@ -176,7 +174,7 @@ export function pkgToConfigs(
       }),
 
       browser && loadPluginCommonJS && loadPluginCommonJS({
-        sourceMap: sourcemapBool,
+        sourceMap: sourcemap,
       }),
 
       inputIsTypescript && loadPluginTypescript2 && loadPluginTypescript2({
@@ -187,7 +185,7 @@ export function pkgToConfigs(
         },
         tsconfigOverride: {
           compilerOptions: {
-            sourceMap: sourcemapBool,
+            sourceMap: sourcemap,
             declaration: !!declarationDir,
             ...declarationDir && { declarationDir },
           },
@@ -219,7 +217,7 @@ export function pkgToConfigs(
       }),
 
       mini && loadPluginTerser && loadPluginTerser({
-        sourcemap: sourcemapBool,
+        sourcemap,
         toplevel: true,
         module: true,
         compress: {
