@@ -1,26 +1,26 @@
 import { BundlibOptions, TypesOptions } from './bundlib-options';
 import { error, invalidOption, invalidOptionOld, invalidPkgField } from './errors';
 import { Dictionary, StrictNullable } from './helper-types';
-import { loadOptions } from './options-manager';
+import { loadOptions } from './load-options';
 import { normalizeBooleanOption } from './options/boolean';
+import { isBrowserOption } from './options/browser';
 import { resolveSelectiveESModuleOption } from './options/es-module';
 import { isBrowserFormat } from './options/format';
 import { isValidGlobals, normalizeBuildGlobals, normalizeGlobals } from './options/globals';
 import { resolveSelectiveInputOption } from './options/input';
 import { resolveSelectiveInteropOption } from './options/interop';
+import { isCJSOptionKey } from './options/main-and-bin';
 import { normalizeBuildMin, resolveSelectiveMinOption } from './options/min';
+import { isModuleOptionKey } from './options/module';
 import { normalizeBuildName } from './options/name';
 import { resolveSelectiveProjectOption } from './options/project';
 import { normalizeBuildSourcemap, resolveSelectiveSourcemapOption } from './options/sourcemap';
+import { isTypesOptionKey } from './options/types';
 import { BundlibPkgJson } from './pkg';
 import { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalized } from './pkg-analized';
-import { readPkg } from './read-pkg';
+import { readPkg } from './tools/read-pkg';
+import { invalidKeys, keysCheck } from './type-check/keys';
 import { isDictionary, isDictionaryOrNull, isNull, isStringOrNull } from './type-check/type-check';
-import { isBrowserOption } from './validate/option-browser';
-import { isCJSOptionKey } from './validate/option-main';
-import { isModuleOptionKey } from './validate/option-module';
-import { isTypesOptionKey } from './validate/option-types';
-import { invalidKeys, keysCheck } from './validate/validate-keys';
 
 async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalized>;
 async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAnalized> {

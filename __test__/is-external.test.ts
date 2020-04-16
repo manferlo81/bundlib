@@ -1,4 +1,4 @@
-import { createIsExternal } from '../src/api/is-external';
+import { createIsExternal } from '../src/api/tools/create-is-external';
 
 describe('array-to-external method', () => {
 

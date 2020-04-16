@@ -2,10 +2,10 @@ import { BuildType, SelectiveSourcemap, WithSourcemapOption } from '../bundlib-o
 import { invalidOption } from '../errors';
 import { Nullable } from '../helper-types';
 import { keys, keysToObject } from '../tools/helpers';
+import { keysCheck } from '../type-check/keys';
 import { createOneOf } from '../type-check/one-of';
 import { isArray, isNull, isObject } from '../type-check/type-check';
 import { RollupSourcemap, RollupSourcemapString } from '../types';
-import { keysCheck } from '../validate/validate-keys';
 import { ALL_KEYS, API_KEYS, isBuildTypeString, isSelectiveObjectKey, resolveTypeString, resolveTypeStringArray } from './selective';
 
 export const isSourcemapString = createOneOf<RollupSourcemapString>(

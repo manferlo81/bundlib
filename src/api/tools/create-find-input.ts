@@ -1,6 +1,6 @@
 import { existsSync } from 'fs';
 import { resolve } from 'path';
-import { Nullable } from './helper-types';
+import { Nullable } from '../helper-types';
 
 export function createFincInput(cwd: string, extensions: string[]) {
 

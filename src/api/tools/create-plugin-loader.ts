@@ -1,6 +1,6 @@
 import resolveFrom from 'resolve-from';
 import { PluginImpl } from 'rollup';
-import { IsInstalled, StrictNullable } from './helper-types';
+import { IsInstalled, StrictNullable } from '../helper-types';
 
 export function createPluginLoader(cwd: string, isInstalled: IsInstalled) {
 

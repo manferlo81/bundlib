@@ -1,6 +1,6 @@
 import { BrowserBuildOptions } from '../bundlib-options';
+import { isCJSOptionKey } from './main-and-bin';
 import { createOneOf } from '../type-check/one-of';
-import { isCJSOptionKey } from './option-main';
 
 export const isBrowserOption = createOneOf<keyof BrowserBuildOptions>(
   isCJSOptionKey,

@@ -1,5 +1,5 @@
-import { createConfig } from '../src/api/create-config';
 import { Plugin } from 'rollup';
+import { createConfig } from '../src/api/tools/create-config';
 
 describe('createConfig private method', () => {
 

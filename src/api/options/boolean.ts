@@ -2,8 +2,8 @@ import { BuildType, SelectiveBooleanOption } from '../bundlib-options';
 import { invalidOption } from '../errors';
 import { Nullable } from '../helper-types';
 import { keys, keysToObject } from '../tools/helpers';
+import { keysCheck } from '../type-check/keys';
 import { isArray, isBool, isNull, isObject } from '../type-check/type-check';
-import { keysCheck } from '../validate/validate-keys';
 import { ALL_KEYS, API_KEYS, isBuildTypeString, isSelectiveObjectKey, resolveTypeString, resolveTypeStringArray } from './selective';
 
 export type BooleanBuildOptions = Record<BuildType, boolean>;

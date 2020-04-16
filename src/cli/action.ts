@@ -6,7 +6,7 @@ import prettyMs from 'pretty-ms';
 import { RollupError, RollupWarning } from 'rollup';
 import slash from 'slash';
 import { BundlibPkgJson } from '../api';
-import { readPkg } from '../api/read-pkg';
+import { readPkg } from '../api/tools/read-pkg';
 import { bundlib } from './bundlib';
 import { log, logError } from './console';
 import { BUILD_END, END, ERROR, REBUILD, WARN } from './events';
