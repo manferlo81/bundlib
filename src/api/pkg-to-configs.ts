@@ -7,6 +7,7 @@ import { Plugin, PluginImpl } from 'rollup';
 import { BabelPluginOptions } from 'rollup-plugin-babel';
 import { EslintPluginOptions } from 'rollup-plugin-eslint';
 import { RPT2Options as Typescript2PluginOptions } from 'rollup-plugin-typescript2';
+import { MIN_PREFIX, TS_DEF_PREFIX } from './consts';
 import { error, inputNotFound } from './errors';
 import { JS_EXTENSIONS, TS_EXTENSIONS, TS_ONLY_EXTENSIONS } from './extensions';
 import { StrictNullable } from './helper-types';
@@ -19,7 +20,7 @@ import { createIsInstalled } from './tools/create-is-installed';
 import { createPluginLoader } from './tools/create-plugin-loader';
 import { extensionMatch } from './tools/extension-match';
 import { setProp } from './tools/helpers';
-import { renameMin, renamePre } from './tools/rename';
+import { renamePre } from './tools/rename-pre';
 import { BundlibAPIOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types';
 
 export function pkgToConfigs(
@@ -127,7 +128,7 @@ export function pkgToConfigs(
     const inputIsTypescript = extensionMatch(inputFile, TS_ONLY_EXTENSIONS);
 
     let declarationDir: string | null = null;
-    const typesFilename = renamePre(basename(inputFile), 'd');
+    const typesFilename = renamePre(basename(inputFile), TS_DEF_PREFIX);
 
     if (inputIsTypescript && configs.length === 0 && !bin) {
 
@@ -267,7 +268,7 @@ export function pkgToConfigs(
 
     if (min) {
 
-      const minOutputFile = renameMin(outputFile);
+      const minOutputFile = renamePre(outputFile, MIN_PREFIX);
 
       configs.push(
         createConfig(
@@ -329,7 +330,7 @@ export function pkgToConfigs(
 
     if (min) {
 
-      const minOutputFile = renameMin(outputFile);
+      const minOutputFile = renamePre(outputFile, MIN_PREFIX);
 
       configs.push(
         createConfig(
@@ -412,7 +413,7 @@ export function pkgToConfigs(
 
     if (min) {
 
-      const minOutputFile = renameMin(outputFile);
+      const minOutputFile = renamePre(outputFile, MIN_PREFIX);
 
       configs.push(
         createConfig(
@@ -475,7 +476,7 @@ export function pkgToConfigs(
 
     if (min) {
 
-      const minOutputFile = renameMin(outputFile);
+      const minOutputFile = renamePre(outputFile, MIN_PREFIX);
 
       configs.push(
         createConfig(
