@@ -14,7 +14,7 @@ export function isString(value: unknown): value is string {
 }
 
 export function isBool(value: unknown): value is boolean {
-  return value === !!value;
+  return typeof value === 'boolean';
 }
 
 // eslint-disable-next-line @typescript-eslint/unbound-method

@@ -4,9 +4,9 @@ import { Nullable } from '../helper-types';
 import { keys, keysToObject } from '../tools/helpers';
 import { keysCheck } from '../type-check/keys';
 import { createOneOf } from '../type-check/one-of';
-import { isArray, isNull, isObject } from '../type-check/type-check';
+import { isArray, isBool, isNull, isObject } from '../type-check/type-check';
 import { RollupSourcemap, RollupSourcemapString } from '../types';
-import { ALL_KEYS, API_KEYS, isBuildTypeString, isSelectiveObjectKey, resolveTypeString, resolveTypeStringArray } from './selective';
+import { ALL_KEYS, API_KEYS, isBuildTypeString, isSelectiveObjectKey, resolveTypeString, resolveTypeStringArray } from './string-based';
 
 export const isSourcemapString = createOneOf<RollupSourcemapString>(
   'inline',
@@ -14,8 +14,7 @@ export const isSourcemapString = createOneOf<RollupSourcemapString>(
 );
 
 export const isSourcemapOption = createOneOf<Nullable<RollupSourcemap>>(
-  true,
-  false,
+  isBool,
   isSourcemapString,
 );
 
@@ -25,7 +24,7 @@ function resolveSourcemapValue(value: Nullable<RollupSourcemap>): RollupSourcema
   return isSourcemapString(value) ? value : (value !== false);
 }
 
-export function resolveSelectiveSourcemapOption(value: Nullable<SelectiveSourcemap>): SourcemapBuildOptions {
+export function resolveSourcemapOption(value: Nullable<SelectiveSourcemap>): SourcemapBuildOptions {
 
   if (isNull(value) || value === true) {
     return keysToObject(

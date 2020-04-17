@@ -1,4 +1,4 @@
-import { resolveSelectiveSourcemapOption } from '../../src/api/options/sourcemap';
+import { resolveSourcemapOption } from '../../src/api/options/sourcemap';
 
 describe('"sourcemap" option', () => {
 
@@ -17,13 +17,13 @@ describe('"sourcemap" option', () => {
       { bin: 'invalid' },
     ];
     invalids.forEach((invalid) => {
-      expect(() => resolveSelectiveSourcemapOption(invalid as never)).toThrow();
+      expect(() => resolveSourcemapOption(invalid as never)).toThrow();
     });
   });
 
   test('Should resolve null or undefined "sourcemap" option', () => {
     [null, undefined].forEach((value) => {
-      expect(resolveSelectiveSourcemapOption(value)).toEqual({
+      expect(resolveSourcemapOption(value)).toEqual({
         main: true,
         module: true,
         browser: true,
@@ -34,7 +34,7 @@ describe('"sourcemap" option', () => {
 
   test('Should resolve specific "sourcemap" option', () => {
     [true, false, 'inline' as 'inline', 'hidden' as 'hidden'].forEach((value) => {
-      expect(resolveSelectiveSourcemapOption(value)).toEqual({
+      expect(resolveSourcemapOption(value)).toEqual({
         main: value,
         module: value,
         browser: value,
@@ -52,7 +52,7 @@ describe('"sourcemap" option', () => {
       { value: 'api' as 'api', expected: { main: true, module: true, browser: true, bin: false } },
     ];
     values.forEach(({ value, expected }) => {
-      expect(resolveSelectiveSourcemapOption(value)).toEqual(expected);
+      expect(resolveSourcemapOption(value)).toEqual(expected);
     });
   });
 
@@ -62,7 +62,7 @@ describe('"sourcemap" option', () => {
       { value: ['api'] as ['api'], expected: { main: true, module: true, browser: true, bin: false } },
     ];
     values.forEach(({ value: array, expected }) => {
-      expect(resolveSelectiveSourcemapOption(array)).toEqual(expected);
+      expect(resolveSourcemapOption(array)).toEqual(expected);
     });
   });
 
@@ -98,7 +98,7 @@ describe('"sourcemap" option', () => {
       },
     ];
     values.forEach(({ value, expected }) => {
-      expect(resolveSelectiveSourcemapOption(value)).toEqual(expected);
+      expect(resolveSourcemapOption(value)).toEqual(expected);
     });
   });
 

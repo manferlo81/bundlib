@@ -1,75 +1,98 @@
-import { BuildType, SelectiveType } from '../bundlib-options';
-import { TypeCheckFunction } from '../helper-types';
-import { keysToObject } from '../tools/helpers';
+import { BuildType, SelectiveBooleanOption, SelectiveOption, SelectiveSkipBuildType, SelectiveType } from '../bundlib-options';
+import { invalidOption } from '../errors';
+import { Nullable, TypeCheckFunction } from '../helper-types';
+import { keys, keysToObject } from '../tools/helpers';
+import { keysCheck } from '../type-check/keys';
 import { createOneOf } from '../type-check/one-of';
+import { isArray, isBool, isNull, isObject } from '../type-check/type-check';
+import { API_KEYS, resolveTypeString, resolveTypeStringArray } from './string-based';
 
-export const API_KEYS: ['main', 'module', 'browser'] = ['main', 'module', 'browser'];
-export const ALL_KEYS = [...API_KEYS, 'bin'] as ['main', 'module', 'browser', 'bin'];
-export const SKIP_KEYS = [...ALL_KEYS, 'types'] as ['main', 'module', 'browser', 'bin', 'types'];
+export type BooleanBuildOptions<K extends string> = Record<K, boolean>;
 
-export const isBuildType = createOneOf<BuildType>(
-  'main',
-  'module',
-  'browser',
-  'bin',
-);
+export function resolveSelectiveOption<K extends SelectiveSkipBuildType>(value: Nullable<SelectiveOption<SelectiveType<K>, boolean>>, defaultValue: boolean, isTypeString: TypeCheckFunction<K>, allkeys: K[], name: string, url: string): BooleanBuildOptions<K>;
+export function resolveSelectiveOption<K extends BuildType>(value: Nullable<SelectiveOption<SelectiveType<K>, boolean>>, defaultValue: boolean, isTypeString: TypeCheckFunction<K>, allkeys: K[], name: string, url: string): BooleanBuildOptions<K>;
+export function resolveSelectiveOption(value: Nullable<SelectiveBooleanOption>, defaultValue: boolean, isTypeString: TypeCheckFunction<string>, allkeys: string[], name: string, url: string): BooleanBuildOptions<string> {
 
-export const isBuildTypeString = createOneOf<SelectiveType<BuildType>>(
-  'api',
-  isBuildType,
-);
-
-export const isSelectiveObjectKey = createOneOf<'default' | SelectiveType<BuildType>>(
-  'default',
-  isBuildTypeString,
-);
-
-export function resolveTypeString<K extends BuildType | 'types'>(value: K | 'api', allkeys: K[]): Record<K, boolean>;
-export function resolveTypeString<K extends BuildType>(value: K | 'api', allkeys: K[]): Record<K, boolean>;
-export function resolveTypeString(value: string, allkeys: string[]): Record<string, boolean>;
-export function resolveTypeString(value: string, allkeys: string[]): Record<string, boolean> {
-
-  const base = keysToObject(
-    allkeys,
-    false,
-  );
-
-  if (value === 'api') {
+  if (isNull(value) || value === defaultValue) {
     return keysToObject(
-      API_KEYS,
-      true,
-      base,
+      allkeys,
+      defaultValue,
     );
   }
 
-  base[value] = true;
-  return base;
+  if (value === !defaultValue) {
+    return keysToObject(
+      allkeys,
+      !defaultValue,
+    );
+  }
+
+  if (isTypeString(value)) {
+    return resolveTypeString(
+      value,
+      allkeys,
+    );
+  }
+
+  const invalid = invalidOption(name, url);
+
+  if (!isObject(value)) {
+    throw invalid;
+  }
+
+  if (isArray(value)) {
+    return resolveTypeStringArray(
+      value,
+      isTypeString,
+      allkeys,
+      invalid,
+    );
+  }
+
+  if (!keysCheck(value, createOneOf('default', isTypeString))) {
+    throw invalid;
+  }
+
+  const { default: override, api, ...others } = value;
+
+  if (!isNull(override) && !isBool(override)) {
+    throw invalid;
+  }
+
+  const result: BooleanBuildOptions<BuildType> = keysToObject(
+    allkeys,
+    isNull(override) ? defaultValue : override,
+  );
+
+  if (!isNull(api)) {
+    if (!isBool(api)) {
+      throw invalid;
+    }
+    keysToObject(
+      API_KEYS,
+      api,
+      result,
+    );
+  }
+
+  keys(others).forEach((type) => {
+    const value = others[type];
+    if (!isNull(value)) {
+      if (!isBool(value)) {
+        throw invalid;
+      }
+      result[type] = value;
+    }
+  });
+
+  return result;
 
 }
 
-export function resolveTypeStringArray<K extends BuildType | 'types'>(value: Array<K | 'api'>, check: TypeCheckFunction<K>, allkeys: K[], invalid: Error): Record<K, boolean>;
-export function resolveTypeStringArray<K extends BuildType>(value: Array<K | 'api'>, check: TypeCheckFunction<K>, allkeys: K[], invalid: Error): Record<K, boolean>;
-export function resolveTypeStringArray(value: string[], check: TypeCheckFunction<string>, allkeys: string[], invalid: Error): Record<string, boolean>;
-export function resolveTypeStringArray(value: string[], check: TypeCheckFunction<string>, allkeys: string[], invalid: Error): Record<string, boolean> {
-  return value.reduce(
-    (result, type) => {
-
-      if (!check(type)) {
-        throw invalid;
-      }
-
-      if (type === 'api') {
-        return keysToObject(
-          API_KEYS,
-          true,
-          result,
-        );
-      }
-
-      result[type] = true;
-      return result;
-
-    },
-    keysToObject(allkeys, false),
-  );
+export function normalizeBooleanOption<K extends string>(
+  build: Nullable<{ [X in K]?: Nullable<boolean> }>,
+  key: K,
+  def: boolean,
+): boolean {
+  return (!build || isNull(build[key])) ? def : build[key] as boolean;
 }

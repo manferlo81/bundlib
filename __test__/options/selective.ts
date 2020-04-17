@@ -1,9 +1,9 @@
-import { resolveSelectiveBoolOption } from '../../src/api/options/boolean';
-import { ALL_KEYS, isBuildTypeString } from '../../src/api/options/selective';
+import { resolveSelectiveOption } from '../../src/api/options/selective';
+import { ALL_KEYS, isBuildTypeString } from '../../src/api/options/string-based';
 
-describe('boolean option', () => {
+describe('selective option', () => {
 
-  test('Should throw on invalid boolean option', () => {
+  test('Should throw on invalid selective option', () => {
     const invalids = [
       0,
       1,
@@ -19,15 +19,15 @@ describe('boolean option', () => {
     ];
     invalids.forEach((invalid) => {
       [true, false].forEach((defaultValue) => {
-        expect(() => resolveSelectiveBoolOption(invalid as never, defaultValue, isBuildTypeString, ALL_KEYS, 'boolean', 'url')).toThrow();
+        expect(() => resolveSelectiveOption(invalid as never, defaultValue, isBuildTypeString, ALL_KEYS, 'boolean', 'url')).toThrow();
       });
     });
   });
 
-  test('Should resolve null or undefined boolean option', () => {
+  test('Should resolve null or undefined selective option', () => {
     [null, undefined].forEach((value) => {
       [true, false].forEach((defaultValue) => {
-        expect(resolveSelectiveBoolOption(value, defaultValue, isBuildTypeString, ALL_KEYS, 'boolean', 'url')).toEqual({
+        expect(resolveSelectiveOption(value, defaultValue, isBuildTypeString, ALL_KEYS, 'boolean', 'url')).toEqual({
           main: defaultValue,
           module: defaultValue,
           browser: defaultValue,
@@ -37,10 +37,10 @@ describe('boolean option', () => {
     });
   });
 
-  test('Should resolve boolean option', () => {
+  test('Should resolve selective option', () => {
     [true, false].forEach((value) => {
       [true, false].forEach((defaultValue) => {
-        expect(resolveSelectiveBoolOption(value, defaultValue, isBuildTypeString, ALL_KEYS, 'boolean', 'url')).toEqual({
+        expect(resolveSelectiveOption(value, defaultValue, isBuildTypeString, ALL_KEYS, 'boolean', 'url')).toEqual({
           main: value,
           module: value,
           browser: value,
@@ -50,7 +50,7 @@ describe('boolean option', () => {
     });
   });
 
-  test('Should resolve build type boolean option', () => {
+  test('Should resolve build type selective option', () => {
     const values = [
       { value: 'main' as 'main', expected: { main: true, module: false, browser: false, bin: false } },
       { value: 'module' as 'module', expected: { main: false, module: true, browser: false, bin: false } },
@@ -60,24 +60,24 @@ describe('boolean option', () => {
     ];
     values.forEach(({ value, expected }) => {
       [true, false].forEach((defaultValue) => {
-        expect(resolveSelectiveBoolOption(value, defaultValue, isBuildTypeString, ALL_KEYS, 'boolean', 'url')).toEqual(expected);
+        expect(resolveSelectiveOption(value, defaultValue, isBuildTypeString, ALL_KEYS, 'boolean', 'url')).toEqual(expected);
       });
     });
   });
 
-  test('Should resolve array of build type as boolean option', () => {
+  test('Should resolve array of build type as selective option', () => {
     const values = [
       { value: ['main', 'bin'] as ['main', 'bin'], expected: { main: true, module: false, browser: false, bin: true } },
       { value: ['api'] as ['api'], expected: { main: true, module: true, browser: true, bin: false } },
     ];
     values.forEach(({ value: array, expected }) => {
       [true, false].forEach((defaultValue) => {
-        expect(resolveSelectiveBoolOption(array, defaultValue, isBuildTypeString, ALL_KEYS, 'boolean', 'url')).toEqual(expected);
+        expect(resolveSelectiveOption(array, defaultValue, isBuildTypeString, ALL_KEYS, 'boolean', 'url')).toEqual(expected);
       });
     });
   });
 
-  test('Should resolve selective object boolean option', () => {
+  test('Should resolve selective object selective option', () => {
     const values = [
       {
         value: {},
@@ -114,7 +114,7 @@ describe('boolean option', () => {
     ];
     values.forEach(({ value, expected }) => {
       [true, false].forEach((defaultValue) => {
-        expect(resolveSelectiveBoolOption(value, defaultValue, isBuildTypeString, ALL_KEYS, 'boolean', 'url')).toEqual({
+        expect(resolveSelectiveOption(value, defaultValue, isBuildTypeString, ALL_KEYS, 'boolean', 'url')).toEqual({
           main: defaultValue,
           module: defaultValue,
           browser: defaultValue,

@@ -1,8 +1,9 @@
-import { resolveSelectiveStringOption } from '../../src/api/options/string';
+import { resolveObjectBasedSelectiveOption } from '../../src/api/options/object-based';
 
-describe('string option', () => {
+describe('object based option', () => {
 
-  test('Should throw on invalid string option', () => {
+  test('Should throw on invalid object based option', () => {
+
     const invalids = [
       0,
       1,
@@ -14,33 +15,41 @@ describe('string option', () => {
       { browser: false },
       { bin: 0 },
     ];
+
     invalids.forEach((invalid) => {
-      expect(() => resolveSelectiveStringOption(invalid as never, 'string', 'url')).toThrow();
+      expect(() => resolveObjectBasedSelectiveOption(invalid as never, 'string', 'url')).toThrow();
     });
+
   });
 
-  test('Should resolve null or undefined string option', () => {
+  test('Should resolve null or undefined object based option', () => {
     [null, undefined].forEach((value) => {
-      expect(resolveSelectiveStringOption(value, 'string', 'url')).toEqual({
+
+      expect(resolveObjectBasedSelectiveOption(value, 'string', 'url')).toEqual({
         main: null,
         module: null,
         browser: null,
         bin: null,
       });
+
     });
   });
 
-  test('Should resolve string option', () => {
+  test('Should resolve object based option', () => {
+
     const value = 'filename.js';
-    expect(resolveSelectiveStringOption(value, 'string', 'url')).toEqual({
+
+    expect(resolveObjectBasedSelectiveOption(value, 'string', 'url')).toEqual({
       main: value,
       module: value,
       browser: value,
       bin: value,
     });
+
   });
 
-  test('Should resolve selective object string option', () => {
+  test('Should resolve selective object object based option', () => {
+
     const values = [
       {
         value: {},
@@ -71,15 +80,19 @@ describe('string option', () => {
         expected: { main: 'main.js' },
       },
     ];
+
     values.forEach(({ value, expected }) => {
-      expect(resolveSelectiveStringOption(value, 'string', 'url')).toEqual({
+
+      expect(resolveObjectBasedSelectiveOption(value, 'string', 'url')).toEqual({
         main: null,
         module: null,
         browser: null,
         bin: null,
         ...expected,
       });
+
     });
+
   });
 
 });

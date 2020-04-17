@@ -1,11 +1,11 @@
 import { BuildType, SelectiveBooleanOption, WithMinOption } from '../bundlib-options';
 import { Nullable } from '../helper-types';
 import { isNull } from '../type-check/type-check';
-import { BooleanBuildOptions, resolveSelectiveBoolOption } from './boolean';
-import { ALL_KEYS, isBuildTypeString } from './selective';
+import { BooleanBuildOptions, resolveSelectiveOption } from './selective';
+import { ALL_KEYS, isBuildTypeString } from './string-based';
 
-export function resolveSelectiveMinOption(value: Nullable<SelectiveBooleanOption>): BooleanBuildOptions<BuildType> {
-  return resolveSelectiveBoolOption(
+export function resolveMinOption(value: Nullable<SelectiveBooleanOption>): BooleanBuildOptions<BuildType> {
+  return resolveSelectiveOption(
     value,
     false,
     isBuildTypeString,

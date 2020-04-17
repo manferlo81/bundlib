@@ -2,20 +2,20 @@ import { BundlibOptions, TypesOptions } from './bundlib-options';
 import { error, invalidOption, invalidOptionOld, invalidPkgField } from './errors';
 import { Dictionary, StrictNullable } from './helper-types';
 import { loadOptions } from './load-options';
-import { normalizeBooleanOption } from './options/boolean';
 import { isBrowserOption } from './options/browser';
-import { resolveSelectiveESModuleOption } from './options/es-module';
+import { resolveESModuleOption } from './options/es-module';
 import { isBrowserFormat } from './options/format';
 import { isValidGlobals, normalizeBuildGlobals, normalizeGlobals } from './options/globals';
-import { resolveSelectiveInputOption } from './options/input';
-import { resolveSelectiveInteropOption } from './options/interop';
+import { resolveInputOption } from './options/input';
+import { resolveInteropOption } from './options/interop';
 import { isCJSOptionKey } from './options/main-and-bin';
-import { normalizeBuildMin, resolveSelectiveMinOption } from './options/min';
+import { normalizeBuildMin, resolveMinOption } from './options/min';
 import { isModuleOptionKey } from './options/module';
 import { normalizeBuildName } from './options/name';
-import { resolveSelectiveProjectOption } from './options/project';
-import { resolveSelectiveSkipOption } from './options/skip';
-import { normalizeBuildSourcemap, resolveSelectiveSourcemapOption } from './options/sourcemap';
+import { resolveProjectOption } from './options/project';
+import { normalizeBooleanOption } from './options/selective';
+import { resolveSkipOption } from './options/skip';
+import { normalizeBuildSourcemap, resolveSourcemapOption } from './options/sourcemap';
 import { isTypesOptionKey } from './options/types';
 import { BundlibPkgJson } from './pkg';
 import { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalized } from './pkg-analized';
@@ -101,11 +101,11 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     types: deprecatedTypesOptions,
   } = bundlibOptions;
 
-  const perBuildInput = resolveSelectiveInputOption(bundlibOptions.input);
-  const perBuildSourcemap = resolveSelectiveSourcemapOption(bundlibOptions.sourcemap);
-  const perBuildESModule = resolveSelectiveESModuleOption(bundlibOptions.esModule);
-  const perBuildInterop = resolveSelectiveInteropOption(bundlibOptions.interop);
-  const perBuildMin = resolveSelectiveMinOption(bundlibOptions.min);
+  const perBuildInput = resolveInputOption(bundlibOptions.input);
+  const perBuildSourcemap = resolveSourcemapOption(bundlibOptions.sourcemap);
+  const perBuildESModule = resolveESModuleOption(bundlibOptions.esModule);
+  const perBuildInterop = resolveInteropOption(bundlibOptions.interop);
+  const perBuildMin = resolveMinOption(bundlibOptions.min);
 
   if (!isBrowserFormat(browserFormat)) {
     throw invalidOption(
@@ -142,8 +142,8 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     );
   }
 
-  const perBuildProject = resolveSelectiveProjectOption(bundlibOptions.project);
-  const skipBuild = resolveSelectiveSkipOption(bundlibOptions.skip);
+  const perBuildProject = resolveProjectOption(bundlibOptions.project);
+  const skipBuild = resolveSkipOption(bundlibOptions.skip);
 
   if (
     !isNull(deprecatedMainOptions) && (deprecatedMainOptions !== false) && !(

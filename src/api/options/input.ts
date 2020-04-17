@@ -1,11 +1,11 @@
 import { BuildType, SelectiveStringOption } from '../bundlib-options';
 import { Nullable, StrictNullable } from '../helper-types';
-import { resolveSelectiveStringOption } from './string';
+import { resolveObjectBasedSelectiveOption } from './object-based';
 
 export type InputBuildOptions = Record<BuildType, StrictNullable<string>>;
 
-export function resolveSelectiveInputOption(value: Nullable<SelectiveStringOption>): InputBuildOptions {
-  return resolveSelectiveStringOption(
+export function resolveInputOption(value: Nullable<SelectiveStringOption>): InputBuildOptions {
+  return resolveObjectBasedSelectiveOption(
     value,
     'input',
     'https://github.com/manferlo81/bundlib#input',

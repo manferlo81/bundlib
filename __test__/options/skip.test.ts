@@ -1,8 +1,8 @@
-import { resolveSelectiveSkipOption } from '../../src/api/options/skip';
+import { resolveSkipOption } from '../../src/api/options/skip';
 
-describe('skip option', () => {
+describe('"skip" option', () => {
 
-  test('Should throw on invalid skip option', () => {
+  test('Should throw on invalid "skip" option', () => {
 
     const invalids = [
       0,
@@ -20,14 +20,14 @@ describe('skip option', () => {
     ];
 
     invalids.forEach((invalid) => {
-      expect(() => resolveSelectiveSkipOption(invalid as never)).toThrow();
+      expect(() => resolveSkipOption(invalid as never)).toThrow();
     });
 
   });
 
-  test('Should resolve null or undefined skip option', () => {
+  test('Should resolve null or undefined "skip" option', () => {
     [null, undefined].forEach((value) => {
-      expect(resolveSelectiveSkipOption(value)).toEqual({
+      expect(resolveSkipOption(value)).toEqual({
         main: false,
         module: false,
         browser: false,
@@ -37,9 +37,9 @@ describe('skip option', () => {
     });
   });
 
-  test('Should resolve boolean skip option', () => {
+  test('Should resolve boolean "skip" option', () => {
     [true, false].forEach((value) => {
-      expect(resolveSelectiveSkipOption(value)).toEqual({
+      expect(resolveSkipOption(value)).toEqual({
         main: value,
         module: value,
         browser: value,
@@ -49,7 +49,7 @@ describe('skip option', () => {
     });
   });
 
-  test('Should resolve build type skip option', () => {
+  test('Should resolve build type "skip" option', () => {
 
     const values = [
       { value: 'main' as 'main', expected: { main: true } },
@@ -61,7 +61,7 @@ describe('skip option', () => {
     ];
 
     values.forEach(({ value, expected }) => {
-      expect(resolveSelectiveSkipOption(value)).toEqual({
+      expect(resolveSkipOption(value)).toEqual({
         main: false,
         module: false,
         browser: false,
@@ -73,7 +73,7 @@ describe('skip option', () => {
 
   });
 
-  test('Should resolve array of build type as skip option', () => {
+  test('Should resolve array of build type as "skip" option', () => {
 
     const values = [
       { value: ['main'] as ['main'], expected: { main: true } },
@@ -87,7 +87,7 @@ describe('skip option', () => {
     ];
 
     values.forEach(({ value: array, expected }) => {
-      expect(resolveSelectiveSkipOption(array)).toEqual({
+      expect(resolveSkipOption(array)).toEqual({
         main: false,
         module: false,
         browser: false,
@@ -99,7 +99,7 @@ describe('skip option', () => {
 
   });
 
-  test('Should resolve selective object skip option', () => {
+  test('Should resolve selective object "skip" option', () => {
 
     const values = [
       {
@@ -141,7 +141,7 @@ describe('skip option', () => {
     ];
 
     values.forEach(({ value, expected }) => {
-      expect(resolveSelectiveSkipOption(value)).toEqual({
+      expect(resolveSkipOption(value)).toEqual({
         main: false,
         module: false,
         browser: false,

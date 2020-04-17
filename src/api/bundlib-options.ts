@@ -64,21 +64,27 @@ export interface BrowserBuildOptions {
   globals?: GlobalsOptions;
 }
 
-export type SelectiveObjOption<K extends string, T> =
-  | Partial<Record<K | 'default', Nullable<T>>>
-  | T;
+export type ObjectSelectiveOptions<K extends string, T> = Partial<Record<K | 'default', Nullable<T>>>;
 
-export type SelectiveOption<K extends string, T> =
-  | SelectiveObjOption<K, T>
+export type StringBasedSelectiveOption<K extends string> =
   | K
   | K[];
 
+export type ObjectBasedSelectiveOption<K extends string, T> =
+  | T
+  | ObjectSelectiveOptions<K, T>;
+
+export type SelectiveOption<K extends string, T> =
+  | StringBasedSelectiveOption<K>
+  | ObjectBasedSelectiveOption<K, T>;
+
 export type SelectiveType<K extends string> = K | 'api';
+
 type SelectiveTypeString = SelectiveType<BuildType>;
 export type SelectiveSkipBuildType = BuildType | 'types';
 
 export type SelectiveBooleanOption = SelectiveOption<SelectiveTypeString, boolean>;
-export type SelectiveStringOption = SelectiveObjOption<SelectiveTypeString, string>;
+export type SelectiveStringOption = ObjectBasedSelectiveOption<SelectiveTypeString, string>;
 export type SelectiveSourcemap = SelectiveOption<SelectiveTypeString, RollupSourcemap>;
 export type SelectiveSkipOption = SelectiveOption<SelectiveType<SelectiveSkipBuildType>, boolean>;
 
