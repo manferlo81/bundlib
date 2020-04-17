@@ -1,4 +1,5 @@
 import { resolveSelectiveBoolOption } from '../../src/api/options/boolean';
+import { ALL_KEYS, isBuildTypeString } from '../../src/api/options/selective';
 
 describe('boolean option', () => {
 
@@ -18,7 +19,7 @@ describe('boolean option', () => {
     ];
     invalids.forEach((invalid) => {
       [true, false].forEach((defaultValue) => {
-        expect(() => resolveSelectiveBoolOption(invalid as never, defaultValue, 'boolean', 'url')).toThrow();
+        expect(() => resolveSelectiveBoolOption(invalid as never, defaultValue, isBuildTypeString, ALL_KEYS, 'boolean', 'url')).toThrow();
       });
     });
   });
@@ -26,7 +27,7 @@ describe('boolean option', () => {
   test('Should resolve null or undefined boolean option', () => {
     [null, undefined].forEach((value) => {
       [true, false].forEach((defaultValue) => {
-        expect(resolveSelectiveBoolOption(value, defaultValue, 'boolean', 'url')).toEqual({
+        expect(resolveSelectiveBoolOption(value, defaultValue, isBuildTypeString, ALL_KEYS, 'boolean', 'url')).toEqual({
           main: defaultValue,
           module: defaultValue,
           browser: defaultValue,
@@ -39,7 +40,7 @@ describe('boolean option', () => {
   test('Should resolve boolean option', () => {
     [true, false].forEach((value) => {
       [true, false].forEach((defaultValue) => {
-        expect(resolveSelectiveBoolOption(value, defaultValue, 'boolean', 'url')).toEqual({
+        expect(resolveSelectiveBoolOption(value, defaultValue, isBuildTypeString, ALL_KEYS, 'boolean', 'url')).toEqual({
           main: value,
           module: value,
           browser: value,
@@ -59,7 +60,7 @@ describe('boolean option', () => {
     ];
     values.forEach(({ value, expected }) => {
       [true, false].forEach((defaultValue) => {
-        expect(resolveSelectiveBoolOption(value, defaultValue, 'boolean', 'url')).toEqual(expected);
+        expect(resolveSelectiveBoolOption(value, defaultValue, isBuildTypeString, ALL_KEYS, 'boolean', 'url')).toEqual(expected);
       });
     });
   });
@@ -71,7 +72,7 @@ describe('boolean option', () => {
     ];
     values.forEach(({ value: array, expected }) => {
       [true, false].forEach((defaultValue) => {
-        expect(resolveSelectiveBoolOption(array, defaultValue, 'boolean', 'url')).toEqual(expected);
+        expect(resolveSelectiveBoolOption(array, defaultValue, isBuildTypeString, ALL_KEYS, 'boolean', 'url')).toEqual(expected);
       });
     });
   });
@@ -113,7 +114,7 @@ describe('boolean option', () => {
     ];
     values.forEach(({ value, expected }) => {
       [true, false].forEach((defaultValue) => {
-        expect(resolveSelectiveBoolOption(value, defaultValue, 'boolean', 'url')).toEqual({
+        expect(resolveSelectiveBoolOption(value, defaultValue, isBuildTypeString, ALL_KEYS, 'boolean', 'url')).toEqual({
           main: defaultValue,
           module: defaultValue,
           browser: defaultValue,

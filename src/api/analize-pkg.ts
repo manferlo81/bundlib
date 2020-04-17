@@ -14,6 +14,7 @@ import { normalizeBuildMin, resolveSelectiveMinOption } from './options/min';
 import { isModuleOptionKey } from './options/module';
 import { normalizeBuildName } from './options/name';
 import { resolveSelectiveProjectOption } from './options/project';
+import { resolveSelectiveSkipOption } from './options/skip';
 import { normalizeBuildSourcemap, resolveSelectiveSourcemapOption } from './options/sourcemap';
 import { isTypesOptionKey } from './options/types';
 import { BundlibPkgJson } from './pkg';
@@ -63,7 +64,6 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
       'extend',
       'esModule',
       'interop',
-      'equals',
       'sourcemap',
       'format',
       'name',
@@ -72,6 +72,8 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
       'min',
       'cache',
       'project',
+      'skip',
+      'equals',
       'main',
       'module',
       'browser',
@@ -141,6 +143,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   }
 
   const perBuildProject = resolveSelectiveProjectOption(bundlibOptions.project);
+  const skipBuild = resolveSelectiveSkipOption(bundlibOptions.skip);
 
   if (
     !isNull(deprecatedMainOptions) && (deprecatedMainOptions !== false) && !(
@@ -236,7 +239,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   const typesOutputFile = typesFieldValue || typings;
 
-  const mainOutput: StrictNullable<ModuleBuildOptions> = (deprecatedMainOptions === false || !mainOutputFile) ? null : {
+  const mainOutput: StrictNullable<ModuleBuildOptions> = (deprecatedMainOptions === false || skipBuild.main || !mainOutputFile) ? null : {
     input: perBuildInput.main,
     output: mainOutputFile,
     sourcemap: normalizeBuildSourcemap(
@@ -249,7 +252,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     project: perBuildProject.main,
   };
 
-  const moduleOutput: StrictNullable<ModuleBuildOptions> = (deprecatedModuleOptions === false || !moduleOutputFile) ? null : {
+  const moduleOutput: StrictNullable<ModuleBuildOptions> = (deprecatedModuleOptions === false || skipBuild.module || !moduleOutputFile) ? null : {
     input: perBuildInput.module,
     output: moduleOutputFile,
     sourcemap: normalizeBuildSourcemap(
@@ -262,7 +265,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     project: perBuildProject.module,
   };
 
-  const browserOutput: StrictNullable<BrowserBuildOptions> = (deprecatedBrowserOptions === false || !browserOutputFile) ? null : {
+  const browserOutput: StrictNullable<BrowserBuildOptions> = (deprecatedBrowserOptions === false || skipBuild.browser || !browserOutputFile) ? null : {
     input: perBuildInput.browser,
     output: browserOutputFile,
     sourcemap: normalizeBuildSourcemap(
@@ -288,7 +291,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     project: perBuildProject.browser,
   };
 
-  const binaryOutput: StrictNullable<ModuleBuildOptions> = (deprecatedBinaryOptions === false || !binaryOutputFile) ? null : {
+  const binaryOutput: StrictNullable<ModuleBuildOptions> = (deprecatedBinaryOptions === false || skipBuild.bin || !binaryOutputFile) ? null : {
     input: perBuildInput.bin,
     output: binaryOutputFile,
     sourcemap: normalizeBuildSourcemap(
@@ -301,7 +304,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     project: perBuildProject.bin,
   };
 
-  const typesOutput: StrictNullable<string> = (deprecatedTypesOptions === false || !typesOutputFile) ? null : typesOutputFile;
+  const typesOutput: StrictNullable<string> = (deprecatedTypesOptions === false || skipBuild.types || !typesOutputFile) ? null : typesOutputFile;
 
   const dependencies: Dependencies = {
     runtime: runtimeDependencies || null,

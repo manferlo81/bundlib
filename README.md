@@ -29,6 +29,7 @@ An automatic configuration manager for [Rollup.js](https://github.com/rollup/rol
   * [min](#min)
   * [cache](#cache)
   * [project](#project)
+  * [skip](#skip)
 * [Selective Options](#selective-options)
   * [Object based selective format](#object-based-selective-format)
   * [String based selective format](#string-based-selective-format)
@@ -294,6 +295,18 @@ Defines the location of typescript `tsconfig.json` file, relative to the project
 
 This option supports `object` based [`selective format`](#selective-options). See [Selective Options](#selective-options) for more information.
 
+#### skip
+
+```typescript
+min: boolean | SelectiveOption;
+
+default false;
+```
+
+Defined which build **Bundlib** should skip.
+
+This option supports `object` based and `string` based [`selective format`](#selective-options). See [Selective Options](#selective-options) for more information.
+
 ### Selective Options
 
 Some options support a selective format to allow for a more flexible configuration. See [`SelectiveOption`](#SelectiveOption) type for more information.
@@ -308,7 +321,20 @@ See [input](#input), [sourcemap](#sourcemap), [esModule](#esmodule), [interop](#
 
 ***example***
 
-Assuming `default = false`, `{ main: true }` will result in `true` for `main`, and `false` for others.
+```javascript
+// assuming default = false
+
+resolveSelectiveOption({
+  main: true
+});
+
+/*
+{
+  main: true,
+  ...others: false
+}
+*/
+```
 
 ##### The special `default` property
 
@@ -316,7 +342,21 @@ You can override the default value as well using the `"default"` object key.
 
 ***example***
 
-Assuming `default = false`, `{ default: true, bin: false }` will result in `false` for `bin`, and `true` for others.
+```javascript
+// assuming default = false
+
+resolveSelectiveOption({
+  default: true,
+  bin: false
+});
+
+/*
+{
+  bin: false,
+  ...others: true
+}
+*/
+```
 
 ##### The special `bin` property
 
@@ -324,7 +364,22 @@ The special `"api"` object key represents `main`, `module` and `browser`.
 
 ***example***
 
-Assuming `default = false`, `{ api: true }` will result in `true` for `main`, `module` and `browser`, and `false` for others.
+```javascript
+// assuming default = false
+
+resolveSelectiveOption({
+  api: true
+});
+
+/*
+{
+  main: true,
+  module: true,
+  browser: true,
+  ...others: false
+}
+*/
+```
 
 #### String based selective format
 
@@ -332,9 +387,26 @@ Assuming `default = false`, `{ api: true }` will result in `true` for `main`, `m
 
 ***example***
 
-`"browser"` will result `true` for `browser` and `false` for others.
+```javascript
+resolveSelectiveOption('browser');
 
-`["main", "module"]` will result in `true` for `main` and `module`, and `false` for others.
+/*
+{
+  browser: true,
+  ...others: false
+}
+*/
+
+resolveSelectiveOption(['main', 'module']);
+
+/*
+{
+  main: true,
+  module: true,
+  ...others: false
+}
+*/
+```
 
 ## Supported Plugins
 
@@ -472,19 +544,12 @@ interface ModuleBuildOptions {
 ### BrowserBuildOptions
 
 ```typescript
-interface BrowserBuildOptions {
-  input: string | null;
-  output: string;
-  sourcemap: boolean | 'inline' | 'hidden';
-  esModule: boolean;
-  interop: boolean;
-  min: boolean;
+interface BrowserBuildOptions extends ModuleBuildOptions {
   format: "iife" | "amd" | "umd";
   name: string | null;
   id: string | null;
   globals: Record<string, string> | null;
   extend: boolean;
-  project: string | null;
 }
 ```
 
@@ -498,7 +563,7 @@ interface ObjectBasedSelectiveOption<T> {
 
 type StringBasedSelectiveOption = BuildType | BuildType[];
 
-type BuildType = 'main' | 'module' | 'browser' | 'bin' | 'api';
+type BuildType = 'main' | 'module' | 'browser' | 'bin' | 'api' | ...others;
 ```
 
 ## Features
@@ -509,7 +574,7 @@ type BuildType = 'main' | 'module' | 'browser' | 'bin' | 'api';
 * Uses `"bin"` field in your `package.json` to build a `Binary` module. It only supports `"bin"` field as `string`, `object` format not supported.
 * Uses `"types"` field in your `package.json` (or `"typings"` field) as path for types declarations.
 * Uses `"dependencies"` and `"peerDependencies"` to set external modules for `CommonJS Module`, `ES Module` and `Binary` builds. Dependencies will be bundled by default in `Browser` builds, unless otherwise specified using the [`global`](#globals) option.
-* Skip any build based on options.
+* Skip any build based on [options](#skip).
 * Uses and configures any installed [supported rollup plugin](#supported-plugins).
 * Uses `chokidar` for file watch if installed.
 

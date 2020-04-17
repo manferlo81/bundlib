@@ -42,7 +42,10 @@ export function resolveSelectiveSourcemapOption(value: Nullable<SelectiveSourcem
   }
 
   if (isBuildTypeString(value)) {
-    return resolveTypeString(value);
+    return resolveTypeString(
+      value,
+      ALL_KEYS,
+    );
   }
 
   const invalid = invalidOption('sourcemap', 'https://github.com/manferlo81/bundlib#sourcemap');
@@ -52,7 +55,12 @@ export function resolveSelectiveSourcemapOption(value: Nullable<SelectiveSourcem
   }
 
   if (isArray(value)) {
-    return resolveTypeStringArray(value, invalid);
+    return resolveTypeStringArray(
+      value,
+      isBuildTypeString,
+      ALL_KEYS,
+      invalid,
+    );
   }
 
   if (!keysCheck(value, isSelectiveObjectKey)) {

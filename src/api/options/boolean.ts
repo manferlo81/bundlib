@@ -1,31 +1,37 @@
-import { BuildType, SelectiveBooleanOption } from '../bundlib-options';
+import { BuildType, SelectiveBooleanOption, SelectiveOption, SelectiveSkipBuildType, SelectiveType } from '../bundlib-options';
 import { invalidOption } from '../errors';
-import { Nullable } from '../helper-types';
+import { Nullable, TypeCheckFunction } from '../helper-types';
 import { keys, keysToObject } from '../tools/helpers';
 import { keysCheck } from '../type-check/keys';
+import { createOneOf } from '../type-check/one-of';
 import { isArray, isBool, isNull, isObject } from '../type-check/type-check';
-import { ALL_KEYS, API_KEYS, isBuildTypeString, isSelectiveObjectKey, resolveTypeString, resolveTypeStringArray } from './selective';
+import { API_KEYS, resolveTypeString, resolveTypeStringArray } from './selective';
 
-export type BooleanBuildOptions = Record<BuildType, boolean>;
+export type BooleanBuildOptions<K extends string> = Record<K, boolean>;
 
-export function resolveSelectiveBoolOption(value: Nullable<SelectiveBooleanOption>, defaultValue: boolean, name: string, url: string): BooleanBuildOptions {
+export function resolveSelectiveBoolOption<K extends SelectiveSkipBuildType>(value: Nullable<SelectiveOption<SelectiveType<K>, boolean>>, defaultValue: boolean, check: TypeCheckFunction<K>, allkeys: K[], name: string, url: string): BooleanBuildOptions<K>;
+export function resolveSelectiveBoolOption<K extends BuildType>(value: Nullable<SelectiveOption<SelectiveType<K>, boolean>>, defaultValue: boolean, check: TypeCheckFunction<K>, allkeys: K[], name: string, url: string): BooleanBuildOptions<K>;
+export function resolveSelectiveBoolOption(value: Nullable<SelectiveBooleanOption>, defaultValue: boolean, check: TypeCheckFunction<string>, allkeys: string[], name: string, url: string): BooleanBuildOptions<string> {
 
   if (isNull(value) || value === defaultValue) {
     return keysToObject(
-      ALL_KEYS,
+      allkeys,
       defaultValue,
     );
   }
 
   if (value === !defaultValue) {
     return keysToObject(
-      ALL_KEYS,
+      allkeys,
       !defaultValue,
     );
   }
 
-  if (isBuildTypeString(value)) {
-    return resolveTypeString(value);
+  if (check(value)) {
+    return resolveTypeString(
+      value,
+      allkeys,
+    );
   }
 
   const invalid = invalidOption(name, url);
@@ -35,10 +41,15 @@ export function resolveSelectiveBoolOption(value: Nullable<SelectiveBooleanOptio
   }
 
   if (isArray(value)) {
-    return resolveTypeStringArray(value, invalid);
+    return resolveTypeStringArray(
+      value,
+      check,
+      allkeys,
+      invalid,
+    );
   }
 
-  if (!keysCheck(value, isSelectiveObjectKey)) {
+  if (!keysCheck(value, createOneOf('default', check))) {
     throw invalid;
   }
 
@@ -48,8 +59,8 @@ export function resolveSelectiveBoolOption(value: Nullable<SelectiveBooleanOptio
     throw invalid;
   }
 
-  const result: BooleanBuildOptions = keysToObject(
-    ALL_KEYS,
+  const result: BooleanBuildOptions<BuildType> = keysToObject(
+    allkeys,
     isNull(override) ? defaultValue : override,
   );
 
