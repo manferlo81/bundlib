@@ -1,6 +1,6 @@
 import { BuildType, SelectiveBooleanOption, WithMinOption } from '../bundlib-options';
 import { Nullable } from '../helper-types';
-import { isNull } from '../type-check/type-check';
+import { isNull } from '../type-check/basic';
 import { BooleanBuildOptions, resolveSelectiveOption } from './selective';
 import { ALL_KEYS, isBuildTypeString } from './string-based';
 

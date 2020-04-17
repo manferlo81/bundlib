@@ -1,11 +1,11 @@
 import { SelectiveSkipBuildType, SelectiveSkipOption } from '../bundlib-options';
 import { Nullable } from '../helper-types';
-import { createOneOf } from '../type-check/one-of';
+import { composeOneOf, createEqualsCheck } from '../type-check/advanced';
 import { BooleanBuildOptions, resolveSelectiveOption } from './selective';
 import { isBuildTypeString, SKIP_KEYS } from './string-based';
 
-const isSkipTypeString = createOneOf(
-  'types',
+const isSkipTypeString = composeOneOf(
+  createEqualsCheck<'types'>('types'),
   isBuildTypeString,
 );
 

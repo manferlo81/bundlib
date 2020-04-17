@@ -2,8 +2,8 @@ import { cosmiconfig } from 'cosmiconfig';
 import { resolve } from 'path';
 import { BundlibOptions } from './bundlib-options';
 import { OPTION_FILE_PATHS, PRODUCT_NAME } from './consts';
-import { isString } from './type-check/type-check';
 import { Nullable, StrictNullable } from './helper-types';
+import { isString } from './type-check/basic';
 
 interface LoadedOptions {
   config: Nullable<BundlibOptions>;

@@ -1,9 +1,11 @@
 import { CommonJSBuildOptions } from '../bundlib-options';
-import { createOneOf } from '../type-check/one-of';
+import { composeOneOf, createOneOfLiteral } from '../type-check/advanced';
 import { isModuleOptionKey } from './module';
 
-export const isCJSOptionKey = createOneOf<keyof CommonJSBuildOptions>(
+export const isCJSOptionKey = composeOneOf<keyof CommonJSBuildOptions>(
   isModuleOptionKey,
-  'esModule',
-  'interop',
+  createOneOfLiteral<'esModule' | 'interop'>(
+    'esModule',
+    'interop',
+  ),
 );

@@ -1,7 +1,7 @@
 import { ESModuleBuildOptions } from '../bundlib-options';
-import { createOneOf } from '../type-check/one-of';
+import { createOneOfLiteral } from '../type-check/advanced';
 
-export const isModuleOptionKey = createOneOf<keyof ESModuleBuildOptions>(
+export const isModuleOptionKey = createOneOfLiteral<keyof ESModuleBuildOptions>(
   'sourcemap',
   'min',
 );

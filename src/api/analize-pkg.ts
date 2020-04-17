@@ -20,8 +20,8 @@ import { isTypesOptionKey } from './options/types';
 import { BundlibPkgJson } from './pkg';
 import { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalized } from './pkg-analized';
 import { readPkg } from './tools/read-pkg';
+import { isDictionary, isDictionaryOrNull, isNull, isStringOrNull } from './type-check/basic';
 import { invalidKeys, keysCheck } from './type-check/keys';
-import { isDictionary, isDictionaryOrNull, isNull, isStringOrNull } from './type-check/type-check';
 
 async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalized>;
 async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAnalized> {

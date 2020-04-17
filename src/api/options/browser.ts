@@ -1,12 +1,14 @@
 import { BrowserBuildOptions } from '../bundlib-options';
+import { composeOneOf, createOneOfLiteral } from '../type-check/advanced';
 import { isCJSOptionKey } from './main-and-bin';
-import { createOneOf } from '../type-check/one-of';
 
-export const isBrowserOption = createOneOf<keyof BrowserBuildOptions>(
+export const isBrowserOption = composeOneOf<keyof BrowserBuildOptions>(
   isCJSOptionKey,
-  'format',
-  'name',
-  'id',
-  'extend',
-  'globals',
+  createOneOfLiteral(
+    'format',
+    'name',
+    'id',
+    'extend',
+    'globals',
+  ),
 );

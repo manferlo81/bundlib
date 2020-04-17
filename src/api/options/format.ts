@@ -1,11 +1,13 @@
 import { Nullable } from '../helper-types';
-import { createOneOf } from '../type-check/one-of';
-import { isNull } from '../type-check/type-check';
+import { composeOneOf, createOneOfLiteral } from '../type-check/advanced';
+import { isNull } from '../type-check/basic';
 import { BrowserBuildFormat } from '../types';
 
-export const isBrowserFormat = createOneOf<Nullable<BrowserBuildFormat>>(
+export const isBrowserFormat = composeOneOf<Nullable<BrowserBuildFormat>>(
   isNull,
-  'iife',
-  'amd',
-  'umd',
+  createOneOfLiteral(
+    'iife',
+    'amd',
+    'umd',
+  ),
 );

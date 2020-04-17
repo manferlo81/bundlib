@@ -1,26 +1,26 @@
 import { BuildType, SelectiveType } from '../bundlib-options';
 import { TypeCheckFunction } from '../helper-types';
 import { keysToObject } from '../tools/helpers';
-import { createOneOf } from '../type-check/one-of';
+import { composeOneOf, createEqualsCheck, createOneOfLiteral } from '../type-check/advanced';
 
 export const API_KEYS: ['main', 'module', 'browser'] = ['main', 'module', 'browser'];
 export const ALL_KEYS = [...API_KEYS, 'bin'] as ['main', 'module', 'browser', 'bin'];
 export const SKIP_KEYS = [...ALL_KEYS, 'types'] as ['main', 'module', 'browser', 'bin', 'types'];
 
-export const isBuildType = createOneOf<BuildType>(
+export const isBuildType = createOneOfLiteral<BuildType>(
   'main',
   'module',
   'browser',
   'bin',
 );
 
-export const isBuildTypeString = createOneOf<SelectiveType<BuildType>>(
-  'api',
+export const isBuildTypeString = composeOneOf<SelectiveType<BuildType>>(
+  createEqualsCheck('api'),
   isBuildType,
 );
 
-export const isSelectiveObjectKey = createOneOf<'default' | SelectiveType<BuildType>>(
-  'default',
+export const isSelectiveObjectKey = composeOneOf<'default' | SelectiveType<BuildType>>(
+  createEqualsCheck('default'),
   isBuildTypeString,
 );
 

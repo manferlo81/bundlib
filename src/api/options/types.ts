@@ -1,6 +1,4 @@
 import { TypesOptions } from '../bundlib-options';
-import { createOneOf } from '../type-check/one-of';
+import { createEqualsCheck } from '../type-check/advanced';
 
-export const isTypesOptionKey = createOneOf<keyof TypesOptions>(
-  'equals',
-);
+export const isTypesOptionKey = createEqualsCheck<keyof TypesOptions>('equals');

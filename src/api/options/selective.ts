@@ -2,9 +2,9 @@ import { BuildType, SelectiveBooleanOption, SelectiveOption, SelectiveSkipBuildT
 import { invalidOption } from '../errors';
 import { Nullable, TypeCheckFunction } from '../helper-types';
 import { keys, keysToObject } from '../tools/helpers';
+import { composeOneOf, createEqualsCheck } from '../type-check/advanced';
+import { isArray, isBool, isNull, isObject } from '../type-check/basic';
 import { keysCheck } from '../type-check/keys';
-import { createOneOf } from '../type-check/one-of';
-import { isArray, isBool, isNull, isObject } from '../type-check/type-check';
 import { API_KEYS, resolveTypeString, resolveTypeStringArray } from './string-based';
 
 export type BooleanBuildOptions<K extends string> = Record<K, boolean>;
@@ -49,7 +49,7 @@ export function resolveSelectiveOption(value: Nullable<SelectiveBooleanOption>, 
     );
   }
 
-  if (!keysCheck(value, createOneOf('default', isTypeString))) {
+  if (!keysCheck(value, composeOneOf(createEqualsCheck('default'), isTypeString))) {
     throw invalid;
   }
 

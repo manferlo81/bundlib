@@ -2,8 +2,8 @@ import { BuildType, ObjectSelectiveOptions, SelectiveStringOption, SelectiveType
 import { invalidOption } from '../errors';
 import { Nullable, StrictNullable } from '../helper-types';
 import { keys, keysToObject } from '../tools/helpers';
+import { isNull, isObject, isString, isStringOrNull } from '../type-check/basic';
 import { keysCheck } from '../type-check/keys';
-import { isNull, isObject, isString, isStringOrNull } from '../type-check/type-check';
 import { ALL_KEYS, API_KEYS, isSelectiveObjectKey } from './string-based';
 
 export type StringBuildOptions<K extends string> = Record<K, StrictNullable<string>>;

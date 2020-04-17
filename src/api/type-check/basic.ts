@@ -1,9 +1,7 @@
 import { Dictionary, Nullable } from '../helper-types';
-import { createOneOf } from './one-of';
+import { composeOneOf, createEqualsCheck } from './advanced';
 
-export function isNull(value: unknown): value is (null | undefined) {
-  return value == null;
-}
+export const isNull = createEqualsCheck<null | undefined>(null, true);
 
 export function isObject<T = unknown>(value: unknown): value is (Dictionary<T> | T[]) {
   return !!value && typeof value === 'object';
@@ -25,7 +23,7 @@ export function isDictionary<T extends Dictionary<any> = Dictionary<unknown>>(va
   return isObject(value) && !isArray(value);
 }
 
-export const isStringOrNull = createOneOf<Nullable<string>>(isNull, isString);
+export const isStringOrNull = composeOneOf<Nullable<string>>(isNull, isString);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const isDictionaryOrNull = createOneOf<Nullable<Dictionary<any>>>(isNull, isDictionary);
+export const isDictionaryOrNull = composeOneOf<Nullable<Dictionary<any>>>(isNull, isDictionary);
