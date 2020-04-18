@@ -2,11 +2,11 @@ import { BuildType, ObjectBasedSelectiveOption, ObjectSelectiveOptions, Selectiv
 import { invalidOption } from '../errors';
 import { Nullable, TypeCheckFunction } from '../helper-types';
 import { keys, keysToObject } from '../tools/helpers';
-import { composeOneOf, createEqualsCheck, createOneOfLiteral } from '../type-check/advanced';
+import { composeOneOf, createOneOfLiteral } from '../type-check/advanced';
 import { isNull, isObject } from '../type-check/basic';
 import { keysCheck } from '../type-check/keys';
 
-export type SelectivePerBuildValues<K extends string, T> = Record<K, T>;
+export type SelectiveResolved<K extends string, T> = Record<K, T>;
 
 export const API_BUILD_KEYS: ['main', 'module', 'browser'] = ['main', 'module', 'browser'];
 export const MODULE_BUILD_KEYS = [...API_BUILD_KEYS, 'bin'] as ['main', 'module', 'browser', 'bin'];
@@ -20,12 +20,12 @@ export const isBuildType = createOneOfLiteral<BuildType>(
 );
 
 export const isBuildTypeString = composeOneOf<SelectiveType<BuildType>>(
-  createEqualsCheck('api'),
+  'api',
   isBuildType,
 );
 
 export const isSelectiveObjectKey = composeOneOf<'default' | SelectiveType<BuildType>>(
-  createEqualsCheck('default'),
+  'default',
   isBuildTypeString,
 );
 
@@ -36,7 +36,7 @@ export function resolveObjectSelectiveOption<K extends BuildType, T, D>(
   isObjectKey: TypeCheckFunction<K | 'api' | 'default'>,
   isValidValue: TypeCheckFunction<T>,
   invalid: TypeError
-): SelectivePerBuildValues<K, T | D>;
+): SelectiveResolved<K, T | D>;
 
 export function resolveObjectSelectiveOption<T, D>(
   value: ObjectSelectiveOptions<SelectiveType<string>, T>,
@@ -45,7 +45,7 @@ export function resolveObjectSelectiveOption<T, D>(
   isObjectKey: TypeCheckFunction<string>,
   isValidValue: TypeCheckFunction<T>,
   invalid: TypeError
-): SelectivePerBuildValues<string, T | D>;
+): SelectiveResolved<string, T | D>;
 
 export function resolveObjectSelectiveOption<K extends BuildType, T, D>(
   value: ObjectSelectiveOptions<SelectiveType<K>, T>,
@@ -54,7 +54,7 @@ export function resolveObjectSelectiveOption<K extends BuildType, T, D>(
   isObjectKey: TypeCheckFunction<K | 'api' | 'default'>,
   isValidValue: TypeCheckFunction<T>,
   invalid: TypeError,
-): SelectivePerBuildValues<K, T | D> {
+): SelectiveResolved<K, T | D> {
 
   if (!keysCheck(value, isObjectKey)) {
     throw invalid;
@@ -112,7 +112,7 @@ export function resolveObjectBasedSelectiveOption<T, D>(
   isValidValue: TypeCheckFunction<T>,
   optionName: string,
   url: string,
-): SelectivePerBuildValues<BuildType, T | D> {
+): SelectiveResolved<BuildType, T | D> {
 
   if (isNull(value)) {
     return keysToObject(

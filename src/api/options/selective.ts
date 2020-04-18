@@ -2,12 +2,12 @@ import { BuildType, SelectiveOption, SelectiveSkipBuildType, SelectiveType } fro
 import { invalidOption } from '../errors';
 import { Nullable, TypeCheckFunction } from '../helper-types';
 import { keysToObject } from '../tools/helpers';
-import { composeOneOf, createEqualsCheck } from '../type-check/advanced';
+import { composeOneOf } from '../type-check/advanced';
 import { isArray, isBool, isNull, isObject } from '../type-check/basic';
-import { resolveObjectSelectiveOption, SelectivePerBuildValues } from './object-based';
+import { resolveObjectSelectiveOption, SelectiveResolved } from './object-based';
 import { resolveTypeString, resolveTypeStringArray } from './string-based';
 
-export type SelectivePerBuildBooleanValues<K extends string> = SelectivePerBuildValues<K, boolean>;
+export type SelectivePerBuildBooleanValues<K extends string> = SelectiveResolved<K, boolean>;
 
 export function resolveSelectiveOption<K extends SelectiveSkipBuildType>(value: SelectiveOption<SelectiveType<K>, boolean>, defaultValue: boolean, isTypeString: TypeCheckFunction<K>, allkeys: K[], name: string, url: string): SelectivePerBuildBooleanValues<K>;
 export function resolveSelectiveOption<K extends BuildType>(value: SelectiveOption<SelectiveType<K>, boolean>, defaultValue: boolean, isTypeString: TypeCheckFunction<K>, allkeys: K[], name: string, url: string): SelectivePerBuildBooleanValues<K>;
@@ -53,7 +53,7 @@ export function resolveSelectiveOption(value: SelectiveOption<BuildType, boolean
     value,
     defaultValue,
     allkeys,
-    composeOneOf(createEqualsCheck('default'), isTypeString),
+    composeOneOf('default', isTypeString),
     isBool,
     invalid,
   );

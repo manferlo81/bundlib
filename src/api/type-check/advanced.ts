@@ -14,8 +14,42 @@ export function createOneOfLiteral<M>(...model: M[]): TypeCheckFunction<M> {
   );
 }
 
-export function composeOneOf<M>(...checks: Array<TypeCheckFunction<M>>): TypeCastCheckFunction<M> {
+export function composeOneOf<M>(...checkers: Array<M | TypeCheckFunction<M>>): TypeCastCheckFunction<M> {
+
+  let consecutive: M[] | null = null;
+
+  const flush = (checks: Array<TypeCheckFunction<M>>) => {
+    if (consecutive) {
+      checks.push(
+        consecutive.length > 1
+          ? createOneOfLiteral(...consecutive)
+          : createEqualsCheck(consecutive[0]),
+      );
+      consecutive = null;
+    }
+  };
+
+  const checks = checkers.reduce(
+    (checks, checker) => {
+      if (typeof checker === 'function') {
+        flush(checks);
+        checks.push(checker as TypeCheckFunction<M>);
+      } else {
+        if (!consecutive) {
+          consecutive = [checker];
+        } else {
+          consecutive.push(checker);
+        }
+      }
+      return checks;
+    },
+    [] as Array<TypeCheckFunction<M>>,
+  );
+
+  flush(checks);
+
   return <X = M>(value: unknown): value is X => checks.some(
     (check) => check(value),
   );
+
 }

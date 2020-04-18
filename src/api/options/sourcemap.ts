@@ -5,7 +5,7 @@ import { keysToObject } from '../tools/helpers';
 import { composeOneOf, createOneOfLiteral } from '../type-check/advanced';
 import { isArray, isBool, isNull, isObject } from '../type-check/basic';
 import { RollupSourcemap, RollupSourcemapString } from '../types';
-import { MODULE_BUILD_KEYS, isBuildTypeString, isSelectiveObjectKey, resolveObjectSelectiveOption } from './object-based';
+import { isBuildTypeString, isSelectiveObjectKey, MODULE_BUILD_KEYS, resolveObjectSelectiveOption } from './object-based';
 import { resolveTypeString, resolveTypeStringArray } from './string-based';
 
 export const isSourcemapString = createOneOfLiteral<RollupSourcemapString>(
