@@ -2,6 +2,31 @@
 
 ## Version History
 
+## [0.16.0](https://github.com/manferlo81/bundlib/compare/v0.15.5...v0.16.0) (2020-04-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* `configFromPkg` resolves to CommonJS configs first
+* analizePkg result new format
+
+### Features
+
+* "bundlib" filed as a string in package.json ([aa05c90](https://github.com/manferlo81/bundlib/commit/aa05c90a0c7153065895889cf3502d839b851fa7))
+* Implemented improved options load ([a9bf7f7](https://github.com/manferlo81/bundlib/commit/a9bf7f705aacc745b444637caaced07eeb479d06))
+* Selective options ([a409b2c](https://github.com/manferlo81/bundlib/commit/a409b2cc310e30e759125d8b865ba7774d2cc7c2))
+* Skip option ([f4e3bc1](https://github.com/manferlo81/bundlib/commit/f4e3bc1b57ceae8b5ab1bb968068ae19575e4ae9))
+* Support "hidden" sourcemap option ([a678d6c](https://github.com/manferlo81/bundlib/commit/a678d6c29799b753ba43f2f4f324404dcd70267b))
+* Throw on invalid types path & types from js ([c6db25c](https://github.com/manferlo81/bundlib/commit/c6db25c0ed2d8dbf79c49b7cc4a59122205fe677))
+
+
+### Bug Fixes
+
+* Shebang issue on minified binary ([d8f1df1](https://github.com/manferlo81/bundlib/commit/d8f1df1087d6cd651ba37c9cd2c794a2ef3b2322))
+
+
+* CommonJS module build first ([3ecac77](https://github.com/manferlo81/bundlib/commit/3ecac77603b5c7478f512dc6e718f7cc2351a9b4))
+
 ### [0.15.5](https://github.com/manferlo81/bundlib/compare/v0.15.4...v0.15.5) (2020-03-28)
 
 
