@@ -358,9 +358,9 @@ resolveSelectiveOption({
 */
 ```
 
-##### The special `bin` property
+##### The special `api` property
 
-The special `"api"` object key represents `main`, `module` and `browser`.
+The `"api"` object key represents `main`, `module` and `browser`.
 
 ***example***
 
@@ -385,24 +385,49 @@ resolveSelectiveOption({
 
 `string` based format works in a different way, it does not preserve the default value, included build types will be set to `true` and the others will be set to `false`. It can be a `string` or an `string array`.
 
+##### As string
+
 ***example***
 
 ```javascript
-resolveSelectiveOption('browser');
+resolveSelectiveOption('module');
 
 /*
 {
-  browser: true,
+  module: true,
   ...others: false
 }
 */
+```
 
+##### As array of strings
+
+***example***
+
+```javascript
 resolveSelectiveOption(['main', 'module']);
 
 /*
 {
   main: true,
   module: true,
+  ...others: false
+}
+*/
+```
+
+##### The special `api` build type
+
+***example***
+
+```javascript
+resolveSelectiveOption('api');
+
+/*
+{
+  main: true,
+  module: true,
+  browser: true,
   ...others: false
 }
 */
