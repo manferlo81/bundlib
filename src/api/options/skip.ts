@@ -1,15 +1,15 @@
-import { BuildType, SelectiveSkipBuildType, SelectiveSkipOption } from '../bundlib-options';
+import { SelectiveSkipBuildType, SelectiveSkipOption } from '../bundlib-options';
 import { Nullable } from '../helper-types';
 import { composeOneOf } from '../type-check/advanced';
-import { ALL_BUILD_KEYS, isBuildTypeString } from './object-based';
-import { resolveSelectiveOption, SelectivePerBuildBooleanValues } from './selective';
+import { ALL_BUILD_KEYS, isSelectiveBuildType } from './object-based';
+import { resolveSelectiveOption, SelectiveResolvedBoolean } from './selective';
 
-const isSkipTypeString = composeOneOf<BuildType | 'types'>(
-  isBuildTypeString,
+const isSkipTypeString = composeOneOf<SelectiveSkipBuildType>(
+  isSelectiveBuildType,
   'types',
 );
 
-export function resolveSkipOption(value: Nullable<SelectiveSkipOption>): SelectivePerBuildBooleanValues<SelectiveSkipBuildType> {
+export function resolveSkipOption(value: Nullable<SelectiveSkipOption>): SelectiveResolvedBoolean<SelectiveSkipBuildType> {
   return resolveSelectiveOption(
     value,
     false,

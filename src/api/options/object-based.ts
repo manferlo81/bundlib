@@ -19,14 +19,14 @@ export const isBuildType = createOneOfLiteral<BuildType>(
   'bin',
 );
 
-export const isBuildTypeString = composeOneOf<SelectiveType<BuildType>>(
+export const isSelectiveBuildType = composeOneOf<SelectiveType<BuildType>>(
   'api',
   isBuildType,
 );
 
 export const isSelectiveObjectKey = composeOneOf<'default' | SelectiveType<BuildType>>(
   'default',
-  isBuildTypeString,
+  isSelectiveBuildType,
 );
 
 export function resolveObjectSelectiveOption<K extends BuildType, T, D>(

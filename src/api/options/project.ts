@@ -1,11 +1,9 @@
 import { BuildType, SelectiveStringOption } from '../bundlib-options';
-import { Nullable, StrictNullable } from '../helper-types';
+import { StrictNullable } from '../helper-types';
 import { isString } from '../type-check/basic';
-import { MODULE_BUILD_KEYS, resolveObjectBasedSelectiveOption } from './object-based';
+import { MODULE_BUILD_KEYS, resolveObjectBasedSelectiveOption, SelectiveResolved } from './object-based';
 
-export type ProjectBuildOptions = Record<BuildType, StrictNullable<string>>;
-
-export function resolveProjectOption(value: Nullable<SelectiveStringOption>): ProjectBuildOptions {
+export function resolveProjectOption(value: SelectiveStringOption): SelectiveResolved<BuildType, StrictNullable<string>> {
   return resolveObjectBasedSelectiveOption(
     value,
     null,

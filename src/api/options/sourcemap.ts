@@ -5,7 +5,7 @@ import { keysToObject } from '../tools/helpers';
 import { composeOneOf, createOneOfLiteral } from '../type-check/advanced';
 import { isArray, isBool, isNull, isObject } from '../type-check/basic';
 import { RollupSourcemap, RollupSourcemapString } from '../types';
-import { isBuildTypeString, isSelectiveObjectKey, MODULE_BUILD_KEYS, resolveObjectSelectiveOption } from './object-based';
+import { isSelectiveBuildType, isSelectiveObjectKey, MODULE_BUILD_KEYS, resolveObjectSelectiveOption, SelectiveResolved } from './object-based';
 import { resolveTypeString, resolveTypeStringArray } from './string-based';
 
 export const isSourcemapString = createOneOfLiteral<RollupSourcemapString>(
@@ -18,9 +18,7 @@ export const isSourcemapOption = composeOneOf<RollupSourcemap>(
   isSourcemapString,
 );
 
-export type SourcemapBuildOptions = Record<BuildType, RollupSourcemap>;
-
-export function resolveSourcemapOption(value: SelectiveSourcemap): SourcemapBuildOptions {
+export function resolveSourcemapOption(value: SelectiveSourcemap): SelectiveResolved<BuildType, RollupSourcemap> {
 
   if (isNull(value) || value === true) {
     return keysToObject(
@@ -36,7 +34,7 @@ export function resolveSourcemapOption(value: SelectiveSourcemap): SourcemapBuil
     );
   }
 
-  if (isBuildTypeString(value)) {
+  if (isSelectiveBuildType(value)) {
     return resolveTypeString(
       value,
       MODULE_BUILD_KEYS,
@@ -52,7 +50,7 @@ export function resolveSourcemapOption(value: SelectiveSourcemap): SourcemapBuil
   if (isArray(value)) {
     return resolveTypeStringArray(
       value,
-      isBuildTypeString,
+      isSelectiveBuildType,
       MODULE_BUILD_KEYS,
       invalid,
     );

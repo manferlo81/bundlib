@@ -1,12 +1,27 @@
-import { BuildType } from '../bundlib-options';
+import { BuildType, SelectiveType, SelectiveSkipBuildType } from '../bundlib-options';
 import { TypeCheckFunction } from '../helper-types';
 import { keysToObject } from '../tools/helpers';
-import { API_BUILD_KEYS } from './object-based';
+import { API_BUILD_KEYS, SelectiveResolved } from './object-based';
 
-export function resolveTypeString<K extends BuildType | 'types'>(value: K | 'api', allkeys: K[]): Record<K, boolean>;
-export function resolveTypeString<K extends BuildType>(value: K | 'api', allkeys: K[]): Record<K, boolean>;
-export function resolveTypeString(value: string, allkeys: string[]): Record<string, boolean>;
-export function resolveTypeString(value: string, allkeys: string[]): Record<string, boolean> {
+export function resolveTypeString<K extends SelectiveSkipBuildType>(
+  value: SelectiveType<K>,
+  allkeys: K[]
+): SelectiveResolved<K, boolean>;
+
+export function resolveTypeString<K extends BuildType>(
+  value: SelectiveType<K>,
+  allkeys: K[]
+): SelectiveResolved<K, boolean>;
+
+export function resolveTypeString(
+  value: string,
+  allkeys: string[]
+): SelectiveResolved<string, boolean>;
+
+export function resolveTypeString(
+  value: string,
+  allkeys: string[],
+): SelectiveResolved<string, boolean> {
 
   const base = keysToObject(
     allkeys,
@@ -26,16 +41,36 @@ export function resolveTypeString(value: string, allkeys: string[]): Record<stri
 
 }
 
-export function resolveTypeStringArray<K extends BuildType | 'types'>(value: Array<K | 'api'>, check: TypeCheckFunction<K>, allkeys: K[], invalid: Error): Record<K, boolean>;
-export function resolveTypeStringArray<K extends BuildType>(value: Array<K | 'api'>, check: TypeCheckFunction<K>, allkeys: K[], invalid: Error): Record<K, boolean>;
-export function resolveTypeStringArray(value: string[], check: TypeCheckFunction<string>, allkeys: string[], invalid: Error): Record<string, boolean>;
-export function resolveTypeStringArray(value: string[], check: TypeCheckFunction<string>, allkeys: string[], invalid: Error): Record<string, boolean> {
+export function resolveTypeStringArray<K extends SelectiveSkipBuildType>(
+  value: Array<SelectiveType<K>>,
+  isSelectiveTypeString: TypeCheckFunction<K>,
+  allkeys: K[],
+  invalid: Error
+): SelectiveResolved<K, boolean>;
+
+export function resolveTypeStringArray<K extends BuildType>(
+  value: Array<SelectiveType<K>>,
+  isSelectiveTypeString: TypeCheckFunction<K>,
+  allkeys: K[],
+  invalid: Error
+): SelectiveResolved<K, boolean>;
+
+export function resolveTypeStringArray(
+  value: string[],
+  isSelectiveTypeString: TypeCheckFunction<string>,
+  allkeys: string[],
+  invalid: Error
+): SelectiveResolved<string, boolean>;
+
+export function resolveTypeStringArray(
+  value: string[],
+  isSelectiveTypeString: TypeCheckFunction<string>,
+  allkeys: string[],
+  invalid: Error,
+): SelectiveResolved<string, boolean> {
+
   return value.reduce(
     (result, type) => {
-
-      if (!check(type)) {
-        throw invalid;
-      }
 
       if (type === 'api') {
         return keysToObject(
@@ -45,10 +80,15 @@ export function resolveTypeStringArray(value: string[], check: TypeCheckFunction
         );
       }
 
+      if (!isSelectiveTypeString(type)) {
+        throw invalid;
+      }
+
       result[type] = true;
       return result;
 
     },
     keysToObject(allkeys, false),
   );
+
 }

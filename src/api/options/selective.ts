@@ -7,11 +7,34 @@ import { isArray, isBool, isNull, isObject } from '../type-check/basic';
 import { resolveObjectSelectiveOption, SelectiveResolved } from './object-based';
 import { resolveTypeString, resolveTypeStringArray } from './string-based';
 
-export type SelectivePerBuildBooleanValues<K extends string> = SelectiveResolved<K, boolean>;
+export type SelectiveResolvedBoolean<K extends string> = SelectiveResolved<K, boolean>;
 
-export function resolveSelectiveOption<K extends SelectiveSkipBuildType>(value: SelectiveOption<SelectiveType<K>, boolean>, defaultValue: boolean, isTypeString: TypeCheckFunction<K>, allkeys: K[], name: string, url: string): SelectivePerBuildBooleanValues<K>;
-export function resolveSelectiveOption<K extends BuildType>(value: SelectiveOption<SelectiveType<K>, boolean>, defaultValue: boolean, isTypeString: TypeCheckFunction<K>, allkeys: K[], name: string, url: string): SelectivePerBuildBooleanValues<K>;
-export function resolveSelectiveOption(value: SelectiveOption<BuildType, boolean>, defaultValue: boolean, isTypeString: TypeCheckFunction<string>, allkeys: string[], name: string, url: string): SelectivePerBuildBooleanValues<string> {
+export function resolveSelectiveOption<K extends SelectiveSkipBuildType>(
+  value: SelectiveOption<SelectiveType<K>, boolean>,
+  defaultValue: boolean,
+  isSelectiveTypeString: TypeCheckFunction<K>,
+  allkeys: K[],
+  optionName: string,
+  url: string
+): SelectiveResolvedBoolean<K>;
+
+export function resolveSelectiveOption<K extends BuildType>(
+  value: SelectiveOption<SelectiveType<K>, boolean>,
+  defaultValue: boolean,
+  isSelectiveTypeString: TypeCheckFunction<K>,
+  allkeys: K[],
+  optionName: string,
+  url: string
+): SelectiveResolvedBoolean<K>;
+
+export function resolveSelectiveOption(
+  value: SelectiveOption<BuildType, boolean>,
+  defaultValue: boolean,
+  isSelectiveTypeString: TypeCheckFunction<string>,
+  allkeys: string[],
+  optionName: string,
+  url: string,
+): SelectiveResolvedBoolean<string> {
 
   if (isNull(value) || value === defaultValue) {
     return keysToObject(
@@ -27,14 +50,14 @@ export function resolveSelectiveOption(value: SelectiveOption<BuildType, boolean
     );
   }
 
-  if (isTypeString(value)) {
+  if (isSelectiveTypeString(value)) {
     return resolveTypeString(
       value,
       allkeys,
     );
   }
 
-  const invalid = invalidOption(name, url);
+  const invalid = invalidOption(optionName, url);
 
   if (!isObject(value)) {
     throw invalid;
@@ -43,7 +66,7 @@ export function resolveSelectiveOption(value: SelectiveOption<BuildType, boolean
   if (isArray(value)) {
     return resolveTypeStringArray(
       value,
-      isTypeString,
+      isSelectiveTypeString,
       allkeys,
       invalid,
     );
@@ -53,7 +76,7 @@ export function resolveSelectiveOption(value: SelectiveOption<BuildType, boolean
     value,
     defaultValue,
     allkeys,
-    composeOneOf('default', isTypeString),
+    composeOneOf('default', isSelectiveTypeString),
     isBool,
     invalid,
   );
