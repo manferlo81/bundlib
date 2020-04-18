@@ -1,15 +1,15 @@
 import { BuildType, SelectiveBooleanOption, WithMinOption } from '../bundlib-options';
 import { Nullable } from '../helper-types';
 import { isNull } from '../type-check/basic';
-import { BooleanBuildOptions, resolveSelectiveOption } from './selective';
-import { ALL_KEYS, isBuildTypeString } from './string-based';
+import { MODULE_BUILD_KEYS, isBuildTypeString } from './object-based';
+import { resolveSelectiveOption, SelectivePerBuildBooleanValues } from './selective';
 
-export function resolveMinOption(value: Nullable<SelectiveBooleanOption>): BooleanBuildOptions<BuildType> {
+export function resolveMinOption(value: Nullable<SelectiveBooleanOption>): SelectivePerBuildBooleanValues<BuildType> {
   return resolveSelectiveOption(
     value,
     false,
     isBuildTypeString,
-    ALL_KEYS,
+    MODULE_BUILD_KEYS,
     'min',
     'https://github.com/manferlo81/bundlib#min',
   );
@@ -18,7 +18,7 @@ export function resolveMinOption(value: Nullable<SelectiveBooleanOption>): Boole
 export function normalizeBuildMin(
   build: Nullable<WithMinOption>,
   field: BuildType,
-  def: BooleanBuildOptions<BuildType>,
+  def: SelectivePerBuildBooleanValues<BuildType>,
 ): boolean {
   return (!build || isNull(build.min)) ? def[field] : !!build.min;
 }

@@ -1,67 +1,129 @@
-import { BuildType, ObjectSelectiveOptions, SelectiveStringOption, SelectiveType } from '../bundlib-options';
+import { BuildType, ObjectBasedSelectiveOption, ObjectSelectiveOptions, SelectiveType } from '../bundlib-options';
 import { invalidOption } from '../errors';
-import { Nullable, StrictNullable } from '../helper-types';
+import { Nullable, TypeCheckFunction } from '../helper-types';
 import { keys, keysToObject } from '../tools/helpers';
-import { isNull, isObject, isString, isStringOrNull } from '../type-check/basic';
+import { composeOneOf, createEqualsCheck, createOneOfLiteral } from '../type-check/advanced';
+import { isNull, isObject } from '../type-check/basic';
 import { keysCheck } from '../type-check/keys';
-import { ALL_KEYS, API_KEYS, isSelectiveObjectKey } from './string-based';
 
-export type StringBuildOptions<K extends string> = Record<K, StrictNullable<string>>;
+export type SelectivePerBuildValues<K extends string, T> = Record<K, T>;
 
-export function resolveObjectSelectiveOption(value: ObjectSelectiveOptions<SelectiveType<BuildType>, string>, invalid: TypeError): StringBuildOptions<BuildType> {
+export const API_BUILD_KEYS: ['main', 'module', 'browser'] = ['main', 'module', 'browser'];
+export const MODULE_BUILD_KEYS = [...API_BUILD_KEYS, 'bin'] as ['main', 'module', 'browser', 'bin'];
+export const ALL_BUILD_KEYS = [...MODULE_BUILD_KEYS, 'types'] as ['main', 'module', 'browser', 'bin', 'types'];
 
-  if (!keysCheck(value, isSelectiveObjectKey)) {
+export const isBuildType = createOneOfLiteral<BuildType>(
+  'main',
+  'module',
+  'browser',
+  'bin',
+);
+
+export const isBuildTypeString = composeOneOf<SelectiveType<BuildType>>(
+  createEqualsCheck('api'),
+  isBuildType,
+);
+
+export const isSelectiveObjectKey = composeOneOf<'default' | SelectiveType<BuildType>>(
+  createEqualsCheck('default'),
+  isBuildTypeString,
+);
+
+export function resolveObjectSelectiveOption<K extends BuildType, T, D>(
+  value: ObjectSelectiveOptions<SelectiveType<K>, T>,
+  defaultValue: D,
+  allkeys: K[],
+  isObjectKey: TypeCheckFunction<K | 'api' | 'default'>,
+  isValidValue: TypeCheckFunction<T>,
+  invalid: TypeError
+): SelectivePerBuildValues<K, T | D>;
+
+export function resolveObjectSelectiveOption<T, D>(
+  value: ObjectSelectiveOptions<SelectiveType<string>, T>,
+  defaultValue: D,
+  allkeys: string[],
+  isObjectKey: TypeCheckFunction<string>,
+  isValidValue: TypeCheckFunction<T>,
+  invalid: TypeError
+): SelectivePerBuildValues<string, T | D>;
+
+export function resolveObjectSelectiveOption<K extends BuildType, T, D>(
+  value: ObjectSelectiveOptions<SelectiveType<K>, T>,
+  defaultValue: D,
+  allkeys: K[],
+  isObjectKey: TypeCheckFunction<K | 'api' | 'default'>,
+  isValidValue: TypeCheckFunction<T>,
+  invalid: TypeError,
+): SelectivePerBuildValues<K, T | D> {
+
+  if (!keysCheck(value, isObjectKey)) {
     throw invalid;
   }
 
   const { default: override, api, ...others } = value;
 
-  if (!isStringOrNull(override)) {
+  if (!isNull(override) && !isValidValue(override)) {
     throw invalid;
   }
 
-  const result = keysToObject(
-    ALL_KEYS,
-    override || null,
+  const result = keysToObject<BuildType, T | D>(
+    allkeys,
+    isNull(override) ? defaultValue : override,
   );
 
   if (!isNull(api)) {
-    if (!isString(api)) {
+
+    if (!isValidValue(api)) {
       throw invalid;
     }
+
     keysToObject(
-      API_KEYS,
-      api as Nullable<string>,
+      API_BUILD_KEYS,
+      api as T | D,
       result,
     );
+
   }
 
   keys(others).forEach((type) => {
-    const value = others[type];
+
+    const value = others[type as never] as Nullable<T | D>;
+
     if (!isNull(value)) {
-      if (!isString(value)) {
+
+      if (!isValidValue(value)) {
         throw invalid;
       }
+
       result[type] = value;
+
     }
+
   });
 
   return result;
 
 }
 
-export function resolveObjectBasedSelectiveOption(value: Nullable<SelectiveStringOption>, optionName: string, url: string): StringBuildOptions<BuildType> {
+export function resolveObjectBasedSelectiveOption<T, D>(
+  value: ObjectBasedSelectiveOption<BuildType, T>,
+  defaultValue: D,
+  allkeys: BuildType[],
+  isValidValue: TypeCheckFunction<T>,
+  optionName: string,
+  url: string,
+): SelectivePerBuildValues<BuildType, T | D> {
 
   if (isNull(value)) {
     return keysToObject(
-      ALL_KEYS,
-      null,
+      allkeys,
+      defaultValue,
     );
   }
 
-  if (isString(value)) {
+  if (isValidValue(value)) {
     return keysToObject(
-      ALL_KEYS,
+      allkeys,
       value,
     );
   }
@@ -72,8 +134,12 @@ export function resolveObjectBasedSelectiveOption(value: Nullable<SelectiveStrin
     throw invalid;
   }
 
-  return resolveObjectSelectiveOption(
+  return resolveObjectSelectiveOption<BuildType, T, D>(
     value,
+    defaultValue,
+    allkeys,
+    isSelectiveObjectKey,
+    isValidValue,
     invalid,
   );
 

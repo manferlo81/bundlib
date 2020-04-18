@@ -1,5 +1,5 @@
+import { MODULE_BUILD_KEYS, isBuildTypeString } from '../../src/api/options/object-based';
 import { resolveSelectiveOption } from '../../src/api/options/selective';
-import { ALL_KEYS, isBuildTypeString } from '../../src/api/options/string-based';
 
 describe('selective option', () => {
 
@@ -19,7 +19,7 @@ describe('selective option', () => {
     ];
     invalids.forEach((invalid) => {
       [true, false].forEach((defaultValue) => {
-        expect(() => resolveSelectiveOption(invalid as never, defaultValue, isBuildTypeString, ALL_KEYS, 'boolean', 'url')).toThrow();
+        expect(() => resolveSelectiveOption(invalid as never, defaultValue, isBuildTypeString, MODULE_BUILD_KEYS, 'boolean', 'url')).toThrow();
       });
     });
   });
@@ -27,7 +27,7 @@ describe('selective option', () => {
   test('Should resolve null or undefined selective option', () => {
     [null, undefined].forEach((value) => {
       [true, false].forEach((defaultValue) => {
-        expect(resolveSelectiveOption(value, defaultValue, isBuildTypeString, ALL_KEYS, 'boolean', 'url')).toEqual({
+        expect(resolveSelectiveOption(value, defaultValue, isBuildTypeString, MODULE_BUILD_KEYS, 'boolean', 'url')).toEqual({
           main: defaultValue,
           module: defaultValue,
           browser: defaultValue,
@@ -40,7 +40,7 @@ describe('selective option', () => {
   test('Should resolve selective option', () => {
     [true, false].forEach((value) => {
       [true, false].forEach((defaultValue) => {
-        expect(resolveSelectiveOption(value, defaultValue, isBuildTypeString, ALL_KEYS, 'boolean', 'url')).toEqual({
+        expect(resolveSelectiveOption(value, defaultValue, isBuildTypeString, MODULE_BUILD_KEYS, 'boolean', 'url')).toEqual({
           main: value,
           module: value,
           browser: value,
@@ -60,7 +60,7 @@ describe('selective option', () => {
     ];
     values.forEach(({ value, expected }) => {
       [true, false].forEach((defaultValue) => {
-        expect(resolveSelectiveOption(value, defaultValue, isBuildTypeString, ALL_KEYS, 'boolean', 'url')).toEqual(expected);
+        expect(resolveSelectiveOption(value, defaultValue, isBuildTypeString, MODULE_BUILD_KEYS, 'boolean', 'url')).toEqual(expected);
       });
     });
   });
@@ -72,7 +72,7 @@ describe('selective option', () => {
     ];
     values.forEach(({ value: array, expected }) => {
       [true, false].forEach((defaultValue) => {
-        expect(resolveSelectiveOption(array, defaultValue, isBuildTypeString, ALL_KEYS, 'boolean', 'url')).toEqual(expected);
+        expect(resolveSelectiveOption(array, defaultValue, isBuildTypeString, MODULE_BUILD_KEYS, 'boolean', 'url')).toEqual(expected);
       });
     });
   });
@@ -114,7 +114,7 @@ describe('selective option', () => {
     ];
     values.forEach(({ value, expected }) => {
       [true, false].forEach((defaultValue) => {
-        expect(resolveSelectiveOption(value, defaultValue, isBuildTypeString, ALL_KEYS, 'boolean', 'url')).toEqual({
+        expect(resolveSelectiveOption(value, defaultValue, isBuildTypeString, MODULE_BUILD_KEYS, 'boolean', 'url')).toEqual({
           main: defaultValue,
           module: defaultValue,
           browser: defaultValue,

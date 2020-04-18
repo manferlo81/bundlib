@@ -1,28 +1,7 @@
-import { BuildType, SelectiveType } from '../bundlib-options';
+import { BuildType } from '../bundlib-options';
 import { TypeCheckFunction } from '../helper-types';
 import { keysToObject } from '../tools/helpers';
-import { composeOneOf, createEqualsCheck, createOneOfLiteral } from '../type-check/advanced';
-
-export const API_KEYS: ['main', 'module', 'browser'] = ['main', 'module', 'browser'];
-export const ALL_KEYS = [...API_KEYS, 'bin'] as ['main', 'module', 'browser', 'bin'];
-export const SKIP_KEYS = [...ALL_KEYS, 'types'] as ['main', 'module', 'browser', 'bin', 'types'];
-
-export const isBuildType = createOneOfLiteral<BuildType>(
-  'main',
-  'module',
-  'browser',
-  'bin',
-);
-
-export const isBuildTypeString = composeOneOf<SelectiveType<BuildType>>(
-  createEqualsCheck('api'),
-  isBuildType,
-);
-
-export const isSelectiveObjectKey = composeOneOf<'default' | SelectiveType<BuildType>>(
-  createEqualsCheck('default'),
-  isBuildTypeString,
-);
+import { API_BUILD_KEYS } from './object-based';
 
 export function resolveTypeString<K extends BuildType | 'types'>(value: K | 'api', allkeys: K[]): Record<K, boolean>;
 export function resolveTypeString<K extends BuildType>(value: K | 'api', allkeys: K[]): Record<K, boolean>;
@@ -36,7 +15,7 @@ export function resolveTypeString(value: string, allkeys: string[]): Record<stri
 
   if (value === 'api') {
     return keysToObject(
-      API_KEYS,
+      API_BUILD_KEYS,
       true,
       base,
     );
@@ -60,7 +39,7 @@ export function resolveTypeStringArray(value: string[], check: TypeCheckFunction
 
       if (type === 'api') {
         return keysToObject(
-          API_KEYS,
+          API_BUILD_KEYS,
           true,
           result,
         );

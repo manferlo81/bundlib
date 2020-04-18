@@ -1,12 +1,12 @@
 import { BuildType, SelectiveSourcemap, WithSourcemapOption } from '../bundlib-options';
 import { invalidOption } from '../errors';
 import { Nullable } from '../helper-types';
-import { keys, keysToObject } from '../tools/helpers';
+import { keysToObject } from '../tools/helpers';
 import { composeOneOf, createOneOfLiteral } from '../type-check/advanced';
 import { isArray, isBool, isNull, isObject } from '../type-check/basic';
-import { keysCheck } from '../type-check/keys';
 import { RollupSourcemap, RollupSourcemapString } from '../types';
-import { ALL_KEYS, API_KEYS, isBuildTypeString, isSelectiveObjectKey, resolveTypeString, resolveTypeStringArray } from './string-based';
+import { MODULE_BUILD_KEYS, isBuildTypeString, isSelectiveObjectKey, resolveObjectSelectiveOption } from './object-based';
+import { resolveTypeString, resolveTypeStringArray } from './string-based';
 
 export const isSourcemapString = createOneOfLiteral<RollupSourcemapString>(
   'inline',
@@ -20,22 +20,18 @@ export const isSourcemapOption = composeOneOf<RollupSourcemap>(
 
 export type SourcemapBuildOptions = Record<BuildType, RollupSourcemap>;
 
-function resolveSourcemapValue(value: Nullable<RollupSourcemap>): RollupSourcemap {
-  return isSourcemapString(value) ? value : (value !== false);
-}
-
-export function resolveSourcemapOption(value: Nullable<SelectiveSourcemap>): SourcemapBuildOptions {
+export function resolveSourcemapOption(value: SelectiveSourcemap): SourcemapBuildOptions {
 
   if (isNull(value) || value === true) {
     return keysToObject(
-      ALL_KEYS,
+      MODULE_BUILD_KEYS,
       true,
     );
   }
 
   if (value === false || isSourcemapString(value)) {
     return keysToObject(
-      ALL_KEYS,
+      MODULE_BUILD_KEYS,
       value as (false | RollupSourcemapString),
     );
   }
@@ -43,7 +39,7 @@ export function resolveSourcemapOption(value: Nullable<SelectiveSourcemap>): Sou
   if (isBuildTypeString(value)) {
     return resolveTypeString(
       value,
-      ALL_KEYS,
+      MODULE_BUILD_KEYS,
     );
   }
 
@@ -57,48 +53,19 @@ export function resolveSourcemapOption(value: Nullable<SelectiveSourcemap>): Sou
     return resolveTypeStringArray(
       value,
       isBuildTypeString,
-      ALL_KEYS,
+      MODULE_BUILD_KEYS,
       invalid,
     );
   }
 
-  if (!keysCheck(value, isSelectiveObjectKey)) {
-    throw invalid;
-  }
-
-  const { default: override, api, ...others } = value;
-
-  if (!isNull(override) && !isSourcemapOption(override)) {
-    throw invalid;
-  }
-
-  const result: SourcemapBuildOptions = keysToObject(
-    ALL_KEYS,
-    resolveSourcemapValue(override),
+  return resolveObjectSelectiveOption<BuildType, RollupSourcemap, true>(
+    value,
+    true,
+    MODULE_BUILD_KEYS,
+    isSelectiveObjectKey,
+    isSourcemapOption,
+    invalid,
   );
-
-  if (!isNull(api)) {
-    if (!isSourcemapOption(api)) {
-      throw invalid;
-    }
-    keysToObject(
-      API_KEYS,
-      resolveSourcemapValue(api),
-      result,
-    );
-  }
-
-  keys(others).forEach((type) => {
-    const sourcemap = others[type];
-    if (!isNull(sourcemap)) {
-      if (!isSourcemapOption(sourcemap)) {
-        throw invalid;
-      }
-      result[type] = resolveSourcemapValue(sourcemap);
-    }
-  });
-
-  return result;
 
 }
 
@@ -106,7 +73,17 @@ export function normalizeBuildSourcemap(
   build: Nullable<WithSourcemapOption>,
   def: RollupSourcemap,
 ): RollupSourcemap {
-  return !build || isNull(build.sourcemap)
-    ? def
-    : resolveSourcemapValue(build.sourcemap);
+
+  if (!build) {
+    return def;
+  }
+
+  const { sourcemap } = build;
+
+  if (isNull(sourcemap)) {
+    return def;
+  }
+
+  return isSourcemapString(sourcemap) ? sourcemap : (sourcemap !== false);
+
 }

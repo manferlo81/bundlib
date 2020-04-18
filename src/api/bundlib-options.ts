@@ -64,41 +64,41 @@ export interface BrowserBuildOptions {
   globals?: GlobalsOptions;
 }
 
-export type ObjectSelectiveOptions<K extends string, T> = Partial<Record<K | 'default', Nullable<T>>>;
+export type SelectiveType<K extends string> = K | 'api';
+export type ObjectSelectiveOptionsKey<K extends string> = SelectiveType<K> | 'default';
+
+export type ObjectSelectiveOptions<K extends string, T> = Partial<Record<ObjectSelectiveOptionsKey<K>, Nullable<T>>>;
 
 export type StringBasedSelectiveOption<K extends string> =
-  | K
-  | K[];
+  | SelectiveType<K>
+  | Array<SelectiveType<K>>;
 
 export type ObjectBasedSelectiveOption<K extends string, T> =
-  | T
+  | Nullable<T>
   | ObjectSelectiveOptions<K, T>;
 
 export type SelectiveOption<K extends string, T> =
   | StringBasedSelectiveOption<K>
   | ObjectBasedSelectiveOption<K, T>;
 
-export type SelectiveType<K extends string> = K | 'api';
-
-type SelectiveTypeString = SelectiveType<BuildType>;
 export type SelectiveSkipBuildType = BuildType | 'types';
 
-export type SelectiveBooleanOption = SelectiveOption<SelectiveTypeString, boolean>;
-export type SelectiveStringOption = ObjectBasedSelectiveOption<SelectiveTypeString, string>;
-export type SelectiveSourcemap = SelectiveOption<SelectiveTypeString, RollupSourcemap>;
-export type SelectiveSkipOption = SelectiveOption<SelectiveType<SelectiveSkipBuildType>, boolean>;
+export type SelectiveBooleanOption = SelectiveOption<BuildType, boolean>;
+export type SelectiveStringOption = ObjectBasedSelectiveOption<BuildType, string>;
+export type SelectiveSourcemap = SelectiveOption<BuildType, RollupSourcemap>;
+export type SelectiveSkipOption = SelectiveOption<SelectiveSkipBuildType, boolean>;
 
 export interface BundlibOptions {
 
   input?: Nullable<SelectiveStringOption>;
 
-  sourcemap?: Nullable<RollupSourcemap>;
-  esModule?: Nullable<SelectiveBooleanOption>;
-  interop?: Nullable<SelectiveBooleanOption>;
-  min?: Nullable<SelectiveBooleanOption>;
-  skip?: Nullable<SelectiveSkipOption>;
+  sourcemap?: SelectiveSourcemap;
+  esModule?: SelectiveBooleanOption;
+  interop?: SelectiveBooleanOption;
+  min?: SelectiveBooleanOption;
+  skip?: SelectiveSkipOption;
   cache?: Nullable<string>;
-  project?: Nullable<SelectiveStringOption>;
+  project?: SelectiveStringOption;
 
   format?: Nullable<BrowserBuildFormat>;
   name?: Nullable<string>;
