@@ -4,7 +4,6 @@
 
 ## [0.16.0](https://github.com/manferlo81/bundlib/compare/v0.15.5...v0.16.0) (2020-04-18)
 
-
 ### ⚠ BREAKING CHANGES
 
 * `configFromPkg` resolves to CommonJS configs first
@@ -19,16 +18,11 @@
 * Support "hidden" sourcemap option ([a678d6c](https://github.com/manferlo81/bundlib/commit/a678d6c29799b753ba43f2f4f324404dcd70267b))
 * Throw on invalid types path & types from js ([c6db25c](https://github.com/manferlo81/bundlib/commit/c6db25c0ed2d8dbf79c49b7cc4a59122205fe677))
 
-
 ### Bug Fixes
 
 * Shebang issue on minified binary ([d8f1df1](https://github.com/manferlo81/bundlib/commit/d8f1df1087d6cd651ba37c9cd2c794a2ef3b2322))
 
-
-* CommonJS module build first ([3ecac77](https://github.com/manferlo81/bundlib/commit/3ecac77603b5c7478f512dc6e718f7cc2351a9b4))
-
 ### [0.15.5](https://github.com/manferlo81/bundlib/compare/v0.15.4...v0.15.5) (2020-03-28)
-
 
 ### Bug Fixes
 
@@ -36,13 +30,11 @@
 
 ### [0.15.4](https://github.com/manferlo81/bundlib/compare/v0.15.3...v0.15.4) (2020-03-27)
 
-
 ### Bug Fixes
 
 * issue after updated plugin ([64c19b0](https://github.com/manferlo81/bundlib/commit/64c19b053c42066fa0bbc6294d322994261f0049))
 
 ### [0.15.3](https://github.com/manferlo81/bundlib/compare/v0.15.2...v0.15.3) (2020-03-25)
-
 
 ### Features
 
@@ -54,13 +46,11 @@
 
 ### [0.15.1](https://github.com/manferlo81/bundlib/compare/v0.15.0...v0.15.1) (2020-03-19)
 
-
 ### Bug Fixes
 
 * exit process on error ([3ea3c7e](https://github.com/manferlo81/bundlib/commit/3ea3c7e246d4c73894764b8bac125cb6b2306cbf))
 
 ## [0.15.0](https://github.com/manferlo81/bundlib/compare/v0.14.4...v0.15.0) (2020-03-19)
-
 
 ### ⚠ BREAKING CHANGES
 
@@ -79,13 +69,11 @@
 * optional typescript plugin ([25abf20](https://github.com/manferlo81/bundlib/commit/25abf203075506b9f61008f8a61202599c869eb6))
 * rollup as peer dependency ([973edea](https://github.com/manferlo81/bundlib/commit/973edeafc11e37f04291bd25e7f1770494074321))
 
-
 ### Bug Fixes
 
 * resolve esModule path ([a8e695b](https://github.com/manferlo81/bundlib/commit/a8e695ba5d01ee9efb797805b6a37f193cf7bef3))
 
 ### [0.14.4](https://github.com/manferlo81/bundlib/compare/v0.14.3...v0.14.4) (2020-03-12)
-
 
 ### Features
 
