@@ -4,7 +4,7 @@ import { isString } from '../type-check/basic';
 import { MODULE_BUILD_KEYS, resolveObjectBasedSelectiveOption, SelectiveResolved } from './object-based';
 
 export const resolveInputOption = (value: SelectiveStringOption): SelectiveResolved<BuildType, StrictNullable<string>> => (
-  resolveObjectBasedSelectiveOption(
+  resolveObjectBasedSelectiveOption<string, null>(
     value,
     null,
     MODULE_BUILD_KEYS,

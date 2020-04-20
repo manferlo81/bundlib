@@ -1,19 +1,15 @@
 import { BuildType, SelectiveSourcemap, WithSourcemapOption } from '../bundlib-options';
 import { Nullable } from '../helper-types';
-import { composeOneOf, createOneOfLiteral } from '../type-check/advanced';
+import { composeOneOf } from '../type-check/advanced';
 import { isBool, isNull } from '../type-check/basic';
-import { RollupSourcemap, RollupSourcemapString } from '../types';
+import { RollupSourcemap } from '../types';
 import { isSelectiveBuildType, MODULE_BUILD_KEYS, SelectiveResolved } from './object-based';
 import { resolveSelectiveOption } from './selective';
 
-export const isSourcemapString = createOneOfLiteral<RollupSourcemapString>(
+export const isSourcemapOption = composeOneOf<RollupSourcemap>(
   'inline',
   'hidden',
-);
-
-export const isSourcemapOption = composeOneOf<RollupSourcemap>(
   isBool,
-  isSourcemapString,
 );
 
 export const resolveSourcemapOption = (value: SelectiveSourcemap): SelectiveResolved<BuildType, RollupSourcemap> => (
@@ -39,10 +35,10 @@ export function normalizeBuildSourcemap(
 
   const { sourcemap } = build;
 
-  if (isNull(sourcemap)) {
+  if (isNull(sourcemap) || !isSourcemapOption(sourcemap)) {
     return def;
   }
 
-  return isSourcemapString(sourcemap) ? sourcemap : (sourcemap !== false);
+  return sourcemap;
 
 }
