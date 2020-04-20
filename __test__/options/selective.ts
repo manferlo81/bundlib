@@ -1,4 +1,5 @@
-import { MODULE_BUILD_KEYS, isSelectiveBuildType } from '../../src/api/options/object-based';
+import { BuildType } from '../../src/api/bundlib-options';
+import { isSelectiveBuildType, MODULE_BUILD_KEYS } from '../../src/api/options/object-based';
 import { resolveSelectiveOption } from '../../src/api/options/selective';
 import { isBool } from '../../src/api/type-check/basic';
 
@@ -41,7 +42,7 @@ describe('selective option', () => {
   test('Should resolve selective option', () => {
     [true, false].forEach((value) => {
       [true, false].forEach((defaultValue) => {
-        expect(resolveSelectiveOption(value, defaultValue, isSelectiveBuildType, isBool, MODULE_BUILD_KEYS, 'boolean', 'url')).toEqual({
+        expect(resolveSelectiveOption<BuildType, boolean>(value, defaultValue, isSelectiveBuildType, isBool, MODULE_BUILD_KEYS, 'boolean', 'url')).toEqual({
           main: value,
           module: value,
           browser: value,
@@ -61,7 +62,7 @@ describe('selective option', () => {
     ];
     values.forEach(({ value, expected }) => {
       [true, false].forEach((defaultValue) => {
-        expect(resolveSelectiveOption(value, defaultValue, isSelectiveBuildType, isBool, MODULE_BUILD_KEYS, 'boolean', 'url')).toEqual(expected);
+        expect(resolveSelectiveOption<BuildType, boolean>(value, defaultValue, isSelectiveBuildType, isBool, MODULE_BUILD_KEYS, 'boolean', 'url')).toEqual(expected);
       });
     });
   });
@@ -73,7 +74,7 @@ describe('selective option', () => {
     ];
     values.forEach(({ value: array, expected }) => {
       [true, false].forEach((defaultValue) => {
-        expect(resolveSelectiveOption(array, defaultValue, isSelectiveBuildType, isBool, MODULE_BUILD_KEYS, 'boolean', 'url')).toEqual(expected);
+        expect(resolveSelectiveOption<BuildType, boolean>(array, defaultValue, isSelectiveBuildType, isBool, MODULE_BUILD_KEYS, 'boolean', 'url')).toEqual(expected);
       });
     });
   });
