@@ -12,6 +12,5 @@ export const resolveInteropOption = (value: Nullable<SelectiveBooleanOption>): S
     isBool,
     MODULE_BUILD_KEYS,
     'interop',
-    'https://github.com/manferlo81/bundlib#interop',
   )
 );

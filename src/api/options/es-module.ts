@@ -12,6 +12,6 @@ export const resolveESModuleOption = (value: Nullable<SelectiveBooleanOption>): 
     isBool,
     MODULE_BUILD_KEYS,
     'esModule',
-    'https://github.com/manferlo81/bundlib#es-module',
+    'esmodule',
   )
 );

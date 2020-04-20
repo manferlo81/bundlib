@@ -10,6 +10,5 @@ export function resolveProjectOption(value: SelectiveStringOption): SelectiveRes
     MODULE_BUILD_KEYS,
     isString,
     'project',
-    'https://github.com/manferlo81/bundlib#project',
   );
 }

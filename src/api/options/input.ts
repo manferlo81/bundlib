@@ -10,6 +10,5 @@ export const resolveInputOption = (value: SelectiveStringOption): SelectiveResol
     MODULE_BUILD_KEYS,
     isString,
     'input',
-    'https://github.com/manferlo81/bundlib#input',
   )
 );

@@ -20,7 +20,6 @@ export const resolveSourcemapOption = (value: SelectiveSourcemap): SelectiveReso
     isSourcemapOption,
     MODULE_BUILD_KEYS,
     'sourcemap',
-    'https://github.com/manferlo81/bundlib#sourcemap',
   )
 );
 

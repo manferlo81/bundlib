@@ -16,7 +16,7 @@ export function resolveSelectiveOption<K extends SelectiveSkipBuildType, T>(
   isValidValue: TypeCheckFunction<T>,
   allkeys: K[],
   optionName: string,
-  url: string
+  urlHash?: string
 ): SelectiveResolved<K, T>;
 
 export function resolveSelectiveOption<K extends SelectiveSkipBuildType, T, D>(
@@ -26,7 +26,7 @@ export function resolveSelectiveOption<K extends SelectiveSkipBuildType, T, D>(
   isValidValue: TypeCheckFunction<T>,
   allkeys: K[],
   optionName: string,
-  url: string
+  urlHash?: string
 ): SelectiveResolved<K, T | D>;
 
 export function resolveSelectiveOption<K extends BuildType, T>(
@@ -36,7 +36,7 @@ export function resolveSelectiveOption<K extends BuildType, T>(
   isValidValue: TypeCheckFunction<T>,
   allkeys: K[],
   optionName: string,
-  url: string
+  urlHash?: string
 ): SelectiveResolved<K, T>;
 
 export function resolveSelectiveOption<K extends BuildType, T, D>(
@@ -46,7 +46,7 @@ export function resolveSelectiveOption<K extends BuildType, T, D>(
   isValidValue: TypeCheckFunction<T>,
   allkeys: K[],
   optionName: string,
-  url: string
+  urlHash?: string
 ): SelectiveResolved<K, T | D>;
 
 export function resolveSelectiveOption<T extends boolean, D>(
@@ -56,7 +56,7 @@ export function resolveSelectiveOption<T extends boolean, D>(
   isValidValue: TypeCheckFunction<T>,
   allkeys: BuildType[],
   optionName: string,
-  url: string,
+  urlHash?: string,
 ): SelectiveResolved<BuildType, T | D> {
 
   if (isNull(value) || value === defaultValue) {
@@ -80,7 +80,7 @@ export function resolveSelectiveOption<T extends boolean, D>(
     ) as SelectiveResolved<BuildType, T>;
   }
 
-  const invalid = invalidOption(optionName, url);
+  const invalid = invalidOption(optionName, urlHash);
 
   if (!isObject(value)) {
     throw invalid;

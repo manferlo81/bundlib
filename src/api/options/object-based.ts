@@ -111,7 +111,7 @@ export function resolveObjectBasedSelectiveOption<T, D>(
   allkeys: BuildType[],
   isValidValue: TypeCheckFunction<T>,
   optionName: string,
-  url: string,
+  urlHash?: string,
 ): SelectiveResolved<BuildType, T | D> {
 
   if (isNull(value)) {
@@ -128,7 +128,7 @@ export function resolveObjectBasedSelectiveOption<T, D>(
     );
   }
 
-  const invalid = invalidOption(optionName, url);
+  const invalid = invalidOption(optionName, urlHash);
 
   if (!isObject(value)) {
     throw invalid;

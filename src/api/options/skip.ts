@@ -18,6 +18,5 @@ export function resolveSkipOption(value: Nullable<SelectiveSkipOption>): Selecti
     isBool,
     ALL_BUILD_KEYS,
     'skip',
-    'https://github.com/manferlo81/bundlib#skip',
   );
 }

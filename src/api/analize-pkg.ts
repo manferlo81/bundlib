@@ -3,20 +3,20 @@ import { error, invalidOption, invalidOptionOld, invalidPkgField } from './error
 import { Dictionary, StrictNullable } from './helper-types';
 import { loadOptions } from './load-options';
 import { isBrowserOption } from './options/deprecated/browser';
+import { isCJSOptionKey } from './options/deprecated/main-and-bin';
+import { isModuleOptionKey } from './options/deprecated/module';
+import { isTypesOptionKey } from './options/deprecated/types';
 import { resolveESModuleOption } from './options/es-module';
 import { isBrowserFormat } from './options/format';
 import { isValidGlobals, normalizeBuildGlobals, normalizeGlobals } from './options/globals';
 import { resolveInputOption } from './options/input';
 import { resolveInteropOption } from './options/interop';
-import { isCJSOptionKey } from './options/deprecated/main-and-bin';
 import { normalizeBuildMin, resolveMinOption } from './options/min';
-import { isModuleOptionKey } from './options/deprecated/module';
 import { normalizeBuildName } from './options/name';
 import { resolveProjectOption } from './options/project';
 import { normalizeBooleanOption } from './options/selective';
 import { resolveSkipOption } from './options/skip';
 import { normalizeBuildSourcemap, resolveSourcemapOption } from './options/sourcemap';
-import { isTypesOptionKey } from './options/deprecated/types';
 import { BundlibPkgJson } from './pkg';
 import { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalized } from './pkg-analized';
 import { readPkg } from './tools/read-pkg';
@@ -108,38 +108,23 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   const perBuildMin = resolveMinOption(bundlibOptions.min);
 
   if (!isBrowserFormat(browserFormat)) {
-    throw invalidOption(
-      'format',
-      'https://github.com/manferlo81/bundlib#format',
-    );
+    throw invalidOption('format');
   }
 
   if (!isStringOrNull(browserName)) {
-    throw invalidOption(
-      'name',
-      'https://github.com/manferlo81/bundlib#name',
-    );
+    throw invalidOption('name');
   }
 
   if (!isStringOrNull(amdId)) {
-    throw invalidOption(
-      'id',
-      'https://github.com/manferlo81/bundlib#id',
-    );
+    throw invalidOption('id');
   }
 
   if (!isValidGlobals(browserGlobals)) {
-    throw invalidOption(
-      'globals',
-      'https://github.com/manferlo81/bundlib#globals',
-    );
+    throw invalidOption('globals');
   }
 
   if (!isStringOrNull(cacheOption)) {
-    throw invalidOption(
-      'cache',
-      'https://github.com/manferlo81/bundlib#cache',
-    );
+    throw invalidOption('cache');
   }
 
   const perBuildProject = resolveProjectOption(bundlibOptions.project);

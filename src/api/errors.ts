@@ -10,8 +10,8 @@ export function invalidOptionOld(option: string, type: string): TypeError {
   return error(`Invalid "${option}" option. It has to be ${type}`);
 }
 
-export function invalidOption(optionName: string, url: string): TypeError {
-  return error(`Invalid "${optionName}" option. Please check the documentation at ${url}`);
+export function invalidOption(optionName: string, urlHash?: string): TypeError {
+  return error(`Invalid "${optionName}" option. Please check the documentation at https://github.com/manferlo81/bundlib#${urlHash || optionName}`);
 }
 
 export function inputNotFound(type: string) {

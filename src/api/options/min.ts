@@ -12,7 +12,6 @@ export const resolveMinOption = (value: Nullable<SelectiveBooleanOption>): Selec
     isBool,
     MODULE_BUILD_KEYS,
     'min',
-    'https://github.com/manferlo81/bundlib#min',
   )
 );
 
