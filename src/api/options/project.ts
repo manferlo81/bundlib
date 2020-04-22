@@ -7,8 +7,8 @@ export function resolveProjectOption(value: SelectiveStringOption): SelectiveRes
   return resolveObjectBasedSelectiveOption<string, null>(
     value,
     null,
-    MODULE_BUILD_KEYS,
     isString,
+    MODULE_BUILD_KEYS,
     'project',
   );
 }

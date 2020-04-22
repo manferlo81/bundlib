@@ -1,9 +1,9 @@
 import { BrowserBuildOptions } from '../../bundlib-options';
-import { composeOneOf } from '../../type-check/advanced';
-import { isCJSOptionKey } from './main-and-bin';
+import { createOneOfLiteral } from '../../type-check/advanced';
+import { CJS_OPTOIN_KEYS } from './main-and-bin';
 
-export const isBrowserOption = composeOneOf<keyof BrowserBuildOptions>(
-  isCJSOptionKey,
+export const isBrowserOption = createOneOfLiteral<keyof BrowserBuildOptions>(
+  CJS_OPTOIN_KEYS,
   'format',
   'name',
   'id',

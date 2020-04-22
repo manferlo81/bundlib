@@ -2,26 +2,29 @@ import { BundlibOptions, TypesOptions } from './bundlib-options';
 import { error, invalidOption, invalidOptionOld, invalidPkgField } from './errors';
 import { Dictionary, StrictNullable } from './helper-types';
 import { loadOptions } from './load-options';
+import { normalizeBooleanOption } from './options/deprecated/boolean';
 import { isBrowserOption } from './options/deprecated/browser';
 import { isCJSOptionKey } from './options/deprecated/main-and-bin';
 import { isModuleOptionKey } from './options/deprecated/module';
+import { normalizeDeprecatedOption } from './options/deprecated/normalize';
 import { isTypesOptionKey } from './options/deprecated/types';
 import { resolveESModuleOption } from './options/es-module';
 import { isBrowserFormat } from './options/format';
 import { isValidGlobals, normalizeBuildGlobals, normalizeGlobals } from './options/globals';
 import { resolveInputOption } from './options/input';
 import { resolveInteropOption } from './options/interop';
-import { normalizeBuildMin, resolveMinOption } from './options/min';
+import { resolveMinOption } from './options/min';
 import { normalizeBuildName } from './options/name';
 import { resolveProjectOption } from './options/project';
-import { normalizeBooleanOption } from './options/selective';
 import { resolveSkipOption } from './options/skip';
-import { normalizeBuildSourcemap, resolveSourcemapOption } from './options/sourcemap';
+import { isSourcemapOption, resolveSourcemapOption } from './options/sourcemap';
 import { BundlibPkgJson } from './pkg';
 import { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalized } from './pkg-analized';
 import { readPkg } from './tools/read-pkg';
-import { isDictionary, isDictionaryOrNull, isNull, isStringOrNull } from './type-check/basic';
+import { isDictionaryOrNull, isStringOrNull } from './type-check/advanced';
+import { isDictionary, isNull } from './type-check/basic';
 import { invalidKeys, keysCheck } from './type-check/keys';
+import { RollupSourcemap } from './types';
 
 async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalized>;
 async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAnalized> {
@@ -227,39 +230,45 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   const mainOutput: StrictNullable<ModuleBuildOptions> = (deprecatedMainOptions === false || skipBuild.main || !mainOutputFile) ? null : {
     input: perBuildInput.main,
     output: mainOutputFile,
-    sourcemap: normalizeBuildSourcemap(
+    sourcemap: normalizeDeprecatedOption(
       deprecatedMainOptions,
+      'sourcemap',
+      isSourcemapOption,
       perBuildSourcemap.main,
     ),
     esModule: normalizeBooleanOption(deprecatedMainOptions, 'esModule', perBuildESModule.main),
     interop: normalizeBooleanOption(deprecatedMainOptions, 'interop', perBuildInterop.main),
-    min: normalizeBuildMin(deprecatedMainOptions, 'main', perBuildMin),
+    min: normalizeBooleanOption(deprecatedMainOptions, 'min', perBuildMin.main),
     project: perBuildProject.main,
   };
 
   const moduleOutput: StrictNullable<ModuleBuildOptions> = (deprecatedModuleOptions === false || skipBuild.module || !moduleOutputFile) ? null : {
     input: perBuildInput.module,
     output: moduleOutputFile,
-    sourcemap: normalizeBuildSourcemap(
+    sourcemap: normalizeDeprecatedOption(
       deprecatedModuleOptions,
+      'sourcemap',
+      isSourcemapOption,
       perBuildSourcemap.module,
     ),
     esModule: perBuildESModule.module,
     interop: perBuildInterop.module,
-    min: normalizeBuildMin(deprecatedModuleOptions, 'module', perBuildMin),
+    min: normalizeBooleanOption(deprecatedModuleOptions, 'min', perBuildMin.module),
     project: perBuildProject.module,
   };
 
   const browserOutput: StrictNullable<BrowserBuildOptions> = (deprecatedBrowserOptions === false || skipBuild.browser || !browserOutputFile) ? null : {
     input: perBuildInput.browser,
     output: browserOutputFile,
-    sourcemap: normalizeBuildSourcemap(
+    sourcemap: normalizeDeprecatedOption<'sourcemap', RollupSourcemap>(
       deprecatedBrowserOptions,
+      'sourcemap',
+      isSourcemapOption,
       perBuildSourcemap.browser,
     ),
     esModule: normalizeBooleanOption(deprecatedBrowserOptions, 'esModule', perBuildESModule.browser),
     interop: normalizeBooleanOption(deprecatedBrowserOptions, 'interop', perBuildInterop.browser),
-    min: normalizeBuildMin(deprecatedBrowserOptions, 'browser', perBuildMin),
+    min: normalizeBooleanOption(deprecatedBrowserOptions, 'min', perBuildMin.browser),
     format: (deprecatedBrowserOptions && !isNull(deprecatedBrowserOptions.format) ? deprecatedBrowserOptions.format : browserFormat) || 'umd',
     name: normalizeBuildName(
       cwd,
@@ -272,20 +281,22 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
       deprecatedBrowserOptions,
       normalizeGlobals(browserGlobals),
     ),
-    extend: !!normalizeBooleanOption(deprecatedBrowserOptions, 'extend', extend as never),
+    extend: !!normalizeBooleanOption(deprecatedBrowserOptions, 'extend', !!extend),
     project: perBuildProject.browser,
   };
 
   const binaryOutput: StrictNullable<ModuleBuildOptions> = (deprecatedBinaryOptions === false || skipBuild.bin || !binaryOutputFile) ? null : {
     input: perBuildInput.bin,
     output: binaryOutputFile,
-    sourcemap: normalizeBuildSourcemap(
+    sourcemap: normalizeDeprecatedOption(
       deprecatedBinaryOptions,
+      'sourcemap',
+      isSourcemapOption,
       perBuildSourcemap.bin,
     ),
     esModule: normalizeBooleanOption(deprecatedBinaryOptions, 'esModule', perBuildESModule.bin),
     interop: normalizeBooleanOption(deprecatedBinaryOptions, 'interop', perBuildInterop.bin),
-    min: normalizeBuildMin(deprecatedBinaryOptions, 'bin', perBuildMin),
+    min: normalizeBooleanOption(deprecatedBinaryOptions, 'min', perBuildMin.bin),
     project: perBuildProject.bin,
   };
 

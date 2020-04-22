@@ -1,14 +1,13 @@
 import { BuildType, SelectiveBooleanOption } from '../bundlib-options';
 import { Nullable } from '../helper-types';
 import { isBool } from '../type-check/basic';
-import { isSelectiveBuildType, MODULE_BUILD_KEYS } from './object-based';
+import { MODULE_BUILD_KEYS } from './object-based';
 import { resolveSelectiveOption, SelectiveResolvedBoolean } from './selective';
 
 export const resolveESModuleOption = (value: Nullable<SelectiveBooleanOption>): SelectiveResolvedBoolean<BuildType> => (
-  resolveSelectiveOption<BuildType, boolean>(
+  resolveSelectiveOption<BuildType, boolean, false>(
     value,
     false,
-    isSelectiveBuildType,
     isBool,
     MODULE_BUILD_KEYS,
     'esModule',

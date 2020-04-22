@@ -1,7 +1,8 @@
 import { Dictionary, Nullable } from './helper-types';
 import { BrowserBuildFormat, RollupSourcemap } from './types';
 
-export type BuildType = 'main' | 'module' | 'browser' | 'bin';
+export type BuildTypeForAPI = 'main' | 'module' | 'browser';
+export type BuildType = BuildTypeForAPI | 'bin';
 
 export type GlobalsOptions = Nullable<Dictionary<string> | string[]>;
 
@@ -64,7 +65,7 @@ export interface BrowserBuildOptions {
   globals?: GlobalsOptions;
 }
 
-export type SelectiveType<K extends string> = K | 'api';
+export type SelectiveType<K extends string> = BuildTypeForAPI | K | 'api';
 export type ObjectSelectiveOptionsKey<K extends string> = SelectiveType<K> | 'default';
 
 export type ObjectSelectiveOptions<K extends string, T> = Partial<Record<ObjectSelectiveOptionsKey<K>, Nullable<T>>>;
@@ -88,7 +89,16 @@ export type SelectiveStringOption = ObjectBasedSelectiveOption<BuildType, string
 export type SelectiveSourcemap = SelectiveOption<BuildType, RollupSourcemap>;
 export type SelectiveSkipOption = SelectiveOption<SelectiveSkipBuildType, boolean>;
 
-export interface BundlibOptions {
+export interface DeprecatedBundlibOptions {
+  equals?: Nullable<boolean>;
+  main?: Nullable<CommonJSBuildOptions | false>;
+  module?: Nullable<ESModuleBuildOptions | false>;
+  browser?: Nullable<BrowserBuildOptions | false>;
+  bin?: Nullable<CommonJSBuildOptions | string | false>;
+  types?: Nullable<TypesOptions>;
+}
+
+export interface BundlibOptions extends DeprecatedBundlibOptions {
 
   input?: Nullable<SelectiveStringOption>;
 
@@ -96,22 +106,14 @@ export interface BundlibOptions {
   esModule?: SelectiveBooleanOption;
   interop?: SelectiveBooleanOption;
   min?: SelectiveBooleanOption;
-  skip?: SelectiveSkipOption;
   cache?: Nullable<string>;
   project?: SelectiveStringOption;
+  skip?: SelectiveSkipOption;
 
   format?: Nullable<BrowserBuildFormat>;
   name?: Nullable<string>;
   id?: Nullable<string>;
   extend?: Nullable<boolean>;
   globals?: GlobalsOptions;
-
-  equals?: Nullable<boolean>;
-
-  main?: Nullable<CommonJSBuildOptions | false>;
-  module?: Nullable<ESModuleBuildOptions | false>;
-  browser?: Nullable<BrowserBuildOptions | false>;
-  bin?: Nullable<CommonJSBuildOptions | string | false>;
-  types?: Nullable<TypesOptions>;
 
 }

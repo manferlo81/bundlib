@@ -1,14 +1,16 @@
+import { invalidOption } from '../../src/api/errors';
 import { resolveSourcemapOption } from '../../src/api/options/sourcemap';
 
 describe('"sourcemap" option', () => {
 
   test('Should throw on invalid "sourcemap" option', () => {
+
     const invalids = [
       0,
       1,
       'invalid',
       ['invalid'],
-      { cli: true },
+      { invalid: true },
       { default: 'invalid' },
       { api: 'invalid' },
       { main: 'invalid' },
@@ -16,12 +18,17 @@ describe('"sourcemap" option', () => {
       { browser: 'invalid' },
       { bin: 'invalid' },
     ];
+
     invalids.forEach((invalid) => {
-      expect(() => resolveSourcemapOption(invalid as never)).toThrow();
+      expect(() => resolveSourcemapOption(invalid as never)).toThrow(
+        invalidOption('sourcemap'),
+      );
     });
+
   });
 
   test('Should resolve null or undefined "sourcemap" option', () => {
+
     [null, undefined].forEach((value) => {
       expect(resolveSourcemapOption(value)).toEqual({
         main: true,
@@ -30,9 +37,11 @@ describe('"sourcemap" option', () => {
         bin: true,
       });
     });
+
   });
 
   test('Should resolve specific "sourcemap" option', () => {
+
     [true, false, 'inline' as 'inline', 'hidden' as 'hidden'].forEach((value) => {
       expect(resolveSourcemapOption(value)).toEqual({
         main: value,
@@ -41,9 +50,11 @@ describe('"sourcemap" option', () => {
         bin: value,
       });
     });
+
   });
 
   test('Should resolve build type "sourcemap" option', () => {
+
     const values = [
       { value: 'main' as 'main', expected: { main: true, module: false, browser: false, bin: false } },
       { value: 'module' as 'module', expected: { main: false, module: true, browser: false, bin: false } },
@@ -51,22 +62,28 @@ describe('"sourcemap" option', () => {
       { value: 'bin' as 'bin', expected: { main: false, module: false, browser: false, bin: true } },
       { value: 'api' as 'api', expected: { main: true, module: true, browser: true, bin: false } },
     ];
+
     values.forEach(({ value, expected }) => {
       expect(resolveSourcemapOption(value)).toEqual(expected);
     });
+
   });
 
   test('Should resolve array of build type as "sourcemap" option', () => {
+
     const values = [
       { value: ['main', 'bin'] as ['main', 'bin'], expected: { main: true, module: false, browser: false, bin: true } },
       { value: ['api'] as ['api'], expected: { main: true, module: true, browser: true, bin: false } },
     ];
+
     values.forEach(({ value: array, expected }) => {
       expect(resolveSourcemapOption(array)).toEqual(expected);
     });
+
   });
 
   test('Should resolve selective object as "sourcemap" option', () => {
+
     const values = [
       {
         value: {},
@@ -97,9 +114,11 @@ describe('"sourcemap" option', () => {
         expected: { main: false, module: true, browser: true, bin: true },
       },
     ];
+
     values.forEach(({ value, expected }) => {
       expect(resolveSourcemapOption(value)).toEqual(expected);
     });
+
   });
 
 });

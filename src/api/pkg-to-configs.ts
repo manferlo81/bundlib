@@ -10,7 +10,7 @@ import { RPT2Options as Typescript2PluginOptions } from 'rollup-plugin-typescrip
 import { MIN_PREFIX, TS_DEF_PREFIX } from './consts';
 import { error, inputNotFound } from './errors';
 import { JS_EXTENSIONS, TS_EXTENSIONS, TS_ONLY_EXTENSIONS } from './extensions';
-import { StrictNullable } from './helper-types';
+import { StrictNullable, TypeCheckFunction } from './helper-types';
 import { PkgAnalized } from './pkg-analized';
 import { apiPlugin as pluginAPI } from './plugins/api-plugin';
 import { createConfig } from './tools/create-config';
@@ -227,7 +227,7 @@ export function pkgToConfigs(
 
     ];
 
-    return plugins.filter<Plugin>(Boolean as unknown as (val: unknown) => val is Plugin);
+    return plugins.filter<Plugin>(Boolean as unknown as TypeCheckFunction<Plugin>);
 
   }
 

@@ -1,4 +1,5 @@
 import { resolveSkipOption } from '../../src/api/options/skip';
+import { invalidOption } from '../../src/api/errors';
 
 describe('"skip" option', () => {
 
@@ -20,7 +21,9 @@ describe('"skip" option', () => {
     ];
 
     invalids.forEach((invalid) => {
-      expect(() => resolveSkipOption(invalid as never)).toThrow();
+      expect(() => resolveSkipOption(invalid as never)).toThrow(
+        invalidOption('skip'),
+      );
     });
 
   });
