@@ -2,6 +2,13 @@
 
 ## Version History
 
+### [0.16.1](https://github.com/manferlo81/bundlib/compare/v0.16.0...v0.16.1) (2020-04-28)
+
+
+### Features
+
+* Support @rollup/plugin-babel ([444a676](https://github.com/manferlo81/bundlib/commit/444a67609539a009f8a5be73845d899092def62a))
+
 ## [0.16.0](https://github.com/manferlo81/bundlib/compare/v0.15.5...v0.16.0) (2020-04-18)
 
 ### ⚠ BREAKING CHANGES
