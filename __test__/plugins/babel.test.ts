@@ -1,12 +1,12 @@
 import { fixturePath } from '../tools/fixture-path';
 import getPluginNames from '../tools/get-plugin-names';
 
-describe('rollup-plugin-babel plugin', () => {
+describe('@rollup/plugin-babel plugin', () => {
 
   const cwd = fixturePath('export-number-js');
 
   const pluginName = 'babel';
-  const deps = { 'rollup-plugin-babel': '*' };
+  const deps = { '@rollup/plugin-babel': '*' };
   const outputFields: Array<{ field: string; text: string }> = [
     { field: 'main', text: 'CommonJS Module' },
     { field: 'module', text: 'ES Module' },

@@ -1,10 +1,10 @@
+import { BabelPluginOptions } from '@rollup/plugin-babel';
 import { RollupCommonJSOptions as CommonJSPluginOptions } from '@rollup/plugin-commonjs';
 import { RollupJsonOptions as JsonPluginOptions } from '@rollup/plugin-json';
 import { Options as NodeResolvePluginOptions } from '@rollup/plugin-node-resolve';
 import builtinModules from 'builtin-modules';
 import { basename, dirname, join as pathJoin, resolve } from 'path';
 import { Plugin, PluginImpl } from 'rollup';
-import { BabelPluginOptions } from 'rollup-plugin-babel';
 import { EslintPluginOptions } from 'rollup-plugin-eslint';
 import { RPT2Options as Typescript2PluginOptions } from 'rollup-plugin-typescript2';
 import { MIN_PREFIX, TS_DEF_PREFIX } from './consts';
@@ -93,7 +93,8 @@ export function pkgToConfigs(
   const loadPluginNodeResolve = pluginLoader<PluginImpl<NodeResolvePluginOptions>>('@rollup/plugin-node-resolve');
   const loadPluginCommonJS = pluginLoader<PluginImpl<CommonJSPluginOptions>>('@rollup/plugin-commonjs');
   const loadPluginJSON = pluginLoader<PluginImpl<JsonPluginOptions>>('@rollup/plugin-json');
-  const loadPluginBabel = pluginLoader<PluginImpl<BabelPluginOptions>>('rollup-plugin-babel');
+  const loadDeprecatedPluginBabel = pluginLoader<PluginImpl<BabelPluginOptions>>('rollup-plugin-babel');
+  const loadPluginBabel = pluginLoader<PluginImpl<BabelPluginOptions>>('@rollup/plugin-babel');
   const loadPluginBuble = pluginLoader<PluginImpl>('@rollup/plugin-buble');
   const loadPluginTerser = pluginLoader<PluginImpl<TersePluginOptions>>('rollup-plugin-terser', 'terser');
   const loadPluginStripShebang = pluginLoader<PluginImpl<StripShebangPluginOptions>>('rollup-plugin-strip-shebang');
@@ -203,10 +204,17 @@ export function pkgToConfigs(
         file: resolve(cwd, pathJoin(declarationDir, typesGeneratedFilename)),
       }),
 
+      !loadPluginBabel && loadDeprecatedPluginBabel && loadDeprecatedPluginBabel({
+        include,
+        extensions,
+        exclude,
+      }),
+
       loadPluginBabel && loadPluginBabel({
         include,
         extensions,
         exclude,
+        babelHelpers: 'bundled',
       }),
 
       loadPluginBuble && loadPluginBuble(),

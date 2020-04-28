@@ -1,4 +1,4 @@
-declare module 'rollup-plugin-babel' {
+declare module '@rollup/plugin-babel' {
 
   import { PluginImpl } from 'rollup';
 
@@ -8,6 +8,7 @@ declare module 'rollup-plugin-babel' {
     include?: MinimatchPattern;
     exclude?: MinimatchPattern;
     extensions?: string[];
+    babelHelpers?: 'bundled' | 'runtime' | 'inline' | 'external';
   }
 
   const babel: PluginImpl<BabelPluginOptions>;

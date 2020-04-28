@@ -437,14 +437,14 @@ resolveSelectiveOption('api');
 
 Any of the following plugins will be automatically configured if they are installed as `"dependencies"` or `"devDependencies"` in `package.json`.
 
-* [`rollup-plugin-eslint`](https://github.com/TrySound/rollup-plugin-eslint)
-* [`rollup-plugin-typescript2`](https://github.com/ezolenko/rollup-plugin-typescript2)
 * [`@rollup/plugin-typescript`](https://github.com/rollup/plugins/tree/master/packages/typescript)
-* [`rollup-plugin-babel`](https://github.com/rollup/rollup-plugin-babel)
+* [`@rollup/plugin-babel`](https://github.com/rollup/plugins/tree/master/packages/babel)
 * [`@rollup/plugin-buble`](https://github.com/rollup/plugins/tree/master/packages/buble)
 * [`@rollup/plugin-node-resolve`](https://github.com/rollup/plugins/tree/master/packages/node-resolve)
 * [`@rollup/plugin-commonjs`](https://github.com/rollup/plugins/tree/master/packages/commonjs)
 * [`@rollup/plugin-json`](https://github.com/rollup/plugins/tree/master/packages/json)
+* [`rollup-plugin-eslint`](https://github.com/TrySound/rollup-plugin-eslint)
+* [`rollup-plugin-typescript2`](https://github.com/ezolenko/rollup-plugin-typescript2)
 * [`rollup-plugin-terser`](https://github.com/TrySound/rollup-plugin-terser)
 * [`rollup-plugin-strip-shebang`](https://github.com/manferlo81/rollup-plugin-strip-shebang)
 * [`rollup-plugin-add-shebang`](https://github.com/ls-age/rollup-plugin-add-shebang)
@@ -452,6 +452,7 @@ Any of the following plugins will be automatically configured if they are instal
 
 The following plugins may be supported in the future.
 
+* [`@rollup/plugin-yaml`](https://github.com/rollup/plugins/tree/master/packages/yaml)
 * [`rollup-plugin-prettier`](https://github.com/mjeanroy/rollup-plugin-prettier)
 * [`rollup-plugin-preserve-shebang`](https://github.com/developit/rollup-plugin-preserve-shebang)
 * [`rollup-plugin-cleanup`](https://github.com/aMarCruz/rollup-plugin-cleanup)
