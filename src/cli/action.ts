@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import { EventEmitter } from 'events';
-import fileSize from 'filesize';
+import { createFormatter } from 'gen-unit';
 import { relative } from 'path';
 import prettyMs from 'pretty-ms';
 import { RollupError, RollupWarning } from 'rollup';
@@ -12,14 +12,14 @@ import { log, logError } from './console';
 import { BUILD_END, END, ERROR, REBUILD, WARN } from './events';
 import { BundlibEventEmitter } from './types';
 
-const { bold } = chalk;
-const green = bold.green;
-const yellow = bold.yellow;
-const magenta = bold.magenta;
+const { bold, inverse, cyan, yellow } = chalk;
+const greenBold = bold.green;
+const yellowBold = bold.yellow;
+const magentaBold = bold.magenta;
 
 function prjInfo(name: string, ver: string) {
-  const projName = green(name);
-  const projVer = yellow(`v${ver}`);
+  const projName = greenBold(name);
+  const projVer = yellowBold(`v${ver}`);
   return `${projName} ${projVer}`;
 }
 
@@ -50,7 +50,7 @@ export async function action(
     const prjInfoName = prjDispName || prjName;
 
     if (prjInfoName && prjVer) {
-      log(`building: ${prjInfo(prjInfoName, prjVer)}
+      log(`${cyan('building:')} ${prjInfo(prjInfoName, prjVer)}
 `);
     }
 
@@ -66,35 +66,46 @@ export async function action(
 
   if (!silent) {
 
+    const formatFileSize = createFormatter({
+      unit: 'B',
+      round: 2,
+      find: [
+        { div: 1, pre: '' },
+        { div: 1024, pre: 'K' },
+        { div: 1048576, pre: 'M' },
+      ],
+    });
+
     emitter.on(BUILD_END, (filename: string, size: number, duration: number) => {
-      const tag = green.bgBlack.inverse(' built ');
-      const path = yellow(slash(relative(cwd, filename)));
-      const colorSize = magenta(fileSize(size));
-      const colorTime = magenta(prettyMs(duration, { secondsDecimalDigits: 2 }));
-      log(`${tag} ${path} ( ${colorSize} in ${colorTime} )`);
+      const tag = inverse.green(' built ');
+      const path = yellowBold(slash(relative(cwd, filename)));
+      const coloredSize = magentaBold(formatFileSize(size));
+      const coloredDuration = magentaBold(prettyMs(duration, { secondsDecimalDigits: 2 }));
+      const info = cyan(`( ${coloredSize} in ${coloredDuration} )`);
+      log(`${tag} ${path} ${info}`);
     });
 
     emitter.on(WARN, (warning: RollupWarning) => {
 
       const { plugin, message } = warning;
 
-      const tag = magenta('warning:');
-      const msg = `${plugin ? `( plugin ${magenta(plugin)} ) ` : ''}${message}`;
+      const tag = inverse.yellow(' warning! ');
+      const pluginInfo = cyan(`( plugin: ${greenBold(plugin || '<UNKNOWN>')} )`);
 
-      log(`${tag} ${msg}`);
+      log(`${tag} ${pluginInfo} ${yellow(message)}`);
 
     });
 
     if (watch) {
 
       emitter.on(REBUILD, () => {
-        log(`rebuilding...
-`);
+        log(cyan(`rebuilding...
+`));
       });
 
       emitter.on(END, () => {
-        log(`
-waiting for changes...`);
+        log(cyan(`
+waiting for changes...`));
 
       });
 

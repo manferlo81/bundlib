@@ -1,9 +1,9 @@
-import chalk from 'chalk';
+import { red } from 'chalk';
 import { RollupError } from 'rollup';
 
-function create(name: Extract<keyof typeof console, 'log' | 'error'>) {
+function create(name: 'log' | 'error') {
   const method = console[name];
-  return (msg: string) => method(chalk.cyan(msg));
+  return (msg: string) => method(msg);
 }
 
 export const log = create('log');
@@ -13,6 +13,7 @@ export function logError(err: Error | RollupError) {
   if (err.stack) {
     error(err.stack);
   }
-  const tag = chalk.bold.bgWhite.red.inverse(' error ');
-  error(`${tag} ${err.message || err}`);
+  const tag = red.bgWhite.inverse(' error ');
+  // const tag = chalk.bold.bgWhite.red.inverse(' error ');
+  error(`${tag} ${red(err.message || err)}`);
 }
