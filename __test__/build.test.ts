@@ -1,16 +1,14 @@
 import { rollup } from 'rollup';
 import createConfigs from './tools/create-configs';
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-// @ts-ignore
-import { dependencies, devDependencies, peerDependencies, optionalDependencies } from '../package.json';
+import { dependencies, devDependencies, peerDependencies } from '../package.json';
 
 jest.mock('rollup');
 
 describe('build', () => {
 
   const cwd = process.cwd();
-  const deps = { dependencies, devDependencies, peerDependencies, optionalDependencies };
+  const deps = { dependencies, devDependencies, peerDependencies };
 
   test('should build a CommonJS module', async () => {
 

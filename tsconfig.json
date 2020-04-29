@@ -16,7 +16,8 @@
   "include": [
     "__mocks__/**/*.ts",
     "__test__/**/*.ts",
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "package.json"
   ],
   "exclude": [
     "node_modules/**",
