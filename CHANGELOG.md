@@ -2,6 +2,13 @@
 
 ## Version History
 
+### [0.16.3](https://github.com/manferlo81/bundlib/compare/v0.16.2...v0.16.3) (2020-04-30)
+
+
+### Bug Fixes
+
+* Fix babel plugin issue ([8d92eb4](https://github.com/manferlo81/bundlib/commit/8d92eb46cae1ba6f436b011b0525d9b40a716da6))
+
 ### [0.16.2](https://github.com/manferlo81/bundlib/compare/v0.16.1...v0.16.2) (2020-04-29)
 
 ### [0.16.1](https://github.com/manferlo81/bundlib/compare/v0.16.0...v0.16.1) (2020-04-28)
