@@ -211,7 +211,6 @@ export function pkgToConfigs(
       }),
 
       loadPluginBabel && loadPluginBabel({
-        include,
         extensions,
         exclude,
         babelHelpers: 'bundled',
