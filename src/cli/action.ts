@@ -69,11 +69,7 @@ export async function action(
     const formatFileSize = createFormatter({
       unit: 'B',
       round: 2,
-      find: [
-        { div: 1, pre: '' },
-        { div: 1024, pre: 'K' },
-        { div: 1048576, pre: 'M' },
-      ],
+      find: 1024,
     });
 
     emitter.on(BUILD_END, (filename: string, size: number, duration: number) => {
