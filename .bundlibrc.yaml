@@ -5,4 +5,4 @@ input:
 esModule: true
 interop: true
 
-project: tsconfig-bundlib.json
+project: tsconfig-build.json
