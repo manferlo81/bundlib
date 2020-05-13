@@ -62,7 +62,7 @@
     "rollup-plugin-eslint": "^7.0.0",
     "rollup-plugin-export-equals": "^0.3.6",
     "rollup-plugin-strip-shebang": "^1.2.9",
-    "rollup-plugin-typescript2": "^0.27.0",
+    "rollup-plugin-typescript2": "^0.27.1",
     "standard-version": "^8.0.0",
     "ts-jest": "^25.5.1",
     "ts-node": "^8.10.1",
