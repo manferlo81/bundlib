@@ -1,16 +1,8 @@
 module.exports = {
 
   testEnvironment: 'node',
-  browser: false,
-
   cacheDirectory: 'node_modules/.cache/jest',
-
   preset: 'ts-jest',
-  globals: {
-    'ts-jest': {
-      tsconfig: 'tsconfig.test.json'
-    }
-  },
 
   collectCoverage: true,
   collectCoverageFrom: [
