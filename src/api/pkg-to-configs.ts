@@ -1,7 +1,7 @@
 import { BabelPluginOptions } from '@rollup/plugin-babel';
 import { RollupCommonJSOptions as CommonJSPluginOptions } from '@rollup/plugin-commonjs';
 import { RollupJsonOptions as JsonPluginOptions } from '@rollup/plugin-json';
-import { Options as NodeResolvePluginOptions } from '@rollup/plugin-node-resolve';
+import { RollupNodeResolveOptions as NodeResolvePluginOptions } from '@rollup/plugin-node-resolve';
 import builtinModules from 'builtin-modules';
 import { basename, dirname, join as pathJoin, resolve } from 'path';
 import { Plugin, PluginImpl } from 'rollup';
