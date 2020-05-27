@@ -1,5 +1,12 @@
 import { Dictionary, IsInstalled, Nullable } from '../helper-types';
 
 export function createIsInstalled(...dependencies: Array<Nullable<Dictionary<unknown>>>): IsInstalled {
-  return (id) => !!dependencies.reduce<Dictionary<unknown>>((r, o) => ({ ...r, ...o }), {})[id];
+
+  const reduced = dependencies.reduce<Dictionary<unknown>>(
+    (result, deps) => Object.assign(result, deps),
+    {},
+  );
+
+  return (id) => !!reduced[id];
+
 }
