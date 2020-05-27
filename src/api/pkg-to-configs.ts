@@ -15,9 +15,9 @@ import { PkgAnalized } from './pkg-analized';
 import { apiPlugin as pluginAPI } from './plugins/api-plugin';
 import { createConfig } from './tools/create-config';
 import { createFincInput } from './tools/create-find-input';
+import { createImportFromCWD } from './tools/create-import-from-cwd';
 import { createIsExternal } from './tools/create-is-external';
 import { createIsInstalled } from './tools/create-is-installed';
-import { createPluginLoader } from './tools/create-plugin-loader';
 import { extensionMatch } from './tools/extension-match';
 import { setProp } from './tools/helpers';
 import { renamePre } from './tools/rename-pre';
@@ -62,7 +62,7 @@ export function pkgToConfigs(
   );
 
   const isInstalled = createIsInstalled(runtimeDependencies, devDependencies);
-  const pluginLoader = createPluginLoader(cwd, isInstalled);
+  const pluginLoader = createImportFromCWD(cwd, isInstalled);
 
   interface TersePluginOptions {
     sourcemap?: boolean;
