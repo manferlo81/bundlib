@@ -1,14 +1,14 @@
 import { rollup } from 'rollup';
 import createConfigs from './tools/create-configs';
 
-import { dependencies, devDependencies, peerDependencies } from '../package.json';
+import { dependencies, devDependencies } from '../package.json';
 
 jest.mock('rollup');
 
 describe('build', () => {
 
   const cwd = process.cwd();
-  const deps = { dependencies, devDependencies, peerDependencies };
+  const deps = { dependencies, devDependencies };
 
   test('should build a CommonJS module', async () => {
 
