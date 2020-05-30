@@ -2,6 +2,13 @@
 
 ## Version History
 
+### [0.16.4](https://github.com/manferlo81/bundlib/compare/v0.16.3...v0.16.4) (2020-05-30)
+
+
+### Bug Fixes
+
+* rollup-plugin-terser sourcemap option ([256cd7b](https://github.com/manferlo81/bundlib/commit/256cd7b62a72e7fcbc773d541a429978e872cad9))
+
 ### [0.16.3](https://github.com/manferlo81/bundlib/compare/v0.16.2...v0.16.3) (2020-04-30)
 
 
