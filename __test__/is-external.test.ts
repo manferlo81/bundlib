@@ -9,13 +9,13 @@ describe('array-to-external method', () => {
 
   const isExternal = createIsExternal(['array-external'], { 'object-external-string': '*' }, { 'object-external-bool': true });
 
-  test('Should return undefined if already resolved', () => {
+  test('Should return false if already resolved', () => {
     const resolved = true;
-    expect(isExternal('array-external', undefined, resolved)).toBeUndefined();
+    expect(isExternal('array-external', undefined, resolved)).toBe(false);
   });
 
-  test('Should return undefined if not module', () => {
-    expect(isExternal('./any-module', undefined, false)).toBeUndefined();
+  test('Should return false if not module', () => {
+    expect(isExternal('./any-module', undefined, false)).toBe(false);
   });
 
   test('Should detect as external from array', () => {
