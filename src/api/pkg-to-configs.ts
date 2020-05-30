@@ -96,12 +96,24 @@ export function pkgToConfigs(
   const loadDeprecatedPluginBabel = pluginLoader<PluginImpl<BabelPluginOptions>>('rollup-plugin-babel');
   const loadPluginBabel = pluginLoader<PluginImpl<BabelPluginOptions>>('@rollup/plugin-babel');
   const loadPluginBuble = pluginLoader<PluginImpl>('@rollup/plugin-buble');
-  const loadPluginTerser = pluginLoader<PluginImpl<TersePluginOptions>>('rollup-plugin-terser', 'terser');
+  const loadPluginTerser = ((load) => {
+    // quick and dirty patch for rollup-plugin-terser@>=6
+    if (!load) return;
+    const terserPluginVersion = isInstalled('rollup-plugin-terser') as string;
+    const [major] = terserPluginVersion.split('.');
+    const ver = /^\d/.test(major) ? +major : +major.substr(1);
+    if (ver < 6) return load;
+    // patch rollup-plugin-terser@>=6
+    return (options: TersePluginOptions) => {
+      delete options.sourcemap;
+      return load(options);
+    };
+  })(pluginLoader<PluginImpl<TersePluginOptions>>('rollup-plugin-terser', 'terser'));
   const loadPluginStripShebang = pluginLoader<PluginImpl<StripShebangPluginOptions>>('rollup-plugin-strip-shebang');
   const loadPluginAddShebang = pluginLoader<PluginImpl<AddShebangPluginOptions>>('rollup-plugin-add-shebang');
   const loadPluginExportEquals = pluginLoader<PluginImpl<EqualsPluginOptions>>('rollup-plugin-export-equals');
 
-  const useChokidar = isInstalled('chokidar') && !!watch;
+  const useChokidar = !!isInstalled('chokidar') && !!watch;
   const production = !dev;
 
   const extensions = (loadPluginTypescript2 || loadPluginTypescript) ? TS_EXTENSIONS : JS_EXTENSIONS;
