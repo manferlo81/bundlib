@@ -20,10 +20,10 @@ export function createIsExternal(...dependencies: Array<Nullable<string[] | Dict
 
   const cache: Dictionary<boolean> = {};
 
-  return (source: string, importer: unknown, isResolved: boolean) => {
+  return (source: string, importer: unknown, isResolved: boolean): boolean => {
 
     if (isResolved || source.startsWith('.')) {
-      return;
+      return false;
     }
 
     if (hasOwn.call(cache, source)) {
