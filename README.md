@@ -27,6 +27,7 @@ An automatic configuration manager for [Rollup.js](https://github.com/rollup/rol
   * [extend](#extend)
   * [globals](#globals)
   * [min](#min)
+  * [equals](#equals)
   * [cache](#cache)
   * [project](#project)
   * [skip](#skip)
@@ -213,18 +214,6 @@ Whether or not to add an interop block. If `interop = true` it will affect all b
 
 This option supports `object` based and `string` based [`selective format`](#selective-options). See [Selective Options](#selective-options) for more information.
 
-#### min
-
-```typescript
-min: boolean | SelectiveOption;
-
-default false;
-```
-
-Defines which files should be used to build an aditional minified version, if `true` will affect all modules. The minified file will be renamed from `*.ext` to `*.min.ext`. This option will override the default behavior of the [`--dev`, `-d` *cli option*](#-dev-d) , which means only the minified version will be actually minified, the normal version will **NOT** be minified even if you don't set the [`--dev`, `-d` cli option](#-dev-d).
-
-This option supports `object` based and `string` based [`selective format`](#selective-options). See [Selective Options](#selective-options) for more information.
-
 #### format
 
 ```typescript
@@ -273,12 +262,32 @@ default {};
 
 `Object` or `array` to map names to globals in `Browser` build.
 
+#### min
+
+```typescript
+min: boolean | SelectiveOption;
+
+default false;
+```
+
+Defines which files should be used to build an aditional minified version, if `true` will affect all modules. The minified file will be renamed from `*.ext` to `*.min.ext`. This option will override the default behavior of the [`--dev`, `-d` *cli option*](#-dev-d) , which means only the minified version will be actually minified, the normal version will **NOT** be minified even if you don't set the [`--dev`, `-d` cli option](#-dev-d).
+
+This option supports `object` based and `string` based [`selective format`](#selective-options). See [Selective Options](#selective-options) for more information.
+
+#### equals
+
+```typescript
+equals: boolean;
+
+default false;
+```
+
 #### cache
 
 ```typescript
 cache: string;
 
-default "node_modules/.cache/bundlib"
+default "node_modules/.cache/bundlib";
 ```
 
 Defines the directory to be used for cache, relative to the project root.
@@ -445,7 +454,6 @@ Any of the following plugins will be automatically configured if they are instal
 * [`@rollup/plugin-json`](https://github.com/rollup/plugins/tree/master/packages/json)
 * [`rollup-plugin-eslint`](https://github.com/TrySound/rollup-plugin-eslint)
 * [`rollup-plugin-typescript2`](https://github.com/ezolenko/rollup-plugin-typescript2)
-* [`rollup-plugin-export-equals`](https://github.com/manferlo81/rollup-plugin-export-equals)
 
 Any plugin suggestion will be well received, please [file a new issue](https://github.com/manferlo81/bundlib/issues).
 
@@ -531,7 +539,7 @@ interface PkgAnalized {
   module: ModuleBuildOptions | null;
   browser: BrowserBuildOptions | null;
   bin: ModuleBuildOptions | null;
-  types: string | null;
+  types: TypesBuildOptions | null;
   dependencies: {
     runtime: { [name: string]: string } | null;
     dev: { [name: string]: string } | null;
@@ -541,7 +549,7 @@ interface PkgAnalized {
 }
 ```
 
-*see also:* [`ModuleBuildOptions`](#modulebuildoptions) and [`BrowserBuildOptions`](#browserbuildoptions).
+*see also:* [`ModuleBuildOptions`](#modulebuildoptions), [`BrowserBuildOptions`](#browserbuildoptions) and [`TypesBuildOptions`](#typesbuildoptions).
 
 ### ModuleBuildOptions
 
@@ -566,6 +574,15 @@ interface BrowserBuildOptions extends ModuleBuildOptions {
   id: string | null;
   globals: Record<string, string> | null;
   extend: boolean;
+}
+```
+
+### TypesBuildOptions
+
+```typescript
+interface TypesBuildOptions {
+  output: string;
+  equals: boolean;
 }
 ```
 

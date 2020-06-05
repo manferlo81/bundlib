@@ -19,7 +19,7 @@ import { resolveProjectOption } from './options/project';
 import { resolveSkipOption } from './options/skip';
 import { isSourcemapOption, resolveSourcemapOption } from './options/sourcemap';
 import { BundlibPkgJson } from './pkg';
-import { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalized } from './pkg-analized';
+import { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalized, TypesBuildOptions } from './pkg-analized';
 import { readPkg } from './tools/read-pkg';
 import { isDictionaryOrNull, isStringOrNull } from './type-check/advanced';
 import { isDictionary, isNull } from './type-check/basic';
@@ -102,6 +102,7 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     browser: deprecatedBrowserOptions,
     bin: deprecatedBinaryOptions,
     types: deprecatedTypesOptions,
+    equals,
   } = bundlibOptions;
 
   const perBuildInput = resolveInputOption(bundlibOptions.input);
@@ -300,7 +301,10 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     project: perBuildProject.bin,
   };
 
-  const typesOutput: StrictNullable<string> = (deprecatedTypesOptions === false || skipBuild.types || !typesOutputFile) ? null : typesOutputFile;
+  const typesOutput: StrictNullable<TypesBuildOptions> = (deprecatedTypesOptions === false || skipBuild.types || !typesOutputFile) ? null : {
+    output: typesOutputFile,
+    equals: !!equals,
+  };
 
   const dependencies: Dependencies = {
     runtime: runtimeDependencies || null,

@@ -20,6 +20,11 @@ export interface BrowserBuildOptions extends ModuleBuildOptions {
   extend: boolean;
 }
 
+export interface TypesBuildOptions {
+  output: string;
+  equals: boolean;
+}
+
 export interface Dependencies {
   runtime: StrictNullable<Dictionary<string>>;
   dev: StrictNullable<Dictionary<string>>;
@@ -33,7 +38,7 @@ export interface PkgAnalized {
   module: StrictNullable<ModuleBuildOptions>;
   browser: StrictNullable<BrowserBuildOptions>;
   bin: StrictNullable<ModuleBuildOptions>;
-  types: StrictNullable<string>;
+  types: StrictNullable<TypesBuildOptions>;
   dependencies: Dependencies;
   cache: StrictNullable<string>;
 }

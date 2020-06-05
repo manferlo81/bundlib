@@ -7,6 +7,7 @@ import { basename, dirname, join as pathJoin, resolve } from 'path';
 import type { Plugin, PluginImpl } from 'rollup';
 import addShebang from 'rollup-plugin-add-shebang';
 import type { EslintPluginOptions } from 'rollup-plugin-eslint';
+import pluginEquals from 'rollup-plugin-export-equals';
 import stripShebang from 'rollup-plugin-strip-shebang';
 import { terser } from 'rollup-plugin-terser';
 import { RPT2Options as Typescript2PluginOptions } from 'rollup-plugin-typescript2';
@@ -67,10 +68,6 @@ export function pkgToConfigs(
   const isInstalled = createIsInstalled(runtimeDependencies, devDependencies);
   const pluginLoader = createImportFromCWD(cwd, isInstalled);
 
-  interface EqualsPluginOptions {
-    file?: string;
-  }
-
   const loadPluginTypescript2 = pluginLoader<PluginImpl<Typescript2PluginOptions>>('rollup-plugin-typescript2');
   const loadPluginTypescript = pluginLoader<PluginImpl>('@rollup/plugin-typescript');
   const loadPluginESLint = pluginLoader<PluginImpl<EslintPluginOptions>>('rollup-plugin-eslint', 'eslint');
@@ -80,7 +77,7 @@ export function pkgToConfigs(
   const loadDeprecatedPluginBabel = pluginLoader<PluginImpl<BabelPluginOptions>>('rollup-plugin-babel');
   const loadPluginBabel = pluginLoader<PluginImpl<BabelPluginOptions>>('@rollup/plugin-babel');
   const loadPluginBuble = pluginLoader<PluginImpl>('@rollup/plugin-buble');
-  const loadPluginExportEquals = pluginLoader<PluginImpl<EqualsPluginOptions>>('rollup-plugin-export-equals');
+  // const loadPluginExportEquals = pluginLoader<PluginImpl<EqualsPluginOptions>>('rollup-plugin-export-equals');
 
   const useChokidar = !!isInstalled('chokidar') && !!watch;
   const production = !dev;
@@ -112,7 +109,7 @@ export function pkgToConfigs(
     const inputIsTypescript = extensionMatch(inputFile, TS_ONLY_EXTENSIONS);
     const typesExpectedFilename = configs.length === 0 && !bin && typesOutput && resolve(
       cwd,
-      extensionMatch(typesOutput, ['.ts']) ? typesOutput : pathJoin(typesOutput, 'index.d.ts'),
+      extensionMatch(typesOutput.output, ['.ts']) ? typesOutput.output : pathJoin(typesOutput.output, 'index.d.ts'),
     );
 
     if (typesExpectedFilename && !inputIsTypescript) {
@@ -181,7 +178,7 @@ export function pkgToConfigs(
         preferConst: true,
       }),
 
-      declarationDir && loadPluginExportEquals && loadPluginExportEquals({
+      declarationDir && typesOutput && typesOutput.equals && pluginEquals({
         file: resolve(cwd, pathJoin(declarationDir, typesGeneratedFilename)),
       }),
 

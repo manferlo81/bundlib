@@ -20,7 +20,10 @@ describe('package.json types', () => {
     });
     const { types } = analized;
 
-    expect(typeof (types || null)).toBe('string');
+    expect(types).toEqual({
+      output: 'types/index.d.ts',
+      equals: false,
+    });
 
   });
 
@@ -31,7 +34,10 @@ describe('package.json types', () => {
     });
     const { types } = analized;
 
-    expect(typeof (types || null)).toBe('string');
+    expect(types).toEqual({
+      output: 'types',
+      equals: false,
+    });
 
   });
 
@@ -45,7 +51,10 @@ describe('package.json types', () => {
     });
     const { types } = analized;
 
-    expect(types || null).toBe(typesField);
+    expect(types).toEqual({
+      output: typesField,
+      equals: false,
+    });
 
   });
 
