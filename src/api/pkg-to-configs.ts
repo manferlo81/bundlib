@@ -1,8 +1,8 @@
 import pluginBabel from '@rollup/plugin-babel';
 import pluginBuble from '@rollup/plugin-buble';
-import type { RollupCommonJSOptions as CommonJSPluginOptions } from '@rollup/plugin-commonjs';
+import pluginCommonJS from '@rollup/plugin-commonjs';
 import pluginJSON from '@rollup/plugin-json';
-import type { RollupNodeResolveOptions as NodeResolvePluginOptions } from '@rollup/plugin-node-resolve';
+import pluginNodeResolve from '@rollup/plugin-node-resolve';
 import builtinModules from 'builtin-modules';
 import { basename, dirname, join as pathJoin, resolve } from 'path';
 import type { Plugin, PluginImpl } from 'rollup';
@@ -78,9 +78,6 @@ export function pkgToConfigs(
   const loadPluginTypescript2 = pluginLoader<PluginImpl<Typescript2PluginOptions>>('rollup-plugin-typescript2');
   const loadPluginTypescript = pluginLoader<PluginImpl>('@rollup/plugin-typescript');
   const loadPluginESLint = pluginLoader<PluginImpl<EslintPluginOptions>>('rollup-plugin-eslint', 'eslint');
-  const loadPluginNodeResolve = pluginLoader<PluginImpl<NodeResolvePluginOptions>>('@rollup/plugin-node-resolve');
-  const loadPluginCommonJS = pluginLoader<PluginImpl<CommonJSPluginOptions>>('@rollup/plugin-commonjs');
-  // const loadPluginJSON = pluginLoader<PluginImpl<JsonPluginOptions>>('@rollup/plugin-json');
 
   const extensions = (loadPluginTypescript2 || loadPluginTypescript) ? TS_EXTENSIONS : JS_EXTENSIONS;
 
@@ -146,13 +143,13 @@ export function pkgToConfigs(
         setProp(apiInput, cwd, {}),
       ),
 
-      loadPluginNodeResolve && loadPluginNodeResolve({
+      pluginNodeResolve({
         preferBuiltins: !browser,
         extensions,
         rootDir: cwd,
       }),
 
-      browser && loadPluginCommonJS && loadPluginCommonJS({
+      browser && pluginCommonJS({
         sourceMap: sourcemap,
       }),
 
