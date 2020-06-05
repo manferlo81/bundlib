@@ -1,15 +1,16 @@
-import type { BabelPluginOptions } from '@rollup/plugin-babel';
+import pluginBabel from '@rollup/plugin-babel';
+import pluginBuble from '@rollup/plugin-buble';
 import type { RollupCommonJSOptions as CommonJSPluginOptions } from '@rollup/plugin-commonjs';
 import type { RollupJsonOptions as JsonPluginOptions } from '@rollup/plugin-json';
 import type { RollupNodeResolveOptions as NodeResolvePluginOptions } from '@rollup/plugin-node-resolve';
 import builtinModules from 'builtin-modules';
 import { basename, dirname, join as pathJoin, resolve } from 'path';
 import type { Plugin, PluginImpl } from 'rollup';
-import addShebang from 'rollup-plugin-add-shebang';
+import pluginAddShebang from 'rollup-plugin-add-shebang';
 import type { EslintPluginOptions } from 'rollup-plugin-eslint';
 import pluginEquals from 'rollup-plugin-export-equals';
-import stripShebang from 'rollup-plugin-strip-shebang';
-import { terser } from 'rollup-plugin-terser';
+import pluginStripShebang from 'rollup-plugin-strip-shebang';
+import { terser as pluginTerser } from 'rollup-plugin-terser';
 import { RPT2Options as Typescript2PluginOptions } from 'rollup-plugin-typescript2';
 import { MIN_PREFIX, TS_DEF_PREFIX } from './consts';
 import { error, inputNotFound } from './errors';
@@ -65,7 +66,13 @@ export function pkgToConfigs(
     builtinModules as string[],
   );
 
+  const production = !dev;
+
   const isInstalled = createIsInstalled(runtimeDependencies, devDependencies);
+
+  const useBabel = isInstalled('@babel/core');
+  const useChokidar = !!isInstalled('chokidar') && !!watch;
+
   const pluginLoader = createImportFromCWD(cwd, isInstalled);
 
   const loadPluginTypescript2 = pluginLoader<PluginImpl<Typescript2PluginOptions>>('rollup-plugin-typescript2');
@@ -74,13 +81,6 @@ export function pkgToConfigs(
   const loadPluginNodeResolve = pluginLoader<PluginImpl<NodeResolvePluginOptions>>('@rollup/plugin-node-resolve');
   const loadPluginCommonJS = pluginLoader<PluginImpl<CommonJSPluginOptions>>('@rollup/plugin-commonjs');
   const loadPluginJSON = pluginLoader<PluginImpl<JsonPluginOptions>>('@rollup/plugin-json');
-  const loadDeprecatedPluginBabel = pluginLoader<PluginImpl<BabelPluginOptions>>('rollup-plugin-babel');
-  const loadPluginBabel = pluginLoader<PluginImpl<BabelPluginOptions>>('@rollup/plugin-babel');
-  const loadPluginBuble = pluginLoader<PluginImpl>('@rollup/plugin-buble');
-  // const loadPluginExportEquals = pluginLoader<PluginImpl<EqualsPluginOptions>>('rollup-plugin-export-equals');
-
-  const useChokidar = !!isInstalled('chokidar') && !!watch;
-  const production = !dev;
 
   const extensions = (loadPluginTypescript2 || loadPluginTypescript) ? TS_EXTENSIONS : JS_EXTENSIONS;
 
@@ -135,7 +135,7 @@ export function pkgToConfigs(
         throwOnError: false,
       }),
 
-      bin && stripShebang({
+      bin && pluginStripShebang({
         capture: (shebangFromFile: string) => shebang = shebangFromFile,
         sourcemap,
       }),
@@ -182,26 +182,22 @@ export function pkgToConfigs(
         file: resolve(cwd, pathJoin(declarationDir, typesGeneratedFilename)),
       }),
 
-      !loadPluginBabel && loadDeprecatedPluginBabel && loadDeprecatedPluginBabel({
-        include,
-        extensions,
-        exclude,
-      }),
+      useBabel
+        ? pluginBabel({
+          extensions,
+          exclude,
+          babelHelpers: 'bundled',
+        })
+        : pluginBuble({
+          transforms: { dangerousForOf: true },
+        }),
 
-      loadPluginBabel && loadPluginBabel({
-        extensions,
-        exclude,
-        babelHelpers: 'bundled',
-      }),
-
-      loadPluginBuble && loadPluginBuble(),
-
-      bin && addShebang({
+      bin && pluginAddShebang({
         include: outputFile,
         shebang: () => shebang || '#!/usr/bin/env node',
       }),
 
-      mini && terser({
+      mini && pluginTerser({
         // sourcemap: removed on version 6
         toplevel: true,
         module: true,

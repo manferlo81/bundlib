@@ -1,11 +1,11 @@
 import { fixturePath } from '../tools/fixture-path';
 import getPluginNames from '../tools/get-plugin-names';
 
-describe('@rollup/plugin-babel plugin', () => {
+describe('@rollup/plugin-buble plugin', () => {
 
   const cwd = fixturePath('export-number-js');
 
-  const pluginName = 'babel';
+  const pluginName = 'buble';
   const deps = { '@babel/core': '*' };
   const outputFields: Array<{ field: string; text: string }> = [
     { field: 'main', text: 'CommonJS Module' },
@@ -17,20 +17,20 @@ describe('@rollup/plugin-babel plugin', () => {
 
   outputFields.forEach(({ field, text }) => {
 
-    test(`Should not use on ${text} if @babel/core not installed`, async () => {
+    test(`Should use on ${text} if @babel/core not installed`, async () => {
       const [plugins] = await getPluginNames(cwd, false, {
         [field]: 'output.js',
       });
-      expect(plugins).not.toContain(pluginName);
+      expect(plugins).toContain(pluginName);
     });
 
     dependenciesFields.forEach((depField) => {
-      test(`Should use on ${text} if @babel/core installed as "${depField}"`, async () => {
+      test(`Should not use on ${text} if @babel/core installed as "${depField}"`, async () => {
         const [plugins] = await getPluginNames(cwd, false, {
           [field]: 'output.js',
           [depField]: deps,
         });
-        expect(plugins).toContain(pluginName);
+        expect(plugins).not.toContain(pluginName);
       });
     });
 
