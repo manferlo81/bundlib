@@ -445,17 +445,7 @@ Any of the following plugins will be automatically configured if they are instal
 * [`@rollup/plugin-json`](https://github.com/rollup/plugins/tree/master/packages/json)
 * [`rollup-plugin-eslint`](https://github.com/TrySound/rollup-plugin-eslint)
 * [`rollup-plugin-typescript2`](https://github.com/ezolenko/rollup-plugin-typescript2)
-* [`rollup-plugin-terser`](https://github.com/TrySound/rollup-plugin-terser)
-* [`rollup-plugin-strip-shebang`](https://github.com/manferlo81/rollup-plugin-strip-shebang)
-* [`rollup-plugin-add-shebang`](https://github.com/ls-age/rollup-plugin-add-shebang)
 * [`rollup-plugin-export-equals`](https://github.com/manferlo81/rollup-plugin-export-equals)
-
-The following plugins may be supported in the future.
-
-* [`@rollup/plugin-yaml`](https://github.com/rollup/plugins/tree/master/packages/yaml)
-* [`rollup-plugin-prettier`](https://github.com/mjeanroy/rollup-plugin-prettier)
-* [`rollup-plugin-preserve-shebang`](https://github.com/developit/rollup-plugin-preserve-shebang)
-* [`rollup-plugin-cleanup`](https://github.com/aMarCruz/rollup-plugin-cleanup)
 
 Any plugin suggestion will be well received, please [file a new issue](https://github.com/manferlo81/bundlib/issues).
 

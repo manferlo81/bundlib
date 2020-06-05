@@ -1,17 +1,20 @@
-import { BabelPluginOptions } from '@rollup/plugin-babel';
-import { RollupCommonJSOptions as CommonJSPluginOptions } from '@rollup/plugin-commonjs';
-import { RollupJsonOptions as JsonPluginOptions } from '@rollup/plugin-json';
-import { RollupNodeResolveOptions as NodeResolvePluginOptions } from '@rollup/plugin-node-resolve';
+import type { BabelPluginOptions } from '@rollup/plugin-babel';
+import type { RollupCommonJSOptions as CommonJSPluginOptions } from '@rollup/plugin-commonjs';
+import type { RollupJsonOptions as JsonPluginOptions } from '@rollup/plugin-json';
+import type { RollupNodeResolveOptions as NodeResolvePluginOptions } from '@rollup/plugin-node-resolve';
 import builtinModules from 'builtin-modules';
 import { basename, dirname, join as pathJoin, resolve } from 'path';
-import { Plugin, PluginImpl } from 'rollup';
-import { EslintPluginOptions } from 'rollup-plugin-eslint';
+import type { Plugin, PluginImpl } from 'rollup';
+import addShebang from 'rollup-plugin-add-shebang';
+import type { EslintPluginOptions } from 'rollup-plugin-eslint';
+import stripShebang from 'rollup-plugin-strip-shebang';
+import { terser } from 'rollup-plugin-terser';
 import { RPT2Options as Typescript2PluginOptions } from 'rollup-plugin-typescript2';
 import { MIN_PREFIX, TS_DEF_PREFIX } from './consts';
 import { error, inputNotFound } from './errors';
 import { JS_EXTENSIONS, TS_EXTENSIONS, TS_ONLY_EXTENSIONS } from './extensions';
-import { StrictNullable, TypeCheckFunction } from './helper-types';
-import { PkgAnalized } from './pkg-analized';
+import type { StrictNullable, TypeCheckFunction } from './helper-types';
+import type { PkgAnalized } from './pkg-analized';
 import { apiPlugin as pluginAPI } from './plugins/api-plugin';
 import { createConfig } from './tools/create-config';
 import { createFincInput } from './tools/create-find-input';
@@ -21,7 +24,7 @@ import { createIsInstalled } from './tools/create-is-installed';
 import { extensionMatch } from './tools/extension-match';
 import { setProp } from './tools/helpers';
 import { renamePre } from './tools/rename-pre';
-import { BundlibAPIOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types';
+import type { BundlibAPIOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types';
 
 export function pkgToConfigs(
   analized: PkgAnalized,
@@ -64,25 +67,6 @@ export function pkgToConfigs(
   const isInstalled = createIsInstalled(runtimeDependencies, devDependencies);
   const pluginLoader = createImportFromCWD(cwd, isInstalled);
 
-  interface TersePluginOptions {
-    sourcemap?: boolean;
-    toplevel?: boolean;
-    module?: boolean;
-    compress?: {
-      passes: number;
-    };
-  }
-
-  interface StripShebangPluginOptions {
-    sourcemap?: boolean;
-    capture?: (sh: string) => void;
-  }
-
-  interface AddShebangPluginOptions {
-    include?: string;
-    shebang?: () => string;
-  }
-
   interface EqualsPluginOptions {
     file?: string;
   }
@@ -96,21 +80,6 @@ export function pkgToConfigs(
   const loadDeprecatedPluginBabel = pluginLoader<PluginImpl<BabelPluginOptions>>('rollup-plugin-babel');
   const loadPluginBabel = pluginLoader<PluginImpl<BabelPluginOptions>>('@rollup/plugin-babel');
   const loadPluginBuble = pluginLoader<PluginImpl>('@rollup/plugin-buble');
-  const loadPluginTerser = ((load) => {
-    // quick and dirty patch for rollup-plugin-terser@>=6
-    if (!load) return;
-    const terserPluginVersion = isInstalled('rollup-plugin-terser') as string;
-    const [major] = terserPluginVersion.split('.');
-    const ver = /^\d/.test(major) ? +major : +major.substr(1);
-    if (ver < 6) return load;
-    // patch rollup-plugin-terser@>=6
-    return (options: TersePluginOptions) => {
-      delete options.sourcemap;
-      return load(options);
-    };
-  })(pluginLoader<PluginImpl<TersePluginOptions>>('rollup-plugin-terser', 'terser'));
-  const loadPluginStripShebang = pluginLoader<PluginImpl<StripShebangPluginOptions>>('rollup-plugin-strip-shebang');
-  const loadPluginAddShebang = pluginLoader<PluginImpl<AddShebangPluginOptions>>('rollup-plugin-add-shebang');
   const loadPluginExportEquals = pluginLoader<PluginImpl<EqualsPluginOptions>>('rollup-plugin-export-equals');
 
   const useChokidar = !!isInstalled('chokidar') && !!watch;
@@ -169,7 +138,7 @@ export function pkgToConfigs(
         throwOnError: false,
       }),
 
-      bin && loadPluginStripShebang && loadPluginStripShebang({
+      bin && stripShebang({
         capture: (shebangFromFile: string) => shebang = shebangFromFile,
         sourcemap,
       }),
@@ -230,13 +199,13 @@ export function pkgToConfigs(
 
       loadPluginBuble && loadPluginBuble(),
 
-      bin && outputFile && loadPluginAddShebang && loadPluginAddShebang({
+      bin && addShebang({
         include: outputFile,
         shebang: () => shebang || '#!/usr/bin/env node',
       }),
 
-      mini && loadPluginTerser && loadPluginTerser({
-        sourcemap,
+      mini && terser({
+        // sourcemap: removed on version 6
         toplevel: true,
         module: true,
         compress: {
