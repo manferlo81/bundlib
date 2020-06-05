@@ -29,6 +29,10 @@
     "node": ">=10"
   },
   "dependencies": {
+    "@rollup/plugin-babel": "^5.0.2",
+    "@rollup/plugin-commonjs": "^12.0.0",
+    "@rollup/plugin-json": "^4.0.3",
+    "@rollup/plugin-node-resolve": "^8.0.0",
     "builtin-modules": "^3.1.0",
     "camelcase": "^6.0.0",
     "chalk": "^4.0.0",
@@ -59,11 +63,6 @@
     "jest": "^26.0.1",
     "mock-fs": "^4.12.0",
     "rimraf": "^3.0.2",
-    "rollup-plugin-add-shebang": "^0.3.1",
-    "rollup-plugin-eslint": "^7.0.0",
-    "rollup-plugin-export-equals": "^0.3.6",
-    "rollup-plugin-strip-shebang": "^1.2.9",
-    "rollup-plugin-typescript2": "^0.27.1",
     "standard-version": "^8.0.0",
     "ts-jest": "^26.1.0",
     "ts-node": "^8.10.2",
