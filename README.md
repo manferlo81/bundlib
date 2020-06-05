@@ -447,11 +447,8 @@ resolveSelectiveOption('api');
 Any of the following plugins will be automatically configured if they are installed as `"dependencies"` or `"devDependencies"` in `package.json`.
 
 * [`@rollup/plugin-typescript`](https://github.com/rollup/plugins/tree/master/packages/typescript)
-* [`@rollup/plugin-babel`](https://github.com/rollup/plugins/tree/master/packages/babel)
-* [`@rollup/plugin-buble`](https://github.com/rollup/plugins/tree/master/packages/buble)
 * [`@rollup/plugin-node-resolve`](https://github.com/rollup/plugins/tree/master/packages/node-resolve)
 * [`@rollup/plugin-commonjs`](https://github.com/rollup/plugins/tree/master/packages/commonjs)
-* [`@rollup/plugin-json`](https://github.com/rollup/plugins/tree/master/packages/json)
 * [`rollup-plugin-eslint`](https://github.com/TrySound/rollup-plugin-eslint)
 * [`rollup-plugin-typescript2`](https://github.com/ezolenko/rollup-plugin-typescript2)
 

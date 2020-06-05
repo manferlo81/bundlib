@@ -1,7 +1,7 @@
 import pluginBabel from '@rollup/plugin-babel';
 import pluginBuble from '@rollup/plugin-buble';
 import type { RollupCommonJSOptions as CommonJSPluginOptions } from '@rollup/plugin-commonjs';
-import type { RollupJsonOptions as JsonPluginOptions } from '@rollup/plugin-json';
+import pluginJSON from '@rollup/plugin-json';
 import type { RollupNodeResolveOptions as NodeResolvePluginOptions } from '@rollup/plugin-node-resolve';
 import builtinModules from 'builtin-modules';
 import { basename, dirname, join as pathJoin, resolve } from 'path';
@@ -80,7 +80,7 @@ export function pkgToConfigs(
   const loadPluginESLint = pluginLoader<PluginImpl<EslintPluginOptions>>('rollup-plugin-eslint', 'eslint');
   const loadPluginNodeResolve = pluginLoader<PluginImpl<NodeResolvePluginOptions>>('@rollup/plugin-node-resolve');
   const loadPluginCommonJS = pluginLoader<PluginImpl<CommonJSPluginOptions>>('@rollup/plugin-commonjs');
-  const loadPluginJSON = pluginLoader<PluginImpl<JsonPluginOptions>>('@rollup/plugin-json');
+  // const loadPluginJSON = pluginLoader<PluginImpl<JsonPluginOptions>>('@rollup/plugin-json');
 
   const extensions = (loadPluginTypescript2 || loadPluginTypescript) ? TS_EXTENSIONS : JS_EXTENSIONS;
 
@@ -174,7 +174,7 @@ export function pkgToConfigs(
 
       inputIsTypescript && loadPluginTypescript && loadPluginTypescript(),
 
-      loadPluginJSON && loadPluginJSON({
+      pluginJSON({
         preferConst: true,
       }),
 
