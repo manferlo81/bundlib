@@ -447,7 +447,6 @@ resolveSelectiveOption('api');
 Any of the following plugins will be automatically configured if they are installed as `"dependencies"` or `"devDependencies"` in `package.json`.
 
 * [`@rollup/plugin-typescript`](https://github.com/rollup/plugins/tree/master/packages/typescript)
-* [`rollup-plugin-eslint`](https://github.com/TrySound/rollup-plugin-eslint)
 * [`rollup-plugin-typescript2`](https://github.com/ezolenko/rollup-plugin-typescript2)
 
 Any plugin suggestion will be well received, please [file a new issue](https://github.com/manferlo81/bundlib/issues).

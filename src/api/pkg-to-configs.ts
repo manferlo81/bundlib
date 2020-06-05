@@ -7,7 +7,7 @@ import builtinModules from 'builtin-modules';
 import { basename, dirname, join as pathJoin, resolve } from 'path';
 import type { Plugin, PluginImpl } from 'rollup';
 import pluginAddShebang from 'rollup-plugin-add-shebang';
-import type { EslintPluginOptions } from 'rollup-plugin-eslint';
+import { eslint as pluginESLint } from 'rollup-plugin-eslint';
 import pluginEquals from 'rollup-plugin-export-equals';
 import pluginStripShebang from 'rollup-plugin-strip-shebang';
 import { terser as pluginTerser } from 'rollup-plugin-terser';
@@ -70,6 +70,7 @@ export function pkgToConfigs(
 
   const isInstalled = createIsInstalled(runtimeDependencies, devDependencies);
 
+  const useESLint = isInstalled('eslint');
   const useBabel = isInstalled('@babel/core');
   const useChokidar = !!isInstalled('chokidar') && !!watch;
 
@@ -77,7 +78,7 @@ export function pkgToConfigs(
 
   const loadPluginTypescript2 = pluginLoader<PluginImpl<Typescript2PluginOptions>>('rollup-plugin-typescript2');
   const loadPluginTypescript = pluginLoader<PluginImpl>('@rollup/plugin-typescript');
-  const loadPluginESLint = pluginLoader<PluginImpl<EslintPluginOptions>>('rollup-plugin-eslint', 'eslint');
+  // const loadPluginESLint = pluginLoader<PluginImpl<EslintPluginOptions>>('rollup-plugin-eslint', 'eslint');
 
   const extensions = (loadPluginTypescript2 || loadPluginTypescript) ? TS_EXTENSIONS : JS_EXTENSIONS;
 
@@ -125,7 +126,7 @@ export function pkgToConfigs(
 
     const plugins = [
 
-      loadPluginESLint && loadPluginESLint({
+      useESLint && pluginESLint({
         include,
         exclude,
         throwOnWarning: false,
