@@ -3,7 +3,7 @@ import getPluginNames from '../tools/get-plugin-names';
 describe('rollup-plugin-typescript2 plugin', () => {
 
   const pluginName = 'rpt2';
-  const deps = { 'rollup-plugin-typescript2': '*' };
+  const deps = { 'typescript': '*' };
   const bundlib = { input: { api: 'src/api/index.ts', bin: 'src/cli/index.ts' } };
   const outputFields: Array<{ field: string; text: string }> = [
     { field: 'main', text: 'CommonJS Module' },

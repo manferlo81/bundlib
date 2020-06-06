@@ -5,13 +5,13 @@ import pluginJSON from '@rollup/plugin-json';
 import pluginNodeResolve from '@rollup/plugin-node-resolve';
 import builtinModules from 'builtin-modules';
 import { basename, dirname, join as pathJoin, resolve } from 'path';
-import type { Plugin, PluginImpl } from 'rollup';
+import type { Plugin } from 'rollup';
 import pluginAddShebang from 'rollup-plugin-add-shebang';
 import { eslint as pluginESLint } from 'rollup-plugin-eslint';
 import pluginEquals from 'rollup-plugin-export-equals';
 import pluginStripShebang from 'rollup-plugin-strip-shebang';
 import { terser as pluginTerser } from 'rollup-plugin-terser';
-import { RPT2Options as Typescript2PluginOptions } from 'rollup-plugin-typescript2';
+import pluginTypescript from 'rollup-plugin-typescript2';
 import { MIN_PREFIX, TS_DEF_PREFIX } from './consts';
 import { error, inputNotFound } from './errors';
 import { JS_EXTENSIONS, TS_EXTENSIONS, TS_ONLY_EXTENSIONS } from './extensions';
@@ -57,6 +57,8 @@ export function pkgToConfigs(
     peer: peerDependencies,
   } = dependencies;
 
+  const importFromCWD = createImportFromCWD(cwd);
+
   const bundlibCachePath = resolve(cwd, cache || 'node_modules/.cache/bundlib');
   const typescriptCachePath = pathJoin(bundlibCachePath, 'rpt2');
 
@@ -71,16 +73,11 @@ export function pkgToConfigs(
   const isInstalled = createIsInstalled(runtimeDependencies, devDependencies);
 
   const useESLint = isInstalled('eslint');
+  const useTypescript = isInstalled('typescript');
   const useBabel = isInstalled('@babel/core');
   const useChokidar = !!isInstalled('chokidar') && !!watch;
 
-  const pluginLoader = createImportFromCWD(cwd, isInstalled);
-
-  const loadPluginTypescript2 = pluginLoader<PluginImpl<Typescript2PluginOptions>>('rollup-plugin-typescript2');
-  const loadPluginTypescript = pluginLoader<PluginImpl>('@rollup/plugin-typescript');
-  // const loadPluginESLint = pluginLoader<PluginImpl<EslintPluginOptions>>('rollup-plugin-eslint', 'eslint');
-
-  const extensions = (loadPluginTypescript2 || loadPluginTypescript) ? TS_EXTENSIONS : JS_EXTENSIONS;
+  const extensions = useTypescript ? TS_EXTENSIONS : JS_EXTENSIONS;
 
   const findInput = createFincInput(cwd, extensions);
 
@@ -154,7 +151,9 @@ export function pkgToConfigs(
         sourceMap: sourcemap,
       }),
 
-      inputIsTypescript && loadPluginTypescript2 && loadPluginTypescript2({
+      useTypescript && inputIsTypescript && pluginTypescript({
+        cwd,
+        typescript: importFromCWD<typeof import('typescript')>('typescript'),
         cacheRoot: typescriptCachePath,
         useTsconfigDeclarationDir: true,
         tsconfigDefaults: {
@@ -170,11 +169,7 @@ export function pkgToConfigs(
         ...project && { tsconfig: resolve(cwd, project) },
       }),
 
-      inputIsTypescript && loadPluginTypescript && loadPluginTypescript(),
-
-      pluginJSON({
-        preferConst: true,
-      }),
+      pluginJSON({ preferConst: true }),
 
       declarationDir && typesOutput && typesOutput.equals && pluginEquals({
         file: resolve(cwd, pathJoin(declarationDir, typesGeneratedFilename)),
