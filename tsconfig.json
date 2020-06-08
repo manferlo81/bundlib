@@ -16,7 +16,9 @@
   "include": [
     "__mocks__/**/*.ts",
     "__test__/**/*.ts",
+    "__test__/**/*.js",
     "src/**/*.ts",
+    "jest.config.js",
     "package.json"
   ],
   "exclude": [
