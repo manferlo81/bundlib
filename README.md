@@ -6,10 +6,6 @@ An automatic configuration manager for [Rollup.js](https://github.com/rollup/rol
 
 > :warning: **Bundlib** is under active development, please [file a new issue](https://github.com/manferlo81/bundlib/issues) if you find any issue or bug, suggestions are welcome as well.
 
-## BREAKING CHANGES in version 0.16.x
-
-* `analizePkg` result format changed, see [PkgAnalized](#pkganalized) (It only affects you if you are using **Bundlib** programmatically)
-
 ## In this guide
 
 * [Install](#install)
@@ -34,7 +30,6 @@ An automatic configuration manager for [Rollup.js](https://github.com/rollup/rol
 * [Selective Options](#selective-options)
   * [Object based selective format](#object-based-selective-format)
   * [String based selective format](#string-based-selective-format)
-* [Supported Plugins](#supported-plugins)
 * [Using the CLI tool](#using-the-cli-tool)
 * [Using **Bundlib** programmatically](#using-bundlib-programmatically)
 * [Types](#types)
@@ -442,15 +437,6 @@ resolveSelectiveOption('api');
 */
 ```
 
-## Supported Plugins
-
-Any of the following plugins will be automatically configured if they are installed as `"dependencies"` or `"devDependencies"` in `package.json`.
-
-* [`@rollup/plugin-typescript`](https://github.com/rollup/plugins/tree/master/packages/typescript)
-* [`rollup-plugin-typescript2`](https://github.com/ezolenko/rollup-plugin-typescript2)
-
-Any plugin suggestion will be well received, please [file a new issue](https://github.com/manferlo81/bundlib/issues).
-
 ## Using the CLI tool
 
 ```bash
@@ -602,7 +588,12 @@ type BuildType = 'main' | 'module' | 'browser' | 'bin' | 'api' | ...others;
 * Uses `"types"` field in your `package.json` (or `"typings"` field) as path for types declarations.
 * Uses `"dependencies"` and `"peerDependencies"` to set external modules for `CommonJS Module`, `ES Module` and `Binary` builds. Dependencies will be bundled by default in `Browser` builds, unless otherwise specified using the [`global`](#globals) option.
 * Skip any build based on [options](#skip).
-* Uses and configures any installed [supported rollup plugin](#supported-plugins).
+* Uses `rollup-plugin-typescript2` if `typescript` installed as runtime or dev dependency.
+* Uses `@rollup/plugin-babel` if `@babel/core` installed as runtime or dev dependency, otherwise it uses `@rollup/plugin-buble`.
+* Uses `rollup-plugin-strip-shebang` and `rollup-plugin-add-shebang` to ensure a shebang on binary build.
+* Uses `@rollup/plugin-json` to import JSON files.
+* Uses `rollup-plugin-eslint` if `eslint` installed as runtime or dev dependency.
+* Uses `rollup-plugin-terser` to minify production build.
 * Uses `chokidar` for file watch if installed.
 
 ## License
