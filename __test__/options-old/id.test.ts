@@ -14,14 +14,8 @@ describe('id option', () => {
 
     expect.assertions(invalidIdOptions.length);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    invalidIdOptions.forEach((id: any) => {
-      expect(
-        analize(cwd, {
-          bundlib: { id },
-        }),
-      ).rejects
-        .toThrow(TypeError);
+    invalidIdOptions.forEach((id) => {
+      void expect(analize(cwd, { bundlib: { id: id as never } })).rejects.toThrow(TypeError);
     });
 
   });

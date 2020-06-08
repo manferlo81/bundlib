@@ -4,8 +4,7 @@ describe('package.json main field', () => {
 
   const cwd = process.cwd();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const analizeWithMain = (main: any) => analize(cwd, { main });
+  const analizeWithMain = (main: string) => analize(cwd, { main });
 
   test('should throw on non string main field', () => {
 
@@ -17,11 +16,7 @@ describe('package.json main field', () => {
     expect.assertions(invalidMainFields.length);
 
     invalidMainFields.forEach((main) => {
-
-      expect(
-        analizeWithMain(main),
-      ).rejects
-        .toThrow(TypeError);
+      void expect(analizeWithMain(main as never)).rejects.toThrow(TypeError);
 
     });
 

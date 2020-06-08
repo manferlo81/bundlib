@@ -5,7 +5,7 @@ describe('types option', () => {
   const cwd = process.cwd();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const analizeWithMain = (types: any) => analize(cwd, {
+  const analizeWithMain = (types: never) => analize(cwd, {
     types: 'out.js',
     bundlib: { types },
   });
@@ -22,16 +22,13 @@ describe('types option', () => {
     expect.assertions(invalidMain.length);
 
     invalidMain.forEach((types) => {
-      expect(
-        analizeWithMain(types),
-      ).rejects
-        .toThrow(TypeError);
+      void expect(analizeWithMain(types as never)).rejects.toThrow(TypeError);
     });
 
   });
 
   test('should prevent types generation if types = false', async () => {
-    const { types } = await analizeWithMain(false);
+    const { types } = await analizeWithMain(false as never);
     expect(types).toBeNull();
   });
 

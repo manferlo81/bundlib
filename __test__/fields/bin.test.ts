@@ -4,8 +4,7 @@ describe('package.json bin field', () => {
 
   const cwd = process.cwd();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const analizeWithBin = (bin: any) => analize(cwd, { bin });
+  const analizeWithBin = (bin: string) => analize(cwd, { bin });
 
   test('should throw on invalid bin field', () => {
 
@@ -17,10 +16,7 @@ describe('package.json bin field', () => {
     expect.assertions(invalidBrowserPaths.length);
 
     invalidBrowserPaths.forEach((bin) => {
-      expect(
-        analizeWithBin(bin),
-      ).rejects
-        .toThrow(TypeError);
+      void expect(analizeWithBin(bin as never)).rejects.toThrow(TypeError);
     });
 
   });

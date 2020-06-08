@@ -14,14 +14,8 @@ describe('name option', () => {
 
     expect.assertions(invalidNameOptions.length);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    invalidNameOptions.forEach((name: any) => {
-      expect(
-        analize(cwd, {
-          bundlib: { name },
-        }),
-      ).rejects
-        .toThrow(TypeError);
+    invalidNameOptions.forEach((name) => {
+      void expect(analize(cwd, { bundlib: { name: name as never } })).rejects.toThrow(TypeError);
     });
 
   });

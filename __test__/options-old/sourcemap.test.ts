@@ -1,11 +1,11 @@
 import analize from '../tools/analize';
+import { RollupSourcemap } from '../../src/api';
 
 describe('sourcemap option', () => {
 
   const cwd = process.cwd();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const analizedWithSourcemap = (sourcemap: any) => analize(cwd, {
+  const analizedWithSourcemap = (sourcemap: RollupSourcemap) => analize(cwd, {
     main: 'out/lib.cjs.js',
     module: 'out/lib.es.js',
     browser: 'out/lib.umd.js',
@@ -13,8 +13,7 @@ describe('sourcemap option', () => {
     bundlib: { sourcemap },
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const analizedWithBuildSourcemap = (field: any, sourcemap: any) => analize(cwd, {
+  const analizedWithBuildSourcemap = (field: string, sourcemap: RollupSourcemap) => analize(cwd, {
     main: 'out/lib.cjs.js',
     module: 'out/lib.es.js',
     browser: 'out/lib.umd.js',
@@ -32,10 +31,7 @@ describe('sourcemap option', () => {
     expect.assertions(invalidSoucemaps.length);
 
     invalidSoucemaps.forEach((sourcemap) => {
-      expect(
-        analizedWithSourcemap(sourcemap),
-      ).rejects
-        .toThrow(TypeError);
+      void expect(analizedWithSourcemap(sourcemap as never)).rejects.toThrow(TypeError);
     });
 
   });

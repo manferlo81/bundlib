@@ -4,8 +4,7 @@ describe('module option', () => {
 
   const cwd = process.cwd();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const analizeWithModule = (module: any) => analize(cwd, {
+  const analizeWithModule = (module: never) => analize(cwd, {
     module: 'out.js',
     bundlib: { module },
   });
@@ -22,16 +21,13 @@ describe('module option', () => {
     expect.assertions(invalidModule.length);
 
     invalidModule.forEach((moduleOption) => {
-      expect(
-        analizeWithModule(moduleOption),
-      ).rejects
-        .toThrow(TypeError);
+      void expect(analizeWithModule(moduleOption as never)).rejects.toThrow(TypeError);
     });
 
   });
 
   test('should prevent ES Module build if module = false', async () => {
-    const { module: moduleOut } = await analizeWithModule(false);
+    const { module: moduleOut } = await analizeWithModule(false as never);
     expect(moduleOut).toBeNull();
   });
 

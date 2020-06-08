@@ -4,7 +4,7 @@ import program from 'commander';
 import { displayName, name, version } from '../../package.json';
 import { action } from './action';
 
-program
+void program
   .version(version, '-v, --version')
   .name(name)
   .option('-d, --dev', 'create development builds')

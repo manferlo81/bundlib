@@ -1,12 +1,11 @@
-import { BuildType } from '../../src/api/bundlib-options';
+import { BuildType, SelectiveOption } from '../../src/api/bundlib-options';
 import analize from '../tools/analize';
 
 describe('min option', () => {
 
   const cwd = process.cwd();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const analizeWithMin = (min: any) => analize(cwd, {
+  const analizeWithMin = (min: SelectiveOption<BuildType, boolean>) => analize(cwd, {
     main: 'main.js',
     module: 'module.js',
     browser: 'browser.js',
@@ -14,8 +13,7 @@ describe('min option', () => {
     bundlib: { min },
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const analizeWithBuildMin = (field: BuildType, min: any) => analize(cwd, {
+  const analizeWithBuildMin = (field: BuildType, min: SelectiveOption<BuildType, boolean>) => analize(cwd, {
     main: 'main.js',
     module: 'module.js',
     browser: 'browser.js',
@@ -38,10 +36,7 @@ describe('min option', () => {
     expect.assertions(invalidMinOptions.length);
 
     invalidMinOptions.forEach((min) => {
-      expect(
-        analizeWithMin(min),
-      ).rejects
-        .toThrow(TypeError);
+      void expect(analizeWithMin(min as never)).rejects.toThrow(TypeError);
     });
 
   });

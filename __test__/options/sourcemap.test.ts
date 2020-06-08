@@ -42,7 +42,7 @@ describe('"sourcemap" option', () => {
 
   test('Should resolve specific "sourcemap" option', () => {
 
-    [true, false, 'inline' as 'inline', 'hidden' as 'hidden'].forEach((value) => {
+    [true, false, 'inline' as const, 'hidden' as const].forEach((value) => {
       expect(resolveSourcemapOption(value)).toEqual({
         main: value,
         module: value,
@@ -56,11 +56,11 @@ describe('"sourcemap" option', () => {
   test('Should resolve build type "sourcemap" option', () => {
 
     const values = [
-      { value: 'main' as 'main', expected: { main: true, module: false, browser: false, bin: false } },
-      { value: 'module' as 'module', expected: { main: false, module: true, browser: false, bin: false } },
-      { value: 'browser' as 'browser', expected: { main: false, module: false, browser: true, bin: false } },
-      { value: 'bin' as 'bin', expected: { main: false, module: false, browser: false, bin: true } },
-      { value: 'api' as 'api', expected: { main: true, module: true, browser: true, bin: false } },
+      { value: 'main' as const, expected: { main: true, module: false, browser: false, bin: false } },
+      { value: 'module' as const, expected: { main: false, module: true, browser: false, bin: false } },
+      { value: 'browser' as const, expected: { main: false, module: false, browser: true, bin: false } },
+      { value: 'bin' as const, expected: { main: false, module: false, browser: false, bin: true } },
+      { value: 'api' as const, expected: { main: true, module: true, browser: true, bin: false } },
     ];
 
     values.forEach(({ value, expected }) => {
@@ -102,11 +102,11 @@ describe('"sourcemap" option', () => {
         expected: { main: true, module: true, browser: false, bin: false },
       },
       {
-        value: { default: 'inline' as 'inline', api: true, browser: false },
+        value: { default: 'inline' as const, api: true, browser: false },
         expected: { main: true, module: true, browser: false, bin: 'inline' },
       },
       {
-        value: { default: false, main: 'inline' as 'inline', browser: 'hidden' as 'hidden' },
+        value: { default: false, main: 'inline' as const, browser: 'hidden' as const },
         expected: { main: 'inline', module: false, browser: 'hidden', bin: false },
       },
       {

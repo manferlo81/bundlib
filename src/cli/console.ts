@@ -9,7 +9,7 @@ function create(name: 'log' | 'error') {
 export const log = create('log');
 export const error = create('error');
 
-export function logError(err: Error | RollupError) {
+export function logError(err: Error | RollupError): void {
   if (err.stack) {
     error(err.stack);
   }

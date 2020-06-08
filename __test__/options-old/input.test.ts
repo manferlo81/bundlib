@@ -16,14 +16,8 @@ describe('input option', () => {
 
     expect.assertions(invalidInputs.length);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    invalidInputs.forEach((input: any) => {
-      expect(
-        analize(cwd, {
-          bundlib: { input },
-        }),
-      ).rejects
-        .toThrow(TypeError);
+    invalidInputs.forEach((input) => {
+      void expect(analize(cwd, { bundlib: { input: input as never } })).rejects.toThrow(TypeError);
     });
 
   });

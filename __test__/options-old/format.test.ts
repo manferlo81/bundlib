@@ -1,17 +1,16 @@
+import type { BrowserBuildFormat } from '../../src/api';
 import analize from '../tools/analize';
 
 describe('format option', () => {
 
   const cwd = process.cwd();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const analizeWithFormat = (format: any) => analize(cwd, {
+  const analizeWithFormat = (format: BrowserBuildFormat) => analize(cwd, {
     browser: 'out/lib.js',
     bundlib: { format },
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const analizeWithBuildFormat = (format: any) => analize(cwd, {
+  const analizeWithBuildFormat = (format: BrowserBuildFormat) => analize(cwd, {
     browser: 'out/lib.js',
     bundlib: { browser: { format } },
   });
@@ -26,10 +25,7 @@ describe('format option', () => {
     expect.assertions(invalidBrowserFormats.length);
 
     invalidBrowserFormats.forEach((format) => {
-      expect(
-        analizeWithFormat(format),
-      ).rejects
-        .toThrow(TypeError);
+      void expect(analizeWithFormat(format as never)).rejects.toThrow(TypeError);
     });
 
   });

@@ -14,10 +14,7 @@ describe('package.json bundlib field', () => {
     expect.assertions(invalidBundlibOptions.length);
 
     invalidBundlibOptions.forEach((bundlib) => {
-      expect(
-        analize(cwd, { bundlib: bundlib as never }),
-      ).rejects
-        .toThrow(TypeError);
+      void expect(analize(cwd, { bundlib: bundlib as never })).rejects.toThrow(TypeError);
     });
 
   });

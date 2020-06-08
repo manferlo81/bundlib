@@ -4,8 +4,7 @@ describe('browser option', () => {
 
   const cwd = process.cwd();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const analizeWithBrowser = (browser: any) => analize(cwd, {
+  const analizeWithBrowser = (browser: never) => analize(cwd, {
     browser: 'out.js',
     bundlib: { browser },
   });
@@ -25,16 +24,13 @@ describe('browser option', () => {
     expect.assertions(invalidBrowser.length);
 
     invalidBrowser.forEach((browser) => {
-      expect(
-        analizeWithBrowser(browser),
-      ).rejects
-        .toThrow(TypeError);
+      void expect(analizeWithBrowser(browser as never)).rejects.toThrow(TypeError);
     });
 
   });
 
   test('should prevent Browser module build if browser = false', async () => {
-    const { browser } = await analizeWithBrowser(false);
+    const { browser } = await analizeWithBrowser(false as never);
     expect(browser).toBeNull();
   });
 

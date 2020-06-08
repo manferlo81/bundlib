@@ -8,8 +8,8 @@ describe('createConfig private method', () => {
     const input = 'src/index.js';
     const output = {
       file: 'out/lib.js',
-      format: 'cjs' as 'cjs',
-      sourcemap: 'inline' as 'inline',
+      format: 'cjs' as const,
+      sourcemap: 'inline' as const,
       esModule: true,
       interop: true,
     };
@@ -33,7 +33,7 @@ describe('createConfig private method', () => {
       watch: {
         exclude: expect.arrayContaining([
           expect.any(String),
-        ]),
+        ]) as never,
       },
     });
 
@@ -44,8 +44,8 @@ describe('createConfig private method', () => {
     const input = 'src/index.js';
     const output = {
       file: 'out/lib.js',
-      format: 'cjs' as 'cjs',
-      sourcemap: 'inline' as 'inline',
+      format: 'cjs' as const,
+      sourcemap: 'inline' as const,
       esModule: true,
       interop: true,
     };
@@ -71,7 +71,7 @@ describe('createConfig private method', () => {
       watch: {
         exclude: expect.arrayContaining([
           expect.any(String),
-        ]),
+        ]) as never,
       },
     });
 
@@ -82,8 +82,8 @@ describe('createConfig private method', () => {
     const input = 'src/index.js';
     const output = {
       file: 'out/lib.js',
-      format: 'cjs' as 'cjs',
-      sourcemap: 'inline' as 'inline',
+      format: 'cjs' as const,
+      sourcemap: 'inline' as const,
       esModule: true,
       interop: true,
     };
@@ -107,7 +107,7 @@ describe('createConfig private method', () => {
       watch: {
         exclude: expect.arrayContaining([
           expect.any(String),
-        ]),
+        ]) as never,
         chokidar: {},
       },
     });

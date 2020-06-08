@@ -4,8 +4,7 @@ describe('package.json browser field', () => {
 
   const cwd = process.cwd();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const analizeWithBrowser = (browser: any) => analize(cwd, { browser });
+  const analizeWithBrowser = (browser: string) => analize(cwd, { browser });
 
   test('should throw on invalid browser field', () => {
 
@@ -17,10 +16,7 @@ describe('package.json browser field', () => {
     expect.assertions(invalidBrowserPaths.length);
 
     invalidBrowserPaths.forEach((browser) => {
-      expect(
-        analizeWithBrowser(browser),
-      ).rejects
-        .toThrow(TypeError);
+      void expect(analizeWithBrowser(browser as never)).rejects.toThrow(TypeError);
     });
 
   });

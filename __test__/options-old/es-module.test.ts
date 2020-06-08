@@ -1,19 +1,18 @@
 import analize from '../tools/analize';
+import { SelectiveOption, BuildType } from '../../src/api/bundlib-options';
 
 describe('esModule option', () => {
 
   const cwd = process.cwd();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const analizeWithESModule = (esModule: any) => analize(cwd, {
+  const analizeWithESModule = (esModule: SelectiveOption<BuildType, boolean>) => analize(cwd, {
     main: 'main.js',
     browser: 'browser.js',
     bin: 'bin.js',
     bundlib: { esModule },
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const analizeWithBuildESModule = (field: string, esModule: any) => analize(cwd, {
+  const analizeWithBuildESModule = (field: string, esModule: SelectiveOption<BuildType, boolean>) => analize(cwd, {
     main: 'main.js',
     browser: 'browser.js',
     bin: 'bin.js',
@@ -34,12 +33,7 @@ describe('esModule option', () => {
     expect.assertions(invalid.length);
 
     invalid.forEach((esModule) => {
-
-      expect(
-        analizeWithESModule(esModule),
-      ).rejects
-        .toThrow(TypeError);
-
+      void expect(analizeWithESModule(esModule as never)).rejects.toThrow(TypeError);
     });
 
   });

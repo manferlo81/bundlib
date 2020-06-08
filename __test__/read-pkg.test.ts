@@ -46,12 +46,7 @@ describe('read package.json', () => {
     expect.assertions(invalidPkg.length);
 
     invalidPkg.forEach((pkg) => {
-      expect(
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-        // @ts-ignore
-        analize(cwd, pkg),
-      ).rejects
-        .toThrow(TypeError);
+      void expect(analize(cwd, pkg as never)).rejects.toThrow(TypeError);
     });
 
   });

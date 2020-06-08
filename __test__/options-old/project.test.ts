@@ -5,7 +5,7 @@ describe('project option', () => {
   const cwd = process.cwd();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const analizeWithProject = (project: any) => analize(cwd, {
+  const analizeWithProject = (project: string) => analize(cwd, {
     main: 'main.js',
     module: 'module.js',
     browser: 'browser.js',
@@ -24,10 +24,7 @@ describe('project option', () => {
     expect.assertions(invalidProjectOptions.length);
 
     invalidProjectOptions.forEach((invalidProject) => {
-      expect(
-        analizeWithProject(invalidProject),
-      ).rejects
-        .toThrow(TypeError);
+      void expect(analizeWithProject(invalidProject as never)).rejects.toThrow(TypeError);
     });
 
   });
@@ -47,7 +44,7 @@ describe('project option', () => {
 
   test('should be null if project not provided', async () => {
 
-    const { main, module: moduleOutput, browser, bin } = await analizeWithProject(undefined);
+    const { main, module: moduleOutput, browser, bin } = await analizeWithProject(undefined as never);
 
     expect(main ? main.project : 0).toBeNull();
     expect(moduleOutput ? moduleOutput.project : 0).toBeNull();

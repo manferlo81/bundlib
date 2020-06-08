@@ -2,7 +2,9 @@ import { existsSync } from 'fs';
 import { resolve } from 'path';
 import { Nullable } from '../helper-types';
 
-export function createFincInput(cwd: string, extensions: string[]) {
+type FindInput = (input: Nullable<string>) => Nullable<string>;
+
+export function createFincInput(cwd: string, extensions: string[]): FindInput {
 
   const inputSearch = extensions.map((ext) => resolve(cwd, 'src', `index${ext}`));
   const cache = {

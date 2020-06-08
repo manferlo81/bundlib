@@ -4,8 +4,7 @@ describe('cache option', () => {
 
   const cwd = process.cwd();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const analizeWithCache = (cache: any) => analize(cwd, {
+  const analizeWithCache = (cache: string) => analize(cwd, {
     bundlib: { cache },
   });
 
@@ -21,10 +20,7 @@ describe('cache option', () => {
     expect.assertions(invalidCacheOptions.length);
 
     invalidCacheOptions.forEach((cache) => {
-      expect(
-        analizeWithCache(cache),
-      ).rejects
-        .toThrow(TypeError);
+      void expect(analizeWithCache(cache as never)).rejects.toThrow(TypeError);
     });
 
   });

@@ -215,7 +215,7 @@ export function pkgToConfigs(
     }
 
     const outputFile = resolve(cwd, output);
-    const outputOptions = { file: outputFile, format: 'cjs' as 'cjs', sourcemap, esModule, interop };
+    const outputOptions = { file: outputFile, format: 'cjs' as const, sourcemap, esModule, interop };
 
     configs.push(
       createConfig(
@@ -275,7 +275,7 @@ export function pkgToConfigs(
     }
 
     const outputFile = resolve(cwd, output);
-    const outputOptions = { file: outputFile, format: 'es' as 'es', sourcemap, esModule, interop };
+    const outputOptions = { file: outputFile, format: 'es' as const, sourcemap, esModule, interop };
 
     configs.push(
       createConfig(
@@ -416,7 +416,7 @@ export function pkgToConfigs(
     }
 
     const outputFile = resolve(cwd, output);
-    const outputOptions = { file: outputFile, format: 'cjs' as 'cjs', sourcemap, esModule, interop };
+    const outputOptions = { file: outputFile, format: 'cjs' as const, sourcemap, esModule, interop };
     const apiInputFile = commanjsOutput ? commanjsOutput.input : null;
 
     configs.push(

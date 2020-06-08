@@ -4,8 +4,7 @@ describe('main option', () => {
 
   const cwd = process.cwd();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const analizeWithMain = (main: any) => analize(cwd, {
+  const analizeWithMain = (main: never) => analize(cwd, {
     main: 'out.js',
     bundlib: { main },
   });
@@ -22,16 +21,13 @@ describe('main option', () => {
     expect.assertions(invalidMain.length);
 
     invalidMain.forEach((main) => {
-      expect(
-        analizeWithMain(main),
-      ).rejects
-        .toThrow(TypeError);
+      void expect(analizeWithMain(main as never)).rejects.toThrow(TypeError);
     });
 
   });
 
   test('should prevent CommonJS module build if main = false', async () => {
-    const { main } = await analizeWithMain(false);
+    const { main } = await analizeWithMain(false as never);
     expect(main).toBeNull();
   });
 

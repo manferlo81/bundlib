@@ -4,14 +4,12 @@ describe('globals option', () => {
 
   const cwd = process.cwd();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const analizeWithGlobals = (globals: any) => analize(cwd, {
+  const analizeWithGlobals = (globals: Record<string, string> | string[] | null) => analize(cwd, {
     browser: 'browser.js',
     bundlib: { globals },
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const analizeWithBuildGlobals = (globals: any) => analize(cwd, {
+  const analizeWithBuildGlobals = (globals: Record<string, string> | string[] | null) => analize(cwd, {
     browser: 'browser.js',
     bundlib: { browser: { globals } },
   });
@@ -27,10 +25,7 @@ describe('globals option', () => {
     expect.assertions(invalidGlobalsOptions.length);
 
     invalidGlobalsOptions.forEach((globals) => {
-      expect(
-        analizeWithGlobals(globals),
-      ).rejects
-        .toThrow(TypeError);
+      void expect(analizeWithGlobals(globals as never)).rejects.toThrow(TypeError);
     });
 
   });
@@ -46,10 +41,7 @@ describe('globals option', () => {
     expect.assertions(invalidGlobalsOptions.length);
 
     invalidGlobalsOptions.forEach((globals) => {
-      expect(
-        analizeWithBuildGlobals(globals),
-      ).rejects
-        .toThrow(TypeError);
+      void expect(analizeWithBuildGlobals(globals as never)).rejects.toThrow(TypeError);
     });
 
   });

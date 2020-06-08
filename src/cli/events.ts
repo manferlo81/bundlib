@@ -1,5 +1,5 @@
-export const END: 'end' = 'end';
-export const BUILD_END: 'build-end' = 'build-end';
-export const REBUILD: 'rebuild' = 'rebuild';
-export const WARN: 'warn' = 'warn';
-export const ERROR: 'error' = 'error';
+export const END = 'end' as const;
+export const BUILD_END = 'build-end' as const;
+export const REBUILD = 'rebuild' as const;
+export const WARN = 'warn' as const;
+export const ERROR = 'error' as const;

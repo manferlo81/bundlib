@@ -14,6 +14,6 @@ export function invalidOption(optionName: string, urlHash?: string): TypeError {
   return error(`Invalid "${optionName}" option. Please check the documentation at https://github.com/manferlo81/bundlib#${urlHash || optionName}`);
 }
 
-export function inputNotFound(type: string) {
+export function inputNotFound(type: string): TypeError {
   return error(`Input file not found for ${type}`);
 }

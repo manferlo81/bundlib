@@ -90,7 +90,6 @@ export type SelectiveSourcemap = SelectiveOption<BuildType, RollupSourcemap>;
 export type SelectiveSkipOption = SelectiveOption<SelectiveSkipBuildType, boolean>;
 
 export interface DeprecatedBundlibOptions {
-  equals?: Nullable<boolean>;
   main?: Nullable<CommonJSBuildOptions | false>;
   module?: Nullable<ESModuleBuildOptions | false>;
   browser?: Nullable<BrowserBuildOptions | false>;
@@ -115,5 +114,7 @@ export interface BundlibOptions extends DeprecatedBundlibOptions {
   id?: Nullable<string>;
   extend?: Nullable<boolean>;
   globals?: GlobalsOptions;
+
+  equals?: Nullable<boolean>;
 
 }

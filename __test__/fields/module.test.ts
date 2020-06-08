@@ -4,11 +4,8 @@ describe('package.json main field', () => {
 
   const cwd = process.cwd();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const analizeWithModule = (module: any) => analize(cwd, { module });
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const analizeWithJSNext = (jsnext: any) => analize(cwd, { 'jsnext:main': jsnext });
+  const analizeWithModule = (module: string) => analize(cwd, { module });
+  const analizeWithJSNext = (jsnext: string) => analize(cwd, { 'jsnext:main': jsnext });
 
   test('should throw on non string module field', () => {
 
@@ -20,12 +17,7 @@ describe('package.json main field', () => {
     expect.assertions(invalidModuleFields.length);
 
     invalidModuleFields.forEach((moduleField) => {
-
-      expect(
-        analizeWithModule(moduleField),
-      ).rejects
-        .toThrow(TypeError);
-
+      void expect(analizeWithModule(moduleField as never)).rejects.toThrow(TypeError);
     });
 
   });
@@ -40,12 +32,7 @@ describe('package.json main field', () => {
     expect.assertions(invalidModuleFields.length);
 
     invalidModuleFields.forEach((moduleField) => {
-
-      expect(
-        analizeWithJSNext(moduleField),
-      ).rejects
-        .toThrow(TypeError);
-
+      void expect(analizeWithJSNext(moduleField as never)).rejects.toThrow(TypeError);
     });
 
   });

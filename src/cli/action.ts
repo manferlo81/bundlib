@@ -34,7 +34,7 @@ export async function action(
   dev: boolean,
   watch: boolean,
   silent: boolean,
-) {
+): Promise<void> {
 
   const cwd = process.cwd();
   const pkg: BundlibPkgJson = await readPkg(cwd);

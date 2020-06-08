@@ -4,8 +4,7 @@ describe('bin option', () => {
 
   const cwd = process.cwd();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const analizeWithBin = (bin: any) => analize(cwd, {
+  const analizeWithBin = (bin: never) => analize(cwd, {
     bin: 'out.js',
     bundlib: { bin },
   });
@@ -21,13 +20,13 @@ describe('bin option', () => {
     expect.assertions(invalidInputs.length);
 
     invalidInputs.forEach((bin) => {
-      expect(analizeWithBin(bin)).rejects.toThrow(TypeError);
+      void expect(analizeWithBin(bin as never)).rejects.toThrow(TypeError);
     });
 
   });
 
   test('should prevent Binary module build if bin = false', async () => {
-    const { bin } = await analizeWithBin(false);
+    const { bin } = await analizeWithBin(false as never);
     expect(bin).toBeNull();
   });
 

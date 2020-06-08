@@ -1,19 +1,18 @@
 import analize from '../tools/analize';
+import { SelectiveOption, BuildType } from '../../src/api/bundlib-options';
 
 describe('interop option', () => {
 
   const cwd = process.cwd();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const analizeWithInterop = (interop: any) => analize(cwd, {
+  const analizeWithInterop = (interop: SelectiveOption<BuildType, boolean>) => analize(cwd, {
     main: 'main.js',
     browser: 'browser.js',
     bin: 'bin.js',
     bundlib: { interop },
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const analizeWithBuildInterop = (field: string, interop: any) => analize(cwd, {
+  const analizeWithBuildInterop = (field: string, interop: SelectiveOption<BuildType, boolean>) => analize(cwd, {
     main: 'main.js',
     browser: 'browser.js',
     bin: 'bin.js',
@@ -34,12 +33,7 @@ describe('interop option', () => {
     expect.assertions(invalid.length);
 
     invalid.forEach((interop) => {
-
-      expect(
-        analizeWithInterop(interop),
-      ).rejects
-        .toThrow(TypeError);
-
+      void expect(analizeWithInterop(interop as never)).rejects.toThrow(TypeError);
     });
 
   });

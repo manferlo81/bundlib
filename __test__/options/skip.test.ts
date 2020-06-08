@@ -55,12 +55,12 @@ describe('"skip" option', () => {
   test('Should resolve build type "skip" option', () => {
 
     const values = [
-      { value: 'main' as 'main', expected: { main: true } },
-      { value: 'module' as 'module', expected: { module: true } },
-      { value: 'browser' as 'browser', expected: { browser: true } },
-      { value: 'bin' as 'bin', expected: { bin: true } },
-      { value: 'types' as 'types', expected: { types: true } },
-      { value: 'api' as 'api', expected: { main: true, module: true, browser: true } },
+      { value: 'main' as const, expected: { main: true } },
+      { value: 'module' as const, expected: { module: true } },
+      { value: 'browser' as const, expected: { browser: true } },
+      { value: 'bin' as const, expected: { bin: true } },
+      { value: 'types' as const, expected: { types: true } },
+      { value: 'api' as const, expected: { main: true, module: true, browser: true } },
     ];
 
     values.forEach(({ value, expected }) => {

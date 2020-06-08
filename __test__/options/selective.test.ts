@@ -84,11 +84,11 @@ describe('selective option', () => {
   test('Should resolve build type selective option', () => {
 
     const values = [
-      { value: 'main' as 'main', expected: { main: true, module: false, browser: false, bin: false } },
-      { value: 'module' as 'module', expected: { main: false, module: true, browser: false, bin: false } },
-      { value: 'browser' as 'browser', expected: { main: false, module: false, browser: true, bin: false } },
-      { value: 'bin' as 'bin', expected: { main: false, module: false, browser: false, bin: true } },
-      { value: 'api' as 'api', expected: { main: true, module: true, browser: true, bin: false } },
+      { value: 'main' as const, expected: { main: true, module: false, browser: false, bin: false } },
+      { value: 'module' as const, expected: { main: false, module: true, browser: false, bin: false } },
+      { value: 'browser' as const, expected: { main: false, module: false, browser: true, bin: false } },
+      { value: 'bin' as const, expected: { main: false, module: false, browser: false, bin: true } },
+      { value: 'api' as const, expected: { main: true, module: true, browser: true, bin: false } },
     ];
 
     values.forEach(({ value, expected }) => {
