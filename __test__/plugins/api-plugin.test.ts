@@ -6,7 +6,7 @@ describe('API Plugin', () => {
 
   const cwd = process.cwd();
 
-  const { resolveId } = apiPlugin(cwd, `${cwd}/out`, {
+  const { resolveId } = apiPlugin(cwd, `${cwd}/out`, ['.ts', '.js'], {
     'src/target.ts': 'root-file.js',
     'src/target-no-ext': 'root-file.js',
     'src/helpers/index.ts': 'out/helpers.js',

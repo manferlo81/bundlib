@@ -135,9 +135,10 @@ export function pkgToConfigs(
         sourcemap,
       }),
 
-      bin && apiInput && outputFile && pluginAPI(
+      bin && apiInput && pluginAPI(
         cwd,
         dirname(outputFile),
+        extensions,
         setProp(apiInput, cwd, {}),
       ),
 

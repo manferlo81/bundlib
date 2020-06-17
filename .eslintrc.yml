@@ -58,3 +58,5 @@ rules:
     - error
     - default: array-simple
       readonly: array-simple
+
+  "@typescript-eslint/member-delimiter-style": error

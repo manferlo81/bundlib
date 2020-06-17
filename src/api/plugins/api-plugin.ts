@@ -4,7 +4,7 @@ import slash from 'slash';
 import { Dictionary } from '../helper-types';
 import { keys, setProp } from '../tools/helpers';
 
-export function apiPlugin(cwd: string, outputDir: string, map: Dictionary<string>): Plugin {
+export function apiPlugin(cwd: string, outputDir: string, extensions: string[], map: Dictionary<string>): Plugin {
 
   const resolvedMap = keys(map).reduce<Dictionary<string>>((resolvedMap, source) => {
     return setProp(
@@ -18,9 +18,6 @@ export function apiPlugin(cwd: string, outputDir: string, map: Dictionary<string
       resolvedMap,
     );
   }, {});
-
-  // TODO: Fix extensions
-  const extensions = ['.ts', '.js'];
 
   function findTarget(resolved: string): string | void {
 
