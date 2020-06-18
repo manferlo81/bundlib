@@ -1,5 +1,5 @@
-import { ESModuleBuildOptions } from '../../bundlib-options';
 import { createOneOfLiteral } from '../../type-check/advanced';
+import type { ESModuleBuildOptions } from '../../types/bundlib-options';
 
 export const MODULE_OPTION_KEYS = [
   'sourcemap' as const,

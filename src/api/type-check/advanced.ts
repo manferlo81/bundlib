@@ -1,5 +1,5 @@
-import { Dictionary, Nullable, TypeCastCheckFunction, TypeCheckFunction } from '../helper-types';
 import { flattenMultilevel, MultilevelArray } from '../tools/multilevel-array';
+import type { Dictionary, Nullable, TypeCastCheckFunction, TypeCheckFunction } from '../types/helper-types';
 import { isDictionary, isNull, isString } from './basic';
 
 export function createOneOfLiteral<M>(...values: MultilevelArray<M>): TypeCheckFunction<M> {

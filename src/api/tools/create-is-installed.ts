@@ -1,4 +1,4 @@
-import { Dictionary, IsInstalled, Nullable } from '../helper-types';
+import type { Dictionary, IsInstalled, Nullable } from '../types/helper-types';
 
 export function createIsInstalled(...dependencies: Array<Nullable<Partial<Dictionary<string>>>>): IsInstalled {
 

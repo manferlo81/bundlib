@@ -1,6 +1,6 @@
 import camelcase from 'camelcase';
 import { basename } from 'path';
-import { Nullable, StrictNullable } from '../helper-types';
+import type { Nullable, StrictNullable } from '../types/helper-types';
 
 export function normalizeBuildName(
   cwd: string,

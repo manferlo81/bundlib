@@ -1,5 +1,5 @@
-import { CommonJSBuildOptions } from '../../bundlib-options';
 import { createOneOfLiteral } from '../../type-check/advanced';
+import type { CommonJSBuildOptions } from '../../types/bundlib-options';
 import { MODULE_OPTION_KEYS } from './module';
 
 export const CJS_OPTOIN_KEYS = [

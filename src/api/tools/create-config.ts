@@ -1,6 +1,6 @@
-import { IsExternal, Plugin, WarningHandlerWithDefault, WatcherOptions as RollupWatcherOptions } from 'rollup';
-import { Nullable } from '../helper-types';
-import { BundlibRollupModuleOutputOptions, BundlibRollupOptions } from '../types';
+import type { IsExternal, Plugin, WarningHandlerWithDefault, WatcherOptions as RollupWatcherOptions } from 'rollup';
+import type { Nullable } from '../types/helper-types';
+import type { BundlibRollupModuleOutputOptions, BundlibRollupOptions } from '../types/types';
 
 export function createConfig<OutputOptions extends BundlibRollupModuleOutputOptions>(
   input: string,

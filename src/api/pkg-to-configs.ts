@@ -15,8 +15,6 @@ import pluginTypescript from 'rollup-plugin-typescript2';
 import { MIN_PREFIX, TS_DEF_PREFIX } from './consts';
 import { error, inputNotFound } from './errors';
 import { JS_EXTENSIONS, TS_EXTENSIONS, TS_ONLY_EXTENSIONS } from './extensions';
-import type { StrictNullable, TypeCheckFunction } from './helper-types';
-import type { PkgAnalized } from './pkg-analized';
 import { apiPlugin as pluginAPI } from './plugins/api-plugin';
 import { createConfig } from './tools/create-config';
 import { createFincInput } from './tools/create-find-input';
@@ -26,7 +24,9 @@ import { createIsInstalled } from './tools/create-is-installed';
 import { extensionMatch } from './tools/extension-match';
 import { setProp } from './tools/helpers';
 import { renamePre } from './tools/rename-pre';
-import type { BundlibAPIOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types';
+import type { StrictNullable, TypeCheckFunction } from './types/helper-types';
+import type { PkgAnalized } from './types/pkg-analized';
+import type { BundlibAPIOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types/types';
 
 export function pkgToConfigs(
   analized: PkgAnalized,

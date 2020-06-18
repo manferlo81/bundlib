@@ -1,6 +1,4 @@
-import { BundlibOptions, TypesOptions } from './bundlib-options';
 import { error, invalidOption, invalidOptionOld, invalidPkgField } from './errors';
-import { Dictionary, StrictNullable } from './helper-types';
 import { loadOptions } from './load-options';
 import { normalizeBooleanOption } from './options/deprecated/boolean';
 import { isBrowserOption } from './options/deprecated/browser';
@@ -18,13 +16,15 @@ import { normalizeBuildName } from './options/name';
 import { resolveProjectOption } from './options/project';
 import { resolveSkipOption } from './options/skip';
 import { isSourcemapOption, resolveSourcemapOption } from './options/sourcemap';
-import { BundlibPkgJson } from './pkg';
-import { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalized, TypesBuildOptions } from './pkg-analized';
 import { readPkg } from './tools/read-pkg';
 import { isDictionaryOrNull, isStringOrNull } from './type-check/advanced';
 import { isDictionary, isNull } from './type-check/basic';
 import { invalidKeys, keysCheck } from './type-check/keys';
-import { RollupSourcemap } from './types';
+import type { BundlibOptions, TypesOptions } from './types/bundlib-options';
+import type { Dictionary, StrictNullable } from './types/helper-types';
+import type { BundlibPkgJson } from './types/pkg';
+import type { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalized, TypesBuildOptions } from './types/pkg-analized';
+import type { RollupSourcemap } from './types/types';
 
 async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalized>;
 async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAnalized> {

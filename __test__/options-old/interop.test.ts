@@ -1,5 +1,5 @@
+import type { BuildType, SelectiveOption } from '../../src/api/types/bundlib-options';
 import analize from '../tools/analize';
-import { SelectiveOption, BuildType } from '../../src/api/bundlib-options';
 
 describe('interop option', () => {
 

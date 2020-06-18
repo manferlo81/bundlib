@@ -1,4 +1,4 @@
-import { BuildType, SelectiveOption } from '../../src/api/bundlib-options';
+import type { BuildType, SelectiveOption } from '../../src/api/types/bundlib-options';
 import analize from '../tools/analize';
 
 describe('min option', () => {

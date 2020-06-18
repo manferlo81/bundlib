@@ -1,9 +1,10 @@
 import { statSync } from 'fs';
-import { rollup, RollupCache, RollupError } from 'rollup';
-import { BundlibRollupModuleOutputOptions, BundlibRollupOptions } from '../api/types';
+import { rollup } from 'rollup';
+import type { RollupCache, RollupError } from 'rollup';
+import type { BundlibRollupModuleOutputOptions, BundlibRollupOptions } from '../api/types/types';
 import { BUILD_END, END, ERROR } from './events';
 import { oneByOne } from './one-by-one';
-import { BundlibEventEmitter } from './types';
+import type { BundlibEventEmitter } from './types';
 
 export function build(
   configs: Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>,

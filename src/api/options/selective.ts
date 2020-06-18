@@ -1,10 +1,11 @@
-import { BuildType, SelectiveOption, SelectiveSkipBuildType, SelectiveType } from '../bundlib-options';
 import { invalidOption } from '../errors';
-import { TypeCheckFunction } from '../helper-types';
 import { keysToObject, setProp } from '../tools/helpers';
 import { createOneOfLiteral } from '../type-check/advanced';
 import { isArray, isNull, isObject } from '../type-check/basic';
-import { populateWithAPIValue, resolveObjectSelectiveOption, SelectiveResolved } from './object-based';
+import type { BuildType, SelectiveOption, SelectiveSkipBuildType, SelectiveType } from '../types/bundlib-options';
+import type { TypeCheckFunction } from '../types/helper-types';
+import { populateWithAPIValue, resolveObjectSelectiveOption } from './object-based';
+import type { SelectiveResolved } from './object-based';
 import { resolveTypeStringArray } from './string-based';
 
 export type SelectiveResolvedBoolean<K extends string> = SelectiveResolved<K, boolean>;

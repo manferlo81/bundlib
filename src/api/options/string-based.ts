@@ -1,7 +1,8 @@
-import { BuildType, SelectiveSkipBuildType, SelectiveType } from '../bundlib-options';
-import { TypeCheckFunction } from '../helper-types';
 import { keysToObject, setProp } from '../tools/helpers';
-import { populateWithAPIValue, SelectiveResolved } from './object-based';
+import type { BuildType, SelectiveSkipBuildType, SelectiveType } from '../types/bundlib-options';
+import type { TypeCheckFunction } from '../types/helper-types';
+import { populateWithAPIValue } from './object-based';
+import type { SelectiveResolved } from './object-based';
 
 export function resolveTypeStringArray<K extends BuildType>(
   value: Array<SelectiveType<K>>,

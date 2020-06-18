@@ -1,8 +1,8 @@
 import analizePkg from './analize-pkg';
-import { Nullable } from './helper-types';
-import { BundlibPkgJson } from './pkg';
 import { pkgToConfigs } from './pkg-to-configs';
-import { BundlibAPIOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions } from './types';
+import type { Nullable } from './types/helper-types';
+import type { BundlibPkgJson } from './types/pkg';
+import type { BundlibAPIOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions } from './types/types';
 
 async function configsFromPkg(
   cwd: string,

@@ -1,4 +1,4 @@
-import { Dictionary } from '../helper-types';
+import type { Dictionary } from '../types/helper-types';
 
 export const keys: (
   <K extends string | number | symbol>(

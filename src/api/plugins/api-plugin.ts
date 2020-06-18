@@ -1,8 +1,8 @@
 import { dirname, join, relative, resolve } from 'path';
-import { Plugin } from 'rollup';
+import type { Plugin } from 'rollup';
 import slash from 'slash';
-import { Dictionary } from '../helper-types';
 import { keys, setProp } from '../tools/helpers';
+import type { Dictionary } from '../types/helper-types';
 
 export function apiPlugin(cwd: string, outputDir: string, extensions: string[], map: Dictionary<string>): Plugin {
 

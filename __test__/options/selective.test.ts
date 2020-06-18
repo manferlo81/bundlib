@@ -1,8 +1,8 @@
-import { BuildType } from '../../src/api/bundlib-options';
+import { invalidOption } from '../../src/api/errors';
 import { MODULE_BUILD_KEYS } from '../../src/api/options/object-based';
 import { resolveSelectiveOption } from '../../src/api/options/selective';
 import { isBool } from '../../src/api/type-check/basic';
-import { invalidOption } from '../../src/api/errors';
+import type { BuildType } from '../../src/api/types/bundlib-options';
 
 describe('selective option', () => {
 

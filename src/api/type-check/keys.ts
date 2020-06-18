@@ -1,5 +1,5 @@
-import { Dictionary, StrictNullable, TypeCheckFunction } from '../helper-types';
 import { keys } from '../tools/helpers';
+import type { Dictionary, StrictNullable, TypeCheckFunction } from '../types/helper-types';
 import { composeOneOf } from './advanced';
 
 export function invalidKeys(object: Dictionary<unknown>, list: string[]): StrictNullable<string[]> {

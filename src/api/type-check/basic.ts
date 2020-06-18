@@ -1,4 +1,4 @@
-import { Dictionary } from '../helper-types';
+import type { Dictionary } from '../types/helper-types';
 
 export function isNull(value: unknown): value is null | undefined {
   return value == null;

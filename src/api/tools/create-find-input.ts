@@ -1,6 +1,6 @@
 import { existsSync } from 'fs';
 import { resolve } from 'path';
-import { Nullable } from '../helper-types';
+import type { Nullable } from '../types/helper-types';
 
 type FindInput = (input: Nullable<string>) => Nullable<string>;
 
