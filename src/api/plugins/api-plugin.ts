@@ -6,18 +6,24 @@ import type { Dictionary } from '../types/helper-types';
 
 export function apiPlugin(cwd: string, outputDir: string, extensions: string[], map: Dictionary<string>): Plugin {
 
-  const resolvedMap = keys(map).reduce<Dictionary<string>>((resolvedMap, source) => {
-    return setProp(
-      resolve(cwd, source),
-      slash(
+  const resolvedMap = keys(map).reduce<Dictionary<string>>(
+    (resolvedMap, source) => {
+      const value = slash(
         relative(
           outputDir,
           resolve(cwd, map[source]),
         ),
-      ),
-      resolvedMap,
-    );
-  }, {});
+      );
+      return value
+        ? setProp(
+          resolve(cwd, source),
+          value.startsWith('.') ? value : `./${value}`,
+          resolvedMap,
+        )
+        : resolvedMap;
+    },
+    {},
+  );
 
   function findTarget(resolved: string): string | void {
 
@@ -53,22 +59,15 @@ export function apiPlugin(cwd: string, outputDir: string, extensions: string[], 
         return null;
       }
 
-      const target = findTarget(
+      const id = findTarget(
         join(
           dirname(from),
           moduleId,
         ),
       );
 
-      if (!target) {
-        return null;
-      }
+      return id ? { id, external: true, moduleSideEffects: false } : null;
 
-      return {
-        id: target.startsWith('.') ? target : `./${target}`,
-        external: true,
-        moduleSideEffects: false,
-      };
     },
 
   };
