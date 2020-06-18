@@ -4,14 +4,12 @@ orbs:
   codecov: codecov/codecov@1.0.5
 
 executors:
-
   node:
     docker:
       - image: circleci/node:10
     working_directory: &working_directory ~/bundlib
 
 commands:
-
   npm_publish:
     steps:
       - run:
@@ -22,22 +20,21 @@ commands:
           command: npm publish
 
 jobs:
-
   test_and_build:
     executor: node
     steps:
       - checkout
       - restore_cache:
           keys:
-            - v6-deps-bundlib-{{ checksum "package.json" }}
-            - v6-deps-bundlib-
+            - v7-deps-bundlib-{{ checksum "package.json" }}
+            - v7-deps-bundlib-
       - run:
           name: Install dependencies
           command: npm install
       - save_cache:
           paths:
             - node_modules
-          key: v6-deps-bundlib-{{ checksum "package.json" }}
+          key: v7-deps-bundlib-{{ checksum "package.json" }}
       - run:
           name: Test
           command: npm test
@@ -67,7 +64,6 @@ workflows:
 
   workflow:
     jobs:
-
       - test_and_build:
           filters:
             tags:
