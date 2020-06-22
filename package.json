@@ -53,7 +53,7 @@
     "slash": "^3.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.10.2",
+    "@babel/core": "^7.10.3",
     "@babel/preset-env": "^7.10.2",
     "@types/jest": "^26.0.0",
     "@types/mock-fs": "^4.10.0",
