@@ -14,7 +14,8 @@
     "noUnusedLocals": true,
     "noImplicitReturns": true,
     "noImplicitAny": true,
-    "removeComments": true
+    "removeComments": true,
+    "outDir": "dist"
   },
   "include": [
     "__mocks__/**/*.ts",
