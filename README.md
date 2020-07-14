@@ -2,7 +2,7 @@
 
 [![CircleCI](https://circleci.com/gh/manferlo81/bundlib.svg?style=svg)](https://circleci.com/gh/manferlo81/bundlib) [![dependabot](https://api.dependabot.com/badges/status?host=github&repo=manferlo81/bundlib)](https://dependabot.com) [![npm](https://badgen.net/npm/v/bundlib)](https://www.npmjs.com/package/bundlib) [![codecov](https://codecov.io/gh/manferlo81/bundlib/branch/master/graph/badge.svg)](https://codecov.io/gh/manferlo81/bundlib) [![dependencies](https://badgen.net/david/dep/manferlo81/bundlib)](https://david-dm.org/manferlo81/bundlib) [![dev dependencies](https://badgen.net/david/dev/manferlo81/bundlib)](https://david-dm.org/manferlo81/bundlib?type=dev) [![packagephobia](https://badgen.net/packagephobia/install/bundlib)](https://packagephobia.now.sh/result?p=bundlib) [![types](https://img.shields.io/npm/types/bundlib.svg)](https://github.com/microsoft/typescript) [![Known Vulnerabilities](https://snyk.io/test/npm/bundlib/badge.svg)](https://snyk.io/test/npm/bundlib) [![license](https://badgen.net/github/license/manferlo81/bundlib)](LICENSE)
 
-An automatic configuration manager for [Rollup.js](https://github.com/rollup/rollup).
+An automatic library bundler powered by [Rollup.js](https://github.com/rollup/rollup).
 
 > :warning: **Bundlib** is under active development, please [file a new issue](https://github.com/manferlo81/bundlib/issues) if you find any issue or bug, suggestions are welcome as well.
 
@@ -38,14 +38,12 @@ An automatic configuration manager for [Rollup.js](https://github.com/rollup/rol
 ## Install
 
 ```bash
-npm i -D bundlib rollup
+npm i -D bundlib
 ```
-
-> :warning: [**Rollup**](#https://github.com/rollup/rollup) is a peer dependency and it has to be installed as well.
 
 ## Build
 
-**Bundlib** will try to find your entry point file in the **`src`** folder. You can manually set your entry points using the [`input`](#input) options.
+**Bundlib** will try to find your entry point file in the **`src`** folder. You can manually set your entry points using the [`input`](#input) option.
 
 ### CommonJS module
 
@@ -57,7 +55,7 @@ To build a `ES Module` add a `"module"` field to your `package.json` pointing to
 
 ### IIFE, AMD and UMD build
 
-For `IIFE`, `AMD` or `UMD` builds, add a `"browser"` field to your `package.json`. The default format is `"umd"` but it can be changed to `"iife"` or `"amd"` using the [`format`](#format) option, see the [configuration section](#configuration) for more info.
+For `IIFE`, `AMD` or `UMD` builds, add a `"browser"` field to your `package.json`. The default format is `"umd"` but it can be changed to `"iife"` or `"amd"` using the [`format`](#format) option, see the [configuration section](#configuration) for more info and extra options.
 
 ## Configuration
 
@@ -67,27 +65,27 @@ For `IIFE`, `AMD` or `UMD` builds, add a `"browser"` field to your `package.json
 
 #### "main"
 
-The `"main"` field will be used as your **CommonJS module** output, if not present, **CommonJS Module** build will be skipped. You can skip the build manually using the [`skip`](#skip) advanced option.
+The `"main"` field will be used as your **CommonJS module** output, if not present, **CommonJS Module** build will be skipped. You can skip the build manually using the [`skip`](#skip) option.
 
 #### "module" or "jsnext:main"
 
-The `"module"` field will be used as your **ES Module** output, if not present, **ES Module** build will be skipped. You can skip the build manually using the [`skip`](#skip) advanced option. `"jsnext:main"` field will also be honored if `"module"` field is not present, but it is recommended to use the `"module"` field.
+The `"module"` field will be used as your **ES Module** output, if not present, **ES Module** build will be skipped. You can skip the build manually using the [`skip`](#skip) option. `"jsnext:main"` field will also be honored if `"module"` field is not present, but it is recommended to use the `"module"` field.
 
 #### "browser"
 
-The `"browser"` field will be used as your **Browser** build output, if not present, **Browser** build will be skipped. You can skip the build manually using the [`skip`](#skip) advanced option. **Bundlib** only supports `string` type `"browser"` field, it will **throw** otherwise.
+The `"browser"` field will be used as your **Browser** build output, if not present, **Browser** build will be skipped. You can skip the build manually using the [`skip`](#skip) option. **Bundlib** only supports `string` type `"browser"` field, it will **throw** otherwise.
 
 #### "bin"
 
-The `"bin"` field will be used as your **Binary** build output, if not present, **Binary** build will be skipped. You can skip the build manually using the [`skip`](#skip) advanced option. **Bundlib** only supports `string` type `"bin"` field, it will **throw** otherwise.
+The `"bin"` field will be used as your **Binary** build output, if not present, **Binary** build will be skipped. You can skip the build manually using the [`skip`](#skip) option. **Bundlib** only supports `string` type `"bin"` field, it will **throw** otherwise.
 
 #### "types" or "typings"
 
-The `"types"` field will be used as your **Types** output if you are using `typescript`. You can skip types generation using the [`skip`](#skip) advanced option. `"typings"` field will also be honored if `"types"` field is not present.
+The `"types"` field will be used as your **Types** output if you are using `typescript`. You can skip types generation using the [`skip`](#skip) option. `"typings"` field will also be honored if `"types"` field is not present.
 
 #### "dependencies"
 
-The `"dependencies"` field will be used to detect installed packages, it will also be used to set external dependencies for your **CommonJS module**, **ES module**, and **Binary** builds, for **Browser** build dependencies will be bundled into the output file unless otherwise specified using the [`"globals"`](#globals) advanced option.
+The `"dependencies"` field will be used to detect installed packages, it will also be used to set external dependencies for your **CommonJS module**, **ES module**, and **Binary** builds, for **Browser** build dependencies will be bundled into the output file unless otherwise specified using the [`"globals"`](#globals) option.
 
 #### "devDependencies"
 
@@ -103,7 +101,7 @@ The `"bundlib"` field can be used for advanced configuration, see [Advanced Conf
 
 ### Advanced Configuration
 
-Advanced configuration can be done using the `"bundlib"` field in your `package.json` or by using one of the [configuration files](#configuration-files).
+Advanced configuration can be done using the `"bundlib"` field in your `package.json` or by using one of the supported [configuration files](#configuration-files).
 
 #### Configuration in `package.json`
 
@@ -148,7 +146,7 @@ format: amd
 
 #### Configuration files
 
-If `"bundlib"` field not present, **Bundlib** will try to find your configuration file using the following order...
+If `"bundlib"` field not present in your `package.json`, **Bundlib** will try to find your configuration file using the following order...
 
 * .bundlibrc (json or yaml format)
 * .bundlibrc.json
@@ -277,6 +275,10 @@ equals: boolean;
 default false;
 ```
 
+Transforms type export for CommonJS module using `export = ...` instead of `export default ...`.
+
+> :warning: *Note that this option should only be used when your library has a* `default` *export and no* `named` *exports, otherwise it may cause the type declarations to become invalid.*
+
 #### cache
 
 ```typescript
@@ -326,11 +328,13 @@ See [input](#input), [sourcemap](#sourcemap), [esModule](#esmodule), [interop](#
 ***example***
 
 ```javascript
-// assuming default = false
+// assuming default = false...
 
-resolveSelectiveOption({
+{
   main: true
-});
+}
+
+// ... will resolve to
 
 /*
 {
@@ -349,10 +353,12 @@ You can override the default value as well using the `"default"` object key.
 ```javascript
 // assuming default = false
 
-resolveSelectiveOption({
+{
   default: true,
   bin: false
-});
+}
+
+// ... will resolve to
 
 /*
 {
@@ -369,11 +375,13 @@ The `"api"` object key represents `main`, `module` and `browser`.
 ***example***
 
 ```javascript
-// assuming default = false
+// assuming default = false...
 
-resolveSelectiveOption({
+{
   api: true
-});
+}
+
+// ... will resolve to
 
 /*
 {
@@ -394,7 +402,9 @@ resolveSelectiveOption({
 ***example***
 
 ```javascript
-resolveSelectiveOption('module');
+'module'
+
+// ... will resolve to
 
 /*
 {
@@ -409,7 +419,9 @@ resolveSelectiveOption('module');
 ***example***
 
 ```javascript
-resolveSelectiveOption(['main', 'module']);
+['main', 'module']
+
+// ... will resolve to
 
 /*
 {
@@ -425,7 +437,9 @@ resolveSelectiveOption(['main', 'module']);
 ***example***
 
 ```javascript
-resolveSelectiveOption('api');
+'api'
+
+// ... will resolve to
 
 /*
 {
