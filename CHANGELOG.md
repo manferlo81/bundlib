@@ -2,6 +2,16 @@
 
 ## Version History
 
+## [0.17.0](https://github.com/manferlo81/bundlib/compare/v0.16.4...v0.17.0) (2020-07-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* Option equals has to be explicitly set
+* PkgAnalized changed
+
+* Option "equals" ([b66ce5c](https://github.com/manferlo81/bundlib/commit/b66ce5c366e0ebcb563a4002b46661fb3c91df86))
+
 ### [0.16.4](https://github.com/manferlo81/bundlib/compare/v0.16.3...v0.16.4) (2020-05-30)
 
 
