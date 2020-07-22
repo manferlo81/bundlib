@@ -43,7 +43,7 @@
     "load-json-file": "^6.2.0",
     "pretty-ms": "^7.0.0",
     "resolve-from": "^5.0.0",
-    "rollup": "^2.22.1",
+    "rollup": "^2.22.2",
     "rollup-plugin-add-shebang": "^0.3.1",
     "rollup-plugin-eslint": "^7.0.0",
     "rollup-plugin-export-equals": "^0.3.6",
