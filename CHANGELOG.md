@@ -2,6 +2,13 @@
 
 ## Version History
 
+### [0.17.1](https://github.com/manferlo81/bundlib/compare/v0.17.0...v0.17.1) (2020-08-02)
+
+
+### Bug Fixes
+
+* Crash if peer deps not installed ([d19fd46](https://github.com/manferlo81/bundlib/commit/d19fd46bba532eb1d3ed8e8f9402ffce6c8fea38))
+
 ## [0.17.0](https://github.com/manferlo81/bundlib/compare/v0.16.4...v0.17.0) (2020-07-15)
 
 
