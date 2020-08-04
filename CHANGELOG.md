@@ -2,6 +2,13 @@
 
 ## Version History
 
+### [0.17.2](https://github.com/manferlo81/bundlib/compare/v0.17.1...v0.17.2) (2020-08-04)
+
+
+### Bug Fixes
+
+* Explicitly set rollup exports option ([63e62ef](https://github.com/manferlo81/bundlib/commit/63e62ef1cdfa544ce31b22c8d23cf34d1413981e))
+
 ### [0.17.1](https://github.com/manferlo81/bundlib/compare/v0.17.0...v0.17.1) (2020-08-02)
 
 
