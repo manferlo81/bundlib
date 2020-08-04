@@ -216,7 +216,14 @@ export function pkgToConfigs(
     }
 
     const outputFile = resolve(cwd, output);
-    const outputOptions = { file: outputFile, format: 'cjs' as const, sourcemap, esModule, interop };
+    const outputOptions: BundlibRollupModuleOutputOptions = {
+      file: outputFile,
+      format: 'cjs',
+      sourcemap,
+      esModule,
+      interop,
+      exports: 'auto',
+    };
 
     configs.push(
       createConfig(
@@ -276,7 +283,13 @@ export function pkgToConfigs(
     }
 
     const outputFile = resolve(cwd, output);
-    const outputOptions = { file: outputFile, format: 'es' as const, sourcemap, esModule, interop };
+    const outputOptions: BundlibRollupModuleOutputOptions = {
+      file: outputFile,
+      format: 'es',
+      sourcemap,
+      esModule,
+      interop,
+    };
 
     configs.push(
       createConfig(
@@ -417,7 +430,14 @@ export function pkgToConfigs(
     }
 
     const outputFile = resolve(cwd, output);
-    const outputOptions = { file: outputFile, format: 'cjs' as const, sourcemap, esModule, interop };
+    const outputOptions: BundlibRollupModuleOutputOptions = {
+      file: outputFile,
+      format: 'cjs',
+      sourcemap,
+      esModule,
+      interop,
+      exports: 'auto',
+    };
     const apiInputFile = commanjsOutput ? commanjsOutput.input : null;
 
     configs.push(
