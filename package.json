@@ -49,7 +49,7 @@
     "rollup-plugin-eslint": "^7.0.0",
     "rollup-plugin-export-equals": "^0.3.6",
     "rollup-plugin-strip-shebang": "^1.2.9",
-    "rollup-plugin-terser": "^7.0.1",
+    "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-typescript2": "^0.27.2",
     "slash": "^3.0.0",
     "typescript": "^4.0.2"
