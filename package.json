@@ -56,7 +56,7 @@
   },
   "devDependencies": {
     "@babel/preset-env": "^7.11.5",
-    "@types/jest": "^26.0.13",
+    "@types/jest": "^26.0.14",
     "@types/mock-fs": "^4.10.0",
     "@types/node": "^14.10.3",
     "@typescript-eslint/eslint-plugin": "^4.1.1",
