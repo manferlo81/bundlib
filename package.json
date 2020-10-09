@@ -58,7 +58,7 @@
     "@babel/preset-env": "^7.11.5",
     "@types/jest": "^26.0.14",
     "@types/mock-fs": "^4.13.0",
-    "@types/node": "^14.11.5",
+    "@types/node": "^14.11.7",
     "@typescript-eslint/eslint-plugin": "^4.4.0",
     "@typescript-eslint/parser": "^4.4.0",
     "chokidar": "^3.4.2",
