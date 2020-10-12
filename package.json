@@ -62,7 +62,7 @@
     "@typescript-eslint/eslint-plugin": "^4.4.0",
     "@typescript-eslint/parser": "^4.4.0",
     "chokidar": "^3.4.2",
-    "eslint": "^7.10.0",
+    "eslint": "^7.11.0",
     "husky": "^4.3.0",
     "jest": "^26.5.3",
     "mock-fs": "^4.13.0",
