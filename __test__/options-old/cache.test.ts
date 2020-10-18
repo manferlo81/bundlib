@@ -1,10 +1,10 @@
-import analize from '../tools/analize';
+import analyze from '../tools/analyze';
 
 describe('cache option', () => {
 
   const cwd = process.cwd();
 
-  const analizeWithCache = (cache: string) => analize(cwd, {
+  const analyzeWithCache = (cache: string) => analyze(cwd, {
     bundlib: { cache },
   });
 
@@ -20,7 +20,7 @@ describe('cache option', () => {
     expect.assertions(invalidCacheOptions.length);
 
     invalidCacheOptions.forEach((cache) => {
-      void expect(analizeWithCache(cache as never)).rejects.toThrow(TypeError);
+      void expect(analyzeWithCache(cache as never)).rejects.toThrow(TypeError);
     });
 
   });
@@ -29,7 +29,7 @@ describe('cache option', () => {
 
     const cacheDir = 'cache-folder';
 
-    const { cache } = await analizeWithCache(cacheDir);
+    const { cache } = await analyzeWithCache(cacheDir);
 
     expect(cache)
       .toBe(cacheDir);
@@ -38,7 +38,7 @@ describe('cache option', () => {
 
   test('should be null if cache not provided', async () => {
 
-    const { cache } = await analize(cwd, {});
+    const { cache } = await analyze(cwd, {});
 
     expect(cache)
       .toBeNull();

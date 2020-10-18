@@ -1,4 +1,4 @@
-import analize from '../tools/analize';
+import analyze from '../tools/analyze';
 
 describe('input option', () => {
 
@@ -17,7 +17,7 @@ describe('input option', () => {
     expect.assertions(invalidInputs.length);
 
     invalidInputs.forEach((input) => {
-      void expect(analize(cwd, { bundlib: { input: input as never } })).rejects.toThrow(TypeError);
+      void expect(analyze(cwd, { bundlib: { input: input as never } })).rejects.toThrow(TypeError);
     });
 
   });
@@ -25,7 +25,7 @@ describe('input option', () => {
   test('should read input option as string', async () => {
 
     const input = 'src/main.ts';
-    const analized = await analize(cwd, {
+    const analyzed = await analyze(cwd, {
       main: 'main.js',
       module: 'module.js',
       browser: 'browser.js',
@@ -34,20 +34,20 @@ describe('input option', () => {
     });
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    expect(analized.main!.input).toBe(input);
+    expect(analyzed.main!.input).toBe(input);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    expect(analized.module!.input).toBe(input);
+    expect(analyzed.module!.input).toBe(input);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    expect(analized.browser!.input).toBe(input);
+    expect(analyzed.browser!.input).toBe(input);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    expect(analized.bin!.input).toBe(input);
+    expect(analyzed.bin!.input).toBe(input);
 
   });
 
   test('should read api input option from object', async () => {
 
     const api = 'src/main.ts';
-    const analized = await analize(cwd, {
+    const analyzed = await analyze(cwd, {
       main: 'main.js',
       module: 'module.js',
       browser: 'browser.js',
@@ -57,18 +57,18 @@ describe('input option', () => {
     });
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    expect(analized.main!.input).toBe(api);
+    expect(analyzed.main!.input).toBe(api);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    expect(analized.module!.input).toBe(api);
+    expect(analyzed.module!.input).toBe(api);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    expect(analized.browser!.input).toBe(api);
+    expect(analyzed.browser!.input).toBe(api);
 
   });
 
   test('should read binary input option from object', async () => {
 
     const bin = 'src/main.ts';
-    const analized = await analize(cwd, {
+    const analyzed = await analyze(cwd, {
       bin: 'out/bin.js',
       bundlib: {
         input: { bin },
@@ -76,14 +76,14 @@ describe('input option', () => {
     });
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    expect(analized.bin!.input).toBe(bin);
+    expect(analyzed.bin!.input).toBe(bin);
 
   });
 
   test('should read binary input option over legacy bin option', async () => {
 
     const bin = 'src/bin/main.ts';
-    const analized = await analize(cwd, {
+    const analyzed = await analyze(cwd, {
       bin: 'out/bin.js',
       bundlib: {
         input: { bin },
@@ -91,7 +91,7 @@ describe('input option', () => {
     });
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    expect(analized.bin!.input).toBe(bin);
+    expect(analyzed.bin!.input).toBe(bin);
 
   });
 

@@ -1,10 +1,10 @@
-import analize from '../tools/analize';
+import analyze from '../tools/analyze';
 
 describe('browser option', () => {
 
   const cwd = process.cwd();
 
-  const analizeWithBrowser = (browser: never) => analize(cwd, {
+  const analyzeWithBrowser = (browser: never) => analyze(cwd, {
     browser: 'out.js',
     bundlib: { browser },
   });
@@ -24,13 +24,13 @@ describe('browser option', () => {
     expect.assertions(invalidBrowser.length);
 
     invalidBrowser.forEach((browser) => {
-      void expect(analizeWithBrowser(browser as never)).rejects.toThrow(TypeError);
+      void expect(analyzeWithBrowser(browser as never)).rejects.toThrow(TypeError);
     });
 
   });
 
   test('should prevent Browser module build if browser = false', async () => {
-    const { browser } = await analizeWithBrowser(false as never);
+    const { browser } = await analyzeWithBrowser(false as never);
     expect(browser).toBeNull();
   });
 

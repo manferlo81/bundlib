@@ -1,10 +1,10 @@
-import analize from '../tools/analize';
+import analyze from '../tools/analyze';
 
 describe('package.json bin field', () => {
 
   const cwd = process.cwd();
 
-  const analizeWithBin = (bin: string) => analize(cwd, { bin });
+  const analyzeWithBin = (bin: string) => analyze(cwd, { bin });
 
   test('should throw on invalid bin field', () => {
 
@@ -16,7 +16,7 @@ describe('package.json bin field', () => {
     expect.assertions(invalidBrowserPaths.length);
 
     invalidBrowserPaths.forEach((bin) => {
-      void expect(analizeWithBin(bin as never)).rejects.toThrow(TypeError);
+      void expect(analyzeWithBin(bin as never)).rejects.toThrow(TypeError);
     });
 
   });
@@ -24,8 +24,8 @@ describe('package.json bin field', () => {
   test('should read binary output filename', async () => {
 
     const binField = 'bin/cli.js';
-    const analized = await analizeWithBin(binField);
-    const { bin } = analized;
+    const analyzed = await analyzeWithBin(binField);
+    const { bin } = analyzed;
 
     expect(bin ? bin.output : null).toBe(binField);
 

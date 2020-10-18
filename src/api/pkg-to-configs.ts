@@ -17,7 +17,7 @@ import { error, inputNotFound } from './errors';
 import { JS_EXTENSIONS, TS_EXTENSIONS, TS_ONLY_EXTENSIONS } from './extensions';
 import { apiPlugin as pluginAPI } from './plugins/api-plugin';
 import { createConfig } from './tools/create-config';
-import { createFincInput } from './tools/create-find-input';
+import { createFindInput } from './tools/create-find-input';
 import { createImportFromCWD } from './tools/create-import-from-cwd';
 import { createIsExternal } from './tools/create-is-external';
 import { createIsInstalled } from './tools/create-is-installed';
@@ -25,29 +25,29 @@ import { extensionMatch } from './tools/extension-match';
 import { setProp } from './tools/helpers';
 import { renamePre } from './tools/rename-pre';
 import type { StrictNullable, TypeCheckFunction } from './types/helper-types';
-import type { PkgAnalized } from './types/pkg-analized';
+import type { PkgAnalyzed } from './types/pkg-analyzed';
 import type { BundlibAPIOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types/types';
 
 export function pkgToConfigs(
-  analized: PkgAnalized,
+  analyzed: PkgAnalyzed,
   options: BundlibAPIOptions,
 ): Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>;
 
 export function pkgToConfigs(
-  analized: PkgAnalized,
+  analyzed: PkgAnalyzed,
   options: BundlibAPIOptions,
 ): Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>> {
 
   const {
     cwd,
-    main: commanjsOutput,
+    main: commonjsOutput,
     module: moduleOutput,
     browser: browserOutput,
     bin: binaryOutput,
     types: typesOutput,
     dependencies,
     cache,
-  } = analized;
+  } = analyzed;
 
   const { dev, watch, onwarn } = options;
 
@@ -79,7 +79,7 @@ export function pkgToConfigs(
 
   const extensions = useTypescript ? TS_EXTENSIONS : JS_EXTENSIONS;
 
-  const findInput = createFincInput(cwd, extensions);
+  const findInput = createFindInput(cwd, extensions);
 
   const include = extensions.map(
     (ext) => resolve(cwd, `**/*${ext}`),
@@ -114,7 +114,7 @@ export function pkgToConfigs(
     const typesGeneratedFilename = renamePre(basename(inputFile), TS_DEF_PREFIX);
 
     if (typesExpectedFilename && typesGeneratedFilename !== basename(typesExpectedFilename)) {
-      throw error('Input filenemae and types filename have to match.');
+      throw error('Input filename and types filename have to match.');
     }
 
     const declarationDir = typesExpectedFilename && dirname(typesExpectedFilename);
@@ -206,9 +206,9 @@ export function pkgToConfigs(
 
   }
 
-  if (commanjsOutput) {
+  if (commonjsOutput) {
 
-    const { input, output, sourcemap, esModule, interop, min, project } = commanjsOutput;
+    const { input, output, sourcemap, esModule, interop, min, project } = commonjsOutput;
     const inputFile = findInput(input);
 
     if (!inputFile) {
@@ -438,7 +438,7 @@ export function pkgToConfigs(
       interop,
       exports: 'auto',
     };
-    const apiInputFile = commanjsOutput ? commanjsOutput.input : null;
+    const apiInputFile = commonjsOutput ? commonjsOutput.input : null;
 
     configs.push(
       createConfig(

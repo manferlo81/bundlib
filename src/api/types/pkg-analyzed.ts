@@ -31,7 +31,7 @@ export interface Dependencies {
   peer: StrictNullable<Dictionary<string>>;
 }
 
-export interface PkgAnalized {
+export interface PkgAnalyzed {
   cwd: string;
   pkg: BundlibPkgJson;
   main: StrictNullable<ModuleBuildOptions>;
@@ -42,3 +42,5 @@ export interface PkgAnalized {
   dependencies: Dependencies;
   cache: StrictNullable<string>;
 }
+
+export { PkgAnalyzed as PkgAnalized }

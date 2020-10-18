@@ -1,4 +1,4 @@
-import analize from '../tools/analize';
+import analyze from '../tools/analyze';
 
 describe('package.json bundlib field', () => {
 
@@ -14,7 +14,7 @@ describe('package.json bundlib field', () => {
     expect.assertions(invalidBundlibOptions.length);
 
     invalidBundlibOptions.forEach((bundlib) => {
-      void expect(analize(cwd, { bundlib: bundlib as never })).rejects.toThrow(TypeError);
+      void expect(analyze(cwd, { bundlib: bundlib as never })).rejects.toThrow(TypeError);
     });
 
   });
@@ -22,7 +22,7 @@ describe('package.json bundlib field', () => {
   test('should use bundlib option as object', async () => {
 
     const name = 'name';
-    const { browser } = await analize(cwd, { browser: 'out.js', bundlib: { name } });
+    const { browser } = await analyze(cwd, { browser: 'out.js', bundlib: { name } });
 
     expect(browser).toMatchObject({ name });
 
@@ -31,7 +31,7 @@ describe('package.json bundlib field', () => {
   test('should use bundlib option as string', async () => {
 
     const name = 'bundlib';
-    const { browser } = await analize(cwd, { browser: 'out.js', bundlib: 'bundlib.json' });
+    const { browser } = await analyze(cwd, { browser: 'out.js', bundlib: 'bundlib.json' });
 
     expect(browser).toMatchObject({ name });
 

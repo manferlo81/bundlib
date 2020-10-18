@@ -1,4 +1,4 @@
-import analize from '../tools/analize';
+import analyze from '../tools/analyze';
 
 describe('id option', () => {
 
@@ -15,7 +15,7 @@ describe('id option', () => {
     expect.assertions(invalidIdOptions.length);
 
     invalidIdOptions.forEach((id) => {
-      void expect(analize(cwd, { bundlib: { id: id as never } })).rejects.toThrow(TypeError);
+      void expect(analyze(cwd, { bundlib: { id: id as never } })).rejects.toThrow(TypeError);
     });
 
   });
@@ -24,7 +24,7 @@ describe('id option', () => {
 
     const id = 'libId';
 
-    const { browser } = await analize(cwd, {
+    const { browser } = await analyze(cwd, {
       browser: 'out/lib.umd.js',
       bundlib: { name: 'lib', id },
     });
@@ -35,7 +35,7 @@ describe('id option', () => {
 
   test('should default to null if no browser build amd id provided', async () => {
 
-    const { browser } = await analize(cwd, {
+    const { browser } = await analyze(cwd, {
       browser: 'out/lib.umd.js',
       bundlib: { name: 'lib' },
     });
@@ -46,7 +46,7 @@ describe('id option', () => {
 
   test('should read per-build id option over top-level one', async () => {
 
-    const { browser } = await analize(cwd, {
+    const { browser } = await analyze(cwd, {
       browser: 'browser.js',
       bundlib: {
         id: 'top-level',

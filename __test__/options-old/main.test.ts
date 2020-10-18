@@ -1,10 +1,10 @@
-import analize from '../tools/analize';
+import analyze from '../tools/analyze';
 
 describe('main option', () => {
 
   const cwd = process.cwd();
 
-  const analizeWithMain = (main: never) => analize(cwd, {
+  const analyzeWithMain = (main: never) => analyze(cwd, {
     main: 'out.js',
     bundlib: { main },
   });
@@ -21,13 +21,13 @@ describe('main option', () => {
     expect.assertions(invalidMain.length);
 
     invalidMain.forEach((main) => {
-      void expect(analizeWithMain(main as never)).rejects.toThrow(TypeError);
+      void expect(analyzeWithMain(main as never)).rejects.toThrow(TypeError);
     });
 
   });
 
   test('should prevent CommonJS module build if main = false', async () => {
-    const { main } = await analizeWithMain(false as never);
+    const { main } = await analyzeWithMain(false as never);
     expect(main).toBeNull();
   });
 

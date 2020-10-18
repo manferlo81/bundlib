@@ -1,10 +1,10 @@
-import analize from '../tools/analize';
+import analyze from '../tools/analyze';
 
 describe('package.json main field', () => {
 
   const cwd = process.cwd();
 
-  const analizeWithMain = (main: string) => analize(cwd, { main });
+  const analyzeWithMain = (main: string) => analyze(cwd, { main });
 
   test('should throw on non string main field', () => {
 
@@ -16,7 +16,7 @@ describe('package.json main field', () => {
     expect.assertions(invalidMainFields.length);
 
     invalidMainFields.forEach((main) => {
-      void expect(analizeWithMain(main as never)).rejects.toThrow(TypeError);
+      void expect(analyzeWithMain(main as never)).rejects.toThrow(TypeError);
 
     });
 
@@ -25,8 +25,8 @@ describe('package.json main field', () => {
   test('should read main field', async () => {
 
     const mainField = 'out/lib.js';
-    const analized = await analizeWithMain(mainField);
-    const { main } = analized;
+    const analyzed = await analyzeWithMain(mainField);
+    const { main } = analyzed;
 
     expect(main ? main.output : null).toBe(mainField);
 

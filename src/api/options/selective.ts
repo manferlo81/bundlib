@@ -14,7 +14,7 @@ export function resolveSelectiveOption<K extends BuildType, T, D>(
   value: SelectiveOption<SelectiveType<K>, T>,
   defaultValue: D,
   isValidValue: TypeCheckFunction<T>,
-  allkeys: K[],
+  allKeys: K[],
   optionName: string,
   urlHash?: string
 ): SelectiveResolved<K, boolean | T | D>;
@@ -23,7 +23,7 @@ export function resolveSelectiveOption<K extends SelectiveSkipBuildType, T, D>(
   value: SelectiveOption<SelectiveType<K>, T>,
   defaultValue: D,
   isValidValue: TypeCheckFunction<T>,
-  allkeys: K[],
+  allKeys: K[],
   optionName: string,
   urlHash?: string
 ): SelectiveResolved<K, boolean | T | D>;
@@ -32,7 +32,7 @@ export function resolveSelectiveOption<K extends string, T, D>(
   value: SelectiveOption<SelectiveType<K>, T>,
   defaultValue: D,
   isValidValue: TypeCheckFunction<T>,
-  allkeys: K[],
+  allKeys: K[],
   optionName: string,
   urlHash?: string
 ): SelectiveResolved<K, boolean | T | D>;
@@ -41,21 +41,21 @@ export function resolveSelectiveOption<K extends string, T, D>(
   value: SelectiveOption<SelectiveType<K>, T>,
   defaultValue: D,
   isValidValue: TypeCheckFunction<T>,
-  allkeys: K[],
+  allKeys: K[],
   optionName: string,
   urlHash?: string,
 ): SelectiveResolved<K, boolean | T | D> {
 
   if (isNull(value) || value === defaultValue) {
     return keysToObject(
-      allkeys,
+      allKeys,
       defaultValue,
     );
   }
 
   if (isValidValue(value)) {
     return keysToObject(
-      allkeys,
+      allKeys,
       value,
     );
   }
@@ -63,17 +63,17 @@ export function resolveSelectiveOption<K extends string, T, D>(
   if (value === 'api') {
     return populateWithAPIValue(
       true,
-      keysToObject(allkeys, false),
+      keysToObject(allKeys, false),
     );
   }
 
-  const isBuildType = createOneOfLiteral<K>(allkeys);
+  const isBuildType = createOneOfLiteral<K>(allKeys);
 
   if (isBuildType(value)) {
     return setProp(
       value,
       true,
-      keysToObject(allkeys, false),
+      keysToObject(allKeys, false),
     );
   }
 
@@ -87,7 +87,7 @@ export function resolveSelectiveOption<K extends string, T, D>(
     return resolveTypeStringArray(
       value,
       isBuildType,
-      allkeys,
+      allKeys,
       invalid,
     );
   }
@@ -97,7 +97,7 @@ export function resolveSelectiveOption<K extends string, T, D>(
     defaultValue,
     isValidValue,
     isBuildType,
-    allkeys,
+    allKeys,
     invalid,
   );
 

@@ -1,11 +1,11 @@
-import analize from '../tools/analize';
+import analyze from '../tools/analyze';
 
 describe('project option', () => {
 
   const cwd = process.cwd();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const analizeWithProject = (project: string) => analize(cwd, {
+  const analyzeWithProject = (project: string) => analyze(cwd, {
     main: 'main.js',
     module: 'module.js',
     browser: 'browser.js',
@@ -24,7 +24,7 @@ describe('project option', () => {
     expect.assertions(invalidProjectOptions.length);
 
     invalidProjectOptions.forEach((invalidProject) => {
-      void expect(analizeWithProject(invalidProject as never)).rejects.toThrow(TypeError);
+      void expect(analyzeWithProject(invalidProject as never)).rejects.toThrow(TypeError);
     });
 
   });
@@ -33,7 +33,7 @@ describe('project option', () => {
 
     const projectPath = 'tsconfig-2.json';
 
-    const { main, module: moduleOutput, browser, bin } = await analizeWithProject(projectPath);
+    const { main, module: moduleOutput, browser, bin } = await analyzeWithProject(projectPath);
 
     expect(main ? main.project : null).toBe(projectPath);
     expect(moduleOutput ? moduleOutput.project : null).toBe(projectPath);
@@ -44,7 +44,7 @@ describe('project option', () => {
 
   test('should be null if project not provided', async () => {
 
-    const { main, module: moduleOutput, browser, bin } = await analizeWithProject(undefined as never);
+    const { main, module: moduleOutput, browser, bin } = await analyzeWithProject(undefined as never);
 
     expect(main ? main.project : 0).toBeNull();
     expect(moduleOutput ? moduleOutput.project : 0).toBeNull();

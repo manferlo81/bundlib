@@ -1,6 +1,6 @@
 import mock from 'mock-fs';
 import { join as pathJoin } from 'path';
-import analize from './tools/analize';
+import analyze from './tools/analyze';
 
 describe('read package.json', () => {
 
@@ -12,7 +12,7 @@ describe('read package.json', () => {
 
     mock({}, mockOptions);
 
-    const promise = analize(cwd);
+    const promise = analyze(cwd);
 
     mock.restore();
 
@@ -25,7 +25,7 @@ describe('read package.json', () => {
 
     mock({}, mockOptions);
 
-    const promise = analize(pathJoin(cwd, 'does-not-exist'));
+    const promise = analyze(pathJoin(cwd, 'does-not-exist'));
 
     mock.restore();
 
@@ -46,12 +46,12 @@ describe('read package.json', () => {
     expect.assertions(invalidPkg.length);
 
     invalidPkg.forEach((pkg) => {
-      void expect(analize(cwd, pkg as never)).rejects.toThrow(TypeError);
+      void expect(analyze(cwd, pkg as never)).rejects.toThrow(TypeError);
     });
 
   });
 
-  test('should read and analize package.json if not provided', async () => {
+  test('should read and analyze package.json if not provided', async () => {
 
     const mockPkg = {
       name: 'lib',
@@ -61,7 +61,7 @@ describe('read package.json', () => {
       'package.json': JSON.stringify(mockPkg),
     });
 
-    const { cwd: cwdR, pkg } = await analize(cwd);
+    const { cwd: cwdR, pkg } = await analyze(cwd);
 
     expect(cwdR)
       .toBe(cwd);

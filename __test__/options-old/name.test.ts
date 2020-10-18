@@ -1,4 +1,4 @@
-import analize from '../tools/analize';
+import analyze from '../tools/analyze';
 
 describe('name option', () => {
 
@@ -15,7 +15,7 @@ describe('name option', () => {
     expect.assertions(invalidNameOptions.length);
 
     invalidNameOptions.forEach((name) => {
-      void expect(analize(cwd, { bundlib: { name: name as never } })).rejects.toThrow(TypeError);
+      void expect(analyze(cwd, { bundlib: { name: name as never } })).rejects.toThrow(TypeError);
     });
 
   });
@@ -24,7 +24,7 @@ describe('name option', () => {
 
     const name = 'pkg-name';
 
-    const { browser } = await analize(cwd, {
+    const { browser } = await analyze(cwd, {
       name,
       browser: 'out/lib.umd.js',
       bundlib: { name },
@@ -38,7 +38,7 @@ describe('name option', () => {
 
     const pkgName = '@scope/pkg-name';
 
-    const { browser } = await analize(cwd, {
+    const { browser } = await analyze(cwd, {
       name: pkgName,
       browser: 'out/lib.umd.js',
     });
@@ -49,7 +49,7 @@ describe('name option', () => {
 
   test('should read per-build name option over top-level one', async () => {
 
-    const { browser } = await analize(cwd, {
+    const { browser } = await analyze(cwd, {
       browser: 'browser.js',
       bundlib: {
         name: 'top-level',

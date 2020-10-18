@@ -1,10 +1,10 @@
-import analize from '../tools/analize';
+import analyze from '../tools/analyze';
 
 describe('bin option', () => {
 
   const cwd = process.cwd();
 
-  const analizeWithBin = (bin: never) => analize(cwd, {
+  const analyzeWithBin = (bin: never) => analyze(cwd, {
     bin: 'out.js',
     bundlib: { bin },
   });
@@ -20,13 +20,13 @@ describe('bin option', () => {
     expect.assertions(invalidInputs.length);
 
     invalidInputs.forEach((bin) => {
-      void expect(analizeWithBin(bin as never)).rejects.toThrow(TypeError);
+      void expect(analyzeWithBin(bin as never)).rejects.toThrow(TypeError);
     });
 
   });
 
   test('should prevent Binary module build if bin = false', async () => {
-    const { bin } = await analizeWithBin(false as never);
+    const { bin } = await analyzeWithBin(false as never);
     expect(bin).toBeNull();
   });
 

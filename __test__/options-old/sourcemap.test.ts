@@ -1,11 +1,11 @@
-import analize from '../tools/analize';
+import analyze from '../tools/analyze';
 import { RollupSourcemap } from '../../src/api';
 
 describe('sourcemap option', () => {
 
   const cwd = process.cwd();
 
-  const analizedWithSourcemap = (sourcemap: RollupSourcemap) => analize(cwd, {
+  const analyzeWithSourcemap = (sourcemap: RollupSourcemap) => analyze(cwd, {
     main: 'out/lib.cjs.js',
     module: 'out/lib.es.js',
     browser: 'out/lib.umd.js',
@@ -13,7 +13,7 @@ describe('sourcemap option', () => {
     bundlib: { sourcemap },
   });
 
-  const analizedWithBuildSourcemap = (field: string, sourcemap: RollupSourcemap) => analize(cwd, {
+  const analyzeWithBuildSourcemap = (field: string, sourcemap: RollupSourcemap) => analyze(cwd, {
     main: 'out/lib.cjs.js',
     module: 'out/lib.es.js',
     browser: 'out/lib.umd.js',
@@ -31,14 +31,14 @@ describe('sourcemap option', () => {
     expect.assertions(invalidSoucemaps.length);
 
     invalidSoucemaps.forEach((sourcemap) => {
-      void expect(analizedWithSourcemap(sourcemap as never)).rejects.toThrow(TypeError);
+      void expect(analyzeWithSourcemap(sourcemap as never)).rejects.toThrow(TypeError);
     });
 
   });
 
   test('should read sourcemap option', async () => {
 
-    const { main, module: moduleOut, browser, bin } = await analizedWithSourcemap(false);
+    const { main, module: moduleOut, browser, bin } = await analyzeWithSourcemap(false);
 
     expect(main ? main.sourcemap : null).toBe(false);
     expect(moduleOut ? moduleOut.sourcemap : null).toBe(false);
@@ -50,7 +50,7 @@ describe('sourcemap option', () => {
   test('should read "inline" sourcemap option', async () => {
 
     const sourcemap = 'inline';
-    const { main, module: moduleOut, browser, bin } = await analizedWithSourcemap(sourcemap);
+    const { main, module: moduleOut, browser, bin } = await analyzeWithSourcemap(sourcemap);
 
     expect(main ? main.sourcemap : null).toBe(sourcemap);
     expect(moduleOut ? moduleOut.sourcemap : null).toBe(sourcemap);
@@ -62,7 +62,7 @@ describe('sourcemap option', () => {
   test('should read "hidden" sourcemap option', async () => {
 
     const sourcemap = 'hidden';
-    const { main, module: moduleOut, browser, bin } = await analizedWithSourcemap(sourcemap);
+    const { main, module: moduleOut, browser, bin } = await analyzeWithSourcemap(sourcemap);
 
     expect(main ? main.sourcemap : null).toBe(sourcemap);
     expect(moduleOut ? moduleOut.sourcemap : null).toBe(sourcemap);
@@ -73,7 +73,7 @@ describe('sourcemap option', () => {
 
   test('should read build sourcemap option', async () => {
 
-    const { main, module: moduleOut, browser, bin } = await analizedWithBuildSourcemap('main', false);
+    const { main, module: moduleOut, browser, bin } = await analyzeWithBuildSourcemap('main', false);
 
     expect(main ? main.sourcemap : null).toBe(false);
     expect(moduleOut ? moduleOut.sourcemap : null).toBe(true);
@@ -84,7 +84,7 @@ describe('sourcemap option', () => {
 
   test('should read build inline sourcemap option', async () => {
 
-    const { main, module: moduleOut, browser, bin } = await analizedWithBuildSourcemap('module', 'inline');
+    const { main, module: moduleOut, browser, bin } = await analyzeWithBuildSourcemap('module', 'inline');
 
     expect(main ? main.sourcemap : null).toBe(true);
     expect(moduleOut ? moduleOut.sourcemap : null).toBe('inline');
@@ -95,7 +95,7 @@ describe('sourcemap option', () => {
 
   test('should default to true if no sourcemap option provided', async () => {
 
-    const { main, module: moduleOut, browser, bin } = await analize(cwd, {
+    const { main, module: moduleOut, browser, bin } = await analyze(cwd, {
       main: 'out/lib.cjs.js',
       module: 'out/lib.es.js',
       browser: 'out/lib.umd.js',
@@ -111,7 +111,7 @@ describe('sourcemap option', () => {
 
   test('should read per-build sourcemap option over top-level one', async () => {
 
-    const { main, module: moduleOut, browser, bin } = await analize(cwd, {
+    const { main, module: moduleOut, browser, bin } = await analyze(cwd, {
       main: 'out/lib.cjs.js',
       module: 'out/lib.es.js',
       browser: 'out/lib.umd.js',

@@ -1,18 +1,18 @@
 import type { BuildType, SelectiveOption } from '../../src/api/types/bundlib-options';
-import analize from '../tools/analize';
+import analyze from '../tools/analyze';
 
 describe('esModule option', () => {
 
   const cwd = process.cwd();
 
-  const analizeWithESModule = (esModule: SelectiveOption<BuildType, boolean>) => analize(cwd, {
+  const analyzeWithESModule = (esModule: SelectiveOption<BuildType, boolean>) => analyze(cwd, {
     main: 'main.js',
     browser: 'browser.js',
     bin: 'bin.js',
     bundlib: { esModule },
   });
 
-  const analizeWithBuildESModule = (field: string, esModule: SelectiveOption<BuildType, boolean>) => analize(cwd, {
+  const analyzeWithBuildESModule = (field: string, esModule: SelectiveOption<BuildType, boolean>) => analyze(cwd, {
     main: 'main.js',
     browser: 'browser.js',
     bin: 'bin.js',
@@ -33,14 +33,14 @@ describe('esModule option', () => {
     expect.assertions(invalid.length);
 
     invalid.forEach((esModule) => {
-      void expect(analizeWithESModule(esModule as never)).rejects.toThrow(TypeError);
+      void expect(analyzeWithESModule(esModule as never)).rejects.toThrow(TypeError);
     });
 
   });
 
   test('should read string main esModule option', async () => {
 
-    const { main, browser, bin } = await analizeWithESModule('main');
+    const { main, browser, bin } = await analyzeWithESModule('main');
 
     expect(main ? main.esModule : null).toBe(true);
     expect(browser ? browser.esModule : null).toBe(false);
@@ -50,7 +50,7 @@ describe('esModule option', () => {
 
   test('should read string browser esModule option', async () => {
 
-    const { main, browser, bin } = await analizeWithESModule('browser');
+    const { main, browser, bin } = await analyzeWithESModule('browser');
 
     expect(main ? main.esModule : null).toBe(false);
     expect(browser ? browser.esModule : null).toBe(true);
@@ -60,7 +60,7 @@ describe('esModule option', () => {
 
   test('should read string bin esModule option', async () => {
 
-    const { main, browser, bin } = await analizeWithESModule('bin');
+    const { main, browser, bin } = await analyzeWithESModule('bin');
 
     expect(main ? main.esModule : null).toBe(false);
     expect(browser ? browser.esModule : null).toBe(false);
@@ -70,7 +70,7 @@ describe('esModule option', () => {
 
   test('should read array esModule option', async () => {
 
-    const { main, browser, bin } = await analizeWithESModule(['main', 'bin']);
+    const { main, browser, bin } = await analyzeWithESModule(['main', 'bin']);
 
     expect(main ? main.esModule : null).toBe(true);
     expect(browser ? browser.esModule : null).toBe(false);
@@ -80,7 +80,7 @@ describe('esModule option', () => {
 
   test('should read true as esModule option', async () => {
 
-    const { main, browser, bin } = await analizeWithESModule(true);
+    const { main, browser, bin } = await analyzeWithESModule(true);
 
     expect(main ? main.esModule : null).toBe(true);
     expect(browser ? browser.esModule : null).toBe(true);
@@ -90,7 +90,7 @@ describe('esModule option', () => {
 
   test('should read false as esModule option', async () => {
 
-    const { main, browser, bin } = await analizeWithESModule(false);
+    const { main, browser, bin } = await analyzeWithESModule(false);
 
     expect(main ? main.esModule : null).toBe(false);
     expect(browser ? browser.esModule : null).toBe(false);
@@ -100,7 +100,7 @@ describe('esModule option', () => {
 
   test('should read per-build main esModule option', async () => {
 
-    const { main, browser, bin } = await analizeWithBuildESModule('main', true);
+    const { main, browser, bin } = await analyzeWithBuildESModule('main', true);
 
     expect(main ? main.esModule : null).toBe(true);
     expect(browser ? browser.esModule : null).toBe(false);
@@ -110,7 +110,7 @@ describe('esModule option', () => {
 
   test('should read per-build browser esModule option', async () => {
 
-    const { main, browser, bin } = await analizeWithBuildESModule('browser', true);
+    const { main, browser, bin } = await analyzeWithBuildESModule('browser', true);
 
     expect(main ? main.esModule : null).toBe(false);
     expect(browser ? browser.esModule : null).toBe(true);
@@ -120,7 +120,7 @@ describe('esModule option', () => {
 
   test('should read per-build bin esModule option', async () => {
 
-    const { main, browser, bin } = await analizeWithBuildESModule('bin', true);
+    const { main, browser, bin } = await analyzeWithBuildESModule('bin', true);
 
     expect(main ? main.esModule : null).toBe(false);
     expect(browser ? browser.esModule : null).toBe(false);
@@ -130,7 +130,7 @@ describe('esModule option', () => {
 
   test('should default to false if esModule option not provided', async () => {
 
-    const { main, browser, bin } = await analize(cwd, {
+    const { main, browser, bin } = await analyze(cwd, {
       main: 'out/lib.cjs.js',
       browser: 'out/lib.umd.js',
       bin: 'out/lib.bin.js',
@@ -144,7 +144,7 @@ describe('esModule option', () => {
 
   test('should read per-build esModule option over top-level one', async () => {
 
-    const { main, browser, bin } = await analize(cwd, {
+    const { main, browser, bin } = await analyze(cwd, {
       main: 'main.js',
       browser: 'browser.js',
       bin: 'bin.js',

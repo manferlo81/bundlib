@@ -1,4 +1,4 @@
-import analize from '../tools/analize';
+import analyze from '../tools/analyze';
 
 describe('unknown options', () => {
 
@@ -17,7 +17,7 @@ describe('unknown options', () => {
     expect.assertions(invalidOptions.length);
 
     invalidOptions.forEach((option) => {
-      void expect(analize(cwd, { bundlib: { [option]: true } })).rejects.toThrow(TypeError);
+      void expect(analyze(cwd, { bundlib: { [option]: true } })).rejects.toThrow(TypeError);
     });
 
   });

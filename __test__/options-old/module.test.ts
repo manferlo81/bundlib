@@ -1,10 +1,10 @@
-import analize from '../tools/analize';
+import analyze from '../tools/analyze';
 
 describe('module option', () => {
 
   const cwd = process.cwd();
 
-  const analizeWithModule = (module: never) => analize(cwd, {
+  const analyzeWithModule = (module: never) => analyze(cwd, {
     module: 'out.js',
     bundlib: { module },
   });
@@ -21,13 +21,13 @@ describe('module option', () => {
     expect.assertions(invalidModule.length);
 
     invalidModule.forEach((moduleOption) => {
-      void expect(analizeWithModule(moduleOption as never)).rejects.toThrow(TypeError);
+      void expect(analyzeWithModule(moduleOption as never)).rejects.toThrow(TypeError);
     });
 
   });
 
   test('should prevent ES Module build if module = false', async () => {
-    const { module: moduleOut } = await analizeWithModule(false as never);
+    const { module: moduleOut } = await analyzeWithModule(false as never);
     expect(moduleOut).toBeNull();
   });
 

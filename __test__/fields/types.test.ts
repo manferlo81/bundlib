@@ -1,4 +1,4 @@
-import analize from '../tools/analize';
+import analyze from '../tools/analyze';
 
 describe('package.json types', () => {
 
@@ -6,8 +6,8 @@ describe('package.json types', () => {
 
   test('should set types to null if no type path provided', async () => {
 
-    const analized = await analize(cwd, {});
-    const { types } = analized;
+    const analyzed = await analyze(cwd, {});
+    const { types } = analyzed;
 
     expect(types).toBeNull();
 
@@ -15,10 +15,10 @@ describe('package.json types', () => {
 
   test('should read types', async () => {
 
-    const analized = await analize(cwd, {
+    const analyzed = await analyze(cwd, {
       types: 'types/index.d.ts',
     });
-    const { types } = analized;
+    const { types } = analyzed;
 
     expect(types).toEqual({
       output: 'types/index.d.ts',
@@ -29,10 +29,10 @@ describe('package.json types', () => {
 
   test('should read typings', async () => {
 
-    const analized = await analize(cwd, {
+    const analyzed = await analyze(cwd, {
       typings: 'types',
     });
-    const { types } = analized;
+    const { types } = analyzed;
 
     expect(types).toEqual({
       output: 'types',
@@ -45,11 +45,11 @@ describe('package.json types', () => {
 
     const typesField = 'types';
 
-    const analized = await analize(cwd, {
+    const analyzed = await analyze(cwd, {
       typings: 'typings',
       types: typesField,
     });
-    const { types } = analized;
+    const { types } = analyzed;
 
     expect(types).toEqual({
       output: typesField,

@@ -1,11 +1,11 @@
 import type { BuildType, SelectiveOption } from '../../src/api/types/bundlib-options';
-import analize from '../tools/analize';
+import analyze from '../tools/analyze';
 
 describe('min option', () => {
 
   const cwd = process.cwd();
 
-  const analizeWithMin = (min: SelectiveOption<BuildType, boolean>) => analize(cwd, {
+  const analyzeWithMin = (min: SelectiveOption<BuildType, boolean>) => analyze(cwd, {
     main: 'main.js',
     module: 'module.js',
     browser: 'browser.js',
@@ -13,7 +13,7 @@ describe('min option', () => {
     bundlib: { min },
   });
 
-  const analizeWithBuildMin = (field: BuildType, min: SelectiveOption<BuildType, boolean>) => analize(cwd, {
+  const analyzeWithBuildMin = (field: BuildType, min: SelectiveOption<BuildType, boolean>) => analyze(cwd, {
     main: 'main.js',
     module: 'module.js',
     browser: 'browser.js',
@@ -36,14 +36,14 @@ describe('min option', () => {
     expect.assertions(invalidMinOptions.length);
 
     invalidMinOptions.forEach((min) => {
-      void expect(analizeWithMin(min as never)).rejects.toThrow(TypeError);
+      void expect(analyzeWithMin(min as never)).rejects.toThrow(TypeError);
     });
 
   });
 
   test('should read string main min option', async () => {
 
-    const { main, module: moduleOut, browser, bin } = await analizeWithMin('main');
+    const { main, module: moduleOut, browser, bin } = await analyzeWithMin('main');
 
     expect(main ? main.min : null).toBe(true);
     expect(moduleOut ? moduleOut.min : null).toBe(false);
@@ -54,7 +54,7 @@ describe('min option', () => {
 
   test('should read string module min option', async () => {
 
-    const { main, module: moduleOut, browser, bin } = await analizeWithMin('module');
+    const { main, module: moduleOut, browser, bin } = await analyzeWithMin('module');
 
     expect(main ? main.min : null).toBe(false);
     expect(moduleOut ? moduleOut.min : null).toBe(true);
@@ -65,7 +65,7 @@ describe('min option', () => {
 
   test('should read string browser min option', async () => {
 
-    const { main, module: moduleOut, browser, bin } = await analizeWithMin('browser');
+    const { main, module: moduleOut, browser, bin } = await analyzeWithMin('browser');
 
     expect(main ? main.min : null).toBe(false);
     expect(moduleOut ? moduleOut.min : null).toBe(false);
@@ -76,7 +76,7 @@ describe('min option', () => {
 
   test('should read string bin min option', async () => {
 
-    const { main, module: moduleOut, browser, bin } = await analizeWithMin('bin');
+    const { main, module: moduleOut, browser, bin } = await analyzeWithMin('bin');
 
     expect(main ? main.min : null).toBe(false);
     expect(moduleOut ? moduleOut.min : null).toBe(false);
@@ -87,7 +87,7 @@ describe('min option', () => {
 
   test('should read array min option', async () => {
 
-    const { main, module: moduleOut, browser, bin } = await analizeWithMin(['module', 'bin']);
+    const { main, module: moduleOut, browser, bin } = await analyzeWithMin(['module', 'bin']);
 
     expect(main ? main.min : null).toEqual(false);
     expect(moduleOut ? moduleOut.min : null).toEqual(true);
@@ -98,7 +98,7 @@ describe('min option', () => {
 
   test('should read true as min option', async () => {
 
-    const { main, module: moduleOut, browser, bin } = await analizeWithMin(true);
+    const { main, module: moduleOut, browser, bin } = await analyzeWithMin(true);
 
     expect(main ? main.min : null).toEqual(true);
     expect(moduleOut ? moduleOut.min : null).toEqual(true);
@@ -109,7 +109,7 @@ describe('min option', () => {
 
   test('should read false as min option', async () => {
 
-    const { main, module: moduleOut, browser, bin } = await analizeWithMin(false);
+    const { main, module: moduleOut, browser, bin } = await analyzeWithMin(false);
 
     expect(main ? main.min : null).toEqual(false);
     expect(moduleOut ? moduleOut.min : null).toEqual(false);
@@ -120,7 +120,7 @@ describe('min option', () => {
 
   test('should read per-build main min option', async () => {
 
-    const { main, module: moduleOut, browser, bin } = await analizeWithBuildMin('main', true);
+    const { main, module: moduleOut, browser, bin } = await analyzeWithBuildMin('main', true);
 
     expect(main ? main.min : null).toEqual(true);
     expect(moduleOut ? moduleOut.min : null).toEqual(false);
@@ -131,7 +131,7 @@ describe('min option', () => {
 
   test('should read per-build module min option', async () => {
 
-    const { main, module: moduleOut, browser, bin } = await analizeWithBuildMin('module', true);
+    const { main, module: moduleOut, browser, bin } = await analyzeWithBuildMin('module', true);
 
     expect(main ? main.min : null).toEqual(false);
     expect(moduleOut ? moduleOut.min : null).toEqual(true);
@@ -142,7 +142,7 @@ describe('min option', () => {
 
   test('should read per-build browser min option', async () => {
 
-    const { main, module: moduleOut, browser, bin } = await analizeWithBuildMin('browser', true);
+    const { main, module: moduleOut, browser, bin } = await analyzeWithBuildMin('browser', true);
 
     expect(main ? main.min : null).toEqual(false);
     expect(moduleOut ? moduleOut.min : null).toEqual(false);
@@ -153,7 +153,7 @@ describe('min option', () => {
 
   test('should read per-build bin min option', async () => {
 
-    const { main, module: moduleOut, browser, bin } = await analizeWithBuildMin('bin', true);
+    const { main, module: moduleOut, browser, bin } = await analyzeWithBuildMin('bin', true);
 
     expect(main ? main.min : null).toEqual(false);
     expect(moduleOut ? moduleOut.min : null).toEqual(false);
@@ -164,7 +164,7 @@ describe('min option', () => {
 
   test('should read per-build min option over top-level one', async () => {
 
-    const { main, module: moduleOut, browser, bin } = await analize(cwd, {
+    const { main, module: moduleOut, browser, bin } = await analyze(cwd, {
       main: 'main.js',
       module: 'main.js',
       browser: 'main.js',

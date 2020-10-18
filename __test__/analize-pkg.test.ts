@@ -1,15 +1,15 @@
-import analize from './tools/analize';
+import analyze from './tools/analyze';
 
-describe('analize', () => {
+describe('analyze', () => {
 
   const cwd = process.cwd();
 
-  test('should analize provided package.json', async () => {
+  test('should analyze provided package.json', async () => {
 
     const pkg = { name: 'lib' };
-    const analized = await analize(cwd, pkg);
+    const analyzed = await analyze(cwd, pkg);
 
-    expect(analized.pkg)
+    expect(analyzed.pkg)
       .toBe(pkg);
 
   });
@@ -18,7 +18,7 @@ describe('analize', () => {
 
     const pkg = { name: 'lib' };
 
-    const analized = await analize(cwd, pkg);
+    const analized = await analyze(cwd, pkg);
     const {
       main,
       module: moduleBuild,

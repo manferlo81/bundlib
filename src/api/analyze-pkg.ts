@@ -23,11 +23,11 @@ import { invalidKeys, keysCheck } from './type-check/keys';
 import type { BundlibOptions, TypesOptions } from './types/bundlib-options';
 import type { Dictionary, StrictNullable } from './types/helper-types';
 import type { BundlibPkgJson } from './types/pkg';
-import type { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalized, TypesBuildOptions } from './types/pkg-analized';
+import type { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalyzed, TypesBuildOptions } from './types/pkg-analyzed';
 import type { RollupSourcemap } from './types/types';
 
-async function analizePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalized>;
-async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAnalized> {
+async function analyzePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalyzed>;
+async function analyzePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAnalyzed> {
 
   const pkg: BundlibPkgJson = inputPkg || await readPkg(cwd);
 
@@ -328,4 +328,4 @@ async function analizePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
 }
 
-export default analizePkg;
+export default analyzePkg;

@@ -263,7 +263,7 @@ min: boolean | SelectiveOption;
 default false;
 ```
 
-Defines which files should be used to build an aditional minified version, if `true` will affect all modules. The minified file will be renamed from `*.ext` to `*.min.ext`. This option will override the default behavior of the [`--dev`, `-d` *cli option*](#-dev-d) , which means only the minified version will be actually minified, the normal version will **NOT** be minified even if you don't set the [`--dev`, `-d` cli option](#-dev-d).
+Defines which files should be used to build an additional minified version, if `true` will affect all modules. The minified file will be renamed from `*.ext` to `*.min.ext`. This option will override the default behavior of the [`--dev`, `-d` *cli option*](#-dev-d) , which means only the minified version will be actually minified, the normal version will **NOT** be minified even if you don't set the [`--dev`, `-d` cli option](#-dev-d).
 
 This option supports `object` based and `string` based [`selective format`](#selective-options). See [Selective Options](#selective-options) for more information.
 
@@ -323,7 +323,7 @@ See [input](#input), [sourcemap](#sourcemap), [esModule](#esmodule), [interop](#
 
 #### Object based selective format
 
-`object` based format works by preserving the default value and overiding it with the provided configuration.
+`object` based format works by preserving the default value and overriding it with the provided configuration.
 
 ***example***
 
@@ -498,16 +498,16 @@ export default configsFromPkg(
 );
 ```
 
-### analizePkg
+### analyzePkg
 
 ```typescript
-function analizePkg(
+function analyzePkg(
   cwd: string,
   pkg: PkgJson = read(cwd + "/package.json"),
-): Promise<PkgAnalized>;
+): Promise<PkgAnalyzed>;
 ```
 
-Analizes `package.json` and returns a `Promise` that resolves to useful normalized information, [*see* `PkgAnalized`](#pkganalized). If `pkg` not provided it will be read from the current working directory `cwd`.
+Analyzes `package.json` and returns a `Promise` that resolves to useful normalized information, [*see* `PkgAnalyzed`](#pkganalyzed). If `pkg` not provided it will be read from the current working directory `cwd`.
 
 ### configsFromPkg
 
@@ -523,10 +523,10 @@ Returns a `Promise` that resolves to an array of Rollup configs based on the con
 
 ## Types
 
-### PkgAnalized
+### PkgAnalyzed
 
 ```typescript
-interface PkgAnalized {
+interface PkgAnalyzed {
   cwd: string;
   pkg: PkgJson;
   main: ModuleBuildOptions | null;

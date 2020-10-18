@@ -1,18 +1,18 @@
 import type { BuildType, SelectiveOption } from '../../src/api/types/bundlib-options';
-import analize from '../tools/analize';
+import analyze from '../tools/analyze';
 
 describe('interop option', () => {
 
   const cwd = process.cwd();
 
-  const analizeWithInterop = (interop: SelectiveOption<BuildType, boolean>) => analize(cwd, {
+  const analyzeWithInterop = (interop: SelectiveOption<BuildType, boolean>) => analyze(cwd, {
     main: 'main.js',
     browser: 'browser.js',
     bin: 'bin.js',
     bundlib: { interop },
   });
 
-  const analizeWithBuildInterop = (field: string, interop: SelectiveOption<BuildType, boolean>) => analize(cwd, {
+  const analyzeWithBuildInterop = (field: string, interop: SelectiveOption<BuildType, boolean>) => analyze(cwd, {
     main: 'main.js',
     browser: 'browser.js',
     bin: 'bin.js',
@@ -33,69 +33,69 @@ describe('interop option', () => {
     expect.assertions(invalid.length);
 
     invalid.forEach((interop) => {
-      void expect(analizeWithInterop(interop as never)).rejects.toThrow(TypeError);
+      void expect(analyzeWithInterop(interop as never)).rejects.toThrow(TypeError);
     });
 
   });
 
   test('should read string main interop option', async () => {
-    const { main, browser, bin } = await analizeWithInterop('main');
+    const { main, browser, bin } = await analyzeWithInterop('main');
     expect(main ? main.interop : null).toBe(true);
     expect(browser ? browser.interop : null).toBe(false);
     expect(bin ? bin.interop : null).toBe(false);
   });
 
   test('should read string browser interop option', async () => {
-    const { main, browser, bin } = await analizeWithInterop('browser');
+    const { main, browser, bin } = await analyzeWithInterop('browser');
     expect(main ? main.interop : null).toBe(false);
     expect(browser ? browser.interop : null).toBe(true);
     expect(bin ? bin.interop : null).toBe(false);
   });
 
   test('should read string bin interop option', async () => {
-    const { main, browser, bin } = await analizeWithInterop('bin');
+    const { main, browser, bin } = await analyzeWithInterop('bin');
     expect(main ? main.interop : null).toBe(false);
     expect(browser ? browser.interop : null).toBe(false);
     expect(bin ? bin.interop : null).toBe(true);
   });
 
   test('should read array interop option', async () => {
-    const { main, browser, bin } = await analizeWithInterop(['main', 'bin']);
+    const { main, browser, bin } = await analyzeWithInterop(['main', 'bin']);
     expect(main ? main.interop : null).toBe(true);
     expect(browser ? browser.interop : null).toBe(false);
     expect(bin ? bin.interop : null).toBe(true);
   });
 
   test('should read true as interop option', async () => {
-    const { main, browser, bin } = await analizeWithInterop(true);
+    const { main, browser, bin } = await analyzeWithInterop(true);
     expect(main ? main.interop : null).toBe(true);
     expect(browser ? browser.interop : null).toBe(true);
     expect(bin ? bin.interop : null).toBe(true);
   });
 
   test('should read false interop option', async () => {
-    const { main, browser, bin } = await analizeWithInterop(false);
+    const { main, browser, bin } = await analyzeWithInterop(false);
     expect(main ? main.interop : null).toBe(false);
     expect(browser ? browser.interop : null).toBe(false);
     expect(bin ? bin.interop : null).toBe(false);
   });
 
   test('should read per-build main interop option', async () => {
-    const { main, browser, bin } = await analizeWithBuildInterop('main', true);
+    const { main, browser, bin } = await analyzeWithBuildInterop('main', true);
     expect(main ? main.interop : null).toBe(true);
     expect(browser ? browser.interop : null).toBe(false);
     expect(bin ? bin.interop : null).toBe(false);
   });
 
   test('should read per-build browser interop option', async () => {
-    const { main, browser, bin } = await analizeWithBuildInterop('browser', true);
+    const { main, browser, bin } = await analyzeWithBuildInterop('browser', true);
     expect(main ? main.interop : null).toBe(false);
     expect(browser ? browser.interop : null).toBe(true);
     expect(bin ? bin.interop : null).toBe(false);
   });
 
   test('should read per-build bin interop option', async () => {
-    const { main, browser, bin } = await analizeWithBuildInterop('bin', true);
+    const { main, browser, bin } = await analyzeWithBuildInterop('bin', true);
     expect(main ? main.interop : null).toBe(false);
     expect(browser ? browser.interop : null).toBe(false);
     expect(bin ? bin.interop : null).toBe(true);
@@ -103,7 +103,7 @@ describe('interop option', () => {
 
   test('should default to false if interop option not provided', async () => {
 
-    const { main, browser, bin } = await analize(cwd, {
+    const { main, browser, bin } = await analyze(cwd, {
       main: 'out/lib.cjs.js',
       browser: 'out/lib.umd.js',
       bin: 'out/lib.bin.js',
@@ -117,7 +117,7 @@ describe('interop option', () => {
 
   test('should read per-build interop option over top-level one', async () => {
 
-    const { main, browser, bin } = await analize(cwd, {
+    const { main, browser, bin } = await analyze(cwd, {
       main: 'main.js',
       browser: 'browser.js',
       bin: 'bin.js',

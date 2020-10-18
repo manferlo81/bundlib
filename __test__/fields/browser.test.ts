@@ -1,10 +1,10 @@
-import analize from '../tools/analize';
+import analyze from '../tools/analyze';
 
 describe('package.json browser field', () => {
 
   const cwd = process.cwd();
 
-  const analizeWithBrowser = (browser: string) => analize(cwd, { browser });
+  const analyzeWithBrowser = (browser: string) => analyze(cwd, { browser });
 
   test('should throw on invalid browser field', () => {
 
@@ -16,7 +16,7 @@ describe('package.json browser field', () => {
     expect.assertions(invalidBrowserPaths.length);
 
     invalidBrowserPaths.forEach((browser) => {
-      void expect(analizeWithBrowser(browser as never)).rejects.toThrow(TypeError);
+      void expect(analyzeWithBrowser(browser as never)).rejects.toThrow(TypeError);
     });
 
   });
@@ -24,8 +24,8 @@ describe('package.json browser field', () => {
   test('should read browser field', async () => {
 
     const browserField = 'out/lib.js';
-    const analized = await analizeWithBrowser(browserField);
-    const { browser } = analized;
+    const analyzed = await analyzeWithBrowser(browserField);
+    const { browser } = analyzed;
 
     expect(browser ? browser.output : null).toBe(browserField);
 

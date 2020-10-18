@@ -14,7 +14,7 @@ describe('build', () => {
 
     const [config] = await createConfigs(cwd, false, {
       main: 'out/lib.cjs.js',
-      bundlib: { input: 'src/api/analize-pkg.ts' },
+      bundlib: { input: 'src/api/analyze-pkg.ts' },
       ...deps,
     });
     const build = await rollup(config);

@@ -1,4 +1,4 @@
-import analizePkg from './analize-pkg';
+import analyzePkg from './analyze-pkg';
 import { pkgToConfigs } from './pkg-to-configs';
 import type { Nullable } from './types/helper-types';
 import type { BundlibPkgJson } from './types/pkg';
@@ -10,7 +10,7 @@ async function configsFromPkg(
   pkgJson?: BundlibPkgJson,
 ): Promise<Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>> {
   return pkgToConfigs(
-    await analizePkg(cwd, pkgJson),
+    await analyzePkg(cwd, pkgJson),
     options || {},
   );
 }

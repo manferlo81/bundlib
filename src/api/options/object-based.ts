@@ -25,7 +25,7 @@ export function resolveObjectSelectiveOption<K extends BuildType, T, D>(
   defaultValue: D,
   isValidValue: TypeCheckFunction<T>,
   isBuildType: TypeCheckFunction<K>,
-  allkeys: K[],
+  allKeys: K[],
   invalid: TypeError,
 ): SelectiveResolved<K, T | D>;
 
@@ -34,7 +34,7 @@ export function resolveObjectSelectiveOption<K extends SelectiveSkipBuildType, T
   defaultValue: D,
   isValidValue: TypeCheckFunction<T>,
   isBuildType: TypeCheckFunction<K>,
-  allkeys: K[],
+  allKeys: K[],
   invalid: TypeError,
 ): SelectiveResolved<K, T | D>;
 
@@ -43,7 +43,7 @@ export function resolveObjectSelectiveOption<K extends string, T, D>(
   defaultValue: D,
   isValidValue: TypeCheckFunction<T>,
   isBuildType: TypeCheckFunction<K>,
-  allkeys: K[],
+  allKeys: K[],
   invalid: TypeError,
 ): SelectiveResolved<K, T | D>;
 
@@ -52,7 +52,7 @@ export function resolveObjectSelectiveOption<K extends string, T, D>(
   defaultValue: D,
   isValidValue: TypeCheckFunction<T>,
   isBuildType: TypeCheckFunction<K>,
-  allkeys: K[],
+  allKeys: K[],
   invalid: TypeError,
 ): SelectiveResolved<K, T | D> {
 
@@ -67,7 +67,7 @@ export function resolveObjectSelectiveOption<K extends string, T, D>(
   }
 
   const result = keysToObject<string, T | D>(
-    allkeys,
+    allKeys,
     isNull(override) ? defaultValue : override,
   );
 
@@ -108,21 +108,21 @@ export function resolveObjectBasedSelectiveOption<T, D>(
   value: ObjectBasedSelectiveOption<BuildType, T>,
   defaultValue: D,
   isValidValue: TypeCheckFunction<T>,
-  allkeys: BuildType[],
+  allKeys: BuildType[],
   optionName: string,
   urlHash?: string,
 ): SelectiveResolved<BuildType, T | D> {
 
   if (isNull(value)) {
     return keysToObject(
-      allkeys,
+      allKeys,
       defaultValue,
     );
   }
 
   if (isValidValue(value)) {
     return keysToObject(
-      allkeys,
+      allKeys,
       value,
     );
   }
@@ -137,8 +137,8 @@ export function resolveObjectBasedSelectiveOption<T, D>(
     value,
     defaultValue,
     isValidValue,
-    createOneOfLiteral(allkeys),
-    allkeys,
+    createOneOfLiteral(allKeys),
+    allKeys,
     invalid,
   );
 

@@ -7,28 +7,28 @@ import type { SelectiveResolved } from './object-based';
 export function resolveTypeStringArray<K extends BuildType>(
   value: Array<SelectiveType<K>>,
   isBuildType: TypeCheckFunction<K>,
-  allkeys: K[],
+  allKeys: K[],
   invalid: TypeError
 ): SelectiveResolved<K, boolean>;
 
 export function resolveTypeStringArray<K extends SelectiveSkipBuildType>(
   value: Array<SelectiveType<K>>,
   isBuildType: TypeCheckFunction<K>,
-  allkeys: K[],
+  allKeys: K[],
   invalid: TypeError
 ): SelectiveResolved<K, boolean>;
 
 export function resolveTypeStringArray<K extends string>(
   value: Array<SelectiveType<K>>,
   isBuildType: TypeCheckFunction<K>,
-  allkeys: K[],
+  allKeys: K[],
   invalid: TypeError
 ): SelectiveResolved<K, boolean>;
 
 export function resolveTypeStringArray<K extends string>(
   value: Array<SelectiveType<K>>,
   isBuildType: TypeCheckFunction<K>,
-  allkeys: K[],
+  allKeys: K[],
   invalid: TypeError,
 ): SelectiveResolved<K, boolean> {
 
@@ -53,7 +53,7 @@ export function resolveTypeStringArray<K extends string>(
       );
 
     },
-    keysToObject(allkeys, false),
+    keysToObject(allKeys, false),
   );
 
 }
