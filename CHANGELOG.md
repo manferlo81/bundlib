@@ -2,6 +2,13 @@
 
 ## Version History
 
+### [0.17.4](https://github.com/manferlo81/bundlib/compare/v0.17.3...v0.17.4) (2020-10-18)
+
+
+### Bug Fixes
+
+* Typo on API exported function name ([d639dc6](https://github.com/manferlo81/bundlib/commit/d639dc68f4bd70967c2cc8c016771b10767abef0))
+
 ### [0.17.3](https://github.com/manferlo81/bundlib/compare/v0.17.2...v0.17.3) (2020-10-10)
 
 ### [0.17.2](https://github.com/manferlo81/bundlib/compare/v0.17.1...v0.17.2) (2020-08-04)
