@@ -1,7 +1,7 @@
 {
   "name": "bundlib",
   "displayName": "Bundlib",
-  "version": "0.17.4",
+  "version": "0.17.5",
   "description": "An automatic configuration manager for Rollup.js.",
   "keywords": [
     "library",
