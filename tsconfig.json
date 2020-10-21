@@ -15,7 +15,9 @@
     "noImplicitReturns": true,
     "noImplicitAny": true,
     "removeComments": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "declaration": true,
+    "declarationMap": true
   },
   "include": [
     "__mocks__/**/*.ts",

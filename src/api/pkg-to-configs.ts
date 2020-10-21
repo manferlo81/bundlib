@@ -164,7 +164,7 @@ export function pkgToConfigs(
           compilerOptions: {
             sourceMap: sourcemap,
             declaration: !!declarationDir,
-            ...declarationDir && { declarationDir },
+            ...declarationDir ? { declarationDir } : { declarationMap: false },
           },
         },
         ...project && { tsconfig: resolve(cwd, project) },
