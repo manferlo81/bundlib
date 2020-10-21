@@ -2,6 +2,13 @@
 
 ## Version History
 
+### [0.17.6](https://github.com/manferlo81/bundlib/compare/v0.17.5...v0.17.6) (2020-10-21)
+
+
+### Bug Fixes
+
+* Prevent declartionMap option warning ([e58073a](https://github.com/manferlo81/bundlib/commit/e58073ac568938672446f4481eae707fb5ec9b7a))
+
 ### [0.17.5](https://github.com/manferlo81/bundlib/compare/v0.17.4...v0.17.5) (2020-10-18)
 
 ### [0.17.4](https://github.com/manferlo81/bundlib/compare/v0.17.3...v0.17.4) (2020-10-18)
