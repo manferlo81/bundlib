@@ -43,4 +43,4 @@ export interface PkgAnalyzed {
   cache: StrictNullable<string>;
 }
 
-export { PkgAnalyzed as PkgAnalized }
+export { PkgAnalyzed as PkgAnalized };
