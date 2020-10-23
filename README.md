@@ -4,7 +4,7 @@
 
 An automatic library bundler powered by [Rollup.js](https://github.com/rollup/rollup).
 
-> :warning: **Bundlib** is under active development, please [file a new issue](https://github.com/manferlo81/bundlib/issues) if you find any issue or bug, suggestions are welcome as well.
+> :warning: **Bundlib** is under development, please [file a new issue](https://github.com/manferlo81/bundlib/issues) if you find any issue or bug, suggestions are welcome as well.
 
 ## In this guide
 
