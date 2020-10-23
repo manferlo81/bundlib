@@ -24,14 +24,9 @@ import { createIsInstalled } from './tools/create-is-installed';
 import { extensionMatch } from './tools/extension-match';
 import { setProp } from './tools/helpers';
 import { renamePre } from './tools/rename-pre';
-import type { StrictNullable, TypeCheckFunction } from './types/helper-types';
+import type { Nullable, TypeCheckFunction } from './types/helper-types';
 import type { PkgAnalyzed } from './types/pkg-analyzed';
 import type { BundlibAPIOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types/types';
-
-export function pkgToConfigs(
-  analyzed: PkgAnalyzed,
-  options: BundlibAPIOptions,
-): Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>;
 
 export function pkgToConfigs(
   analyzed: PkgAnalyzed,
@@ -40,11 +35,11 @@ export function pkgToConfigs(
 
   const {
     cwd,
-    main: commonjsOutput,
-    module: moduleOutput,
-    browser: browserOutput,
-    bin: binaryOutput,
-    types: typesOutput,
+    main: commonjsBuild,
+    module: moduleBuild,
+    browser: browserBuild,
+    bin: binaryBuild,
+    types: typesBuild,
     dependencies,
     cache,
   } = analyzed;
@@ -68,7 +63,7 @@ export function pkgToConfigs(
     builtinModules as string[],
   );
 
-  const production = !dev;
+  const isProduction = !dev;
 
   const isInstalled = createIsInstalled(runtimeDependencies, devDependencies);
 
@@ -95,16 +90,16 @@ export function pkgToConfigs(
     mini: boolean,
     browser: boolean,
     bin: boolean,
-    apiInput: StrictNullable<string>,
-    project: StrictNullable<string>,
+    apiInput: Nullable<string>,
+    project: Nullable<string>,
   ): Plugin[] {
 
     const sourcemap = !!rollupSourcemap;
 
     const inputIsTypescript = extensionMatch(inputFile, TS_ONLY_EXTENSIONS);
-    const typesExpectedFilename = configs.length === 0 && !bin && typesOutput && resolve(
+    const typesExpectedFilename = configs.length === 0 && !bin && typesBuild && resolve(
       cwd,
-      extensionMatch(typesOutput.output, ['.ts']) ? typesOutput.output : pathJoin(typesOutput.output, 'index.d.ts'),
+      extensionMatch(typesBuild.output, ['.ts']) ? typesBuild.output : pathJoin(typesBuild.output, 'index.d.ts'),
     );
 
     if (typesExpectedFilename && !inputIsTypescript) {
@@ -172,7 +167,7 @@ export function pkgToConfigs(
 
       pluginJSON({ preferConst: true }),
 
-      declarationDir && typesOutput && typesOutput.equals && pluginEquals({
+      declarationDir && typesBuild && typesBuild.equals && pluginEquals({
         file: resolve(cwd, pathJoin(declarationDir, typesGeneratedFilename)),
       }),
 
@@ -206,9 +201,9 @@ export function pkgToConfigs(
 
   }
 
-  if (commonjsOutput) {
+  if (commonjsBuild) {
 
-    const { input, output, sourcemap, esModule, interop, min, project } = commonjsOutput;
+    const { input, output, sourcemap, esModule, interop, min, project } = commonjsBuild;
     const inputFile = findInput(input);
 
     if (!inputFile) {
@@ -234,7 +229,7 @@ export function pkgToConfigs(
           inputFile,
           outputFile,
           sourcemap,
-          production && !min,
+          isProduction && !min,
           false,
           false,
           null,
@@ -248,11 +243,12 @@ export function pkgToConfigs(
     if (min) {
 
       const minOutputFile = renamePre(outputFile, MIN_PREFIX);
+      const minOutputOptions = { ...outputOptions, file: minOutputFile };
 
       configs.push(
         createConfig(
           inputFile,
-          { ...outputOptions, file: minOutputFile },
+          minOutputOptions,
           isExternal,
           createPlugins(
             inputFile,
@@ -273,9 +269,9 @@ export function pkgToConfigs(
 
   }
 
-  if (moduleOutput) {
+  if (moduleBuild) {
 
-    const { input, output, sourcemap, esModule, interop, min, project } = moduleOutput;
+    const { input, output, sourcemap, esModule, interop, min, project } = moduleBuild;
     const inputFile = findInput(input);
 
     if (!inputFile) {
@@ -300,7 +296,7 @@ export function pkgToConfigs(
           inputFile,
           outputFile,
           sourcemap,
-          production && !min,
+          isProduction && !min,
           false,
           false,
           null,
@@ -314,11 +310,12 @@ export function pkgToConfigs(
     if (min) {
 
       const minOutputFile = renamePre(outputFile, MIN_PREFIX);
+      const minOutputOptions = { ...outputOptions, file: minOutputFile };
 
       configs.push(
         createConfig(
           inputFile,
-          { ...outputOptions, file: minOutputFile },
+          minOutputOptions,
           isExternal,
           createPlugins(
             inputFile,
@@ -339,9 +336,9 @@ export function pkgToConfigs(
 
   }
 
-  if (browserOutput) {
+  if (browserBuild) {
 
-    const { input, output, sourcemap, esModule, interop, format, name, extend, id, globals, min, project } = browserOutput;
+    const { input, output, sourcemap, esModule, interop, format, name, extend, id, globals, min, project } = browserBuild;
     const inputFile = findInput(input);
 
     if (!inputFile) {
@@ -381,7 +378,7 @@ export function pkgToConfigs(
           inputFile,
           outputFile,
           sourcemap,
-          production && !min,
+          isProduction && !min,
           true,
           false,
           null,
@@ -395,11 +392,12 @@ export function pkgToConfigs(
     if (min) {
 
       const minOutputFile = renamePre(outputFile, MIN_PREFIX);
+      const minOutputOptions = { ...outputOptions, file: minOutputFile };
 
       configs.push(
         createConfig(
           inputFile,
-          { ...outputOptions, file: minOutputFile },
+          minOutputOptions,
           isBrowserExternal,
           createPlugins(
             inputFile,
@@ -420,9 +418,9 @@ export function pkgToConfigs(
 
   }
 
-  if (binaryOutput) {
+  if (binaryBuild) {
 
-    const { input, output, sourcemap, esModule, interop, min, project } = binaryOutput;
+    const { input, output, sourcemap, esModule, interop, min, project } = binaryBuild;
     const inputFile = findInput(input);
 
     if (!inputFile) {
@@ -438,7 +436,7 @@ export function pkgToConfigs(
       interop,
       exports: 'auto',
     };
-    const apiInputFile = commonjsOutput ? commonjsOutput.input : null;
+    const apiInputFile = commonjsBuild?.input;
 
     configs.push(
       createConfig(
@@ -449,7 +447,7 @@ export function pkgToConfigs(
           inputFile,
           outputFile,
           sourcemap,
-          production && !min,
+          isProduction && !min,
           false,
           true,
           apiInputFile,
@@ -463,11 +461,12 @@ export function pkgToConfigs(
     if (min) {
 
       const minOutputFile = renamePre(outputFile, MIN_PREFIX);
+      const minOutputOptions = { ...outputOptions, file: minOutputFile };
 
       configs.push(
         createConfig(
           inputFile,
-          { ...outputOptions, file: minOutputFile },
+          minOutputOptions,
           isExternal,
           createPlugins(
             inputFile,
