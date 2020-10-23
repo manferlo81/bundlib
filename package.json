@@ -13,8 +13,8 @@
   "main": "dist/bundlib.js",
   "module": "dist/bundlib.mjs",
   "bin": "bin/bundlib-cli.js",
-  "types": "dist/index.d.ts",
-  "typings": "dist/index.d.ts",
+  "types": "dist/types/index.d.ts",
+  "typings": "dist/types/index.d.ts",
   "scripts": {
     "dev": "ts-node -T -P tsconfig-ts-node.json src/cli -dw",
     "build": "ts-node -T -P tsconfig-ts-node.json src/cli -d",
