@@ -90,7 +90,7 @@ export function pkgToConfigs(
     mini: boolean,
     browser: boolean,
     bin: boolean,
-    apiInput: Nullable<string>,
+    apiBuildFiles: Nullable<[string, string]>,
     project: Nullable<string>,
   ): Plugin[] {
 
@@ -130,11 +130,11 @@ export function pkgToConfigs(
         sourcemap,
       }),
 
-      bin && apiInput && commonjsBuild && pluginAPI(
+      bin && apiBuildFiles && commonjsBuild && pluginAPI(
         cwd,
         dirname(outputFile),
         extensions,
-        setProp(apiInput, commonjsBuild.output, {}),
+        setProp(...apiBuildFiles, {}),
       ),
 
       pluginNodeResolve({
@@ -201,6 +201,8 @@ export function pkgToConfigs(
 
   }
 
+  let commonjsBuildFiles: [string, string] | null = null;
+
   if (commonjsBuild) {
 
     const { input, output, sourcemap, esModule, interop, min, project } = commonjsBuild;
@@ -219,6 +221,8 @@ export function pkgToConfigs(
       interop,
       exports: 'auto',
     };
+
+    commonjsBuildFiles = [inputFile, output];
 
     configs.push(
       createConfig(
@@ -436,7 +440,6 @@ export function pkgToConfigs(
       interop,
       exports: 'auto',
     };
-    const apiInputFile = commonjsBuild?.input;
 
     configs.push(
       createConfig(
@@ -450,7 +453,7 @@ export function pkgToConfigs(
           isProduction && !min,
           false,
           true,
-          apiInputFile,
+          commonjsBuildFiles,
           project,
         ),
         onwarn,
@@ -475,7 +478,7 @@ export function pkgToConfigs(
             true,
             false,
             true,
-            apiInputFile,
+            commonjsBuildFiles,
             project,
           ),
           onwarn,
