@@ -130,11 +130,11 @@ export function pkgToConfigs(
         sourcemap,
       }),
 
-      bin && apiInput && pluginAPI(
+      bin && apiInput && commonjsBuild && pluginAPI(
         cwd,
         dirname(outputFile),
         extensions,
-        setProp(apiInput, cwd, {}),
+        setProp(apiInput, commonjsBuild.output, {}),
       ),
 
       pluginNodeResolve({

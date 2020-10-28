@@ -8,10 +8,11 @@ export function apiPlugin(cwd: string, outputDir: string, extensions: string[], 
 
   const resolvedMap = keys(map).reduce<Dictionary<string>>(
     (resolvedMap, source) => {
+      const target = map[source];
       const value = slash(
         relative(
           outputDir,
-          resolve(cwd, map[source]),
+          resolve(cwd, target),
         ),
       );
       return value
