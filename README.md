@@ -17,6 +17,7 @@ An automatic library bundler powered by [Rollup.js](https://github.com/rollup/ro
   * [sourcemap](#sourcemap)
   * [esModule](#esmodule)
   * [interop](#interop)
+  * [chunks](#chunks)
   * [format](#format)
   * [name](#name)
   * [id](#id)
@@ -206,6 +207,16 @@ default false;
 Whether or not to add an interop block. If `interop = true` it will affect all builds.
 
 This option supports `object` based and `string` based [`selective format`](#selective-options). See [Selective Options](#selective-options) for more information.
+
+#### chunks
+
+```typescript
+chunks: Record<string, string>;
+```
+
+A map of chunks to be built as `CommonJS` modules. The object `key` represents the input file and the `value` represents the output file, relative to the project root.
+
+Files created using this option won't be bundled into the `CommonJS` and `Binary` builds and will be imported (required) instead.
 
 #### format
 
@@ -534,6 +545,7 @@ interface PkgAnalyzed {
   browser: BrowserBuildOptions | null;
   bin: ModuleBuildOptions | null;
   types: TypesBuildOptions | null;
+  chunks: Record<string, string> | null;
   dependencies: {
     runtime: { [name: string]: string } | null;
     dev: { [name: string]: string } | null;
@@ -609,6 +621,10 @@ type BuildType = 'main' | 'module' | 'browser' | 'bin' | 'api' | ...others;
 * Uses `rollup-plugin-eslint` if `eslint` installed as runtime or dev dependency.
 * Uses `rollup-plugin-terser` to minify production build.
 * Uses `chokidar` for file watch if installed.
+
+## Known issues
+
+* Type declarations for chunks created using the [`chunks`](#chunks) options may not work properly.
 
 ## License
 
