@@ -2,6 +2,13 @@
 
 ## Version History
 
+## [0.18.0](https://github.com/manferlo81/bundlib/compare/v0.17.8...v0.18.0) (2020-10-28)
+
+
+### Features
+
+* CommonJS chunks ([59f7927](https://github.com/manferlo81/bundlib/commit/59f7927972952142800952f91a0f325b4cf5a819))
+
 ### [0.17.8](https://github.com/manferlo81/bundlib/compare/v0.17.7...v0.17.8) (2020-10-28)
 
 
