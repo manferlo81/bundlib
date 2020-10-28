@@ -404,6 +404,26 @@ describe('package to configs', () => {
 
   });
 
+  test('should generate configs with extra chunks', async () => {
+
+    const configs = await createConfigs(cwd, false, {
+      main: 'main.js',
+      module: 'module.js',
+      browser: 'browser.js',
+      bin: 'bin.js',
+      bundlib: {
+        input: { api: 'src/index.js', bin: 'src-bin/index.js' },
+        name: 'lib',
+        chunks: {
+          'src/file.js': 'dist/file.js',
+        },
+      },
+    });
+
+    expect(configs).toHaveLength(5);
+
+  });
+
   test('should set dependencies as external', async () => {
 
     const [config] = await createConfigs(cwd, true, {
