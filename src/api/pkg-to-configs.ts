@@ -126,7 +126,7 @@ export function pkgToConfigs(
       }),
 
       bin && pluginStripShebang({
-        capture: (shebangFromFile: string) => shebang = shebangFromFile,
+        capture: (capturedShebang: string) => shebang = capturedShebang,
         sourcemap,
       }),
 
@@ -201,7 +201,7 @@ export function pkgToConfigs(
 
   }
 
-  let commonjsBuildFiles: [string, string] | null = null;
+  let commonjsChunks: Dictionary<string> | null = null;
 
   if (commonjsBuild) {
 
@@ -222,7 +222,7 @@ export function pkgToConfigs(
       exports: 'auto',
     };
 
-    commonjsBuildFiles = [inputFile, output];
+    commonjsChunks = setProp(inputFile, output, {});
 
     configs.push(
       createConfig(
@@ -236,7 +236,7 @@ export function pkgToConfigs(
           isProduction && !min,
           false,
           false,
-          null,
+          commonjsChunks,
           project,
         ),
         onwarn,
@@ -261,7 +261,7 @@ export function pkgToConfigs(
             true,
             false,
             false,
-            null,
+            commonjsChunks,
             project,
           ),
           onwarn,
@@ -270,6 +270,35 @@ export function pkgToConfigs(
       );
 
     }
+
+    // keys(chunks).forEach((input) => {
+
+    //   const inputFile = resolve(cwd, input);
+    //   const outputFile = resolve(cwd, chunks[input]);
+
+    //   const chunkOutputOptions = { ...outputOptions, file: outputFile };
+
+    //   configs.push(
+    //     createConfig(
+    //       inputFile,
+    //       chunkOutputOptions,
+    //       isExternal,
+    //       createPlugins(
+    //         inputFile,
+    //         outputFile,
+    //         sourcemap,
+    //         isProduction && !min,
+    //         false,
+    //         false,
+    //         commonjsChunks,
+    //         project,
+    //       ),
+    //       onwarn,
+    //       useChokidar,
+    //     ),
+    //   );
+
+    // });
 
   }
 
@@ -441,8 +470,6 @@ export function pkgToConfigs(
       exports: 'auto',
     };
 
-    const chunks = commonjsBuildFiles && setProp(...commonjsBuildFiles, {});
-
     configs.push(
       createConfig(
         inputFile,
@@ -455,7 +482,7 @@ export function pkgToConfigs(
           isProduction && !min,
           false,
           true,
-          chunks,
+          commonjsChunks,
           project,
         ),
         onwarn,
@@ -480,7 +507,7 @@ export function pkgToConfigs(
             true,
             false,
             true,
-            chunks,
+            commonjsChunks,
             project,
           ),
           onwarn,
