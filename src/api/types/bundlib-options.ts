@@ -109,6 +109,8 @@ export interface BundlibOptions extends DeprecatedBundlibOptions {
   project?: SelectiveStringOption;
   skip?: SelectiveSkipOption;
 
+  chunks?: Nullable<Dictionary<string>>;
+
   format?: Nullable<BrowserBuildFormat>;
   name?: Nullable<string>;
   id?: Nullable<string>;

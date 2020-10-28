@@ -68,6 +68,7 @@ async function analyzePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
       'esModule',
       'interop',
       'sourcemap',
+      'chunks',
       'format',
       'name',
       'id',
@@ -103,6 +104,7 @@ async function analyzePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     bin: deprecatedBinaryOptions,
     types: deprecatedTypesOptions,
     equals,
+    chunks,
   } = bundlibOptions;
 
   const perBuildInput = resolveInputOption(bundlibOptions.input);
@@ -322,6 +324,7 @@ async function analyzePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     browser: browserOutput,
     bin: binaryOutput,
     types: typesOutput,
+    chunks: chunks || null,
     dependencies,
     cache,
   };

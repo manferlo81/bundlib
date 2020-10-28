@@ -39,6 +39,7 @@ export interface PkgAnalyzed {
   browser: StrictNullable<BrowserBuildOptions>;
   bin: StrictNullable<ModuleBuildOptions>;
   types: StrictNullable<TypesBuildOptions>;
+  chunks: StrictNullable<Dictionary<string>>;
   dependencies: Dependencies;
   cache: StrictNullable<string>;
 }

@@ -22,7 +22,7 @@ import { createImportFromCWD } from './tools/create-import-from-cwd';
 import { createIsExternal } from './tools/create-is-external';
 import { createIsInstalled } from './tools/create-is-installed';
 import { extensionMatch } from './tools/extension-match';
-import { setProp } from './tools/helpers';
+import { keys, setProp } from './tools/helpers';
 import { renamePre } from './tools/rename-pre';
 import type { Dictionary, Nullable, TypeCheckFunction } from './types/helper-types';
 import type { PkgAnalyzed } from './types/pkg-analyzed';
@@ -40,6 +40,7 @@ export function pkgToConfigs(
     browser: browserBuild,
     bin: binaryBuild,
     types: typesBuild,
+    chunks,
     dependencies,
     cache,
   } = analyzed;
@@ -222,7 +223,7 @@ export function pkgToConfigs(
       exports: 'auto',
     };
 
-    commonjsChunks = setProp(inputFile, output, {});
+    commonjsChunks = setProp(inputFile, output, chunks ? { ...chunks } : {});
 
     configs.push(
       createConfig(
@@ -271,34 +272,36 @@ export function pkgToConfigs(
 
     }
 
-    // keys(chunks).forEach((input) => {
+    if (chunks) {
+      keys(chunks).forEach((input) => {
 
-    //   const inputFile = resolve(cwd, input);
-    //   const outputFile = resolve(cwd, chunks[input]);
+        const inputFile = resolve(cwd, input);
+        const outputFile = resolve(cwd, chunks[input]);
 
-    //   const chunkOutputOptions = { ...outputOptions, file: outputFile };
+        const chunkOutputOptions = { ...outputOptions, file: outputFile };
 
-    //   configs.push(
-    //     createConfig(
-    //       inputFile,
-    //       chunkOutputOptions,
-    //       isExternal,
-    //       createPlugins(
-    //         inputFile,
-    //         outputFile,
-    //         sourcemap,
-    //         isProduction && !min,
-    //         false,
-    //         false,
-    //         commonjsChunks,
-    //         project,
-    //       ),
-    //       onwarn,
-    //       useChokidar,
-    //     ),
-    //   );
+        configs.push(
+          createConfig(
+            inputFile,
+            chunkOutputOptions,
+            isExternal,
+            createPlugins(
+              inputFile,
+              outputFile,
+              sourcemap,
+              isProduction && !min,
+              false,
+              false,
+              commonjsChunks,
+              project,
+            ),
+            onwarn,
+            useChokidar,
+          ),
+        );
 
-    // });
+      });
+    }
 
   }
 
