@@ -15,7 +15,7 @@ import pluginTypescript from 'rollup-plugin-typescript2';
 import { MIN_PREFIX, TS_DEF_PREFIX } from './consts';
 import { error, inputNotFound } from './errors';
 import { JS_EXTENSIONS, TS_EXTENSIONS, TS_ONLY_EXTENSIONS } from './extensions';
-import { apiPlugin as pluginAPI } from './plugins/api-plugin';
+import { chunksPlugin as pluginChunks } from './plugins/chunks';
 import { createConfig } from './tools/create-config';
 import { createFindInput } from './tools/create-find-input';
 import { createImportFromCWD } from './tools/create-import-from-cwd';
@@ -24,7 +24,7 @@ import { createIsInstalled } from './tools/create-is-installed';
 import { extensionMatch } from './tools/extension-match';
 import { setProp } from './tools/helpers';
 import { renamePre } from './tools/rename-pre';
-import type { Nullable, TypeCheckFunction } from './types/helper-types';
+import type { Dictionary, Nullable, TypeCheckFunction } from './types/helper-types';
 import type { PkgAnalyzed } from './types/pkg-analyzed';
 import type { BundlibAPIOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types/types';
 
@@ -90,7 +90,7 @@ export function pkgToConfigs(
     mini: boolean,
     browser: boolean,
     bin: boolean,
-    apiBuildFiles: Nullable<[string, string]>,
+    chunks: Nullable<Dictionary<string>>,
     project: Nullable<string>,
   ): Plugin[] {
 
@@ -130,11 +130,11 @@ export function pkgToConfigs(
         sourcemap,
       }),
 
-      bin && apiBuildFiles && commonjsBuild && pluginAPI(
+      chunks && pluginChunks(
         cwd,
         dirname(outputFile),
         extensions,
-        setProp(...apiBuildFiles, {}),
+        chunks,
       ),
 
       pluginNodeResolve({
@@ -441,6 +441,8 @@ export function pkgToConfigs(
       exports: 'auto',
     };
 
+    const chunks = commonjsBuildFiles && setProp(...commonjsBuildFiles, {});
+
     configs.push(
       createConfig(
         inputFile,
@@ -453,7 +455,7 @@ export function pkgToConfigs(
           isProduction && !min,
           false,
           true,
-          commonjsBuildFiles,
+          chunks,
           project,
         ),
         onwarn,
@@ -478,7 +480,7 @@ export function pkgToConfigs(
             true,
             false,
             true,
-            commonjsBuildFiles,
+            chunks,
             project,
           ),
           onwarn,
