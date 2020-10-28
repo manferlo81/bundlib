@@ -2,6 +2,14 @@
 
 ## Version History
 
+### [0.17.8](https://github.com/manferlo81/bundlib/compare/v0.17.7...v0.17.8) (2020-10-28)
+
+
+### Bug Fixes
+
+* Fix bug when building Binary and require file ([23aaa3e](https://github.com/manferlo81/bundlib/commit/23aaa3e1be6bc113bb5b1dd3ae2b9cdc626a6ab5))
+* Point the CLI to the actual CommonJS API file ([6deeed5](https://github.com/manferlo81/bundlib/commit/6deeed534269f52349e79f40ac3f2768b3b4ab71))
+
 ### [0.17.7](https://github.com/manferlo81/bundlib/compare/v0.17.5...v0.17.7) (2020-10-21)
 
 ### [0.17.6](https://github.com/manferlo81/bundlib/compare/v0.17.5...v0.17.6) (2020-10-21)
