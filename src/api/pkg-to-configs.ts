@@ -223,7 +223,7 @@ export function pkgToConfigs(
       exports: 'auto',
     };
 
-    commonjsChunks = setProp(inputFile, output, chunks ? { ...chunks } : {});
+    commonjsChunks = setProp(inputFile, outputFile, { ...chunks });
 
     configs.push(
       createConfig(
