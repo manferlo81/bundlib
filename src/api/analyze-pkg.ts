@@ -1,5 +1,6 @@
 import { error, invalidOption, invalidOptionOld, invalidPkgField } from './errors';
 import { loadOptions } from './load-options';
+import { isValidChunks } from './options/chunks';
 import { normalizeBooleanOption } from './options/deprecated/boolean';
 import { isBrowserOption } from './options/deprecated/browser';
 import { isCJSOptionKey } from './options/deprecated/main-and-bin';
@@ -93,6 +94,7 @@ async function analyzePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
 
   const {
     extend,
+    chunks,
     format: browserFormat,
     name: browserName,
     id: amdId,
@@ -104,7 +106,6 @@ async function analyzePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
     bin: deprecatedBinaryOptions,
     types: deprecatedTypesOptions,
     equals,
-    chunks,
   } = bundlibOptions;
 
   const perBuildInput = resolveInputOption(bundlibOptions.input);
@@ -112,6 +113,10 @@ async function analyzePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   const perBuildESModule = resolveESModuleOption(bundlibOptions.esModule);
   const perBuildInterop = resolveInteropOption(bundlibOptions.interop);
   const perBuildMin = resolveMinOption(bundlibOptions.min);
+
+  if (!isValidChunks(chunks)) {
+    throw invalidOption('chunks');
+  }
 
   if (!isBrowserFormat(browserFormat)) {
     throw invalidOption('format');
