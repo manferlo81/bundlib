@@ -1,37 +1,19 @@
-import mock from 'mock-fs';
 import { join as pathJoin } from 'path';
 import analyze from './tools/analyze';
+import { mockFS } from './tools/mock-fs';
 
 describe('read package.json', () => {
 
   const cwd = process.cwd();
 
-  const mockOptions = { createCwd: false, createTmp: false };
-
   test('should throw on no package.json', () => {
-
-    mock({}, mockOptions);
-
-    const promise = analyze(cwd);
-
-    mock.restore();
-
-    return expect(promise).rejects
-      .toThrow();
-
+    const promise = mockFS({}, () => analyze(cwd));
+    return expect(promise).rejects.toThrow();
   });
 
   test('should throw on invalid folder', () => {
-
-    mock({}, mockOptions);
-
-    const promise = analyze(pathJoin(cwd, 'does-not-exist'));
-
-    mock.restore();
-
-    return expect(promise).rejects
-      .toThrow();
-
+    const promise = mockFS({}, () => analyze(pathJoin(cwd, 'does-not-exist')));
+    return expect(promise).rejects.toThrow();
   });
 
   test('should throw on invalid package.json', () => {
@@ -57,20 +39,15 @@ describe('read package.json', () => {
       name: 'lib',
     };
 
-    mock({
+    const structure = {
       'package.json': JSON.stringify(mockPkg),
-    });
+    };
 
-    const { cwd: cwdR, pkg } = await analyze(cwd);
+    const { cwd: cwdR, pkg } = await mockFS(structure, () => analyze(cwd));
 
-    expect(cwdR)
-      .toBe(cwd);
-    expect(typeof pkg)
-      .toBe('object');
-    expect(pkg)
-      .toEqual(mockPkg);
-
-    mock.restore();
+    expect(cwdR).toBe(cwd);
+    expect(typeof pkg).toBe('object');
+    expect(pkg).toEqual(mockPkg);
 
   });
 
