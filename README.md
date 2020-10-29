@@ -614,13 +614,13 @@ type BuildType = 'main' | 'module' | 'browser' | 'bin' | 'api' | ...others;
 * Uses `"types"` field in your `package.json` (or `"typings"` field) as path for types declarations.
 * Uses `"dependencies"` and `"peerDependencies"` to set external modules for `CommonJS Module`, `ES Module` and `Binary` builds. Dependencies will be bundled by default in `Browser` builds, unless otherwise specified using the [`global`](#globals) option.
 * Skip any build based on [options](#skip).
-* Uses `rollup-plugin-typescript2` if `typescript` installed as runtime or dev dependency.
-* Uses `@rollup/plugin-babel` if `@babel/core` installed as runtime or dev dependency, otherwise it uses `@rollup/plugin-buble`.
-* Uses `rollup-plugin-strip-shebang` and `rollup-plugin-add-shebang` to ensure a shebang on binary build.
-* Uses `@rollup/plugin-json` to import JSON files.
-* Uses `rollup-plugin-eslint` if `eslint` installed as runtime or dev dependency.
-* Uses `rollup-plugin-terser` to minify production build.
-* Uses `chokidar` for file watch if installed.
+* Uses [`rollup-plugin-typescript2`](https://www.npmjs.com/package/rollup-plugin-typescript2) if [`typescript`](https://www.npmjs.com/package/typescript) installed as runtime or dev dependency.
+* Uses [`@rollup/plugin-babel`](https://www.npmjs.com/package/@rollup/plugin-babel) if [`@babel/core`](https://www.npmjs.com/package/@babel/core) installed as runtime or dev dependency, otherwise it uses [`@rollup/plugin-buble`](https://www.npmjs.com/package/@rollup/plugin-buble).
+* Uses [`rollup-plugin-strip-shebang`](https://www.npmjs.com/package/rollup-plugin-strip-shebang) and [`rollup-plugin-add-shebang`](https://www.npmjs.com/package/rollup-plugin-add-shebang) to ensure a shebang on binary build.
+* Uses [`@rollup/plugin-json`](https://www.npmjs.com/package/@rollup/plugin-json) to import JSON files.
+* Uses[ `@rollup/plugin-eslint`](https://www.npmjs.com/package/@rollup/plugin-eslint) if [`eslint`](https://www.npmjs.com/package/eslint) installed as runtime or dev dependency.
+* Uses [`rollup-plugin-terser`](https://www.npmjs.com/package/rollup-plugin-terser) to minify production build.
+* Uses [`chokidar`](https://www.npmjs.com/package/chokidar) for file watch if installed.
 
 ## Known issues
 

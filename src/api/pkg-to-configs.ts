@@ -7,7 +7,7 @@ import builtinModules from 'builtin-modules';
 import { basename, dirname, join as pathJoin, resolve } from 'path';
 import type { Plugin } from 'rollup';
 import pluginAddShebang from 'rollup-plugin-add-shebang';
-import { eslint as pluginESLint } from 'rollup-plugin-eslint';
+import { default as pluginESLint } from '@rollup/plugin-eslint';
 import pluginEquals from 'rollup-plugin-export-equals';
 import pluginStripShebang from 'rollup-plugin-strip-shebang';
 import { terser as pluginTerser } from 'rollup-plugin-terser';
@@ -80,7 +80,7 @@ export function pkgToConfigs(
   const include = extensions.map(
     (ext) => resolve(cwd, `**/*${ext}`),
   );
-  const exclude = /node_modules/;
+  const exclude = 'node_modules/**';
 
   const configs: Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>> = [];
 
