@@ -48,7 +48,7 @@
     "rollup": "^2.32.1",
     "rollup-plugin-add-shebang": "^0.3.1",
     "rollup-plugin-export-equals": "^0.3.7",
-    "rollup-plugin-strip-shebang": "^1.2.9",
+    "rollup-plugin-strip-shebang": "^1.2.10",
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-typescript2": "^0.28.0",
     "slash": "^3.0.0",
