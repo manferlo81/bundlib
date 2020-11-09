@@ -1,10 +1,10 @@
+import { MODULE_BUILD_KEYS } from '../selective/consts';
+import { resolveBoolBasedSelectiveOption } from '../selective/selective';
+import type { SelectiveResolved } from '../selective/types';
 import { composeOneOf, createOneOfLiteral } from '../type-check/advanced';
 import { isBool } from '../type-check/basic';
 import type { BuildType, SelectiveSourcemap } from '../types/bundlib-options';
 import type { RollupSourcemap } from '../types/types';
-import { MODULE_BUILD_KEYS } from './object-based';
-import type { SelectiveResolved } from './object-based';
-import { resolveSelectiveOption } from './selective';
 
 export const isSourcemapOption = composeOneOf<RollupSourcemap>(
   createOneOfLiteral('inline', 'hidden'),
@@ -12,11 +12,11 @@ export const isSourcemapOption = composeOneOf<RollupSourcemap>(
 );
 
 export const resolveSourcemapOption = (value: SelectiveSourcemap): SelectiveResolved<BuildType, RollupSourcemap> => (
-  resolveSelectiveOption<BuildType, RollupSourcemap, true>(
+  resolveBoolBasedSelectiveOption<BuildType, RollupSourcemap, true>(
     value,
-    true,
-    isSourcemapOption,
     MODULE_BUILD_KEYS,
+    isSourcemapOption,
+    true,
     'sourcemap',
   )
 );

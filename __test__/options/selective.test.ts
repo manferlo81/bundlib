@@ -1,10 +1,28 @@
 import { invalidOption } from '../../src/api/errors';
-import { MODULE_BUILD_KEYS } from '../../src/api/options/object-based';
-import { resolveSelectiveOption } from '../../src/api/options/selective';
+import { MODULE_BUILD_KEYS } from '../../src/api/selective/consts';
+import { resolveBoolBasedSelectiveOption } from '../../src/api/selective/selective';
+import { SelectiveResolved } from '../../src/api/selective/types';
 import { isBool } from '../../src/api/type-check/basic';
 import type { BuildType } from '../../src/api/types/bundlib-options';
 
 describe('selective option', () => {
+
+  const optionName = 'boolean';
+  const urlHash = 'bool';
+
+  function resolve<D>(
+    value: unknown,
+    defaultValue: D,
+  ): SelectiveResolved<BuildType, boolean | D> {
+    return resolveBoolBasedSelectiveOption<BuildType, boolean, D>(
+      value,
+      MODULE_BUILD_KEYS,
+      isBool,
+      defaultValue,
+      optionName,
+      urlHash,
+    );
+  }
 
   test('Should throw on invalid selective option', () => {
 
@@ -27,18 +45,9 @@ describe('selective option', () => {
 
     invalids.forEach((invalid) => {
       [true, false].forEach((defaultValue) => {
-
-        expect(() => resolveSelectiveOption(
-          invalid as never,
-          defaultValue,
-          isBool,
-          MODULE_BUILD_KEYS,
-          optionName,
-          urlHash,
-        )).toThrow(
+        expect(() => resolve(invalid as never, defaultValue)).toThrow(
           invalidOption(optionName, urlHash),
         );
-
       });
     });
 
@@ -47,14 +56,12 @@ describe('selective option', () => {
   test('Should resolve null or undefined selective option', () => {
     [null, undefined].forEach((value) => {
       [true, false].forEach((defaultValue) => {
-
-        expect(resolveSelectiveOption(value, defaultValue, isBool, MODULE_BUILD_KEYS, 'boolean', 'url')).toEqual({
+        expect(resolve(value, defaultValue)).toEqual({
           main: defaultValue,
           module: defaultValue,
           browser: defaultValue,
           bin: defaultValue,
         });
-
       });
     });
   });
@@ -62,21 +69,12 @@ describe('selective option', () => {
   test('Should resolve selective option', () => {
     [true, false].forEach((value) => {
       [true, false].forEach((defaultValue) => {
-
-        expect(resolveSelectiveOption<BuildType, boolean, typeof defaultValue>(
-          value,
-          defaultValue,
-          isBool,
-          MODULE_BUILD_KEYS,
-          'boolean',
-          'url',
-        )).toEqual({
+        expect(resolve<typeof defaultValue>(value, defaultValue)).toEqual({
           main: value,
           module: value,
           browser: value,
           bin: value,
         });
-
       });
     });
   });
@@ -93,14 +91,7 @@ describe('selective option', () => {
 
     values.forEach(({ value, expected }) => {
       [true, false].forEach((defaultValue) => {
-        expect(resolveSelectiveOption<BuildType, boolean, typeof defaultValue>(
-          value,
-          defaultValue,
-          isBool,
-          MODULE_BUILD_KEYS,
-          'boolean',
-          'url',
-        )).toEqual(expected);
+        expect(resolve<typeof defaultValue>(value, defaultValue)).toEqual(expected);
       });
     });
 
@@ -115,14 +106,7 @@ describe('selective option', () => {
 
     values.forEach(({ value: array, expected }) => {
       [true, false].forEach((defaultValue) => {
-        expect(resolveSelectiveOption<BuildType, boolean, typeof defaultValue>(
-          array,
-          defaultValue,
-          isBool,
-          MODULE_BUILD_KEYS,
-          'boolean',
-          'url',
-        )).toEqual(expected);
+        expect(resolve<typeof defaultValue>(array, defaultValue)).toEqual(expected);
       });
     });
 
@@ -167,22 +151,13 @@ describe('selective option', () => {
 
     values.forEach(({ value, expected }) => {
       [true, false].forEach((defaultValue) => {
-
-        expect(resolveSelectiveOption(
-          value,
-          defaultValue,
-          isBool,
-          MODULE_BUILD_KEYS,
-          'boolean',
-          'url',
-        )).toEqual({
+        expect(resolve(value, defaultValue)).toEqual({
           main: defaultValue,
           module: defaultValue,
           browser: defaultValue,
           bin: defaultValue,
           ...expected,
         });
-
       });
     });
 

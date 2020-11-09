@@ -1,8 +1,23 @@
 import { invalidOption } from '../../src/api/errors';
-import { MODULE_BUILD_KEYS, resolveObjectBasedSelectiveOption } from '../../src/api/options/object-based';
+import { MODULE_BUILD_KEYS } from '../../src/api/selective/consts';
+import { resolveObjectBasedSelectiveOption } from '../../src/api/selective/object-based';
 import { isString } from '../../src/api/type-check/basic';
 
 describe('object based option', () => {
+
+  const optionName = 'option';
+  const urlHash = 'hash';
+
+  const resolve = (value: unknown) => {
+    return resolveObjectBasedSelectiveOption(
+      value,
+      MODULE_BUILD_KEYS,
+      isString,
+      null,
+      optionName,
+      urlHash,
+    );
+  };
 
   test('Should throw on invalid object based option', () => {
 
@@ -21,18 +36,8 @@ describe('object based option', () => {
       { bin: 0 },
     ];
 
-    const optionName = 'string';
-    const urlHash = 'hash';
-
     invalids.forEach((invalid) => {
-      expect(() => resolveObjectBasedSelectiveOption(
-        invalid as never,
-        null,
-        isString,
-        MODULE_BUILD_KEYS,
-        optionName,
-        urlHash,
-      )).toThrow(
+      expect(() => resolve(invalid)).toThrow(
         invalidOption(optionName, urlHash),
       );
     });
@@ -42,7 +47,7 @@ describe('object based option', () => {
   test('Should resolve null or undefined object based option', () => {
     [null, undefined].forEach((value) => {
 
-      expect(resolveObjectBasedSelectiveOption(value, null, isString, MODULE_BUILD_KEYS, 'string', 'url')).toEqual({
+      expect(resolve(value)).toEqual({
         main: null,
         module: null,
         browser: null,
@@ -56,7 +61,7 @@ describe('object based option', () => {
 
     const value = 'filename.js';
 
-    expect(resolveObjectBasedSelectiveOption(value, null, isString, MODULE_BUILD_KEYS, 'string', 'url')).toEqual({
+    expect(resolve(value)).toEqual({
       main: value,
       module: value,
       browser: value,
@@ -100,7 +105,7 @@ describe('object based option', () => {
 
     values.forEach(({ value, expected }) => {
 
-      expect(resolveObjectBasedSelectiveOption(value, null, isString, MODULE_BUILD_KEYS, 'string', 'url')).toEqual({
+      expect(resolve(value)).toEqual({
         main: null,
         module: null,
         browser: null,
