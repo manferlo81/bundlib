@@ -1,5 +1,5 @@
+import { resolveBoolBasedSelectiveOption } from '../selective/bool-based';
 import { MODULE_BUILD_KEYS } from '../selective/consts';
-import { resolveBoolBasedSelectiveOption } from '../selective/selective';
 import type { SelectiveResolvedBoolean } from '../selective/types';
 import { isBool } from '../type-check/basic';
 import type { BuildType, SelectiveBooleanOption } from '../types/bundlib-options';

@@ -1,6 +1,6 @@
 import { invalidOption } from '../../src/api/errors';
+import { resolveBoolBasedSelectiveOption } from '../../src/api/selective/bool-based';
 import { MODULE_BUILD_KEYS } from '../../src/api/selective/consts';
-import { resolveBoolBasedSelectiveOption } from '../../src/api/selective/selective';
 import { SelectiveResolved } from '../../src/api/selective/types';
 import { isBool } from '../../src/api/type-check/basic';
 import type { BuildType } from '../../src/api/types/bundlib-options';

@@ -1,5 +1,5 @@
+import { resolveBoolBasedSelectiveOption } from '../selective/bool-based';
 import { MODULE_BUILD_KEYS } from '../selective/consts';
-import { resolveBoolBasedSelectiveOption } from '../selective/selective';
 import type { SelectiveResolved } from '../selective/types';
 import { composeOneOf, createOneOfLiteral } from '../type-check/advanced';
 import { isBool } from '../type-check/basic';

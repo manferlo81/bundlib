@@ -1,7 +1,7 @@
-import { keysToObject, setProp } from '../tools/helpers';
+import { keysToObject } from '../tools/helpers';
 import { isArray } from '../type-check/basic';
 import type { TypeCheckFunction } from '../types/helper-types';
-import { populateWithAPIValue } from './populate-with-api';
+import { populateResult } from './populate-result';
 import type { SelectiveResolved } from './types';
 
 function resolveArray<K extends string>(
@@ -12,24 +12,16 @@ function resolveArray<K extends string>(
 ): SelectiveResolved<K, boolean> {
   return value.reduce<SelectiveResolved<K, boolean>>(
     (result, type) => {
-
-      if (type === 'api') {
-        return populateWithAPIValue(
-          true,
-          result,
-        );
-      }
-
-      if (!isBuildType(type)) {
-        throw invalid;
-      }
-
-      return setProp(
+      const r = populateResult(
         type,
         true,
         result,
+        isBuildType,
       );
-
+      if (!r) {
+        throw invalid;
+      }
+      return r;
     },
     keysToObject(allKeys, false),
   );
@@ -42,22 +34,15 @@ export function resolveStrings<K extends string>(
   invalid: TypeError,
 ): SelectiveResolved<K, boolean> | void {
 
-  if (value === 'api') {
-    return populateWithAPIValue(
-      true,
-      keysToObject(allKeys, false),
-    );
-  }
+  const result = populateResult(
+    value,
+    true,
+    keysToObject(allKeys, false),
+    isBuildType,
+  );
 
-  if (isBuildType(value)) {
-    return setProp(
-      value,
-      true,
-      keysToObject(
-        allKeys,
-        false,
-      ),
-    );
+  if (result) {
+    return result;
   }
 
   if (isArray(value)) {

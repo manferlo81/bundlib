@@ -1,56 +1,45 @@
 import { keys, keysToObject } from '../tools/helpers';
-import { createOneOfLiteral } from '../type-check/advanced';
 import { isDictionary, isNull } from '../type-check/basic';
-import { keysCheck } from '../type-check/keys';
-import type { ObjectSelectiveOptionsKey } from '../types/bundlib-options';
 import type { Nullable, TypeCheckFunction } from '../types/helper-types';
-import { populateWithAPIValue } from './populate-with-api';
+import { populateResult } from './populate-result';
 import type { SelectiveResolved } from './types';
 
-export function resolveObject<K extends string, T>(
+export function resolveObject<K extends string, V, D = V>(
   value: unknown,
   allKeys: K[],
   isBuildType: TypeCheckFunction<K>,
-  isValidValue: TypeCheckFunction<T>,
-  defaultValue: T,
+  isValidValue: TypeCheckFunction<V>,
+  defaultValue: D,
   invalid: TypeError,
-): SelectiveResolved<K, T> {
+): SelectiveResolved<K, V | D> {
 
   if (!isDictionary(value)) {
     throw invalid;
   }
 
-  if (!keysCheck(value, createOneOfLiteral<ObjectSelectiveOptionsKey<K>>('default', 'api'), isBuildType)) {
-    throw invalid;
-  }
-
-  const { default: override, api, ...others } = value;
-
-  if (!isNull(override) && !isValidValue(override)) {
-    throw invalid;
-  }
-
-  const result = keysToObject<string, T>(
+  const result: SelectiveResolved<K, V | D> = keysToObject(
     allKeys,
-    isNull(override) ? defaultValue : override,
+    defaultValue,
   );
 
-  if (!isNull(api)) {
+  const { default: override, ...others } = value;
 
-    if (!isValidValue(api)) {
+  if (!isNull(override)) {
+
+    if (!isValidValue(override)) {
       throw invalid;
     }
 
-    populateWithAPIValue(
-      api,
+    keysToObject<K, V | D, Record<K, V | D>>(
+      allKeys,
+      override,
       result,
     );
-
   }
 
   keys(others).forEach((type) => {
 
-    const value = others[type as never] as Nullable<T>;
+    const value = others[type as never] as Nullable<V>;
 
     if (!isNull(value)) {
 
@@ -58,7 +47,16 @@ export function resolveObject<K extends string, T>(
         throw invalid;
       }
 
-      result[type] = value;
+      if (
+        !populateResult(
+          type,
+          value,
+          result,
+          isBuildType,
+        )
+      ) {
+        throw invalid;
+      }
 
     }
 
