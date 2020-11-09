@@ -1,7 +1,7 @@
 import { invalidOption } from '../errors';
 import { keys, keysToObject } from '../tools/helpers';
 import { createOneOfLiteral } from '../type-check/advanced';
-import { isNull, isObject } from '../type-check/basic';
+import { isDictionary, isNull } from '../type-check/basic';
 import { keysCheck } from '../type-check/keys';
 import type { BuildType, ObjectBasedSelectiveOption, ObjectSelectiveOptions, ObjectSelectiveOptionsKey, SelectiveSkipBuildType, SelectiveType } from '../types/bundlib-options';
 import type { Nullable, TypeCheckFunction } from '../types/helper-types';
@@ -129,7 +129,7 @@ export function resolveObjectBasedSelectiveOption<T, D>(
 
   const invalid = invalidOption(optionName, urlHash);
 
-  if (!isObject(value)) {
+  if (!isDictionary(value)) {
     throw invalid;
   }
 

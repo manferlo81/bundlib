@@ -9,6 +9,9 @@ describe('object based option', () => {
     const invalids = [
       0,
       1,
+      true,
+      false,
+      [],
       { cli: 'string' },
       { default: true },
       { api: false },
