@@ -73,7 +73,7 @@ export async function action(
     });
 
     emitter.on(BUILD_END, (filename: string, size: number, duration: number) => {
-      const tag = inverse.green(' built ');
+      const tag = inverse.green.bold(' built ');
       const path = yellowBold(slash(relative(cwd, filename)));
       const coloredSize = magentaBold(formatFileSize(size));
       const coloredDuration = magentaBold(prettyMs(duration, { secondsDecimalDigits: 2 }));
