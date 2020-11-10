@@ -2,6 +2,13 @@
 
 ## Version History
 
+### [0.18.2](https://github.com/manferlo81/bundlib/compare/v0.18.1...v0.18.2) (2020-11-10)
+
+
+### Bug Fixes
+
+* Throw on array option if not supported ([9d2bde6](https://github.com/manferlo81/bundlib/commit/9d2bde6804eb646615b4a3eeb4ed28076c876433))
+
 ### [0.18.1](https://github.com/manferlo81/bundlib/compare/v0.18.0...v0.18.1) (2020-10-29)
 
 ## [0.18.0](https://github.com/manferlo81/bundlib/compare/v0.17.8...v0.18.0) (2020-10-28)
