@@ -10,11 +10,13 @@
     "typescript",
     "rollup"
   ],
-  "main": "dist/bundlib.js",
-  "module": "dist/bundlib.mjs",
-  "bin": "bin/bundlib-cli.js",
-  "types": "dist/types/index.d.ts",
-  "typings": "dist/types/index.d.ts",
+  "type": "commonjs",
+  "main": "./dist/bundlib.cjs",
+  "exports": "./dist/bundlib.cjs",
+  "module": "./dist/bundlib.mjs",
+  "bin": "./bin/bundlib-cli.cjs",
+  "types": "./dist/types/index.d.ts",
+  "typings": "./dist/types/index.d.ts",
   "scripts": {
     "clean:cache": "rimraf node_modules/.cache/{bundlib,jest}",
     "clean:build": "rimraf bin dist coverage",
