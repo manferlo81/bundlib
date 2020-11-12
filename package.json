@@ -12,8 +12,11 @@
   ],
   "type": "commonjs",
   "main": "./dist/bundlib.cjs",
-  "exports": "./dist/bundlib.cjs",
   "module": "./dist/bundlib.mjs",
+  "exports": {
+    "import": "./dist/bundlib.mjs",
+    "default": "./dist/bundlib.cjs"
+  },
   "bin": "./bin/bundlib-cli.cjs",
   "types": "./dist/types/index.d.ts",
   "typings": "./dist/types/index.d.ts",
