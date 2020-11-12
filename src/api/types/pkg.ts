@@ -5,8 +5,11 @@ export interface BundlibPkgJson {
   name?: string;
   displayName?: string;
   version?: string;
+  type?: string;
+  exports?: string | Dictionary<string>;
   main?: string;
   module?: string;
+  'jsnext:main'?: string;
   browser?: string;
   bin?: string;
   types?: string;
@@ -14,6 +17,5 @@ export interface BundlibPkgJson {
   dependencies?: Dictionary<string>;
   devDependencies?: Dictionary<string>;
   peerDependencies?: Dictionary<string>;
-  'jsnext:main'?: string;
   bundlib?: BundlibOptions | string;
 }
