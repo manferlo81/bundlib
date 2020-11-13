@@ -10,7 +10,7 @@ interface LoadedOptions {
   filepath: StrictNullable<string>;
 }
 
-export async function loadOptions(cwd: string, optionsFromPkgJson: BundlibOptions | string | null | undefined): Promise<LoadedOptions | null> {
+export async function loadOptions(cwd: string, optionsFromPkgJson: Nullable<BundlibOptions | string>): Promise<LoadedOptions | null> {
 
   const manager = cosmiconfig(PRODUCT_NAME, {
     stopDir: cwd,

@@ -1,13 +1,13 @@
 import pluginBabel from '@rollup/plugin-babel';
 import pluginBuble from '@rollup/plugin-buble';
 import pluginCommonJS from '@rollup/plugin-commonjs';
+import { default as pluginESLint } from '@rollup/plugin-eslint';
 import pluginJSON from '@rollup/plugin-json';
 import pluginNodeResolve from '@rollup/plugin-node-resolve';
 import builtinModules from 'builtin-modules';
 import { basename, dirname, join as pathJoin, resolve } from 'path';
 import type { Plugin } from 'rollup';
 import pluginAddShebang from 'rollup-plugin-add-shebang';
-import { default as pluginESLint } from '@rollup/plugin-eslint';
 import pluginEquals from 'rollup-plugin-export-equals';
 import pluginStripShebang from 'rollup-plugin-strip-shebang';
 import { terser as pluginTerser } from 'rollup-plugin-terser';
@@ -17,10 +17,10 @@ import { error, inputNotFound } from './errors';
 import { JS_EXTENSIONS, TS_EXTENSIONS, TS_ONLY_EXTENSIONS } from './extensions';
 import { chunksPlugin as pluginChunks } from './plugins/chunks';
 import { createConfig } from './tools/create-config';
-import { createFindInput } from './tools/create-find-input';
 import { createImportFromCWD } from './tools/create-import-from-cwd';
 import { createIsExternal } from './tools/create-is-external';
 import { createIsInstalled } from './tools/create-is-installed';
+import { createResolveInput } from './tools/create-resolve-input';
 import { extensionMatch } from './tools/extension-match';
 import { keys, setProp } from './tools/helpers';
 import { renamePre } from './tools/rename-pre';
@@ -75,7 +75,7 @@ export function pkgToConfigs(
 
   const extensions = useTypescript ? TS_EXTENSIONS : JS_EXTENSIONS;
 
-  const findInput = createFindInput(cwd, extensions);
+  const resolveInput = createResolveInput(cwd, extensions);
 
   const include = extensions.map(
     (ext) => resolve(cwd, `**/*${ext}`),
@@ -207,7 +207,7 @@ export function pkgToConfigs(
   if (commonjsBuild) {
 
     const { input, output, sourcemap, esModule, interop, min, project } = commonjsBuild;
-    const inputFile = findInput(input);
+    const inputFile = resolveInput(input);
 
     if (!inputFile) {
       throw inputNotFound('CommonJS module');
@@ -308,7 +308,7 @@ export function pkgToConfigs(
   if (moduleBuild) {
 
     const { input, output, sourcemap, esModule, interop, min, project } = moduleBuild;
-    const inputFile = findInput(input);
+    const inputFile = resolveInput(input);
 
     if (!inputFile) {
       throw inputNotFound('ES module');
@@ -375,7 +375,7 @@ export function pkgToConfigs(
   if (browserBuild) {
 
     const { input, output, sourcemap, esModule, interop, format, name, extend, id, globals, min, project } = browserBuild;
-    const inputFile = findInput(input);
+    const inputFile = resolveInput(input);
 
     if (!inputFile) {
       throw inputNotFound('Browser build');
@@ -457,7 +457,7 @@ export function pkgToConfigs(
   if (binaryBuild) {
 
     const { input, output, sourcemap, esModule, interop, min, project } = binaryBuild;
-    const inputFile = findInput(input);
+    const inputFile = resolveInput(input);
 
     if (!inputFile) {
       throw inputNotFound('Binary build');
