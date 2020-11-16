@@ -78,7 +78,7 @@ export async function action(
       const coloredSize = magentaBold(formatFileSize(size));
       const coloredDuration = magentaBold(prettyMs(duration, { secondsDecimalDigits: 2 }));
       const info = cyan(`( ${coloredSize} in ${coloredDuration} )`);
-      log(`${tag} ${path} ${info}`);
+      log(`${tag} ./${path} ${info}`);
     });
 
     emitter.on(WARN, (warning: RollupWarning) => {

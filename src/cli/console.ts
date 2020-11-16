@@ -10,10 +10,11 @@ export const log = create('log');
 export const error = create('error');
 
 export function logError(err: Error | RollupError): void {
+  const tag = red.inverse.bold(' error ');
+  error(`${tag} ${red(err.message || err)}
+`);
   if (err.stack) {
-    error(err.stack);
+    error(`${err.stack}
+`);
   }
-  const tag = red.bgWhite.inverse(' error ');
-  // const tag = chalk.bold.bgWhite.red.inverse(' error ');
-  error(`${tag} ${red(err.message || err)}`);
 }
