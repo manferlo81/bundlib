@@ -17,7 +17,7 @@
     "import": "./dist/bundlib.mjs",
     "default": "./dist/bundlib.cjs"
   },
-  "bin": "./bin/bundlib-cli.cjs",
+  "bin": "./bin/bundlib.cjs",
   "types": "./dist/types/index.d.ts",
   "typings": "./dist/types/index.d.ts",
   "scripts": {
