@@ -1,6 +1,6 @@
 import { MODULE_BUILD_KEYS } from '../selective/consts';
 import { resolveObjectBasedSelectiveOption } from '../selective/object-based';
-import type { SelectiveResolved } from '../selective/types';
+import type { SelectiveResolved } from 'selective-option';
 import { isString } from '../type-check/basic';
 import type { BuildType, SelectiveStringOption } from '../types/bundlib-options';
 import type { StrictNullable } from '../types/helper-types';

@@ -1,6 +1,6 @@
+import type { SelectiveResolved } from 'selective-option';
 import { resolveBoolBasedSelectiveOption } from '../selective/bool-based';
 import { MODULE_BUILD_KEYS } from '../selective/consts';
-import type { SelectiveResolved } from '../selective/types';
 import { composeOneOf, createOneOfLiteral } from '../type-check/advanced';
 import { isBool } from '../type-check/basic';
 import type { BuildType, SelectiveSourcemap } from '../types/bundlib-options';

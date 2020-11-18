@@ -1,9 +1,9 @@
+import type { SelectiveResolved } from 'selective-option';
+import { resolveValueBased } from 'selective-option';
 import { invalidOption } from '../errors/errors';
 import { createOneOfLiteral } from '../type-check/advanced';
-import type { TypeCheckFunction } from '../types/helper-types';
-import { resolveObject } from './resolve-object';
-import { resolveValid } from './resolve-valid';
-import type { SelectiveResolved } from './types';
+import type { Dictionary, TypeCheckFunction } from '../types/helper-types';
+import { API_SPECIAL_KEYS } from './consts';
 
 export function resolveObjectBasedSelectiveOption<K extends string, V, D = V>(
   value: unknown,
@@ -17,21 +17,34 @@ export function resolveObjectBasedSelectiveOption<K extends string, V, D = V>(
   const isBuildType = createOneOfLiteral<K>(allKeys);
   const invalid = invalidOption(optionName, urlHash);
 
-  return (
-    resolveValid<K, V, D>(
-      value,
-      allKeys,
-      isValidValue,
-      defaultValue,
-    ) ||
-    resolveObject<K, V, D>(
+  try {
+    return resolveValueBased(
       value,
       allKeys,
       isBuildType,
+      API_SPECIAL_KEYS as unknown as Dictionary<K[]>,
       isValidValue,
       defaultValue,
-      invalid,
-    )
-  );
+    );
+  } catch (e) {
+    throw invalid;
+  }
+
+  // return (
+  //   resolveValid<K, V, D>(
+  //     value,
+  //     allKeys,
+  //     isValidValue,
+  //     defaultValue,
+  //   ) ||
+  //   resolveObject<K, V, D>(
+  //     value,
+  //     allKeys,
+  //     isBuildType,
+  //     isValidValue,
+  //     defaultValue,
+  //     invalid,
+  //   )
+  // );
 
 }
