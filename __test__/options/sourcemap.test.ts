@@ -1,4 +1,4 @@
-import { invalidOption } from '../../src/api/errors';
+import { invalidOption } from '../../src/api/errors/errors';
 import { resolveSourcemapOption } from '../../src/api/options/sourcemap';
 
 describe('"sourcemap" option', () => {

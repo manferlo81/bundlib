@@ -1,5 +1,5 @@
+import { invalidOption } from '../../src/api/errors/errors';
 import { resolveSkipOption } from '../../src/api/options/skip';
-import { invalidOption } from '../../src/api/errors';
 
 describe('"skip" option', () => {
 

@@ -1,34 +1,35 @@
-import { error, invalidOption, invalidOptionOld, invalidPkgField } from './errors';
+import { error } from '../errors/error';
+import { invalidOption, invalidOptionOld, invalidPkgField } from '../errors/errors';
+import { isValidChunks } from '../options/chunks';
+import { normalizeBooleanOption } from '../options/deprecated/boolean';
+import { isBrowserOption } from '../options/deprecated/browser';
+import { isCJSOptionKey } from '../options/deprecated/main-and-bin';
+import { isModuleOptionKey } from '../options/deprecated/module';
+import { normalizeDeprecatedOption } from '../options/deprecated/normalize';
+import { isTypesOptionKey } from '../options/deprecated/types';
+import { resolveESModuleOption } from '../options/es-module';
+import { isBrowserFormat } from '../options/format';
+import { isValidGlobals, normalizeBuildGlobals, normalizeGlobals } from '../options/globals';
+import { resolveInputOption } from '../options/input';
+import { resolveInteropOption } from '../options/interop';
+import { resolveMinOption } from '../options/min';
+import { normalizeBuildName } from '../options/name';
+import { resolveProjectOption } from '../options/project';
+import { resolveSkipOption } from '../options/skip';
+import { isSourcemapOption, resolveSourcemapOption } from '../options/sourcemap';
+import type { BundlibPkgJson } from '../package/pkg';
+import { readPkg } from '../package/read';
+import { isDictionaryOrNull, isStringOrNull } from '../type-check/advanced';
+import { isDictionary, isNull } from '../type-check/basic';
+import { invalidKeys, keysCheck } from '../type-check/keys';
+import type { BundlibOptions, TypesOptions } from '../types/bundlib-options';
+import type { Dictionary, StrictNullable } from '../types/helper-types';
+import type { RollupSourcemap } from '../types/types';
 import { loadOptions } from './load-options';
-import { isValidChunks } from './options/chunks';
-import { normalizeBooleanOption } from './options/deprecated/boolean';
-import { isBrowserOption } from './options/deprecated/browser';
-import { isCJSOptionKey } from './options/deprecated/main-and-bin';
-import { isModuleOptionKey } from './options/deprecated/module';
-import { normalizeDeprecatedOption } from './options/deprecated/normalize';
-import { isTypesOptionKey } from './options/deprecated/types';
-import { resolveESModuleOption } from './options/es-module';
-import { isBrowserFormat } from './options/format';
-import { isValidGlobals, normalizeBuildGlobals, normalizeGlobals } from './options/globals';
-import { resolveInputOption } from './options/input';
-import { resolveInteropOption } from './options/interop';
-import { resolveMinOption } from './options/min';
-import { normalizeBuildName } from './options/name';
-import { resolveProjectOption } from './options/project';
-import { resolveSkipOption } from './options/skip';
-import { isSourcemapOption, resolveSourcemapOption } from './options/sourcemap';
-import { readPkg } from './tools/read-pkg';
-import { isDictionaryOrNull, isStringOrNull } from './type-check/advanced';
-import { isDictionary, isNull } from './type-check/basic';
-import { invalidKeys, keysCheck } from './type-check/keys';
-import type { BundlibOptions, TypesOptions } from './types/bundlib-options';
-import type { Dictionary, StrictNullable } from './types/helper-types';
-import type { BundlibPkgJson } from './types/pkg';
-import type { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalyzed, TypesBuildOptions } from './types/pkg-analyzed';
-import type { RollupSourcemap } from './types/types';
+import type { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalyzed, TypesBuildOptions } from './pkg-analyzed';
 
-async function analyzePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalyzed>;
-async function analyzePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAnalyzed> {
+export async function analyzePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalyzed>;
+export async function analyzePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAnalyzed> {
 
   const pkg: BundlibPkgJson = inputPkg || await readPkg(cwd);
 
@@ -335,5 +336,3 @@ async function analyzePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAn
   };
 
 }
-
-export default analyzePkg;

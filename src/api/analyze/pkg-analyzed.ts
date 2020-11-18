@@ -1,6 +1,6 @@
-import type { Dictionary, StrictNullable } from './helper-types';
-import type { BundlibPkgJson } from './pkg';
-import type { BrowserBuildFormat, RollupSourcemap } from './types';
+import type { BundlibPkgJson } from '../package/pkg';
+import type { Dictionary, StrictNullable } from '../types/helper-types';
+import type { BrowserBuildFormat, RollupSourcemap } from '../types/types';
 
 export interface ModuleBuildOptions {
   input: StrictNullable<string>;

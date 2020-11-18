@@ -1,4 +1,4 @@
-import { invalidOption } from '../../src/api/errors';
+import { invalidOption } from '../../src/api/errors/errors';
 import { resolveBoolBasedSelectiveOption } from '../../src/api/selective/bool-based';
 import { MODULE_BUILD_KEYS } from '../../src/api/selective/consts';
 import { SelectiveResolved } from '../../src/api/selective/types';

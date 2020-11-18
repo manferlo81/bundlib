@@ -1,4 +1,4 @@
-import { invalidOption } from '../../src/api/errors';
+import { invalidOption } from '../../src/api/errors/errors';
 import { MODULE_BUILD_KEYS } from '../../src/api/selective/consts';
 import { resolveObjectBasedSelectiveOption } from '../../src/api/selective/object-based';
 import { isString } from '../../src/api/type-check/basic';

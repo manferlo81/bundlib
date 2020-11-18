@@ -1,4 +1,4 @@
-import { invalidOption } from '../errors';
+import { invalidOption } from '../errors/errors';
 import { createOneOfLiteral } from '../type-check/advanced';
 import type { TypeCheckFunction } from '../types/helper-types';
 import { resolveObject } from './resolve-object';
