@@ -74,11 +74,11 @@ export async function action(
 
     emitter.on(BUILD_END, (filename: string, size: number, duration: number) => {
       const tag = inverse.green.bold(' built ');
-      const path = yellowBold(slash(relative(cwd, filename)));
+      const path = yellowBold(`./${slash(relative(cwd, filename))}`);
       const coloredSize = magentaBold(formatFileSize(size));
       const coloredDuration = magentaBold(prettyMs(duration, { secondsDecimalDigits: 2 }));
       const info = cyan(`( ${coloredSize} in ${coloredDuration} )`);
-      log(`${tag} ./${path} ${info}`);
+      log(`${tag} ${path} ${info}`);
     });
 
     emitter.on(WARN, (warning: RollupWarning) => {
