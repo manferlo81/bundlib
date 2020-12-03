@@ -2,6 +2,13 @@
 
 ## Version History
 
+### [0.18.4](https://github.com/manferlo81/bundlib/compare/v0.18.3...v0.18.4) (2020-12-03)
+
+
+### Bug Fixes
+
+* Built console message path color ([311329b](https://github.com/manferlo81/bundlib/commit/311329b42f197e29686c298837cb7857799321d8))
+
 ### [0.18.3](https://github.com/manferlo81/bundlib/compare/v0.18.2...v0.18.3) (2020-11-18)
 
 ### [0.18.2](https://github.com/manferlo81/bundlib/compare/v0.18.1...v0.18.2) (2020-11-10)
