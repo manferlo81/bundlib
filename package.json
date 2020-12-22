@@ -69,7 +69,7 @@
     "@types/jest": "^26.0.19",
     "@types/mock-fs": "^4.13.0",
     "@types/node": "^14.14.14",
-    "@typescript-eslint/eslint-plugin": "^4.10.0",
+    "@typescript-eslint/eslint-plugin": "^4.11.0",
     "@typescript-eslint/parser": "^4.10.0",
     "chokidar": "^3.4.3",
     "eslint": "^7.16.0",
