@@ -11,7 +11,7 @@ void program
   .option('-w, --watch', 'run bundlib in watch mode')
   .option('-s, --silent', 'prevent messages from showing in the console')
   .action(async () => {
-    const { dev, watch, silent } = program;
+    const { dev, watch, silent } = program.opts() as { dev: boolean; watch: boolean; silent: boolean };
     await action(displayName, version, dev, watch, silent);
   })
   .parseAsync(process.argv);
