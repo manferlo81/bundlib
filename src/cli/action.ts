@@ -9,7 +9,7 @@ import { BundlibPkgJson } from '../api';
 import { readPkg } from '../api/package/read';
 import { bundlib } from './bundlib';
 import { log, logError } from './console';
-import { BUILD_END, END, ERROR, REBUILD, WARN } from './events';
+import { EVENT_BUILD_END, EVENT_END, EVENT_ERROR, EVENT_REBUILD, EVENT_WARN } from './consts';
 import { BundlibEventEmitter } from './types';
 
 const { bold, inverse, cyan, yellow } = chalk;
@@ -62,7 +62,7 @@ export async function action(
   };
 
   const emitter: BundlibEventEmitter = new EventEmitter();
-  emitter.on(ERROR, showError);
+  emitter.on(EVENT_ERROR, showError);
 
   if (!silent) {
 
@@ -72,7 +72,7 @@ export async function action(
       find: 1024,
     });
 
-    emitter.on(BUILD_END, (filename: string, size: number, duration: number) => {
+    emitter.on(EVENT_BUILD_END, (filename: string, size: number, duration: number) => {
       const tag = inverse.green.bold(' built ');
       const path = yellowBold(`./${slash(relative(cwd, filename))}`);
       const coloredSize = magentaBold(formatFileSize(size));
@@ -81,7 +81,7 @@ export async function action(
       log(`${tag} ${path} ${info}`);
     });
 
-    emitter.on(WARN, (warning: RollupWarning) => {
+    emitter.on(EVENT_WARN, (warning: RollupWarning) => {
 
       const { plugin, message } = warning;
 
@@ -94,12 +94,12 @@ export async function action(
 
     if (watch) {
 
-      emitter.on(REBUILD, () => {
+      emitter.on(EVENT_REBUILD, () => {
         log(cyan(`rebuilding...
 `));
       });
 
-      emitter.on(END, () => {
+      emitter.on(EVENT_END, () => {
         log(cyan(`
 waiting for changes...`));
 

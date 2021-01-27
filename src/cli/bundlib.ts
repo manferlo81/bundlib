@@ -1,7 +1,7 @@
 import { WarningHandlerWithDefault } from 'rollup';
 import { BundlibPkgJson, configsFromPkg } from '../api';
 import { build } from './build';
-import { WARN } from './events';
+import { EVENT_WARN } from './consts';
 import { BundlibEventEmitter } from './types';
 import { watch as watchBuild } from './watch';
 
@@ -14,7 +14,7 @@ export async function bundlib(
 ): Promise<void> {
 
   const onwarn: WarningHandlerWithDefault = (warning) => {
-    emitter.emit(WARN, warning);
+    emitter.emit(EVENT_WARN, warning);
   };
 
   (watch ? watchBuild : build)(

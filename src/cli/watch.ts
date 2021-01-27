@@ -1,6 +1,6 @@
 import { statSync } from 'fs';
 import { RollupOptions, RollupWatcherEvent, watch as rollupWatch } from 'rollup';
-import { BUILD_END, END, ERROR, REBUILD } from './events';
+import { EVENT_BUILD_END, EVENT_END, EVENT_ERROR, EVENT_REBUILD } from './consts';
 import { BundlibEventEmitter } from './types';
 
 export function watch(
@@ -14,13 +14,13 @@ export function watch(
 
     START() {
       if (buildIndex) {
-        emitter.emit(REBUILD, buildIndex);
+        emitter.emit(EVENT_REBUILD, buildIndex);
       }
       buildIndex++;
     },
 
     END() {
-      emitter.emit(END);
+      emitter.emit(EVENT_END);
     },
 
     BUNDLE_END(e) {
@@ -28,7 +28,7 @@ export function watch(
       for (let i = 0; i < len; i++) {
         const stats = statSync(e.output[i]);
         emitter.emit(
-          BUILD_END,
+          EVENT_BUILD_END,
           e.output[i],
           stats.size,
           e.duration,
@@ -38,7 +38,7 @@ export function watch(
 
     ERROR(e) {
       emitter.emit(
-        ERROR,
+        EVENT_ERROR,
         e.error,
       );
     },

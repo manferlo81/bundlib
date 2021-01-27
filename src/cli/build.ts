@@ -1,8 +1,8 @@
 import { statSync } from 'fs';
-import { rollup } from 'rollup';
 import type { RollupCache, RollupError } from 'rollup';
+import { rollup } from 'rollup';
 import type { BundlibRollupModuleOutputOptions, BundlibRollupOptions } from '../api/types/types';
-import { BUILD_END, END, ERROR } from './events';
+import { EVENT_BUILD_END, EVENT_END, EVENT_ERROR } from './consts';
 import { oneByOne } from './one-by-one';
 import type { BundlibEventEmitter } from './types';
 
@@ -34,7 +34,7 @@ export function build(
         const { size } = statSync(outputFile);
         const totalTime = Date.now() - currentTime;
 
-        emitter.emit(BUILD_END, outputFile, size, totalTime);
+        emitter.emit(EVENT_BUILD_END, outputFile, size, totalTime);
 
       } catch (err) {
         next(err);
@@ -46,9 +46,9 @@ export function build(
     },
     (error) => {
       if (error) {
-        emitter.emit(ERROR, error as RollupError);
+        emitter.emit(EVENT_ERROR, error as RollupError);
       } else {
-        emitter.emit(END);
+        emitter.emit(EVENT_END);
       }
     },
   );
