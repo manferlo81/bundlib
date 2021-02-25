@@ -1,5 +1,3 @@
-import type { Dictionary } from '../types/helper-types';
-
 export const keys: (
   <K extends string | number | symbol>(
     object: Partial<Record<K, unknown>>,
@@ -10,7 +8,7 @@ export const keys: (
 // eslint-disable-next-line @typescript-eslint/unbound-method
 export const hasOwn = Object.prototype.hasOwnProperty;
 
-export function setProp<V>(name: string, value: V, target: Dictionary<V>): Dictionary<V> {
+export function setProp<K extends string, V>(name: K, value: V, target: Record<K, V>): Record<K, V> {
   target[name] = value;
   return target;
 }
