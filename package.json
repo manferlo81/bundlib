@@ -61,7 +61,7 @@
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-typescript2": "^0.30.0",
     "selective-option": "0.0.1",
-    "slash": "^3.0.0",
+    "slash": "^4.0.0",
     "typescript": "^4.3.2"
   },
   "devDependencies": {
