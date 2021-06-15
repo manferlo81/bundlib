@@ -6,7 +6,7 @@ orbs:
 executors:
   node:
     docker:
-      - image: circleci/node:10
+      - image: circleci/node:12
     working_directory: &working_directory ~/bundlib
 
 commands:
