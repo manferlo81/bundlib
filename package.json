@@ -65,7 +65,7 @@
     "typescript": "^4.3.5"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.14.8",
+    "@babel/preset-env": "^7.15.0",
     "@types/jest": "^26.0.24",
     "@types/mock-fs": "^4.13.1",
     "@types/node": "^16.3.0",
