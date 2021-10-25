@@ -48,7 +48,7 @@
     "builtin-modules": "^3.2.0",
     "camelcase": "^6.2.0",
     "chalk": "^4.1.1",
-    "commander": "^8.0.0",
+    "commander": "^8.3.0",
     "cosmiconfig": "^7.0.0",
     "gen-unit": "0.0.6",
     "load-json-file": "^6.2.0",
