@@ -17,7 +17,8 @@
     "removeComments": true,
     "outDir": "dist",
     "declaration": true,
-    "declarationMap": true
+    "declarationMap": true,
+    "importHelpers": true
   },
   "include": [
     "__mocks__/**/*.ts",
