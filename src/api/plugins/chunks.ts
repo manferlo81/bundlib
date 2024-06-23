@@ -1,7 +1,7 @@
 import { dirname, join, relative, resolve } from 'path';
 import type { Plugin } from 'rollup';
 import slash from 'slash';
-import { keys, setProp } from '../tools/helpers';
+import { keys } from '../tools/helpers';
 import type { Dictionary } from '../types/helper-types';
 
 export function chunksPlugin(cwd: string, outputDir: string, extensions: string[], map: Dictionary<string>): Plugin {
@@ -16,11 +16,10 @@ export function chunksPlugin(cwd: string, outputDir: string, extensions: string[
         ),
       );
       return value
-        ? setProp(
-          resolve(cwd, source),
-          value.startsWith('.') ? value : `./${value}`,
-          resolvedMap,
-        )
+        ? {
+          ...resolvedMap,
+          [resolve(cwd, source)]: value.startsWith('.') ? value : `./${value}`,
+        }
         : resolvedMap;
     },
     {},

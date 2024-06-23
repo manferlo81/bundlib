@@ -16,14 +16,14 @@ describe('createConfig private method', () => {
     const isExternal = () => false;
     const plugins: Plugin[] = [];
 
-    const config = createConfig(
+    const config = createConfig({
       input,
       output,
       isExternal,
       plugins,
-      null,
-      false,
-    );
+      onwarn: null,
+      useChokidar: false,
+    });
 
     expect(config).toEqual({
       input,
@@ -53,14 +53,14 @@ describe('createConfig private method', () => {
     const plugins: Plugin[] = [];
     const onwarn = () => false;
 
-    const config = createConfig(
+    const config = createConfig({
       input,
-      output as never,
+      output,
       isExternal,
       plugins,
       onwarn,
-      false,
-    );
+      useChokidar: false,
+    });
 
     expect(config).toEqual({
       input,
@@ -90,14 +90,14 @@ describe('createConfig private method', () => {
     const isExternal = () => false;
     const plugins: Plugin[] = [];
 
-    const config = createConfig(
+    const config = createConfig({
       input,
       output,
       isExternal,
       plugins,
-      null,
-      true,
-    );
+      onwarn: null,
+      useChokidar: true,
+    });
 
     expect(config).toEqual({
       input,

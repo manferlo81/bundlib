@@ -1,36 +1,27 @@
-import type { IsExternal, Plugin, WarningHandlerWithDefault, WatcherOptions as RollupWatcherOptions } from 'rollup';
+import type { IsExternal, Plugin, WarningHandlerWithDefault } from 'rollup';
 import type { Nullable } from '../types/helper-types';
 import type { BundlibRollupModuleOutputOptions, BundlibRollupOptions } from '../types/types';
 
-export function createConfig<OutputOptions extends BundlibRollupModuleOutputOptions>(
-  input: string,
-  output: OutputOptions,
-  external: IsExternal,
-  plugins: Plugin[],
-  onwarn: Nullable<WarningHandlerWithDefault>,
-  chokidar: boolean,
-): BundlibRollupOptions<OutputOptions> {
+interface CreateConfigOptions<OutputOptions extends BundlibRollupModuleOutputOptions> {
+  input: string;
+  output: OutputOptions;
+  isExternal: IsExternal;
+  plugins: Plugin[];
+  onwarn: Nullable<WarningHandlerWithDefault>;
+  useChokidar: boolean;
+}
 
-  const watch: RollupWatcherOptions = {
-    exclude: ['node_modules/**'],
-  };
-
-  if (chokidar) {
-    watch.chokidar = {};
-  }
-
-  const config: BundlibRollupOptions<OutputOptions> = {
+export function createConfig<OutputOptions extends BundlibRollupModuleOutputOptions>(options: CreateConfigOptions<OutputOptions>): BundlibRollupOptions<OutputOptions> {
+  const { input, output, isExternal: external, plugins, onwarn, useChokidar } = options;
+  return {
     input,
     output,
     external,
     plugins,
-    watch,
+    watch: {
+      exclude: ['node_modules/**'],
+      ...useChokidar && { chokidar: {} },
+    },
+    ...onwarn && { onwarn },
   };
-
-  if (onwarn) {
-    config.onwarn = onwarn;
-  }
-
-  return config;
-
 }

@@ -1,60 +1,88 @@
 import type { IsExternal } from 'rollup';
-import { isArray } from '../type-check/basic';
 import type { Dictionary, Nullable } from '../types/helper-types';
-import { hasOwn, keys, keysToObject } from './helpers';
+import { hasOwn, keys } from './helpers';
 
-export function createIsExternal(...dependencies: Array<Nullable<string[] | Dictionary<unknown>>>): IsExternal {
+const isNotExternal: IsExternal = () => false;
 
-  const filtered = dependencies.filter((dep): dep is string[] | Dictionary<unknown> => !!dep);
+export function createIsExternal(...args: Array<Nullable<readonly string[]>>): IsExternal {
 
-  if (!filtered.length) {
-    return () => false;
+  // filter arguments for "nullish" dependencies
+  const filtered = args.filter((dep): dep is string[] => {
+    return !!dep;
+  });
+
+  // if no dependencies passed, return function that always returns false (not external)
+  if (filtered.length === 0) {
+    return isNotExternal;
   }
 
-  const asObj = filtered.reduce<Dictionary<unknown>>(
-    (result, dep) => isArray(dep) ? keysToObject(dep, true as unknown, result) : { ...result, ...dep },
+  // create external data
+  const externalData = filtered.reduce<Dictionary<true>>(
+    (result, dependencies) => {
+      return dependencies.reduce((result, dependencyName) => {
+        return { ...result, [dependencyName]: true };
+      }, result);
+    },
     {},
   );
 
-  const asList = keys(asObj);
+  // get external data kays
+  const externalList = keys(externalData);
 
+  // if there is not external data return function that always returns false (not external)
+  if (externalList.length === 0) {
+    return isNotExternal;
+  }
+
+  // create cache object
   const cache: Dictionary<boolean> = {};
 
-  return (source: string, importer: unknown, isResolved: boolean): boolean => {
+  // return IsExternal function
+  return (source, importer, isResolved) => {
 
+    // if it's resolved or is local file, return false (not external)
     if (isResolved || source.startsWith('.')) {
       return false;
     }
 
+    // if found in cache, return cached value
     if (hasOwn.call(cache, source)) {
       return cache[source];
     }
 
-    if (asObj[source]) {
+    // if found in external data, return true (is external) and cache result
+    if (externalData[source]) {
       return cache[source] = true;
     }
 
-    const l = asList.length;
-    for (let i = 0; i < l; i++) {
+    // search external data
+    const { length: listLength } = externalList;
+    for (let i = 0; i < listLength; i++) {
 
-      const moduleName = asList[i];
-      const len = moduleName.length;
-      const partialSource = source.substr(0, len);
+      const externalModuleName = externalList[i];
+      const { length: externalModuleNameLength } = externalModuleName;
 
-      if (/^[/\\]$/.test(source[len])) {
+      // if source is a module sub-file ex: "my-module/file.js"
+      if (/^[/\\]$/.test(source[externalModuleNameLength])) {
 
-        if (hasOwn.call(cache, partialSource)) {
-          return cache[partialSource];
+        // truncate source filename to match external module name length
+        const truncatedSource = source.substring(0, externalModuleNameLength);
+
+        // if found in cache, return cached value
+        if (hasOwn.call(cache, truncatedSource)) {
+          return cache[truncatedSource];
         }
 
-        if (partialSource === moduleName) {
-          return cache[partialSource] = cache[source] = true;
+        // if module name matches, return true (is external) and cache result
+        if (truncatedSource === externalModuleName) {
+          return cache[truncatedSource] = cache[source] = true;
         }
 
       }
 
     }
 
+    // if source not found on external data, return false (not external) and cache result
     return cache[source] = false;
 
   };

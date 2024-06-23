@@ -7,34 +7,50 @@ describe('array-to-external method', () => {
     expect(isExternal('any-external', undefined, false)).toBe(false);
   });
 
-  const isExternal = createIsExternal(['array-external'], { 'object-external-string': '*' }, { 'object-external-bool': true });
+  test('Should always return false is empty dependencies', () => {
+    const isExternal = createIsExternal([]);
+    expect(isExternal('any-external', undefined, false)).toBe(false);
+  });
 
   test('Should return false if already resolved', () => {
+    const isExternal = createIsExternal(['external']);
     const resolved = true;
-    expect(isExternal('array-external', undefined, resolved)).toBe(false);
+    expect(isExternal('external', undefined, resolved)).toBe(false);
   });
 
-  test('Should return false if not module', () => {
+  test('Should return false it\'s a local project file', () => {
+    const isExternal = createIsExternal(['external']);
     expect(isExternal('./any-module', undefined, false)).toBe(false);
+    expect(isExternal('./any-module/file.ext', undefined, false)).toBe(false);
   });
 
-  test('Should detect as external from array', () => {
-    expect(isExternal('array-external', undefined, false)).toBe(true);
-  });
-
-  test('Should detect as external from object', () => {
-    expect(isExternal('object-external-string', undefined, false)).toBe(true);
-    expect(isExternal('object-external-bool', undefined, false)).toBe(true);
+  test('Should detect as external module', () => {
+    const isExternal = createIsExternal(['external']);
+    expect(isExternal('external', undefined, false)).toBe(true);
+    expect(isExternal('not-external', undefined, false)).toBe(false);
   });
 
   test('Should detect as external from sub path', () => {
-    expect(isExternal('array-external/file.ext', undefined, false)).toBe(true);
-    expect(isExternal('object-external-string/file.ext', undefined, false)).toBe(true);
-    expect(isExternal('object-external-bool/file.ext', undefined, false)).toBe(true);
+    const isExternal = createIsExternal(['external']);
+    expect(isExternal('external/file1.ext', undefined, false)).toBe(true);
+    expect(isExternal('external/file2.ext', undefined, false)).toBe(true);
+    expect(isExternal('not-external/file.ext', undefined, false)).toBe(false);
+  });
+
+  test('Should get value from cache', () => {
+    const isExternal = createIsExternal(['external1', 'external2']);
+    expect(isExternal('external1', undefined, false)).toBe(true);
+    expect(isExternal('external1', undefined, false)).toBe(true);
+    expect(isExternal('external2/file1.ext', undefined, false)).toBe(true);
+    expect(isExternal('external2/file2.ext', undefined, false)).toBe(true);
   });
 
   test('Should not detect as external', () => {
-    expect(isExternal('other-external', undefined, false)).toBe(false);
+    const isExternal = createIsExternal(['external1', 'external2'], ['external3']);
+    expect(isExternal('external1', undefined, false)).toBe(true);
+    expect(isExternal('external2/file.ext', undefined, false)).toBe(true);
+    expect(isExternal('not-external', undefined, false)).toBe(false);
+    expect(isExternal('not-external/file.ext', undefined, false)).toBe(false);
   });
 
 });

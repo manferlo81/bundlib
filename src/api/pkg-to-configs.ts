@@ -24,7 +24,7 @@ import { createIsExternal } from './tools/create-is-external';
 import { createIsInstalled } from './tools/create-is-installed';
 import { createResolveInput } from './tools/create-resolve-input';
 import { extensionMatch } from './tools/extension-match';
-import { keys, setProp } from './tools/helpers';
+import { keys } from './tools/helpers';
 import { renamePre } from './tools/rename-pre';
 import type { Dictionary, Nullable, TypeCheckFunction } from './types/helper-types';
 import type { BundlibAPIOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types/types';
@@ -60,9 +60,9 @@ export function pkgToConfigs(
   const typescriptCachePath = pathJoin(bundlibCachePath, 'rpt2');
 
   const isExternal = createIsExternal(
-    runtimeDependencies,
-    peerDependencies,
-    builtinModules as string[],
+    runtimeDependencies ? keys(runtimeDependencies) : null,
+    peerDependencies ? keys(peerDependencies) : null,
+    builtinModules,
   );
 
   const isProduction = !dev;
@@ -224,14 +224,14 @@ export function pkgToConfigs(
       exports: 'auto',
     };
 
-    commonjsChunks = setProp(inputFile, outputFile, { ...chunks });
+    commonjsChunks = { ...chunks, [inputFile]: outputFile };
 
     configs.push(
-      createConfig(
-        inputFile,
-        outputOptions,
+      createConfig({
+        input: inputFile,
+        output: outputOptions,
         isExternal,
-        createPlugins(
+        plugins: createPlugins(
           inputFile,
           outputFile,
           sourcemap,
@@ -243,7 +243,7 @@ export function pkgToConfigs(
         ),
         onwarn,
         useChokidar,
-      ),
+      }),
     );
 
     if (min) {
@@ -252,11 +252,11 @@ export function pkgToConfigs(
       const minOutputOptions = { ...outputOptions, file: minOutputFile };
 
       configs.push(
-        createConfig(
-          inputFile,
-          minOutputOptions,
+        createConfig({
+          input: inputFile,
+          output: minOutputOptions,
           isExternal,
-          createPlugins(
+          plugins: createPlugins(
             inputFile,
             minOutputFile,
             sourcemap,
@@ -268,7 +268,7 @@ export function pkgToConfigs(
           ),
           onwarn,
           useChokidar,
-        ),
+        }),
       );
 
     }
@@ -282,11 +282,11 @@ export function pkgToConfigs(
         const chunkOutputOptions = { ...outputOptions, file: outputFile };
 
         configs.push(
-          createConfig(
-            inputFile,
-            chunkOutputOptions,
+          createConfig({
+            input: inputFile,
+            output: chunkOutputOptions,
             isExternal,
-            createPlugins(
+            plugins: createPlugins(
               inputFile,
               outputFile,
               sourcemap,
@@ -298,7 +298,7 @@ export function pkgToConfigs(
             ),
             onwarn,
             useChokidar,
-          ),
+          }),
         );
 
       });
@@ -325,11 +325,11 @@ export function pkgToConfigs(
     };
 
     configs.push(
-      createConfig(
-        inputFile,
-        outputOptions,
+      createConfig({
+        input: inputFile,
+        output: outputOptions,
         isExternal,
-        createPlugins(
+        plugins: createPlugins(
           inputFile,
           outputFile,
           sourcemap,
@@ -341,7 +341,7 @@ export function pkgToConfigs(
         ),
         onwarn,
         useChokidar,
-      ),
+      }),
     );
 
     if (min) {
@@ -350,11 +350,11 @@ export function pkgToConfigs(
       const minOutputOptions = { ...outputOptions, file: minOutputFile };
 
       configs.push(
-        createConfig(
-          inputFile,
-          minOutputOptions,
+        createConfig({
+          input: inputFile,
+          output: minOutputOptions,
           isExternal,
-          createPlugins(
+          plugins: createPlugins(
             inputFile,
             minOutputFile,
             sourcemap,
@@ -366,7 +366,7 @@ export function pkgToConfigs(
           ),
           onwarn,
           useChokidar,
-        ),
+        }),
       );
 
     }
@@ -376,15 +376,15 @@ export function pkgToConfigs(
   if (browserBuild) {
 
     const { input, output, sourcemap, esModule, interop, format, name, extend, id, globals, min, project } = browserBuild;
-    const inputFile = resolveInput(input);
+    const browserInputFile = resolveInput(input);
 
-    if (!inputFile) {
+    if (!browserInputFile) {
       throw inputNotFound('Browser build');
     }
 
-    const outputFile = resolve(cwd, output);
+    const browserOutputFile = resolve(cwd, output);
     const outputOptions: BundlibRollupModuleOutputOptions = {
-      file: outputFile,
+      file: browserOutputFile,
       format,
       sourcemap,
       esModule,
@@ -404,16 +404,16 @@ export function pkgToConfigs(
       outputOptions.amd = { id };
     }
 
-    const isBrowserExternal = createIsExternal(globals);
+    const isBrowserExternal = createIsExternal(globals ? keys(globals) : null);
 
     configs.push(
-      createConfig(
-        inputFile,
-        outputOptions,
-        isBrowserExternal,
-        createPlugins(
-          inputFile,
-          outputFile,
+      createConfig({
+        input: browserInputFile,
+        output: outputOptions,
+        isExternal: isBrowserExternal,
+        plugins: createPlugins(
+          browserInputFile,
+          browserOutputFile,
           sourcemap,
           isProduction && !min,
           true,
@@ -423,21 +423,21 @@ export function pkgToConfigs(
         ),
         onwarn,
         useChokidar,
-      ),
+      }),
     );
 
     if (min) {
 
-      const minOutputFile = renamePre(outputFile, MIN_PREFIX);
+      const minOutputFile = renamePre(browserOutputFile, MIN_PREFIX);
       const minOutputOptions = { ...outputOptions, file: minOutputFile };
 
       configs.push(
-        createConfig(
-          inputFile,
-          minOutputOptions,
-          isBrowserExternal,
-          createPlugins(
-            inputFile,
+        createConfig({
+          input: browserInputFile,
+          output: minOutputOptions,
+          isExternal: isBrowserExternal,
+          plugins: createPlugins(
+            browserInputFile,
             minOutputFile,
             sourcemap,
             true,
@@ -448,7 +448,7 @@ export function pkgToConfigs(
           ),
           onwarn,
           useChokidar,
-        ),
+        }),
       );
 
     }
@@ -475,11 +475,11 @@ export function pkgToConfigs(
     };
 
     configs.push(
-      createConfig(
-        inputFile,
-        outputOptions,
+      createConfig({
+        input: inputFile,
+        output: outputOptions,
         isExternal,
-        createPlugins(
+        plugins: createPlugins(
           inputFile,
           outputFile,
           sourcemap,
@@ -491,7 +491,7 @@ export function pkgToConfigs(
         ),
         onwarn,
         useChokidar,
-      ),
+      }),
     );
 
     if (min) {
@@ -500,11 +500,11 @@ export function pkgToConfigs(
       const minOutputOptions = { ...outputOptions, file: minOutputFile };
 
       configs.push(
-        createConfig(
-          inputFile,
-          minOutputOptions,
+        createConfig({
+          input: inputFile,
+          output: minOutputOptions,
           isExternal,
-          createPlugins(
+          plugins: createPlugins(
             inputFile,
             minOutputFile,
             sourcemap,
@@ -516,7 +516,7 @@ export function pkgToConfigs(
           ),
           onwarn,
           useChokidar,
-        ),
+        }),
       );
 
     }

@@ -1,4 +1,4 @@
-import { keys, setProp } from '../tools/helpers';
+import { keys } from '../tools/helpers';
 import { isArray, isNull, isObject, isString } from '../type-check/basic';
 import type { GlobalsOptions } from '../types/bundlib-options';
 import type { Nullable } from '../types/helper-types';
@@ -15,7 +15,10 @@ export function isValidGlobals(value: unknown): value is GlobalsOptions {
 
 export function normalizeGlobals(globals: GlobalsOptions): Record<string, string> | null {
   return !globals ? null
-    : isArray(globals) ? globals.reduce<Record<string, string>>((result, value) => setProp(value, value, result), {})
+    : isArray(globals)
+      ? globals.reduce<Record<string, string>>((result, value) => {
+        return { ...result, [value]: value };
+      }, {})
       : globals;
 }
 
