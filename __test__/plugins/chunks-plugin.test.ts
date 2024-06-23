@@ -19,14 +19,14 @@ describe('API Plugin', () => {
       null as never,
       './index',
       `${cwd}/src/itself/index.ts`,
-      {},
+      {} as never,
     )).toBeNull();
 
     expect(resolveId.call(
       null as never,
       '.',
       `${cwd}/src/itself/index.ts`,
-      {},
+      {} as never,
     )).toBeNull();
 
   });
@@ -37,7 +37,7 @@ describe('API Plugin', () => {
       null as never,
       `${cwd}/src/index.ts`,
       undefined,
-      {},
+      {} as never,
     ) as PartialResolvedId;
 
     expect(resolved).toBeNull();
@@ -50,7 +50,7 @@ describe('API Plugin', () => {
       null as never,
       './another-target',
       `${cwd}/src/index.ts`,
-      {},
+      {} as never,
     ) as PartialResolvedId;
 
     expect(resolved).toBeNull();
@@ -63,7 +63,7 @@ describe('API Plugin', () => {
       null as never,
       './target',
       `${cwd}/src/index.ts`,
-      {},
+      {} as never,
     ) as PartialResolvedId;
     resolved.id = slash(resolved.id);
 
@@ -80,7 +80,7 @@ describe('API Plugin', () => {
       null as never,
       './target-no-ext',
       `${cwd}/src/index.ts`,
-      {},
+      {} as never,
     ) as PartialResolvedId;
     resolved.id = slash(resolved.id);
 
@@ -97,7 +97,7 @@ describe('API Plugin', () => {
       null as never,
       './helpers',
       `${cwd}/src/index.ts`,
-      {},
+      {} as never,
     ) as PartialResolvedId;
     resolved.id = slash(resolved.id);
 
