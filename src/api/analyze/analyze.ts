@@ -28,10 +28,7 @@ import type { RollupSourcemap } from '../types/types';
 import { loadOptions } from './load-options';
 import type { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalyzed, TypesBuildOptions } from './pkg-analyzed';
 
-export async function analyzePkg(cwd: string, pkg?: BundlibPkgJson): Promise<PkgAnalyzed>;
-export async function analyzePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAnalyzed> {
-
-  const pkg: BundlibPkgJson = inputPkg || await readPkg(cwd);
+export async function analyzePkg2(cwd: string, pkg: unknown): Promise<PkgAnalyzed> {
 
   if (!isDictionary<BundlibPkgJson>(pkg)) {
     throw error('Invalid package.json content');
@@ -49,9 +46,10 @@ export async function analyzePkg(cwd: string, inputPkg?: BundlibPkgJson): Promis
     dependencies: runtimeDependencies,
     devDependencies,
     peerDependencies,
+    bundlib: pkgBundlibOptions,
   } = pkg;
 
-  const loadedOptions = await loadOptions(cwd, pkg.bundlib);
+  const loadedOptions = await loadOptions(cwd, pkgBundlibOptions);
   const loadedBundlibOptions = loadedOptions && loadedOptions.config;
 
   if (loadedOptions && !isNull(loadedBundlibOptions) && !isDictionary<BundlibOptions>(loadedBundlibOptions)) {
@@ -63,7 +61,7 @@ export async function analyzePkg(cwd: string, inputPkg?: BundlibPkgJson): Promis
   const bundlibOptions = loadedBundlibOptions || {};
 
   const invalidOptions = invalidKeys(
-    bundlibOptions as never,
+    bundlibOptions,
     [
       'input',
       'extend',
@@ -239,7 +237,7 @@ export async function analyzePkg(cwd: string, inputPkg?: BundlibPkgJson): Promis
   const mainOutput: StrictNullable<ModuleBuildOptions> = (deprecatedMainOptions === false || skipBuild.main || !mainOutputFile) ? null : {
     input: perBuildInput.main,
     output: mainOutputFile,
-    sourcemap: normalizeDeprecatedOption(
+    sourcemap: normalizeDeprecatedOption<'sourcemap', RollupSourcemap>(
       deprecatedMainOptions,
       'sourcemap',
       isSourcemapOption,
@@ -254,7 +252,7 @@ export async function analyzePkg(cwd: string, inputPkg?: BundlibPkgJson): Promis
   const moduleOutput: StrictNullable<ModuleBuildOptions> = (deprecatedModuleOptions === false || skipBuild.module || !moduleOutputFile) ? null : {
     input: perBuildInput.module,
     output: moduleOutputFile,
-    sourcemap: normalizeDeprecatedOption(
+    sourcemap: normalizeDeprecatedOption<'sourcemap', RollupSourcemap>(
       deprecatedModuleOptions,
       'sourcemap',
       isSourcemapOption,
@@ -297,7 +295,7 @@ export async function analyzePkg(cwd: string, inputPkg?: BundlibPkgJson): Promis
   const binaryOutput: StrictNullable<ModuleBuildOptions> = (deprecatedBinaryOptions === false || skipBuild.bin || !binaryOutputFile) ? null : {
     input: perBuildInput.bin,
     output: binaryOutputFile,
-    sourcemap: normalizeDeprecatedOption(
+    sourcemap: normalizeDeprecatedOption<'sourcemap', RollupSourcemap>(
       deprecatedBinaryOptions,
       'sourcemap',
       isSourcemapOption,
@@ -335,4 +333,12 @@ export async function analyzePkg(cwd: string, inputPkg?: BundlibPkgJson): Promis
     cache,
   };
 
+}
+
+export async function analyzePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAnalyzed> {
+  if (inputPkg) {
+    return analyzePkg2(cwd, inputPkg);
+  }
+  const pkg = await readPkg<BundlibPkgJson>(cwd);
+  return analyzePkg2(cwd, pkg);
 }

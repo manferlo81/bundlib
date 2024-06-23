@@ -94,10 +94,10 @@ export interface DeprecatedBundlibOptions {
   module?: Nullable<ESModuleBuildOptions | false>;
   browser?: Nullable<BrowserBuildOptions | false>;
   bin?: Nullable<CommonJSBuildOptions | string | false>;
-  types?: Nullable<TypesOptions>;
+  types?: Nullable<TypesOptions | false>;
 }
 
-export interface BundlibOptions extends DeprecatedBundlibOptions {
+export interface BundlibOptions extends DeprecatedBundlibOptions, Record<string, unknown> {
 
   input?: Nullable<SelectiveStringOption>;
 

@@ -2,6 +2,7 @@ import { keys } from '../tools/helpers';
 import type { Dictionary, StrictNullable, TypeCheckFunction } from '../types/helper-types';
 import { composeOneOf } from './advanced';
 
+export function invalidKeys<K extends string>(object: Dictionary<unknown>, list: K[]): StrictNullable<K[]>;
 export function invalidKeys(object: Dictionary<unknown>, list: string[]): StrictNullable<string[]> {
   const invalid = keys(object).filter(
     (key) => !list.includes(key),
