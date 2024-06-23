@@ -29,8 +29,10 @@
     "lint": "run-p lint:*",
     "test": "jest --color -w 3",
     "test:watch": "npm test -- --watch-all",
-    "dev": "ts-node -T -P tsconfig-ts-node.json src/cli -dw",
-    "build": "ts-node -T -P tsconfig-ts-node.json src/cli -d",
+    "bundlib": "ts-node -T -P tsconfig-ts-node.json src/cli",
+    "help": "npm run bundlib -- -h",
+    "dev": "npm run bundlib -- -dw",
+    "build": "npm run bundlib -- -d",
     "prerelease": "run-s clean lint test build",
     "release": "standard-version"
   },
