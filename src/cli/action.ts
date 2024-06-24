@@ -17,7 +17,7 @@ const greenBold = bold.green;
 const yellowBold = bold.yellow;
 const magentaBold = bold.magenta;
 
-function prjInfo(name: string, ver: string) {
+function formatProjectInfo(name: string, ver: string) {
   const projName = greenBold(name);
   const projVer = yellowBold(`v${ver}`);
   return `${projName} ${projVer}`;
@@ -41,16 +41,16 @@ export async function action(
 
   if (!silent) {
 
-    log(`${prjInfo(displayName, version)}
+    log(`${formatProjectInfo(displayName, version)}
 `);
 
     // TODO: Show detected modules & plugins with versions
 
-    const { name: prjName, displayName: prjDispName, version: prjVer } = pkg;
-    const prjInfoName = prjDispName || prjName;
+    const { name: projectName, displayName: projectDisplayName, version: projectVersion } = pkg;
+    const prjInfoName = projectDisplayName || projectName;
 
-    if (prjInfoName && prjVer) {
-      log(`${cyan('building:')} ${prjInfo(prjInfoName, prjVer)}
+    if (prjInfoName && projectVersion) {
+      log(`${cyan('building:')} ${formatProjectInfo(prjInfoName, projectVersion)}
 `);
     }
 
@@ -118,7 +118,7 @@ waiting for changes...`));
       pkg,
     );
   } catch (err) {
-    showError(err);
+    showError(err as RollupError);
   }
 
 }
