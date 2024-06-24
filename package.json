@@ -57,7 +57,7 @@
     "load-json-file": "^6.2.0",
     "pretty-ms": "^7.0.1",
     "resolve-from": "^5.0.0",
-    "rollup": "^2.68.0",
+    "rollup": "^2.79.1",
     "rollup-plugin-add-shebang": "^0.3.1",
     "rollup-plugin-export-equals": "^0.3.7",
     "rollup-plugin-strip-shebang": "^1.2.10",
@@ -84,7 +84,7 @@
     "standard-version": "^9.3.1",
     "ts-jest": "^29.1.5",
     "ts-node": "^10.9.2",
-    "typescript-eslint": "^7.6.0"
+    "typescript-eslint": "^7.14.1"
   },
   "author": {
     "name": "Manuel Fernández",
