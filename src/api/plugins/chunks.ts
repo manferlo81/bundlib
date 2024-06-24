@@ -4,7 +4,7 @@ import slash from 'slash';
 import { keys } from '../tools/helpers';
 import type { Dictionary } from '../types/helper-types';
 
-export function chunksPlugin(cwd: string, outputDir: string, extensions: string[], map: Dictionary<string>): Plugin {
+export function pluginChunks(cwd: string, outputDir: string, extensions: string[], map: Dictionary<string>): Plugin {
 
   const resolvedMap = keys(map).reduce<Dictionary<string>>(
     (resolvedMap, source) => {

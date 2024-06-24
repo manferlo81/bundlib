@@ -17,7 +17,7 @@ import { MIN_PREFIX, TS_DEF_PREFIX } from './consts/consts';
 import { JS_EXTENSIONS, TS_EXTENSIONS, TS_ONLY_EXTENSIONS } from './consts/extensions';
 import { error } from './errors/error';
 import { inputNotFound } from './errors/errors';
-import { chunksPlugin as pluginChunks } from './plugins/chunks';
+import { pluginChunks } from './plugins/chunks';
 import { createConfig } from './tools/create-config';
 import { createImportFromCWD } from './tools/create-import-from-cwd';
 import { createIsExternal } from './tools/create-is-external';

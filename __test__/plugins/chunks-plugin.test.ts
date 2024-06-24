@@ -1,28 +1,29 @@
-import { PartialResolvedId, Plugin } from 'rollup';
+import { PartialResolvedId, ResolveIdHook } from 'rollup';
 import slash from 'slash';
-import { chunksPlugin } from '../../src/api/plugins/chunks';
+import { pluginChunks } from '../../src/api/plugins/chunks';
 
 describe('API Plugin', () => {
 
   const cwd = process.cwd();
 
-  const { resolveId } = chunksPlugin(cwd, `${cwd}/out`, ['.ts', '.js'], {
+  const { resolveId } = pluginChunks(cwd, `${cwd}/out`, ['.ts', '.js'], {
     'src/target.ts': 'root-file.js',
     'src/target-no-ext': 'root-file.js',
     'src/helpers/index.ts': 'out/helpers.js',
     'src/itself/index.ts': 'out',
-  }) as Required<Plugin>;
+  });
+  const resolveIdFunction = resolveId as ResolveIdHook;
 
   test('Should return null if module import itself and let rollup deal with it', () => {
 
-    expect(resolveId.call(
+    expect(resolveIdFunction.call(
       null as never,
       './index',
       `${cwd}/src/itself/index.ts`,
       {} as never,
     )).toBeNull();
 
-    expect(resolveId.call(
+    expect(resolveIdFunction.call(
       null as never,
       '.',
       `${cwd}/src/itself/index.ts`,
@@ -31,9 +32,9 @@ describe('API Plugin', () => {
 
   });
 
-  test('Should return null if no importer', async () => {
+  test('Should return null if no importer', () => {
 
-    const resolved = await resolveId.call(
+    const resolved = resolveIdFunction.call(
       null as never,
       `${cwd}/src/index.ts`,
       undefined,
@@ -44,9 +45,9 @@ describe('API Plugin', () => {
 
   });
 
-  test('Should return null if target not found', async () => {
+  test('Should return null if target not found', () => {
 
-    const resolved = await resolveId.call(
+    const resolved = resolveIdFunction.call(
       null as never,
       './another-target',
       `${cwd}/src/index.ts`,
@@ -57,9 +58,9 @@ describe('API Plugin', () => {
 
   });
 
-  test('Should resolve file from another file', async () => {
+  test('Should resolve file from another file', () => {
 
-    const resolved = await resolveId.call(
+    const resolved = resolveIdFunction.call(
       null as never,
       './target',
       `${cwd}/src/index.ts`,
@@ -74,9 +75,9 @@ describe('API Plugin', () => {
 
   });
 
-  test('Should resolve file from another file', async () => {
+  test('Should resolve file from another file', () => {
 
-    const resolved = await resolveId.call(
+    const resolved = resolveIdFunction.call(
       null as never,
       './target-no-ext',
       `${cwd}/src/index.ts`,
@@ -91,9 +92,9 @@ describe('API Plugin', () => {
 
   });
 
-  test('Should resolve file infering index.js', async () => {
+  test('Should resolve file inferring index.js', () => {
 
-    const resolved = await resolveId.call(
+    const resolved = resolveIdFunction.call(
       null as never,
       './helpers',
       `${cwd}/src/index.ts`,
