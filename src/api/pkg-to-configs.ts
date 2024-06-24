@@ -147,6 +147,8 @@ export function pkgToConfigs(
 
       browser && pluginCommonJS({
         sourceMap: sourcemap,
+        defaultIsModuleExports: true,
+        requireReturnsDefault: true,
       }),
 
       useTypescript && inputIsTypescript && pluginTypescript({
