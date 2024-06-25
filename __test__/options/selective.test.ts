@@ -1,5 +1,6 @@
 import type { SelectiveResolved } from 'selective-option';
-import { invalidOption } from '../../src/api/errors/errors';
+import { error } from '../../src/api/errors/error';
+import { invalidOptionMessage } from '../../src/api/errors/error-messages';
 import { resolveBoolBasedSelectiveOption } from '../../src/api/selective/bool-based';
 import { MODULE_BUILD_KEYS } from '../../src/api/selective/consts';
 import { isBool } from '../../src/api/type-check/basic';
@@ -46,7 +47,7 @@ describe('selective option', () => {
     invalids.forEach((invalid) => {
       [true, false].forEach((defaultValue) => {
         expect(() => resolve(invalid as never, defaultValue)).toThrow(
-          invalidOption(optionName, urlHash),
+          error(invalidOptionMessage(optionName, urlHash)),
         );
       });
     });

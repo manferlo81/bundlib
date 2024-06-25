@@ -1,4 +1,5 @@
-import { invalidOption } from '../../src/api/errors/errors';
+import { error } from '../../src/api/errors/error';
+import { invalidOptionMessage } from '../../src/api/errors/error-messages';
 import { resolveSkipOption } from '../../src/api/options/skip';
 
 describe('"skip" option', () => {
@@ -22,7 +23,7 @@ describe('"skip" option', () => {
 
     invalids.forEach((invalid) => {
       expect(() => resolveSkipOption(invalid as never)).toThrow(
-        invalidOption('skip'),
+        error(invalidOptionMessage('skip')),
       );
     });
 

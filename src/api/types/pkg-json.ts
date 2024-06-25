@@ -1,5 +1,5 @@
-import type { BundlibOptions } from '../types/bundlib-options';
-import type { Dictionary } from '../types/helper-types';
+import type { BundlibOptions } from './bundlib-options';
+import type { Dictionary } from './helper-types';
 
 export type PkgJsonModuleType = 'commonjs' | 'module';
 

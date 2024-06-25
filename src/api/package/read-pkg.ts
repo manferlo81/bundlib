@@ -2,7 +2,7 @@ import loadJsonFile from 'load-json-file';
 import { join as pathJoin } from 'path';
 import { error } from '../errors/error';
 import { isDictionary } from '../type-check/basic';
-import { BundlibPkgJson } from './pkg-json-types';
+import { BundlibPkgJson } from '../types/pkg-json';
 
 export async function readPkg(cwd: string): Promise<BundlibPkgJson> {
 

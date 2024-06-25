@@ -12,11 +12,10 @@ import pluginAddShebang from 'rollup-plugin-add-shebang';
 import pluginEquals from 'rollup-plugin-export-equals';
 import pluginStripShebang from 'rollup-plugin-strip-shebang';
 import pluginTypescript from 'rollup-plugin-typescript2';
-import type { PkgAnalyzed } from './analyze/pkg-analyzed';
 import { MIN_PREFIX, TS_DEF_PREFIX } from './consts/consts';
 import { JS_EXTENSIONS, TS_EXTENSIONS, TS_ONLY_EXTENSIONS } from './consts/extensions';
 import { error } from './errors/error';
-import { inputNotFound } from './errors/errors';
+import { inputNotFoundMessage } from './errors/error-messages';
 import { pluginChunks } from './plugins/chunks';
 import { createConfig } from './tools/create-config';
 import { createImportFromCWD } from './tools/create-import-from-cwd';
@@ -27,6 +26,7 @@ import { extensionMatch } from './tools/extension-match';
 import { keys } from './tools/helpers';
 import { renamePre } from './tools/rename-pre';
 import type { Dictionary, Nullable, TypeCheckFunction } from './types/helper-types';
+import type { PkgAnalyzed } from './types/pkg-analyzed';
 import type { BundlibAPIOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types/types';
 
 export function pkgToConfigs(
@@ -213,7 +213,7 @@ export function pkgToConfigs(
     const inputFile = resolveInput(input);
 
     if (!inputFile) {
-      throw inputNotFound('CommonJS module');
+      throw error(inputNotFoundMessage('CommonJS module'));
     }
 
     const outputFile = resolve(cwd, output);
@@ -314,7 +314,7 @@ export function pkgToConfigs(
     const inputFile = resolveInput(input);
 
     if (!inputFile) {
-      throw inputNotFound('ES module');
+      throw error(inputNotFoundMessage('ES module'));
     }
 
     const outputFile = resolve(cwd, output);
@@ -381,7 +381,7 @@ export function pkgToConfigs(
     const browserInputFile = resolveInput(input);
 
     if (!browserInputFile) {
-      throw inputNotFound('Browser build');
+      throw error(inputNotFoundMessage('Browser build'));
     }
 
     const browserOutputFile = resolve(cwd, output);
@@ -463,7 +463,7 @@ export function pkgToConfigs(
     const inputFile = resolveInput(input);
 
     if (!inputFile) {
-      throw inputNotFound('Binary build');
+      throw error(inputNotFoundMessage('Binary build'));
     }
 
     const outputFile = resolve(cwd, output);

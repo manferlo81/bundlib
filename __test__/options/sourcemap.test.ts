@@ -1,4 +1,5 @@
-import { invalidOption } from '../../src/api/errors/errors';
+import { error } from '../../src/api/errors/error';
+import { invalidOptionMessage } from '../../src/api/errors/error-messages';
 import { resolveSourcemapOption } from '../../src/api/options/sourcemap';
 
 describe('"sourcemap" option', () => {
@@ -21,7 +22,7 @@ describe('"sourcemap" option', () => {
 
     invalids.forEach((invalid) => {
       expect(() => resolveSourcemapOption(invalid as never)).toThrow(
-        invalidOption('sourcemap'),
+        error(invalidOptionMessage('sourcemap')),
       );
     });
 

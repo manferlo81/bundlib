@@ -1,4 +1,5 @@
-import { invalidOption } from '../../src/api/errors/errors';
+import { error } from '../../src/api/errors/error';
+import { invalidOptionMessage } from '../../src/api/errors/error-messages';
 import { MODULE_BUILD_KEYS } from '../../src/api/selective/consts';
 import { resolveObjectBasedSelectiveOption } from '../../src/api/selective/object-based';
 import { isString } from '../../src/api/type-check/basic';
@@ -39,7 +40,7 @@ describe('object based option', () => {
 
     invalids.forEach((invalid) => {
       expect(() => resolve(invalid)).toThrow(
-        invalidOption(optionName, urlHash),
+        error(invalidOptionMessage(optionName, urlHash)),
       );
     });
 

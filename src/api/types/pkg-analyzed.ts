@@ -1,6 +1,6 @@
-import type { BundlibPkgJson } from '../package/pkg-json-types';
-import type { Dictionary, StrictNullable } from '../types/helper-types';
-import type { BrowserBuildFormat, RollupSourcemap } from '../types/types';
+import type { BundlibPkgJson } from './pkg-json';
+import type { Dictionary, StrictNullable } from './helper-types';
+import type { BrowserBuildFormat, RollupSourcemap } from './types';
 
 export interface ModuleBuildOptions {
   input: StrictNullable<string>;
@@ -44,4 +44,5 @@ export interface PkgAnalyzed {
   cache: StrictNullable<string>;
 }
 
+// Backwards support for previous typo
 export { PkgAnalyzed as PkgAnalized };

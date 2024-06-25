@@ -1,5 +1,5 @@
 import { error } from '../errors/error';
-import { invalidOption, invalidOptionOld, invalidPkgField } from '../errors/errors';
+import { invalidOptionMessage, invalidOptionOldMessage, invalidPkgFieldMessage } from '../errors/error-messages';
 import { isValidChunks } from '../options/chunks';
 import { normalizeBooleanOption } from '../options/deprecated/boolean';
 import { isBrowserOption } from '../options/deprecated/browser';
@@ -17,16 +17,16 @@ import { normalizeBuildName } from '../options/name';
 import { resolveProjectOption } from '../options/project';
 import { resolveSkipOption } from '../options/skip';
 import { isSourcemapOption, resolveSourcemapOption } from '../options/sourcemap';
-import type { BundlibPkgJson } from '../package/pkg-json-types';
 import { readPkg } from '../package/read-pkg';
 import { isDictionaryOrNull, isStringOrNull } from '../type-check/advanced';
 import { isDictionary, isNull } from '../type-check/basic';
 import { invalidKeys, keysCheck } from '../type-check/keys';
 import type { BundlibOptions, TypesOptions } from '../types/bundlib-options';
 import type { Dictionary, StrictNullable } from '../types/helper-types';
+import type { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalyzed, TypesBuildOptions } from '../types/pkg-analyzed';
+import type { BundlibPkgJson } from '../types/pkg-json';
 import type { RollupSourcemap } from '../types/types';
 import { loadOptions } from './load-options';
-import type { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalyzed, TypesBuildOptions } from './pkg-analyzed';
 
 export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<PkgAnalyzed> {
 
@@ -54,9 +54,11 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
   const loadedBundlibOptions = loadedOptions && loadedOptions.config;
 
   if (loadedOptions && !isNull(loadedBundlibOptions) && !isDictionary<BundlibOptions>(loadedBundlibOptions)) {
-    throw loadedOptions.filepath
-      ? error(`Invalid options found on file "${loadedOptions.filepath}".`)
-      : invalidPkgField('bundlib', 'Object | string');
+    const { filepath } = loadedOptions;
+    if (filepath) {
+      throw error(`Invalid options found on file "${filepath}".`);
+    }
+    throw error(invalidPkgFieldMessage('bundlib', 'Object | string'));
   }
 
   const bundlibOptions = loadedBundlibOptions || {};
@@ -115,27 +117,27 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
   const perBuildMin = resolveMinOption(bundlibOptions.min);
 
   if (!isValidChunks(chunks)) {
-    throw invalidOption('chunks');
+    throw error(invalidOptionMessage('chunks'));
   }
 
   if (!isBrowserFormat(browserFormat)) {
-    throw invalidOption('format');
+    throw error(invalidOptionMessage('format'));
   }
 
   if (!isStringOrNull(browserName)) {
-    throw invalidOption('name');
+    throw error(invalidOptionMessage('name'));
   }
 
   if (!isStringOrNull(amdId)) {
-    throw invalidOption('id');
+    throw error(invalidOptionMessage('id'));
   }
 
   if (!isValidGlobals(browserGlobals)) {
-    throw invalidOption('globals');
+    throw error(invalidOptionMessage('globals'));
   }
 
   if (!isStringOrNull(cacheOption)) {
-    throw invalidOption('cache');
+    throw error(invalidOptionMessage('cache'));
   }
 
   const perBuildProject = resolveProjectOption(bundlibOptions.project);
@@ -147,10 +149,10 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
       keysCheck(deprecatedMainOptions, isCJSOptionKey)
     )
   ) {
-    throw invalidOptionOld(
+    throw error(invalidOptionOldMessage(
       'main',
       'false | { sourcemap?: boolean | "inline", esModule?: boolean, interop?: boolean, min?: boolean }',
-    );
+    ));
   }
 
   if (
@@ -159,10 +161,10 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
       keysCheck(deprecatedModuleOptions, isModuleOptionKey)
     )
   ) {
-    throw invalidOptionOld(
+    throw error(invalidOptionOldMessage(
       'module',
       'false | { sourcemap?: boolean | "inline", min?: boolean }',
-    );
+    ));
   }
 
   if (
@@ -176,10 +178,10 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
       isValidGlobals(deprecatedBrowserOptions.globals)
     )
   ) {
-    throw invalidOptionOld(
+    throw error(invalidOptionOldMessage(
       'browser',
       'false | { sourcemap?: boolean | "inline", esModule?: boolean, interop?: boolean, min?: boolean, ... }',
-    );
+    ));
   }
 
   if (
@@ -188,10 +190,10 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
       keysCheck(deprecatedBinaryOptions, isCJSOptionKey)
     )
   ) {
-    throw invalidOptionOld(
+    throw error(invalidOptionOldMessage(
       'bin',
       'false | { sourcemap?: boolean | "inline", esModule?: boolean, interop?: boolean, min?: boolean }',
-    );
+    ));
   }
 
   if (
@@ -200,35 +202,35 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
       keysCheck(deprecatedTypesOptions, isTypesOptionKey)
     )
   ) {
-    throw invalidOptionOld('types', 'false | { equals?: boolean }');
+    throw error(invalidOptionOldMessage('types', 'false | { equals?: boolean }'));
   }
 
   if ((deprecatedMainOptions !== false) && !isStringOrNull(mainOutputFile)) {
-    throw invalidPkgField('main', 'string');
+    throw error(invalidPkgFieldMessage('main', 'string'));
   }
 
   if ((deprecatedModuleOptions !== false) && !isStringOrNull(moduleFieldValue)) {
-    throw invalidPkgField('module', 'string');
+    throw error(invalidPkgFieldMessage('module', 'string'));
   }
 
   if (!moduleFieldValue && (deprecatedModuleOptions !== false) && !isStringOrNull(jsNextFieldValue)) {
-    throw invalidPkgField('jsnext:main', 'string');
+    throw error(invalidPkgFieldMessage('jsnext:main', 'string'));
   }
 
   if ((deprecatedBrowserOptions !== false) && !isStringOrNull(browserOutputFile)) {
-    throw invalidPkgField('browser', 'string');
+    throw error(invalidPkgFieldMessage('browser', 'string'));
   }
 
   if ((deprecatedBinaryOptions !== false) && !isStringOrNull(binaryOutputFile)) {
-    throw invalidPkgField('bin', 'string');
+    throw error(invalidPkgFieldMessage('bin', 'string'));
   }
 
   if (!isDictionaryOrNull<Dictionary<string>>(runtimeDependencies)) {
-    throw invalidPkgField('dependencies', 'Object');
+    throw error(invalidPkgFieldMessage('dependencies', 'Object'));
   }
 
   if (!isDictionaryOrNull<Dictionary<string>>(peerDependencies)) {
-    throw invalidPkgField('peerDependencies', 'Object');
+    throw error(invalidPkgFieldMessage('peerDependencies', 'Object'));
   }
 
   const moduleOutputFile = moduleFieldValue || jsNextFieldValue;

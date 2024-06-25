@@ -1,6 +1,7 @@
 import type { SelectiveResolved } from 'selective-option';
 import { resolveValueBased } from 'selective-option';
-import { invalidOption } from '../errors/errors';
+import { error } from '../errors/error';
+import { invalidOptionMessage } from '../errors/error-messages';
 import { createOneOfLiteral } from '../type-check/advanced';
 import type { Dictionary, TypeCheckFunction } from '../types/helper-types';
 import { API_SPECIAL_KEYS } from './consts';
@@ -15,7 +16,7 @@ export function resolveObjectBasedSelectiveOption<K extends string, V, D = V>(
 ): SelectiveResolved<K, V | D> {
 
   const isBuildType = createOneOfLiteral<K>(allKeys);
-  const invalid = invalidOption(optionName, urlHash);
+  const invalid = error(invalidOptionMessage(optionName, urlHash));
 
   try {
     return resolveValueBased(
