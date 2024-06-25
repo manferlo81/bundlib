@@ -155,6 +155,9 @@ If `"bundlib"` field not present in your `package.json`, **Bundlib** will try to
 * .bundlibrc.yml
 * .bundlibrc.js
 * bundlib.config.js
+* bundlib.config.cjs
+* bundlib.config.mjs
+* bundlib.config.ts
 
 See the [list of options](#options) below.
 

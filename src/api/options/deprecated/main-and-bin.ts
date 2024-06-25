@@ -1,5 +1,5 @@
 import { createOneOfLiteral } from '../../type-check/advanced';
-import type { CommonJSBuildOptions } from '../../types/bundlib-options';
+import { DeprecatedCommonJSBuildOptions } from '../../types/deprecated-options';
 import { MODULE_OPTION_KEYS } from './module';
 
 export const CJS_OPTION_KEYS = [
@@ -8,4 +8,4 @@ export const CJS_OPTION_KEYS = [
   'interop' as const,
 ];
 
-export const isCJSOptionKey = createOneOfLiteral<keyof CommonJSBuildOptions>(CJS_OPTION_KEYS);
+export const isCJSOptionKey = createOneOfLiteral<keyof DeprecatedCommonJSBuildOptions>(CJS_OPTION_KEYS);

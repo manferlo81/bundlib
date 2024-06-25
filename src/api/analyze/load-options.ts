@@ -1,6 +1,6 @@
 import { cosmiconfig } from 'cosmiconfig';
 import { resolve } from 'path';
-import { OPTION_FILE_PATHS, PRODUCT_NAME } from '../consts/consts';
+import { CONFIG_FILE_SEARCH_PLACES, PRODUCT_NAME } from '../consts/consts';
 import { isString } from '../type-check/basic';
 import type { BundlibOptions } from '../types/bundlib-options';
 import type { Nullable, StrictNullable } from '../types/helper-types';
@@ -14,17 +14,18 @@ export async function loadOptions(cwd: string, optionsFromPkgJson: Nullable<Bund
 
   const manager = cosmiconfig(PRODUCT_NAME, {
     stopDir: cwd,
-    searchPlaces: OPTION_FILE_PATHS,
+    searchPlaces: CONFIG_FILE_SEARCH_PLACES,
     ignoreEmptySearchPlaces: false,
   });
 
   if (optionsFromPkgJson) {
 
-    if (!isString(optionsFromPkgJson)) {
-      return { config: optionsFromPkgJson, filepath: null };
+    if (isString(optionsFromPkgJson)) {
+      const configFilePath = resolve(cwd, optionsFromPkgJson);
+      return manager.load(configFilePath);
     }
 
-    return manager.load(resolve(cwd, optionsFromPkgJson)) as Promise<LoadedOptions>;
+    return { config: optionsFromPkgJson, filepath: null };
 
   }
 

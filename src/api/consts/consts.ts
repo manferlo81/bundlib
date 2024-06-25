@@ -1,8 +1,8 @@
 export const PRODUCT_NAME = 'bundlib';
 
-export const OPTION_FILE_PATHS = [
+export const CONFIG_FILE_SEARCH_PLACES = [
   ...['', '.json', '.yaml', '.yml', '.js'].map((ext) => `.${PRODUCT_NAME}rc${ext}`),
-  `${PRODUCT_NAME}.config.js`,
+  ...['js', 'cjs', 'mjs', 'ts'].map((ext) => `${PRODUCT_NAME}.config.${ext}`),
 ];
 
 export const TS_DEF_PREFIX = 'd';

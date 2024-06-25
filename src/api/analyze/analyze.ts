@@ -1,5 +1,5 @@
 import { error } from '../errors/error';
-import { invalidOptionMessage, invalidOptionOldMessage, invalidPkgFieldMessage } from '../errors/error-messages';
+import { invalidOptionMessage, invalidDeprecatedOptionMessage, invalidPkgFieldMessage } from '../errors/error-messages';
 import { isValidChunks } from '../options/chunks';
 import { normalizeBooleanOption } from '../options/deprecated/boolean';
 import { isBrowserOption } from '../options/deprecated/browser';
@@ -21,7 +21,8 @@ import { readPkg } from '../package/read-pkg';
 import { isDictionaryOrNull, isStringOrNull } from '../type-check/advanced';
 import { isDictionary, isNull } from '../type-check/basic';
 import { invalidKeys, keysCheck } from '../type-check/keys';
-import type { BundlibOptions, TypesOptions } from '../types/bundlib-options';
+import { DeprecatedTypesOptions } from '../types/deprecated-options';
+import type { BundlibOptions } from '../types/bundlib-options';
 import type { Dictionary, StrictNullable } from '../types/helper-types';
 import type { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalyzed, TypesBuildOptions } from '../types/pkg-analyzed';
 import type { BundlibPkgJson } from '../types/pkg-json';
@@ -149,7 +150,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
       keysCheck(deprecatedMainOptions, isCJSOptionKey)
     )
   ) {
-    throw error(invalidOptionOldMessage(
+    throw error(invalidDeprecatedOptionMessage(
       'main',
       'false | { sourcemap?: boolean | "inline", esModule?: boolean, interop?: boolean, min?: boolean }',
     ));
@@ -161,7 +162,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
       keysCheck(deprecatedModuleOptions, isModuleOptionKey)
     )
   ) {
-    throw error(invalidOptionOldMessage(
+    throw error(invalidDeprecatedOptionMessage(
       'module',
       'false | { sourcemap?: boolean | "inline", min?: boolean }',
     ));
@@ -178,7 +179,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
       isValidGlobals(deprecatedBrowserOptions.globals)
     )
   ) {
-    throw error(invalidOptionOldMessage(
+    throw error(invalidDeprecatedOptionMessage(
       'browser',
       'false | { sourcemap?: boolean | "inline", esModule?: boolean, interop?: boolean, min?: boolean, ... }',
     ));
@@ -190,7 +191,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
       keysCheck(deprecatedBinaryOptions, isCJSOptionKey)
     )
   ) {
-    throw error(invalidOptionOldMessage(
+    throw error(invalidDeprecatedOptionMessage(
       'bin',
       'false | { sourcemap?: boolean | "inline", esModule?: boolean, interop?: boolean, min?: boolean }',
     ));
@@ -198,11 +199,11 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
 
   if (
     !isNull(deprecatedTypesOptions) && (deprecatedTypesOptions !== false) && !(
-      isDictionary<TypesOptions>(deprecatedTypesOptions) &&
+      isDictionary<DeprecatedTypesOptions>(deprecatedTypesOptions) &&
       keysCheck(deprecatedTypesOptions, isTypesOptionKey)
     )
   ) {
-    throw error(invalidOptionOldMessage('types', 'false | { equals?: boolean }'));
+    throw error(invalidDeprecatedOptionMessage('types', 'false | { equals?: boolean }'));
   }
 
   if ((deprecatedMainOptions !== false) && !isStringOrNull(mainOutputFile)) {

@@ -1,4 +1,4 @@
 import { createOneOfLiteral } from '../../type-check/advanced';
-import type { TypesOptions } from '../../types/bundlib-options';
+import { DeprecatedTypesOptions } from '../../types/deprecated-options';
 
-export const isTypesOptionKey = createOneOfLiteral<keyof TypesOptions>('equals');
+export const isTypesOptionKey = createOneOfLiteral<keyof DeprecatedTypesOptions>('equals');

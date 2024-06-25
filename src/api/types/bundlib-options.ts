@@ -1,3 +1,4 @@
+import { DeprecatedBundlibOptions } from './deprecated-options';
 import type { Dictionary, Nullable } from './helper-types';
 import type { BrowserBuildFormat, RollupSourcemap } from './types';
 
@@ -29,35 +30,7 @@ export type ModuleOption = Nullable<ModuleString | ModuleString[] | boolean>;
 
 export type MinOption = Nullable<BuildType | BuildType[] | boolean>;
 
-export interface TypesOptions {
-  equals?: Nullable<boolean>;
-}
-
 export interface BrowserOptions {
-  format?: Nullable<BrowserBuildFormat>;
-  name?: Nullable<string>;
-  id?: Nullable<string>;
-  extend?: Nullable<boolean>;
-  globals?: GlobalsOptions;
-}
-
-export interface CommonJSBuildOptions {
-  sourcemap?: Nullable<RollupSourcemap>;
-  esModule?: Nullable<boolean>;
-  interop?: Nullable<boolean>;
-  min?: Nullable<boolean>;
-}
-
-export interface ESModuleBuildOptions {
-  sourcemap?: Nullable<RollupSourcemap>;
-  min?: Nullable<boolean>;
-}
-
-export interface BrowserBuildOptions {
-  sourcemap?: Nullable<RollupSourcemap>;
-  esModule?: Nullable<boolean>;
-  interop?: Nullable<boolean>;
-  min?: Nullable<boolean>;
   format?: Nullable<BrowserBuildFormat>;
   name?: Nullable<string>;
   id?: Nullable<string>;
@@ -88,14 +61,6 @@ export type SelectiveBooleanOption = SelectiveOption<BuildType, boolean>;
 export type SelectiveStringOption = ObjectBasedSelectiveOption<BuildType, string>;
 export type SelectiveSourcemap = SelectiveOption<BuildType, RollupSourcemap>;
 export type SelectiveSkipOption = SelectiveOption<SelectiveSkipBuildType, boolean>;
-
-export interface DeprecatedBundlibOptions {
-  main?: Nullable<CommonJSBuildOptions | false>;
-  module?: Nullable<ESModuleBuildOptions | false>;
-  browser?: Nullable<BrowserBuildOptions | false>;
-  bin?: Nullable<CommonJSBuildOptions | string | false>;
-  types?: Nullable<TypesOptions | false>;
-}
 
 export interface BundlibOptions extends DeprecatedBundlibOptions, Record<string, unknown> {
 

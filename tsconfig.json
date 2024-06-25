@@ -26,7 +26,8 @@
     "__test__/**/*.js",
     "src/**/*.ts",
     "jest.config.ts",
-    "package.json"
+    "package.json",
+    "bundlib.config.ts"
   ],
   "exclude": [
     "node_modules/**",

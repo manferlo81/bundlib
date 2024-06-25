@@ -2,7 +2,7 @@ export function invalidPkgFieldMessage(field: string, type: string) {
   return `Invalid package.json "${field}" field. It has to be of type ${type}`;
 }
 
-export function invalidOptionOldMessage(option: string, type: string) {
+export function invalidDeprecatedOptionMessage(option: string, type: string) {
   return `Invalid "${option}" option. It has to be ${type}`;
 }
 
