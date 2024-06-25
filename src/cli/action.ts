@@ -7,9 +7,9 @@ import { RollupError, RollupWarning } from 'rollup';
 import slash from 'slash';
 import { readPkg } from '../api';
 import { bundlib } from './bundlib';
-import { log, logError } from './console';
+import { log, logError } from './tools/console';
 import { EVENT_BUILD_END, EVENT_END, EVENT_ERROR, EVENT_REBUILD, EVENT_WARN } from './consts';
-import { BundlibEventEmitter } from './types';
+import { BundlibEventEmitter } from './types/types';
 
 const { bold, inverse, cyan, yellow } = chalk;
 const greenBold = bold.green;

@@ -1,7 +1,7 @@
 import { statSync } from 'fs';
 import { RollupOptions, RollupWatcherEvent, watch as rollupWatch } from 'rollup';
 import { EVENT_BUILD_END, EVENT_END, EVENT_ERROR, EVENT_REBUILD } from './consts';
-import { BundlibEventEmitter } from './types';
+import { BundlibEventEmitter } from './types/types';
 
 export function watch(
   configs: RollupOptions[],

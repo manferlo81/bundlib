@@ -4,7 +4,7 @@ import { rollup } from 'rollup';
 import type { BundlibRollupModuleOutputOptions, BundlibRollupOptions } from '../api/types/types';
 import { EVENT_BUILD_END, EVENT_END, EVENT_ERROR } from './consts';
 import { oneByOne } from './one-by-one';
-import type { BundlibEventEmitter } from './types';
+import type { BundlibEventEmitter } from './types/types';
 
 export function build(
   configs: Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>,
@@ -36,12 +36,12 @@ export function build(
 
         emitter.emit(EVENT_BUILD_END, outputFile, size, totalTime);
 
+        next();
+
       } catch (err) {
         next(err);
         throw err;
       }
-
-      next();
 
     },
     (error) => {

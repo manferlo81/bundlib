@@ -1,49 +1,33 @@
 #!/usr/bin/env node
 
-import { program } from 'commander';
-import { name as bundlibCommandName, displayName, version } from '../../package.json';
+import { createCommand } from 'commander';
+import { name as bundlibCommandName, description, displayName, version } from '../../package.json';
 import { action } from './action';
+import { createFlags } from './options/flags';
+import { booleanOptionDescMap, booleanOptions } from './options/boolean';
+import { BooleanProgramOptions } from './types/boolean-options';
 
-type BooleanOptionNameOrder = ['dev', 'watch', 'silent'];
-type BooleanOptionNames = BooleanOptionNameOrder[number];
+type ProgramOptions = BooleanProgramOptions;
 
-type ProgramOptions = Record<BooleanOptionNames, boolean>;
-
-function createFlags(flag: string, shortFlag: string): string {
-  return [`-${shortFlag}`, `--${flag}`].join(', ');
-}
-
-const booleanOptions: BooleanOptionNameOrder = ['dev', 'watch', 'silent'];
-
-const shortOptionMap: Record<BooleanOptionNames, string> = {
-  dev: 'd',
-  watch: 'w',
-  silent: 's',
-};
-
-const map: Record<BooleanOptionNames, string> = {
-  dev: 'create development builds',
-  watch: 'run bundlib in watch mode',
-  silent: 'prevent messages from showing in the console',
-};
+const program = createCommand();
 
 program
-  .version(version, createFlags('version', 'v'))
   .name(bundlibCommandName)
-  .helpOption(createFlags('help', 'h'), 'display this help screen');
+  .description(description)
+  .version(version, createFlags('version'))
+  .helpOption(createFlags('help'), 'display this help screen');
 
 booleanOptions.forEach(
   (flag) => {
-    const shortFlag = shortOptionMap[flag];
-    const flags = createFlags(flag, shortFlag);
-    const desc = map[flag];
+    const flags = createFlags(flag);
+    const desc = booleanOptionDescMap[flag];
     program.option(flags, desc);
   },
 );
 
 void program
-  .action(async () => {
+  .action(() => {
     const { dev, watch, silent } = program.opts<ProgramOptions>();
-    await action(displayName, version, dev, watch, silent);
+    void action(displayName, version, !!dev, !!watch, !!silent);
   })
-  .parseAsync(process.argv);
+  .parseAsync();

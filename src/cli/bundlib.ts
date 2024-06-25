@@ -2,7 +2,7 @@ import { WarningHandlerWithDefault } from 'rollup';
 import { BundlibPkgJson, configsFromPkg } from '../api';
 import { build } from './build';
 import { EVENT_WARN } from './consts';
-import { BundlibEventEmitter } from './types';
+import { BundlibEventEmitter } from './types/types';
 import { watch as watchBuild } from './watch';
 
 export async function bundlib(
@@ -17,9 +17,12 @@ export async function bundlib(
     emitter.emit(EVENT_WARN, warning);
   };
 
-  (watch ? watchBuild : build)(
-    await configsFromPkg(cwd, { dev, watch, onwarn }, pkg),
-    emitter,
-  );
+  const configs = await configsFromPkg(cwd, { dev, watch, onwarn }, pkg);
+
+  if (watch) {
+    return watchBuild(configs, emitter);
+  }
+
+  return build(configs, emitter);
 
 }
