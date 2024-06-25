@@ -1,5 +1,5 @@
 import { analyzePkg } from './analyze/analyze';
-import type { BundlibPkgJson } from './package/pkg';
+import type { BundlibPkgJson } from './package/pkg-json-types';
 import { pkgToConfigs } from './pkg-to-configs';
 import type { Nullable } from './types/helper-types';
 import type { BundlibAPIOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions } from './types/types';

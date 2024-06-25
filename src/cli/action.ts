@@ -5,8 +5,7 @@ import { relative } from 'path';
 import prettyMs from 'pretty-ms';
 import { RollupError, RollupWarning } from 'rollup';
 import slash from 'slash';
-import { BundlibPkgJson } from '../api';
-import { readPkg } from '../api/package/read';
+import { readPkg } from '../api';
 import { bundlib } from './bundlib';
 import { log, logError } from './console';
 import { EVENT_BUILD_END, EVENT_END, EVENT_ERROR, EVENT_REBUILD, EVENT_WARN } from './consts';
@@ -37,7 +36,7 @@ export async function action(
 ): Promise<void> {
 
   const cwd = process.cwd();
-  const pkg: BundlibPkgJson = await readPkg(cwd);
+  const pkg = await readPkg(cwd);
 
   if (!silent) {
 

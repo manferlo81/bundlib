@@ -509,6 +509,14 @@ export default configsFromPkg(
 );
 ```
 
+### readPkg
+
+```typescript
+function readPkg(cwd: string): Promise<BundlibPkgJson>;
+```
+
+Reads the content of `package.json` (it will throw a TypeError if its not an object) and return it.
+
 ### analyzePkg
 
 ```typescript

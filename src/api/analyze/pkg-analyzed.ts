@@ -1,4 +1,4 @@
-import type { BundlibPkgJson } from '../package/pkg';
+import type { BundlibPkgJson } from '../package/pkg-json-types';
 import type { Dictionary, StrictNullable } from '../types/helper-types';
 import type { BrowserBuildFormat, RollupSourcemap } from '../types/types';
 

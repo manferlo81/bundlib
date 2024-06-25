@@ -17,8 +17,8 @@ import { normalizeBuildName } from '../options/name';
 import { resolveProjectOption } from '../options/project';
 import { resolveSkipOption } from '../options/skip';
 import { isSourcemapOption, resolveSourcemapOption } from '../options/sourcemap';
-import type { BundlibPkgJson } from '../package/pkg';
-import { readPkg } from '../package/read';
+import type { BundlibPkgJson } from '../package/pkg-json-types';
+import { readPkg } from '../package/read-pkg';
 import { isDictionaryOrNull, isStringOrNull } from '../type-check/advanced';
 import { isDictionary, isNull } from '../type-check/basic';
 import { invalidKeys, keysCheck } from '../type-check/keys';
@@ -28,11 +28,12 @@ import type { RollupSourcemap } from '../types/types';
 import { loadOptions } from './load-options';
 import type { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalyzed, TypesBuildOptions } from './pkg-analyzed';
 
-export async function analyzePkg2(cwd: string, pkg: unknown): Promise<PkgAnalyzed> {
+export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<PkgAnalyzed> {
 
-  if (!isDictionary<BundlibPkgJson>(pkg)) {
-    throw error('Invalid package.json content');
-  }
+  // This was handled by readPkg
+  // if (!isDictionary<BundlibPkgJson>(pkg)) {
+  //   throw error('Invalid package.json content');
+  // }
 
   const {
     name: packageName,
@@ -339,6 +340,6 @@ export async function analyzePkg(cwd: string, inputPkg?: BundlibPkgJson): Promis
   if (inputPkg) {
     return analyzePkg2(cwd, inputPkg);
   }
-  const pkg = await readPkg<BundlibPkgJson>(cwd);
+  const pkg = await readPkg(cwd);
   return analyzePkg2(cwd, pkg);
 }
