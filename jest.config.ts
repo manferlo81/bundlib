@@ -1,8 +1,12 @@
-module.exports = {
+import type { Config as JestConfig } from 'jest';
+
+const config: JestConfig = {
 
   testEnvironment: 'node',
   cacheDirectory: 'node_modules/.cache/jest',
   preset: 'ts-jest',
+
+  clearMocks: true,
 
   collectCoverage: true,
   collectCoverageFrom: [
@@ -23,3 +27,5 @@ module.exports = {
   verbose: true,
 
 };
+
+export default config;

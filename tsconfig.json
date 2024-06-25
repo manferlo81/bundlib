@@ -25,7 +25,7 @@
     "__test__/**/*.ts",
     "__test__/**/*.js",
     "src/**/*.ts",
-    "jest.config.js",
+    "jest.config.ts",
     "package.json"
   ],
   "exclude": [
