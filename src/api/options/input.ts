@@ -1,5 +1,5 @@
 import type { SelectiveResolved } from 'selective-option';
-import { MODULE_BUILD_KEYS } from '../selective/consts';
+import { API_SPECIAL_KEYS, MODULE_BUILD_KEYS } from '../selective/consts';
 import { resolveObjectBasedSelectiveOption } from '../selective/object-based';
 import { isString } from '../type-check/basic';
 import type { BuildType, SelectiveStringOption } from '../types/bundlib-options';
@@ -9,6 +9,7 @@ export const resolveInputOption = (value: SelectiveStringOption): SelectiveResol
   resolveObjectBasedSelectiveOption<BuildType, string, null>(
     value,
     MODULE_BUILD_KEYS,
+    API_SPECIAL_KEYS,
     isString,
     null,
     'input',

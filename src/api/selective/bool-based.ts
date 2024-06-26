@@ -1,14 +1,13 @@
-import type { SelectiveResolved } from 'selective-option';
-import { resolveBoolBased } from 'selective-option';
+import { resolveBoolBased, type SelectiveResolved } from 'selective-option';
 import { error } from '../errors/error';
 import { invalidOptionMessage } from '../errors/error-messages';
 import { createOneOfLiteral } from '../type-check/advanced';
-import type { Dictionary, TypeCheckFunction } from '../types/helper-types';
-import { API_SPECIAL_KEYS } from './consts';
+import { type Dictionary, type TypeCheckFunction } from '../types/helper-types';
 
 export function resolveBoolBasedSelectiveOption<K extends string, V, D = V>(
   value: unknown,
   allKeys: K[],
+  specialKeys: Dictionary<K[]>,
   isValidValue: TypeCheckFunction<V>,
   defaultValue: D,
   optionName: string,
@@ -16,19 +15,18 @@ export function resolveBoolBasedSelectiveOption<K extends string, V, D = V>(
 ): SelectiveResolved<K, boolean | V | D> {
 
   const isBuildType = createOneOfLiteral<K>(allKeys);
-  const invalid = error(invalidOptionMessage(optionName, urlHash));
 
   try {
     return resolveBoolBased<K, V, D>(
       value,
       allKeys,
       isBuildType,
-      API_SPECIAL_KEYS as unknown as Dictionary<K[]>,
+      specialKeys,
       isValidValue,
       defaultValue,
     );
   } catch (e) {
-    throw invalid;
+    throw error(invalidOptionMessage(optionName, urlHash));
   }
 
   // return (

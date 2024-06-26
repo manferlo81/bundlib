@@ -1,10 +1,10 @@
-import type { SelectiveResolved } from 'selective-option';
+import { type SelectiveResolved } from 'selective-option';
 import { error } from '../../src/api/errors/error';
 import { invalidOptionMessage } from '../../src/api/errors/error-messages';
 import { resolveBoolBasedSelectiveOption } from '../../src/api/selective/bool-based';
-import { MODULE_BUILD_KEYS } from '../../src/api/selective/consts';
+import { API_SPECIAL_KEYS, MODULE_BUILD_KEYS } from '../../src/api/selective/consts';
 import { isBool } from '../../src/api/type-check/basic';
-import type { BuildType } from '../../src/api/types/bundlib-options';
+import { type BuildType } from '../../src/api/types/bundlib-options';
 
 describe('selective option', () => {
 
@@ -18,6 +18,7 @@ describe('selective option', () => {
     return resolveBoolBasedSelectiveOption<BuildType, boolean, D>(
       value,
       MODULE_BUILD_KEYS,
+      API_SPECIAL_KEYS,
       isBool,
       defaultValue,
       optionName,

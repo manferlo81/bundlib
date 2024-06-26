@@ -1,6 +1,6 @@
 import { error } from '../../src/api/errors/error';
 import { invalidOptionMessage } from '../../src/api/errors/error-messages';
-import { MODULE_BUILD_KEYS } from '../../src/api/selective/consts';
+import { API_SPECIAL_KEYS, MODULE_BUILD_KEYS } from '../../src/api/selective/consts';
 import { resolveObjectBasedSelectiveOption } from '../../src/api/selective/object-based';
 import { isString } from '../../src/api/type-check/basic';
 
@@ -13,6 +13,7 @@ describe('object based option', () => {
     return resolveObjectBasedSelectiveOption(
       value,
       MODULE_BUILD_KEYS,
+      API_SPECIAL_KEYS,
       isString,
       null,
       optionName,
