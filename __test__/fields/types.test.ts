@@ -1,57 +1,61 @@
-import analyze from '../tools/analyze';
+import { mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs';
 
 describe('package.json types', () => {
 
   const cwd = process.cwd();
 
-  test('should set types to null if no type path provided', async () => {
+  // const mockAnalyzeWithTypesField = (field: 'types' | 'typings', value: string | undefined) => {
+  //   return mockAnalyzeWithPkgEmptyConfig(cwd, { [field]: value });
+  // };
 
-    const analyzed = await analyze(cwd, {});
+  test('Should set types to null if no "types" | "typings" field present', async () => {
+
+    const analyzed = await mockAnalyzeWithPkgEmptyConfig(cwd, {});
     const { types } = analyzed;
 
     expect(types).toBeNull();
 
   });
 
-  test('should read types', async () => {
+  test('Should read "types" field', async () => {
 
-    const analyzed = await analyze(cwd, {
-      types: 'types/index.d.ts',
-    });
-    const { types } = analyzed;
+    const types = 'types.d.ts';
+    const analyzed = await mockAnalyzeWithPkgEmptyConfig(cwd, { types });
+    const { types: analyzedTypes } = analyzed;
 
-    expect(types).toEqual({
-      output: 'types/index.d.ts',
+    expect(analyzedTypes).toEqual({
+      output: types,
       equals: false,
     });
 
   });
 
-  test('should read typings', async () => {
+  test('Should read "typings" field', async () => {
 
-    const analyzed = await analyze(cwd, {
-      typings: 'types',
-    });
-    const { types } = analyzed;
+    const typings = 'typings.d.ts';
+    const analyzed = await mockAnalyzeWithPkgEmptyConfig(cwd, { typings });
+    const { types: analyzedTypes } = analyzed;
 
-    expect(types).toEqual({
-      output: 'types',
+    expect(analyzedTypes).not.toBeNull();
+    expect(analyzedTypes).toEqual({
+      output: typings,
       equals: false,
     });
 
   });
 
-  test('should read types over typings', async () => {
+  test('Should read "types" over "typings" field', async () => {
 
-    const typesField = 'types';
+    const typesField = 'types.d.ts';
 
-    const analyzed = await analyze(cwd, {
+    const analyzed = await mockAnalyzeWithPkgEmptyConfig(cwd, {
       typings: 'typings',
       types: typesField,
     });
-    const { types } = analyzed;
+    const { types: analyzedTypes } = analyzed;
 
-    expect(types).toEqual({
+    expect(analyzedTypes).not.toBeNull();
+    expect(analyzedTypes).toEqual({
       output: typesField,
       equals: false,
     });

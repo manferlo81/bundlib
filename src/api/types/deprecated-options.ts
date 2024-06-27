@@ -1,45 +1,45 @@
-import type { Nullable } from './helper-types';
+import type { AllowNullish } from './helper-types';
 import { GlobalsOptions } from './bundlib-options';
 import { BrowserBuildFormat, RollupSourcemap } from './types';
 
 /** @deprecated */
 export interface DeprecatedCommonJSBuildOptions {
   /** @deprecated use top level "sourcemap" option */
-  sourcemap?: Nullable<RollupSourcemap>;
+  sourcemap?: AllowNullish<RollupSourcemap>;
   /** @deprecated use top level "esModule" option */
-  esModule?: Nullable<boolean>;
+  esModule?: AllowNullish<boolean>;
   /** @deprecated use top level "interop" option */
-  interop?: Nullable<boolean>;
+  interop?: AllowNullish<boolean>;
   /** @deprecated use top level "min" option */
-  min?: Nullable<boolean>;
+  min?: AllowNullish<boolean>;
 }
 
 /** @deprecated */
 export interface DeprecatedESModuleBuildOptions {
   /** @deprecated use top level "sourcemap" option */
-  sourcemap?: Nullable<RollupSourcemap>;
+  sourcemap?: AllowNullish<RollupSourcemap>;
   /** @deprecated use top level "min" option */
-  min?: Nullable<boolean>;
+  min?: AllowNullish<boolean>;
 }
 
 /** @deprecated */
 export interface DeprecatedBrowserBuildOptions {
   /** @deprecated use top level "sourcemap" option */
-  sourcemap?: Nullable<RollupSourcemap>;
+  sourcemap?: AllowNullish<RollupSourcemap>;
   /** @deprecated use top level "esModule" option */
-  esModule?: Nullable<boolean>;
+  esModule?: AllowNullish<boolean>;
   /** @deprecated use top level "interop" option */
-  interop?: Nullable<boolean>;
+  interop?: AllowNullish<boolean>;
   /** @deprecated use top level "min" option */
-  min?: Nullable<boolean>;
+  min?: AllowNullish<boolean>;
   /** @deprecated use top level "format" option */
-  format?: Nullable<BrowserBuildFormat>;
+  format?: AllowNullish<BrowserBuildFormat>;
   /** @deprecated use top level "name" option */
-  name?: Nullable<string>;
+  name?: AllowNullish<string>;
   /** @deprecated use top level "id" option */
-  id?: Nullable<string>;
+  id?: AllowNullish<string>;
   /** @deprecated use top level "extend" option */
-  extend?: Nullable<boolean>;
+  extend?: AllowNullish<boolean>;
   /** @deprecated use top level "globals" option */
   globals?: GlobalsOptions;
 }
@@ -47,19 +47,25 @@ export interface DeprecatedBrowserBuildOptions {
 /** @deprecated */
 export interface DeprecatedTypesOptions {
   /** @deprecated use top level "equals" option */
-  equals?: Nullable<boolean>;
+  equals?: AllowNullish<boolean>;
 }
+
+export type DeprecatedMainOption = AllowNullish<DeprecatedCommonJSBuildOptions | false>;
+export type DeprecatedModuleOption = AllowNullish<DeprecatedESModuleBuildOptions | false>;
+export type DeprecatedBrowserOption = AllowNullish<DeprecatedBrowserBuildOptions | false>;
+export type DeprecatedBinaryOption = AllowNullish<DeprecatedCommonJSBuildOptions | string | false>;
+export type DeprecatedTypesOption = AllowNullish<DeprecatedTypesOptions | false>;
 
 /** @deprecated */
 export interface DeprecatedBundlibOptions {
   /** @deprecated */
-  main?: Nullable<DeprecatedCommonJSBuildOptions | false>;
+  main?: DeprecatedMainOption;
   /** @deprecated */
-  module?: Nullable<DeprecatedESModuleBuildOptions | false>;
+  module?: DeprecatedModuleOption;
   /** @deprecated */
-  browser?: Nullable<DeprecatedBrowserBuildOptions | false>;
+  browser?: DeprecatedBrowserOption;
   /** @deprecated */
-  bin?: Nullable<DeprecatedCommonJSBuildOptions | string | false>;
+  bin?: DeprecatedBinaryOption;
   /** @deprecated */
-  types?: Nullable<DeprecatedTypesOptions | false>;
+  types?: DeprecatedTypesOption;
 }

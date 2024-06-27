@@ -1,13 +1,26 @@
-import analyze from '../tools/analyze';
+import { mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs';
 
-describe('package.json main field', () => {
+describe('package.json "module" field', () => {
 
   const cwd = process.cwd();
 
-  const analyzeWithModule = (module: string) => analyze(cwd, { module });
-  const analyzeWithJSNext = (jsnext: string) => analyze(cwd, { 'jsnext:main': jsnext });
+  const mockAnalyzeWithModuleField = (module: string) => mockAnalyzeWithPkgEmptyConfig(cwd, { module });
+  const mockAnalyzeWithJSNextField = (jsnext: string) => mockAnalyzeWithPkgEmptyConfig(cwd, { 'jsnext:main': jsnext });
 
-  test('should throw on non string module field', () => {
+  test('Should throw on invalid "module" field', () => {
+
+    const invalidModuleFields = [
+      1,
+      { name: 'value' },
+    ];
+
+    invalidModuleFields.forEach((moduleField) => {
+      void expect(mockAnalyzeWithModuleField(moduleField as never)).rejects.toThrow('Invalid package.json "module" field');
+    });
+
+  });
+
+  test('Should throw on invalid "jsnext:main" field', () => {
 
     const invalidModuleFields = [
       1,
@@ -17,56 +30,42 @@ describe('package.json main field', () => {
     expect.assertions(invalidModuleFields.length);
 
     invalidModuleFields.forEach((moduleField) => {
-      void expect(analyzeWithModule(moduleField as never)).rejects.toThrow(TypeError);
+      void expect(mockAnalyzeWithJSNextField(moduleField as never)).rejects.toThrow('Invalid package.json "jsnext:main" field');
     });
 
   });
 
-  test('should throw on non string jsnext:main field', () => {
-
-    const invalidModuleFields = [
-      1,
-      { name: 'value' },
-    ];
-
-    expect.assertions(invalidModuleFields.length);
-
-    invalidModuleFields.forEach((moduleField) => {
-      void expect(analyzeWithJSNext(moduleField as never)).rejects.toThrow(TypeError);
-    });
-
-  });
-
-  test('should read module field', async () => {
+  test('Should read "module" field', async () => {
 
     const moduleField = 'out/lib.js';
-    const analyzed = await analyzeWithModule(moduleField);
+    const analyzed = await mockAnalyzeWithModuleField(moduleField);
     const { module: moduleOut } = analyzed;
 
     expect(moduleOut ? moduleOut.output : null).toBe(moduleField);
 
   });
 
-  test('should fallback to jsnext:main field', async () => {
+  test('Should fallback to "jsnext:main" field', async () => {
 
     const moduleField = 'out/lib.js';
-    const analyzed = await analyzeWithJSNext(moduleField);
+    const analyzed = await mockAnalyzeWithJSNextField(moduleField);
     const { module: moduleOut } = analyzed;
 
     expect(moduleOut ? moduleOut.output : null).toBe(moduleField);
 
   });
 
-  test('should read module field over jsnext:main', async () => {
+  test('Should read "module" over "jsnext:main" field', async () => {
 
-    const moduleField = 'out.module.js';
-    const analyzed = await analyze(cwd, {
+    const moduleField = 'module.js';
+    const analyzed = await mockAnalyzeWithPkgEmptyConfig(cwd, {
+      'jsnext:main': 'jsnext.js',
       'module': moduleField,
-      'jsnext:main': 'out.jsnext.js',
     });
     const { module: moduleOutput } = analyzed;
 
-    expect(moduleOutput ? moduleOutput.output : null).toMatch(moduleField);
+    expect(moduleOutput).not.toBeNull();
+    expect(moduleOutput?.output).toMatch(moduleField);
 
   });
 

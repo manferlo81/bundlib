@@ -1,39 +1,53 @@
-import analyze from '../tools/analyze';
+import { DirectoryItems } from 'mock-fs/lib/filesystem';
+import { mockAnalyzeWithPkg, mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs';
 
-describe('package.json bundlib field', () => {
+describe('package.json "bundlib" field', () => {
 
   const cwd = process.cwd();
 
-  test('should throw on invalid bundlib field', () => {
+  test('Should throw on invalid "bundlib" field', () => {
 
-    const invalidBundlibOptions = [
+    const invalidBundlibConfig = [
       1,
       [],
     ];
 
-    expect.assertions(invalidBundlibOptions.length);
-
-    invalidBundlibOptions.forEach((bundlib) => {
-      void expect(analyze(cwd, { bundlib: bundlib as never })).rejects.toThrow(TypeError);
+    invalidBundlibConfig.forEach((invalid) => {
+      void expect(mockAnalyzeWithPkgEmptyConfig(cwd, { bundlib: invalid as never })).rejects.toThrow('Invalid package.json "bundlib" field');
     });
 
   });
 
-  test('should use bundlib option as object', async () => {
+  test('Should use "bundlib" field as config path', async () => {
 
-    const name = 'name';
-    const { browser } = await analyze(cwd, { browser: 'out.js', bundlib: { name } });
+    const name = 'library';
+    const configPath = 'bundlib.json';
+    const config = { name };
 
-    expect(browser).toMatchObject({ name });
+    const structure: DirectoryItems = {
+      [configPath]: JSON.stringify(config),
+    };
+
+    const analyzed = await mockAnalyzeWithPkg(
+      cwd,
+      { browser: 'browser.js', bundlib: configPath },
+      structure,
+    );
+
+    const { browser } = analyzed;
+
+    expect(browser).toMatchObject({ output: 'browser.js', name });
 
   });
 
-  test('should use bundlib option as string', async () => {
+  test('Should use "bundlib" field as config', async () => {
 
-    const name = 'bundlib';
-    const { browser } = await analyze(cwd, { browser: 'out.js', bundlib: 'bundlib.json' });
+    const name = 'library';
+    const config = { name };
 
-    expect(browser).toMatchObject({ name });
+    const { browser } = await mockAnalyzeWithPkgEmptyConfig(cwd, { browser: 'browser.js', bundlib: config });
+
+    expect(browser).toMatchObject({ output: 'browser.js', name });
 
   });
 

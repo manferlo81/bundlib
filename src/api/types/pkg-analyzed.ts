@@ -1,22 +1,22 @@
-import type { BundlibPkgJson } from './pkg-json';
-import type { Dictionary, StrictNullable } from './helper-types';
-import type { BrowserBuildFormat, RollupSourcemap } from './types';
+import { type BundlibPkgJson } from './pkg-json';
+import { type Dictionary, type AllowNull } from './helper-types';
+import { type BrowserBuildFormat, type RollupSourcemap } from './types';
 
 export interface ModuleBuildOptions {
-  input: StrictNullable<string>;
+  input: AllowNull<string>;
   output: string;
   sourcemap: RollupSourcemap;
   esModule: boolean;
   interop: boolean;
   min: boolean;
-  project: StrictNullable<string>;
+  project: AllowNull<string>;
 }
 
 export interface BrowserBuildOptions extends ModuleBuildOptions {
   format: BrowserBuildFormat;
-  name: StrictNullable<string>;
-  id: StrictNullable<string>;
-  globals: StrictNullable<Dictionary<string>>;
+  name: AllowNull<string>;
+  id: AllowNull<string>;
+  globals: AllowNull<Dictionary<string>>;
   extend: boolean;
 }
 
@@ -26,22 +26,22 @@ export interface TypesBuildOptions {
 }
 
 export interface Dependencies {
-  runtime: StrictNullable<Dictionary<string>>;
-  dev: StrictNullable<Dictionary<string>>;
-  peer: StrictNullable<Dictionary<string>>;
+  runtime: AllowNull<Dictionary<string>>;
+  dev: AllowNull<Dictionary<string>>;
+  peer: AllowNull<Dictionary<string>>;
 }
 
 export interface PkgAnalyzed {
   cwd: string;
   pkg: BundlibPkgJson;
-  main: StrictNullable<ModuleBuildOptions>;
-  module: StrictNullable<ModuleBuildOptions>;
-  browser: StrictNullable<BrowserBuildOptions>;
-  bin: StrictNullable<ModuleBuildOptions>;
-  types: StrictNullable<TypesBuildOptions>;
-  chunks: StrictNullable<Dictionary<string>>;
+  main: AllowNull<ModuleBuildOptions>;
+  module: AllowNull<ModuleBuildOptions>;
+  browser: AllowNull<BrowserBuildOptions>;
+  bin: AllowNull<ModuleBuildOptions>;
+  types: AllowNull<TypesBuildOptions>;
+  chunks: AllowNull<Dictionary<string>>;
   dependencies: Dependencies;
-  cache: StrictNullable<string>;
+  cache: AllowNull<string>;
 }
 
 // Backwards support for previous typo

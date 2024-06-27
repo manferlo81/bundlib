@@ -1,48 +1,27 @@
-import { fixturePath } from '../tools/fixture-path';
-import getPluginNames from '../tools/get-plugin-names';
+import { greenBright, magentaBright } from '../../src/cli/tools/colors';
+import { mockGetPluginNames } from '../tools/mock-fs';
 
-describe('rollup-plugin-strip-shebang plugin', () => {
+const _pluginPkgName = magentaBright('rollup-plugin-strip-shebang');
 
-  const cwd = fixturePath('export-number-js');
+describe(`${_pluginPkgName} plugin`, () => {
 
+  const cwd = process.cwd();
   const pluginName = 'strip-shebang';
-  const deps = { 'rollup-plugin-strip-shebang': '*' };
-  const outputFields: Array<{ field: string; text: string }> = [
+
+  const outputFields = [
     { field: 'main', text: 'CommonJS Module' },
     { field: 'module', text: 'ES Module' },
     { field: 'browser', text: 'Browser build' },
   ];
-  const dependenciesFields = ['dependencies', 'devDependencies'];
 
   outputFields.forEach(({ field, text }) => {
-
-    test(`Should not use on ${text} if not installed`, async () => {
-      const [plugins] = await getPluginNames(cwd, false, {
-        [field]: 'output.js',
-      });
-      expect(plugins).not.toContain(pluginName);
+    test(`Should not use ${_pluginPkgName} on ${greenBright(text)}`, () => {
+      return expect(mockGetPluginNames(cwd, { [field]: 'output.js' })).resolves.not.toContain(pluginName);
     });
-
-    dependenciesFields.forEach((depField) => {
-      test(`Should not use on ${text} if installed as "${depField}"`, async () => {
-        const [plugins] = await getPluginNames(cwd, false, {
-          [field]: 'output.js',
-          [depField]: deps,
-        });
-        expect(plugins).not.toContain(pluginName);
-      });
-    });
-
   });
 
-  dependenciesFields.forEach((depField) => {
-    test(`Should use on Binary build if installed as "${depField}"`, async () => {
-      const [plugins] = await getPluginNames(cwd, false, {
-        bin: 'output.js',
-        [depField]: deps,
-      });
-      expect(plugins).toContain(pluginName);
-    });
+  test(`Should use ${_pluginPkgName} on ${greenBright('Binary build')}`, () => {
+    return expect(mockGetPluginNames(cwd, { bin: 'output.js' })).resolves.toContain(pluginName);
   });
 
 });

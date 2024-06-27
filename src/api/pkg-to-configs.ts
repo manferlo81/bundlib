@@ -25,7 +25,7 @@ import { createResolveInput } from './tools/create-resolve-input';
 import { extensionMatch } from './tools/extension-match';
 import { keys } from './tools/helpers';
 import { renamePre } from './tools/rename-pre';
-import type { Dictionary, Nullable, TypeCheckFunction } from './types/helper-types';
+import type { Dictionary, AllowNullish, TypeCheckFunction } from './types/helper-types';
 import type { PkgAnalyzed } from './types/pkg-analyzed';
 import type { BundlibAPIOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types/types';
 
@@ -92,8 +92,8 @@ export function pkgToConfigs(
     mini: boolean,
     browser: boolean,
     bin: boolean,
-    chunks: Nullable<Dictionary<string>>,
-    project: Nullable<string>,
+    chunks: AllowNullish<Dictionary<string>>,
+    project: AllowNullish<string>,
   ): Plugin[] {
 
     const sourcemap = !!rollupSourcemap;
@@ -397,7 +397,7 @@ export function pkgToConfigs(
 
     if (format === 'iife' || format === 'umd') {
       if (!name) {
-        throw error('option \'name\' is required for IIFE and UMD builds');
+        throw error('option "name" is required for IIFE and UMD builds');
       }
       outputOptions.name = name;
     }

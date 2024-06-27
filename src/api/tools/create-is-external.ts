@@ -1,10 +1,10 @@
 import type { IsExternal } from 'rollup';
-import type { Dictionary, Nullable } from '../types/helper-types';
-import { hasOwn_v2, keys } from './helpers';
+import type { Dictionary, AllowNullish } from '../types/helper-types';
+import { hasOwn, keys } from './helpers';
 
 const isNotExternal: IsExternal = () => false;
 
-export function createIsExternal(...args: Array<Nullable<readonly string[]>>): IsExternal {
+export function createIsExternal(...args: Array<AllowNullish<readonly string[]>>): IsExternal {
 
   // filter arguments for "nullish" dependencies
   const filtered = args.filter((dep): dep is string[] => {
@@ -46,7 +46,7 @@ export function createIsExternal(...args: Array<Nullable<readonly string[]>>): I
     }
 
     // if found in cache, return cached value
-    if (hasOwn_v2(cache, source)) {
+    if (hasOwn(cache, source)) {
       return cache[source];
     }
 
@@ -69,7 +69,7 @@ export function createIsExternal(...args: Array<Nullable<readonly string[]>>): I
         const truncatedSource = source.substring(0, externalModuleNameLength);
 
         // if found in cache, return cached value
-        if (hasOwn_v2(cache, truncatedSource)) {
+        if (hasOwn(cache, truncatedSource)) {
           return cache[truncatedSource];
         }
 

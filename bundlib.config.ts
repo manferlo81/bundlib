@@ -1,6 +1,6 @@
-import { BundlibOptions } from './src/api/types/bundlib-options';
+import { BundlibConfig } from './src/api/types/bundlib-options';
 
-const config: BundlibOptions = {
+const config: BundlibConfig = {
   input: {
     api: 'src/api/index.ts',
     bin: 'src/cli/index.ts',

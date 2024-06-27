@@ -1,7 +1,7 @@
 import { keys } from '../tools/helpers';
 import { isArray, isNull, isObject, isString } from '../type-check/basic';
 import type { GlobalsOptions } from '../types/bundlib-options';
-import type { Nullable } from '../types/helper-types';
+import type { AllowNullish } from '../types/helper-types';
 
 export function isValidGlobals(value: unknown): value is GlobalsOptions {
   return isNull(value) || (
@@ -23,7 +23,7 @@ export function normalizeGlobals(globals: GlobalsOptions): Record<string, string
 }
 
 export function normalizeBuildGlobals(
-  build: Nullable<{ globals?: GlobalsOptions }>,
+  build: AllowNullish<{ globals?: GlobalsOptions }>,
   def: Record<string, string> | null,
 ): Record<string, string> | null {
   return (!build || isNull(build.globals)) ? def : normalizeGlobals(build.globals);

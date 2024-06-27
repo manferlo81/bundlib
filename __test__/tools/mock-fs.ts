@@ -1,12 +1,47 @@
 import mock from 'mock-fs';
 import { DirectoryItems } from 'mock-fs/lib/filesystem';
+import { resolve } from 'path';
+import { BundlibPkgJson, analyzePkg } from '../../src/api';
+import { getPluginNames } from './get-plugin-names';
 
-export const mockFS = async <R extends Promise<unknown>>(structure: DirectoryItems, callback: () => R): Promise<R> => {
+type MockFSCallback<R> = () => R | Promise<R>;
+
+export const mockFS2 = async <R>(callback: MockFSCallback<R>, structure: DirectoryItems = {}): Promise<R> => {
   mock(structure, { createCwd: false, createTmp: false });
   try {
-    const result = await callback();
-    return result;
+    return await callback();
   } finally {
     mock.restore();
   }
 };
+
+export const mockAnalyzeWithPkg = (cwd: string, pkg: BundlibPkgJson, structure: DirectoryItems = {}) => {
+  return mockFS2(
+    () => analyzePkg(cwd, pkg),
+    structure,
+  );
+};
+
+export const mockAnalyzeWithPkgEmptyConfig = (cwd: string, pkg: BundlibPkgJson) => {
+  return mockAnalyzeWithPkg(
+    cwd,
+    { bundlib: {}, ...pkg },
+  );
+};
+
+export const structureWithNodeModules = (structure: DirectoryItems, cwd: string): DirectoryItems => {
+  const modulesDirName = 'node_modules';
+  return {
+    ...structure,
+    [modulesDirName]: mock.load(resolve(cwd, modulesDirName)),
+  };
+};
+
+export function mockGetPluginNames(cwd: string, pkg: BundlibPkgJson) {
+  return mockFS2(() => {
+    return getPluginNames(cwd, false, {
+      bundlib: { input: 'index.js' },
+      ...pkg,
+    });
+  });
+}

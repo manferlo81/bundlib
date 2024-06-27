@@ -1,33 +1,34 @@
-import analyze from '../tools/analyze';
+import { mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs';
 
-describe('package.json browser field', () => {
+describe('package.json "browser" field', () => {
 
   const cwd = process.cwd();
 
-  const analyzeWithBrowser = (browser: string) => analyze(cwd, { browser });
+  const mockAnalyzeWithBrowserField = (browser: string) => {
+    return mockAnalyzeWithPkgEmptyConfig(cwd, { browser });
+  };
 
-  test('should throw on invalid browser field', () => {
+  test('Should throw on invalid "browser" field', () => {
 
     const invalidBrowserPaths = [
       1,
       { name: 'value' },
     ];
 
-    expect.assertions(invalidBrowserPaths.length);
-
-    invalidBrowserPaths.forEach((browser) => {
-      void expect(analyzeWithBrowser(browser as never)).rejects.toThrow(TypeError);
+    invalidBrowserPaths.forEach((invalid) => {
+      void expect(mockAnalyzeWithBrowserField(invalid as never)).rejects.toThrow(TypeError);
     });
 
   });
 
-  test('should read browser field', async () => {
+  test('Should read "browser" field', async () => {
 
-    const browserField = 'out/lib.js';
-    const analyzed = await analyzeWithBrowser(browserField);
+    const browserField = 'browser.js';
+    const analyzed = await mockAnalyzeWithBrowserField(browserField);
     const { browser } = analyzed;
 
-    expect(browser ? browser.output : null).toBe(browserField);
+    expect(browser).not.toBeNull();
+    expect(browser?.output).toBe(browserField);
 
   });
 

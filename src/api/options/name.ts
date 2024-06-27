@@ -1,14 +1,20 @@
 import camelCase from 'camelcase';
 import { basename } from 'path';
-import type { Nullable, StrictNullable } from '../types/helper-types';
+import type { AllowNull, AllowNullish } from '../types/helper-types';
 
 export function normalizeBuildName(
   cwd: string,
-  browserName: Nullable<string>,
-  nameOption: Nullable<string>,
-  pkgName: Nullable<string>,
-): StrictNullable<string> {
-  return browserName || nameOption || (
-    pkgName && camelCase(basename(pkgName))
-  ) || camelCase(basename(cwd)) || null;
+  browserName: AllowNullish<string>,
+  nameOption: AllowNullish<string>,
+  pkgName: AllowNullish<string>,
+): AllowNull<string> {
+  if (browserName) return browserName;
+  if (nameOption) return nameOption;
+  if (pkgName) {
+    const camelPkgName = camelCase(basename(pkgName));
+    if (camelPkgName) return camelPkgName;
+  }
+  const camelFolderName = camelCase(basename(cwd));
+  if (camelFolderName) return camelFolderName;
+  return null;
 }

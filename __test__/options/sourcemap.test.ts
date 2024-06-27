@@ -1,124 +1,79 @@
-import { error } from '../../src/api/errors/error';
-import { invalidOptionMessage } from '../../src/api/errors/error-messages';
-import { resolveSourcemapOption } from '../../src/api/options/sourcemap';
+import { RollupSourcemap } from '../../src/api';
+import { mockAnalyzeWithPkg } from '../tools/mock-fs';
 
 describe('"sourcemap" option', () => {
 
+  const cwd = process.cwd();
+
+  const analyzeWithSourcemap = (sourcemap: RollupSourcemap) => mockAnalyzeWithPkg(cwd, {
+    main: 'out/lib.cjs.js',
+    module: 'out/lib.es.js',
+    browser: 'out/lib.umd.js',
+    bin: 'out/lib.bin.js',
+    bundlib: { sourcemap },
+  });
+
   test('Should throw on invalid "sourcemap" option', () => {
 
-    const invalids = [
-      0,
-      1,
-      'invalid',
-      ['invalid'],
-      { invalid: true },
-      { default: 'invalid' },
-      { api: 'invalid' },
-      { main: 'invalid' },
-      { module: 'invalid' },
-      { browser: 'invalid' },
-      { bin: 'invalid' },
+    const invalidSourcemaps = [
+      100,
+      'string',
     ];
 
-    invalids.forEach((invalid) => {
-      expect(() => resolveSourcemapOption(invalid as never)).toThrow(
-        error(invalidOptionMessage('sourcemap')),
-      );
+    invalidSourcemaps.forEach((sourcemap) => {
+      void expect(analyzeWithSourcemap(sourcemap as never)).rejects.toThrow('Invalid "sourcemap" option');
     });
 
   });
 
-  test('Should resolve null or undefined "sourcemap" option', () => {
+  test('Should read "sourcemap" option', async () => {
 
-    [null, undefined].forEach((value) => {
-      expect(resolveSourcemapOption(value)).toEqual({
-        main: true,
-        module: true,
-        browser: true,
-        bin: true,
-      });
-    });
+    const { main, module: esnext, browser, bin } = await analyzeWithSourcemap(false);
+
+    expect(main?.sourcemap).toBe(false);
+    expect(esnext?.sourcemap).toBe(false);
+    expect(browser?.sourcemap).toBe(false);
+    expect(bin?.sourcemap).toBe(false);
 
   });
 
-  test('Should resolve specific "sourcemap" option', () => {
+  test('Should read "inline" as "sourcemap" option', async () => {
 
-    [true, false, 'inline' as const, 'hidden' as const].forEach((value) => {
-      expect(resolveSourcemapOption(value)).toEqual({
-        main: value,
-        module: value,
-        browser: value,
-        bin: value,
-      });
-    });
+    const sourcemap = 'inline';
+    const { main, module: moduleOut, browser, bin } = await analyzeWithSourcemap(sourcemap);
 
-  });
-
-  test('Should resolve build type "sourcemap" option', () => {
-
-    const values = [
-      { value: 'main' as const, expected: { main: true, module: false, browser: false, bin: false } },
-      { value: 'module' as const, expected: { main: false, module: true, browser: false, bin: false } },
-      { value: 'browser' as const, expected: { main: false, module: false, browser: true, bin: false } },
-      { value: 'bin' as const, expected: { main: false, module: false, browser: false, bin: true } },
-      { value: 'api' as const, expected: { main: true, module: true, browser: true, bin: false } },
-    ];
-
-    values.forEach(({ value, expected }) => {
-      expect(resolveSourcemapOption(value)).toEqual(expected);
-    });
+    expect(main?.sourcemap).toBe(sourcemap);
+    expect(moduleOut?.sourcemap).toBe(sourcemap);
+    expect(browser?.sourcemap).toBe(sourcemap);
+    expect(bin?.sourcemap).toBe(sourcemap);
 
   });
 
-  test('Should resolve array of build type as "sourcemap" option', () => {
+  test('Should read "hidden" as "sourcemap" option', async () => {
 
-    const values = [
-      { value: ['main', 'bin'] as ['main', 'bin'], expected: { main: true, module: false, browser: false, bin: true } },
-      { value: ['api'] as ['api'], expected: { main: true, module: true, browser: true, bin: false } },
-    ];
+    const sourcemap = 'hidden';
+    const { main, module: moduleOut, browser, bin } = await analyzeWithSourcemap(sourcemap);
 
-    values.forEach(({ value: array, expected }) => {
-      expect(resolveSourcemapOption(array)).toEqual(expected);
-    });
+    expect(main?.sourcemap).toBe(sourcemap);
+    expect(moduleOut?.sourcemap).toBe(sourcemap);
+    expect(browser?.sourcemap).toBe(sourcemap);
+    expect(bin?.sourcemap).toBe(sourcemap);
 
   });
 
-  test('Should resolve selective object as "sourcemap" option', () => {
+  test('Should default to true if no "sourcemap" option present', async () => {
 
-    const values = [
-      {
-        value: {},
-        expected: { main: true, module: true, browser: true, bin: true },
-      },
-      {
-        value: { default: false },
-        expected: { main: false, module: false, browser: false, bin: false },
-      },
-      {
-        value: { default: false, main: true },
-        expected: { main: true, module: false, browser: false, bin: false },
-      },
-      {
-        value: { default: false, api: true, browser: false },
-        expected: { main: true, module: true, browser: false, bin: false },
-      },
-      {
-        value: { default: 'inline' as const, api: true, browser: false },
-        expected: { main: true, module: true, browser: false, bin: 'inline' },
-      },
-      {
-        value: { default: false, main: 'inline' as const, browser: 'hidden' as const },
-        expected: { main: 'inline', module: false, browser: 'hidden', bin: false },
-      },
-      {
-        value: { main: false, module: null },
-        expected: { main: false, module: true, browser: true, bin: true },
-      },
-    ];
-
-    values.forEach(({ value, expected }) => {
-      expect(resolveSourcemapOption(value)).toEqual(expected);
+    const { main, module: moduleOut, browser, bin } = await mockAnalyzeWithPkg(cwd, {
+      main: 'out/lib.cjs.js',
+      module: 'out/lib.es.js',
+      browser: 'out/lib.umd.js',
+      bin: 'out/lib.bin.js',
     });
+
+    expect(main?.sourcemap).toBe(true);
+    expect(moduleOut?.sourcemap).toBe(true);
+    expect(browser?.sourcemap).toBe(true);
+    expect(bin?.sourcemap).toBe(true);
 
   });
 

@@ -1,9 +1,9 @@
-import { BundlibPkgJson, configsFromPkg } from '../../src/api';
+import { type DirectoryItems } from 'mock-fs/lib/filesystem';
+import { type BundlibPkgJson } from '../../src/api';
+import { pkgToConfigs } from '../../src/api/pkg-to-configs';
+import { mockAnalyzeWithPkg } from './mock-fs';
 
-async function createConfigs(cwd: string, dev: boolean, pkgJson?: BundlibPkgJson): ReturnType<typeof configsFromPkg> {
-  return pkgJson
-    ? configsFromPkg(cwd, dev ? { dev, watch: true } : null, pkgJson)
-    : configsFromPkg(cwd, { dev });
-}
-
-export default createConfigs;
+export const createConfigs = async (cwd: string, dev: boolean, pkg: BundlibPkgJson, structure: DirectoryItems = {}) => {
+  const analyzed = await mockAnalyzeWithPkg(cwd, pkg, structure);
+  return pkgToConfigs(analyzed, { dev });
+};

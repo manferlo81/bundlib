@@ -1,24 +1,23 @@
-import analyze from './tools/analyze';
+import { mockAnalyzeWithPkg } from './tools/mock-fs';
 
 describe('analyze', () => {
 
   const cwd = process.cwd();
 
-  test('should analyze provided package.json', async () => {
+  test('Should analyze provided package.json', async () => {
 
     const pkg = { name: 'lib' };
-    const analyzed = await analyze(cwd, pkg);
+    const analyzed = await mockAnalyzeWithPkg(cwd, pkg);
 
-    expect(analyzed.pkg)
-      .toBe(pkg);
+    expect(analyzed.pkg).toBe(pkg);
 
   });
 
-  test('should return analized package.json', async () => {
+  test('Should return analyzed package.json', async () => {
 
     const pkg = { name: 'lib' };
+    const analyzed = await mockAnalyzeWithPkg(cwd, pkg);
 
-    const analized = await analyze(cwd, pkg);
     const {
       main,
       module: moduleBuild,
@@ -27,7 +26,7 @@ describe('analyze', () => {
       types,
       dependencies,
       cache,
-    } = analized;
+    } = analyzed;
 
     expect(main).toBeNull();
     expect(moduleBuild).toBeNull();

@@ -1,11 +1,16 @@
-import { fixturePath } from '../tools/fixture-path';
-import getPluginNames from '../tools/get-plugin-names';
+import { greenBright, magentaBright, redBright } from '../../src/cli/tools/colors';
+import { mockGetPluginNames } from '../tools/mock-fs';
 
-describe('rollup-plugin-eslint plugin', () => {
+const eslintPkgName = 'eslint';
 
-  const cwd = fixturePath('export-number-js');
+const _pluginPkgName = magentaBright('rollup-plugin-eslint');
+const _eslintPkgName = magentaBright(eslintPkgName);
 
+describe(`${_pluginPkgName} plugin`, () => {
+
+  const cwd = process.cwd();
   const pluginName = 'eslint';
+
   const deps = { 'eslint': '*' };
   const outputFields: Array<{ field: string; text: string }> = [
     { field: 'main', text: 'CommonJS Module' },
@@ -16,17 +21,18 @@ describe('rollup-plugin-eslint plugin', () => {
   const dependenciesFields = ['dependencies', 'devDependencies'];
 
   outputFields.forEach(({ field, text }) => {
-
-    test(`Should not use on ${text} if eslint not installed`, async () => {
-      const [plugins] = await getPluginNames(cwd, false, {
+    test(`Should not use ${_pluginPkgName} on ${greenBright(text)} if ${_eslintPkgName} not installed`, async () => {
+      const plugins = await mockGetPluginNames(cwd, {
         [field]: 'output.js',
       });
       expect(plugins).not.toContain(pluginName);
     });
+  });
 
-    dependenciesFields.forEach((depField) => {
-      test(`Should use on ${text} if eslint installed as "${depField}"`, async () => {
-        const [plugins] = await getPluginNames(cwd, false, {
+  dependenciesFields.forEach((depField) => {
+    outputFields.forEach(({ field, text }) => {
+      test(`Should use ${_pluginPkgName} on ${greenBright(text)} if ${_eslintPkgName} installed as "${redBright(depField)}"`, async () => {
+        const [plugins] = await mockGetPluginNames(cwd, {
           [field]: 'output.js',
           [depField]: deps,
         });

@@ -1,34 +1,32 @@
-import analyze from '../tools/analyze';
+import { mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs';
 
-describe('package.json main field', () => {
+describe('package.json "main" field', () => {
 
   const cwd = process.cwd();
 
-  const analyzeWithMain = (main: string) => analyze(cwd, { main });
+  const mockAnalyzeWithMainField = (main: string) => mockAnalyzeWithPkgEmptyConfig(cwd, { main });
 
-  test('should throw on non string main field', () => {
+  test('Should throw on invalid "main" field', () => {
 
     const invalidMainFields = [
       1,
       { name: 'value' },
     ];
 
-    expect.assertions(invalidMainFields.length);
-
-    invalidMainFields.forEach((main) => {
-      void expect(analyzeWithMain(main as never)).rejects.toThrow(TypeError);
-
+    invalidMainFields.forEach((invalid) => {
+      void expect(mockAnalyzeWithMainField(invalid as never)).rejects.toThrow('Invalid package.json "main" field');
     });
 
   });
 
-  test('should read main field', async () => {
+  test('Should read "main" field', async () => {
 
-    const mainField = 'out/lib.js';
-    const analyzed = await analyzeWithMain(mainField);
+    const mainField = 'main.js';
+    const analyzed = await mockAnalyzeWithMainField(mainField);
     const { main } = analyzed;
 
-    expect(main ? main.output : null).toBe(mainField);
+    expect(main).not.toBeNull();
+    expect(main?.output).toBe(mainField);
 
   });
 

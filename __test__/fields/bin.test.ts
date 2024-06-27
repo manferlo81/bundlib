@@ -1,33 +1,34 @@
-import analyze from '../tools/analyze';
+import { mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs';
 
-describe('package.json bin field', () => {
+describe('package.json "bin" field', () => {
 
   const cwd = process.cwd();
 
-  const analyzeWithBin = (bin: string) => analyze(cwd, { bin });
+  const mockAnalyzeWithBinField = (bin: string) => {
+    return mockAnalyzeWithPkgEmptyConfig(cwd, { bin });
+  };
 
-  test('should throw on invalid bin field', () => {
+  test('Should throw on invalid "bin" field', () => {
 
-    const invalidBrowserPaths = [
+    const invalidBinValues = [
       1,
       { name: 'value' },
     ];
 
-    expect.assertions(invalidBrowserPaths.length);
-
-    invalidBrowserPaths.forEach((bin) => {
-      void expect(analyzeWithBin(bin as never)).rejects.toThrow(TypeError);
+    invalidBinValues.forEach((invalid) => {
+      void expect(mockAnalyzeWithBinField(invalid as never)).rejects.toThrow('Invalid package.json "bin" field');
     });
 
   });
 
-  test('should read binary output filename', async () => {
+  test('Should read "bin" field', async () => {
 
-    const binField = 'bin/cli.js';
-    const analyzed = await analyzeWithBin(binField);
+    const binField = 'binary.js';
+    const analyzed = await mockAnalyzeWithBinField(binField);
     const { bin } = analyzed;
 
-    expect(bin ? bin.output : null).toBe(binField);
+    expect(bin).not.toBeNull();
+    expect(bin?.output).toBe(binField);
 
   });
 

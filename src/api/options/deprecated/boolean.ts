@@ -1,8 +1,8 @@
 import { isNull } from '../../type-check/basic';
-import type { Nullable } from '../../types/helper-types';
+import type { AllowNullish } from '../../types/helper-types';
 
 export function normalizeBooleanOption<K extends string>(
-  build: Nullable<{ [X in K]?: Nullable<boolean> }>,
+  build: AllowNullish<{ [X in K]?: AllowNullish<boolean> }>,
   key: K,
   def: boolean,
 ): boolean {

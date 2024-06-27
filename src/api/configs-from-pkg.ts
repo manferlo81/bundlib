@@ -1,12 +1,12 @@
 import { analyzePkg } from './analyze/analyze';
-import type { BundlibPkgJson } from './types/pkg-json';
 import { pkgToConfigs } from './pkg-to-configs';
-import type { Nullable } from './types/helper-types';
+import { type AllowNullish } from './types/helper-types';
+import type { BundlibPkgJson } from './types/pkg-json';
 import type { BundlibAPIOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions } from './types/types';
 
 async function configsFromPkg(
   cwd: string,
-  options?: Nullable<BundlibAPIOptions | false>,
+  options?: AllowNullish<BundlibAPIOptions | false>,
   pkgJson?: BundlibPkgJson,
 ): Promise<Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>> {
   return pkgToConfigs(

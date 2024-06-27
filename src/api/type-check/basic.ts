@@ -16,7 +16,13 @@ export function isBool(value: unknown): value is boolean {
   return value === true || value === false;
 }
 
-export const isArray: <T = unknown>(value: unknown) => value is T[] = Array.isArray;
+type ArrayIsArray = {
+  <T extends unknown[]>(value: unknown): value is T;
+  <T extends readonly unknown[]>(value: unknown): value is T;
+  <T = unknown>(value: unknown): value is T[];
+};
+
+export const isArray: ArrayIsArray = Array.isArray;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isDictionary<T extends Dictionary<any> = Dictionary<unknown>>(value: unknown): value is T {

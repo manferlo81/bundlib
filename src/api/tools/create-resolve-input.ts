@@ -1,15 +1,15 @@
 import { existsSync } from 'fs';
 import { resolve } from 'path';
-import type { Dictionary, Nullable } from '../types/helper-types';
+import type { Dictionary, AllowNullish } from '../types/helper-types';
 
-type FindInput = (input: Nullable<string>) => Nullable<string>;
+type FindInput = (input: AllowNullish<string>) => AllowNullish<string>;
 
 export function createResolveInput(cwd: string, extensions: string[]): FindInput {
 
   const searchFiles = extensions.map((ext) => resolve(cwd, 'src', `index${ext}`));
   const cache: Partial<Dictionary<string>> = {};
 
-  return (input: Nullable<string>): Nullable<string> => {
+  return (input: AllowNullish<string>): AllowNullish<string> => {
 
     const key = input || 'null';
     const found = cache[key];

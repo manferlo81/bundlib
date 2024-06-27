@@ -1,5 +1,5 @@
 import { error } from '../errors/error';
-import { invalidOptionMessage, invalidDeprecatedOptionMessage, invalidPkgFieldMessage } from '../errors/error-messages';
+import { invalidDeprecatedOptionMessage, invalidOptionMessage, invalidPkgFieldMessage } from '../errors/error-messages';
 import { isValidChunks } from '../options/chunks';
 import { normalizeBooleanOption } from '../options/deprecated/boolean';
 import { isBrowserOption } from '../options/deprecated/browser';
@@ -18,23 +18,17 @@ import { resolveProjectOption } from '../options/project';
 import { resolveSkipOption } from '../options/skip';
 import { isSourcemapOption, resolveSourcemapOption } from '../options/sourcemap';
 import { readPkg } from '../package/read-pkg';
-import { isDictionaryOrNull, isStringOrNull } from '../type-check/advanced';
+import { isDictionaryOrNull, isStringOrNullish } from '../type-check/advanced';
 import { isDictionary, isNull } from '../type-check/basic';
 import { invalidKeys, keysCheck } from '../type-check/keys';
 import { DeprecatedTypesOptions } from '../types/deprecated-options';
-import type { BundlibOptions } from '../types/bundlib-options';
-import type { Dictionary, StrictNullable } from '../types/helper-types';
+import type { AllowNull, Dictionary } from '../types/helper-types';
 import type { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalyzed, TypesBuildOptions } from '../types/pkg-analyzed';
 import type { BundlibPkgJson } from '../types/pkg-json';
 import type { RollupSourcemap } from '../types/types';
-import { loadOptions } from './load-options';
+import { resolveConfig } from './resolve-config';
 
 export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<PkgAnalyzed> {
-
-  // This was handled by readPkg
-  // if (!isDictionary<BundlibPkgJson>(pkg)) {
-  //   throw error('Invalid package.json content');
-  // }
 
   const {
     name: packageName,
@@ -48,24 +42,13 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     dependencies: runtimeDependencies,
     devDependencies,
     peerDependencies,
-    bundlib: pkgBundlibOptions,
+    bundlib: pkgBundlibConfig,
   } = pkg;
 
-  const loadedOptions = await loadOptions(cwd, pkgBundlibOptions);
-  const loadedBundlibOptions = loadedOptions && loadedOptions.config;
-
-  if (loadedOptions && !isNull(loadedBundlibOptions) && !isDictionary<BundlibOptions>(loadedBundlibOptions)) {
-    const { filepath } = loadedOptions;
-    if (filepath) {
-      throw error(`Invalid options found on file "${filepath}".`);
-    }
-    throw error(invalidPkgFieldMessage('bundlib', 'Object | string'));
-  }
-
-  const bundlibOptions = loadedBundlibOptions || {};
+  const resolvedBundlibConfig = await resolveConfig(cwd, pkgBundlibConfig);
 
   const invalidOptions = invalidKeys(
-    bundlibOptions,
+    resolvedBundlibConfig,
     [
       'input',
       'extend',
@@ -109,13 +92,13 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     bin: deprecatedBinaryOptions,
     types: deprecatedTypesOptions,
     equals,
-  } = bundlibOptions;
+  } = resolvedBundlibConfig;
 
-  const perBuildInput = resolveInputOption(bundlibOptions.input);
-  const perBuildSourcemap = resolveSourcemapOption(bundlibOptions.sourcemap);
-  const perBuildESModule = resolveESModuleOption(bundlibOptions.esModule);
-  const perBuildInterop = resolveInteropOption(bundlibOptions.interop);
-  const perBuildMin = resolveMinOption(bundlibOptions.min);
+  const perBuildInput = resolveInputOption(resolvedBundlibConfig.input);
+  const perBuildSourcemap = resolveSourcemapOption(resolvedBundlibConfig.sourcemap);
+  const perBuildESModule = resolveESModuleOption(resolvedBundlibConfig.esModule);
+  const perBuildInterop = resolveInteropOption(resolvedBundlibConfig.interop);
+  const perBuildMin = resolveMinOption(resolvedBundlibConfig.min);
 
   if (!isValidChunks(chunks)) {
     throw error(invalidOptionMessage('chunks'));
@@ -125,11 +108,11 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     throw error(invalidOptionMessage('format'));
   }
 
-  if (!isStringOrNull(browserName)) {
+  if (!isStringOrNullish(browserName)) {
     throw error(invalidOptionMessage('name'));
   }
 
-  if (!isStringOrNull(amdId)) {
+  if (!isStringOrNullish(amdId)) {
     throw error(invalidOptionMessage('id'));
   }
 
@@ -137,12 +120,12 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     throw error(invalidOptionMessage('globals'));
   }
 
-  if (!isStringOrNull(cacheOption)) {
+  if (!isStringOrNullish(cacheOption)) {
     throw error(invalidOptionMessage('cache'));
   }
 
-  const perBuildProject = resolveProjectOption(bundlibOptions.project);
-  const skipBuild = resolveSkipOption(bundlibOptions.skip);
+  const perBuildProject = resolveProjectOption(resolvedBundlibConfig.project);
+  const skipBuild = resolveSkipOption(resolvedBundlibConfig.skip);
 
   if (
     !isNull(deprecatedMainOptions) && (deprecatedMainOptions !== false) && !(
@@ -174,7 +157,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
       keysCheck(deprecatedBrowserOptions, isBrowserOption) &&
       isBrowserFormat(deprecatedBrowserOptions.format) &&
       (['name', 'id'] as Array<keyof typeof deprecatedBrowserOptions>).every((key) => (
-        isStringOrNull(deprecatedBrowserOptions[key])
+        isStringOrNullish(deprecatedBrowserOptions[key])
       )) &&
       isValidGlobals(deprecatedBrowserOptions.globals)
     )
@@ -206,28 +189,32 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     throw error(invalidDeprecatedOptionMessage('types', 'false | { equals?: boolean }'));
   }
 
-  if ((deprecatedMainOptions !== false) && !isStringOrNull(mainOutputFile)) {
+  if ((deprecatedMainOptions !== false) && !isStringOrNullish(mainOutputFile)) {
     throw error(invalidPkgFieldMessage('main', 'string'));
   }
 
-  if ((deprecatedModuleOptions !== false) && !isStringOrNull(moduleFieldValue)) {
+  if ((deprecatedModuleOptions !== false) && !isStringOrNullish(moduleFieldValue)) {
     throw error(invalidPkgFieldMessage('module', 'string'));
   }
 
-  if (!moduleFieldValue && (deprecatedModuleOptions !== false) && !isStringOrNull(jsNextFieldValue)) {
+  if (!moduleFieldValue && (deprecatedModuleOptions !== false) && !isStringOrNullish(jsNextFieldValue)) {
     throw error(invalidPkgFieldMessage('jsnext:main', 'string'));
   }
 
-  if ((deprecatedBrowserOptions !== false) && !isStringOrNull(browserOutputFile)) {
+  if ((deprecatedBrowserOptions !== false) && !isStringOrNullish(browserOutputFile)) {
     throw error(invalidPkgFieldMessage('browser', 'string'));
   }
 
-  if ((deprecatedBinaryOptions !== false) && !isStringOrNull(binaryOutputFile)) {
+  if ((deprecatedBinaryOptions !== false) && !isStringOrNullish(binaryOutputFile)) {
     throw error(invalidPkgFieldMessage('bin', 'string'));
   }
 
   if (!isDictionaryOrNull<Dictionary<string>>(runtimeDependencies)) {
     throw error(invalidPkgFieldMessage('dependencies', 'Object'));
+  }
+
+  if (!isDictionaryOrNull<Dictionary<string>>(devDependencies)) {
+    throw error(invalidPkgFieldMessage('devDependencies', 'Object'));
   }
 
   if (!isDictionaryOrNull<Dictionary<string>>(peerDependencies)) {
@@ -238,7 +225,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
 
   const typesOutputFile = typesFieldValue || typings;
 
-  const mainOutput: StrictNullable<ModuleBuildOptions> = (deprecatedMainOptions === false || skipBuild.main || !mainOutputFile) ? null : {
+  const mainOutput: AllowNull<ModuleBuildOptions> = (deprecatedMainOptions === false || skipBuild.main || !mainOutputFile) ? null : {
     input: perBuildInput.main,
     output: mainOutputFile,
     sourcemap: normalizeDeprecatedOption<'sourcemap', RollupSourcemap>(
@@ -253,7 +240,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     project: perBuildProject.main,
   };
 
-  const moduleOutput: StrictNullable<ModuleBuildOptions> = (deprecatedModuleOptions === false || skipBuild.module || !moduleOutputFile) ? null : {
+  const moduleOutput: AllowNull<ModuleBuildOptions> = (deprecatedModuleOptions === false || skipBuild.module || !moduleOutputFile) ? null : {
     input: perBuildInput.module,
     output: moduleOutputFile,
     sourcemap: normalizeDeprecatedOption<'sourcemap', RollupSourcemap>(
@@ -268,7 +255,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     project: perBuildProject.module,
   };
 
-  const browserOutput: StrictNullable<BrowserBuildOptions> = (deprecatedBrowserOptions === false || skipBuild.browser || !browserOutputFile) ? null : {
+  const browserOutput: AllowNull<BrowserBuildOptions> = (deprecatedBrowserOptions === false || skipBuild.browser || !browserOutputFile) ? null : {
     input: perBuildInput.browser,
     output: browserOutputFile,
     sourcemap: normalizeDeprecatedOption<'sourcemap', RollupSourcemap>(
@@ -296,7 +283,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     project: perBuildProject.browser,
   };
 
-  const binaryOutput: StrictNullable<ModuleBuildOptions> = (deprecatedBinaryOptions === false || skipBuild.bin || !binaryOutputFile) ? null : {
+  const binaryOutput: AllowNull<ModuleBuildOptions> = (deprecatedBinaryOptions === false || skipBuild.bin || !binaryOutputFile) ? null : {
     input: perBuildInput.bin,
     output: binaryOutputFile,
     sourcemap: normalizeDeprecatedOption<'sourcemap', RollupSourcemap>(
@@ -311,7 +298,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     project: perBuildProject.bin,
   };
 
-  const typesOutput: StrictNullable<TypesBuildOptions> = (deprecatedTypesOptions === false || skipBuild.types || !typesOutputFile) ? null : {
+  const typesOutput: AllowNull<TypesBuildOptions> = (deprecatedTypesOptions === false || skipBuild.types || !typesOutputFile) ? null : {
     output: typesOutputFile,
     equals: !!equals,
   };
@@ -322,7 +309,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     peer: peerDependencies || null,
   };
 
-  const cache: StrictNullable<string> = cacheOption || null;
+  const cache: AllowNull<string> = cacheOption || null;
 
   return {
     cwd,

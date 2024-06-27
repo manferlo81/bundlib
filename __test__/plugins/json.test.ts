@@ -1,12 +1,14 @@
-import { fixturePath } from '../tools/fixture-path';
-import getPluginNames from '../tools/get-plugin-names';
+import { greenBright, magentaBright } from '../../src/cli/tools/colors';
+import { mockGetPluginNames } from '../tools/mock-fs';
 
-describe('@rollup/plugin-json plugin', () => {
+const _pluginPkgName = magentaBright('@rollup/plugin-json');
 
-  const cwd = fixturePath('export-number-js');
+describe(`${_pluginPkgName} plugin`, () => {
 
+  const cwd = process.cwd();
   const pluginName = 'json';
-  const outputFields: Array<{ field: string; text: string }> = [
+
+  const outputFields = [
     { field: 'main', text: 'CommonJS Module' },
     { field: 'module', text: 'ES Module' },
     { field: 'browser', text: 'Browser build' },
@@ -14,11 +16,11 @@ describe('@rollup/plugin-json plugin', () => {
   ];
 
   outputFields.forEach(({ field, text }) => {
-    test(`Should use on ${text}`, async () => {
-      const [plugins] = await getPluginNames(cwd, false, {
+    test(`Should use ${_pluginPkgName} on ${greenBright(text)}`, () => {
+      const promise = mockGetPluginNames(cwd, {
         [field]: 'output.js',
       });
-      expect(plugins).toContain(pluginName);
+      return expect(promise).resolves.toContain(pluginName);
     });
   });
 

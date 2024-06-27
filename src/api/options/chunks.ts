@@ -1,8 +1,8 @@
 import { composeOneOf } from '../type-check/advanced';
 import { isDictionary, isNull } from '../type-check/basic';
-import { Dictionary, Nullable } from '../types/helper-types';
+import { Dictionary, AllowNullish } from '../types/helper-types';
 
-export const isValidChunks = composeOneOf<Nullable<Dictionary<unknown>>>(
+export const isValidChunks = composeOneOf<AllowNullish<Dictionary<unknown>>>(
   isNull,
   isDictionary,
 );

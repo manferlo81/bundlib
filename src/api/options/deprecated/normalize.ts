@@ -1,8 +1,8 @@
 import { isNull } from '../../type-check/basic';
-import type { Nullable, TypeCheckFunction } from '../../types/helper-types';
+import type { AllowNullish, TypeCheckFunction } from '../../types/helper-types';
 
 export function normalizeDeprecatedOption<K extends string, T>(
-  build: Nullable<{ [X in K]?: Nullable<T> }>,
+  build: AllowNullish<{ [X in K]?: AllowNullish<T> }>,
   key: K,
   isValidValue: TypeCheckFunction<T>,
   def: T,

@@ -1,4 +1,4 @@
-import type { BundlibOptions } from './bundlib-options';
+import type { BundlibConfig } from './bundlib-options';
 import type { Dictionary } from './helper-types';
 
 export type PkgJsonModuleType = 'commonjs' | 'module';
@@ -33,5 +33,5 @@ export interface BundlibPkgJson {
   dependencies?: PkgJsonDependencies;
   devDependencies?: PkgJsonDependencies;
   peerDependencies?: PkgJsonDependencies;
-  bundlib?: BundlibOptions | string;
+  bundlib?: BundlibConfig | string;
 }

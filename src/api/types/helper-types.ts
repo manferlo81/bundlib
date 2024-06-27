@@ -1,6 +1,11 @@
 export type Dictionary<T> = Record<string, T>;
-export type StrictNullable<T> = T | null;
-export type Nullable<T> = StrictNullable<T> | undefined | void;
+export type AllowNull<T> = T | null;
+export type AllowNullish<T> = AllowNull<T> | undefined | void;
+
+/** @deprecated */
+export type StrictNullable<T> = AllowNull<T>;
+/** @deprecated */
+export type Nullable<T> = AllowNullish<T>;
 
 export type IsInstalled = (id: string) => string | undefined | void;
 

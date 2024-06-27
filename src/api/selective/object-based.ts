@@ -4,7 +4,7 @@ import { invalidOptionMessage } from '../errors/error-messages';
 import { createOneOfLiteral } from '../type-check/advanced';
 import { type Dictionary, type TypeCheckFunction } from '../types/helper-types';
 
-export function resolveObjectBasedSelectiveOption<K extends string, V, D = V>(
+export function resolveValueBasedSelectiveOption<K extends string, V, D = V>(
   value: unknown,
   allKeys: K[],
   specialKeys: Dictionary<K[]>,

@@ -1,4 +1,3 @@
-import chalk from 'chalk';
 import { EventEmitter } from 'events';
 import { createFormatter } from 'gen-unit';
 import { relative } from 'path';
@@ -10,8 +9,9 @@ import { bundlib } from './bundlib';
 import { log, logError } from './tools/console';
 import { EVENT_BUILD_END, EVENT_END, EVENT_ERROR, EVENT_REBUILD, EVENT_WARN } from './consts';
 import { BundlibEventEmitter } from './types/types';
+import { bold, cyan, inverse, yellow } from './tools/colors';
 
-const { bold, inverse, cyan, yellow } = chalk;
+// const { bold, inverse, cyan, yellow } = chalk;
 const greenBold = bold.green;
 const yellowBold = bold.yellow;
 const magentaBold = bold.magenta;
@@ -20,11 +20,6 @@ function formatProjectInfo(name: string, ver: string) {
   const projName = greenBold(name);
   const projVer = yellowBold(`v${ver}`);
   return `${projName} ${projVer}`;
-}
-
-// ENABLE COLORS ON GIT BASH FOR WINDOWS
-if (!chalk.level && 'MINGW_CHOST' in process.env) {
-  chalk.level = 1;
 }
 
 export async function action(

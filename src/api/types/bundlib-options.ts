@@ -1,54 +1,54 @@
-import { DeprecatedBundlibOptions } from './deprecated-options';
-import type { Dictionary, Nullable } from './helper-types';
+import type { DeprecatedBundlibOptions } from './deprecated-options';
+import type { AllowNullish, Dictionary } from './helper-types';
 import type { BrowserBuildFormat, RollupSourcemap } from './types';
 
 export type BuildTypeForAPI = 'main' | 'module' | 'browser';
 export type BuildType = BuildTypeForAPI | 'bin';
 
-export type GlobalsOptions = Nullable<Dictionary<string> | string[]>;
+export type GlobalsOptions = AllowNullish<Dictionary<string> | string[]>;
 
 export interface WithSourcemapOption {
-  sourcemap?: Nullable<RollupSourcemap>;
+  sourcemap?: AllowNullish<RollupSourcemap>;
 }
 
 export interface WithModuleOptions {
-  esModule?: Nullable<boolean>;
-  interop?: Nullable<boolean>;
+  esModule?: AllowNullish<boolean>;
+  interop?: AllowNullish<boolean>;
 }
 
 export interface WithMinOption {
-  min?: Nullable<boolean>;
+  min?: AllowNullish<boolean>;
 }
 
 export interface InputOptions {
-  api?: Nullable<string>;
-  bin?: Nullable<string>;
+  api?: AllowNullish<string>;
+  bin?: AllowNullish<string>;
 }
 
 export type ModuleString = Exclude<BuildType, 'module'>;
-export type ModuleOption = Nullable<ModuleString | ModuleString[] | boolean>;
+export type ModuleOption = AllowNullish<ModuleString | ModuleString[] | boolean>;
 
-export type MinOption = Nullable<BuildType | BuildType[] | boolean>;
+export type MinOption = AllowNullish<BuildType | BuildType[] | boolean>;
 
 export interface BrowserOptions {
-  format?: Nullable<BrowserBuildFormat>;
-  name?: Nullable<string>;
-  id?: Nullable<string>;
-  extend?: Nullable<boolean>;
+  format?: AllowNullish<BrowserBuildFormat>;
+  name?: AllowNullish<string>;
+  id?: AllowNullish<string>;
+  extend?: AllowNullish<boolean>;
   globals?: GlobalsOptions;
 }
 
 export type SelectiveType<K extends string> = BuildTypeForAPI | K | 'api';
 export type ObjectSelectiveOptionsKey<K extends string> = SelectiveType<K> | 'default';
 
-export type ObjectSelectiveOptions<K extends string, T> = Partial<Record<ObjectSelectiveOptionsKey<K>, Nullable<T>>>;
+export type ObjectSelectiveOptions<K extends string, T> = Partial<Record<ObjectSelectiveOptionsKey<K>, AllowNullish<T>>>;
 
 export type StringBasedSelectiveOption<K extends string> =
   | SelectiveType<K>
   | Array<SelectiveType<K>>;
 
 export type ObjectBasedSelectiveOption<K extends string, T> =
-  | Nullable<T>
+  | AllowNullish<T>
   | ObjectSelectiveOptions<K, T>;
 
 export type SelectiveOption<K extends string, T> =
@@ -62,26 +62,26 @@ export type SelectiveStringOption = ObjectBasedSelectiveOption<BuildType, string
 export type SelectiveSourcemap = SelectiveOption<BuildType, RollupSourcemap>;
 export type SelectiveSkipOption = SelectiveOption<SelectiveSkipBuildType, boolean>;
 
-export interface BundlibOptions extends DeprecatedBundlibOptions, Record<string, unknown> {
+export interface BundlibConfig extends DeprecatedBundlibOptions, Record<string, unknown> {
 
-  input?: Nullable<SelectiveStringOption>;
+  input?: AllowNullish<SelectiveStringOption>;
 
   sourcemap?: SelectiveSourcemap;
   esModule?: SelectiveBooleanOption;
   interop?: SelectiveBooleanOption;
   min?: SelectiveBooleanOption;
-  cache?: Nullable<string>;
+  cache?: AllowNullish<string>;
   project?: SelectiveStringOption;
   skip?: SelectiveSkipOption;
 
-  chunks?: Nullable<Dictionary<string>>;
+  chunks?: AllowNullish<Dictionary<string>>;
 
-  format?: Nullable<BrowserBuildFormat>;
-  name?: Nullable<string>;
-  id?: Nullable<string>;
-  extend?: Nullable<boolean>;
+  format?: AllowNullish<BrowserBuildFormat>;
+  name?: AllowNullish<string>;
+  id?: AllowNullish<string>;
+  extend?: AllowNullish<boolean>;
   globals?: GlobalsOptions;
 
-  equals?: Nullable<boolean>;
+  equals?: AllowNullish<boolean>;
 
 }

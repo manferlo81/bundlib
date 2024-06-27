@@ -1,5 +1,5 @@
 import type { IsExternal, Plugin, WarningHandlerWithDefault } from 'rollup';
-import type { Nullable } from '../types/helper-types';
+import { type AllowNullish } from '../types/helper-types';
 import type { BundlibRollupModuleOutputOptions, BundlibRollupOptions } from '../types/types';
 
 interface CreateConfigOptions<OutputOptions extends BundlibRollupModuleOutputOptions> {
@@ -7,7 +7,7 @@ interface CreateConfigOptions<OutputOptions extends BundlibRollupModuleOutputOpt
   output: OutputOptions;
   isExternal: IsExternal;
   plugins: Plugin[];
-  onwarn: Nullable<WarningHandlerWithDefault>;
+  onwarn: AllowNullish<WarningHandlerWithDefault>;
   useChokidar: boolean;
 }
 

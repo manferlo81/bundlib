@@ -1,5 +1,5 @@
-import { red } from 'chalk';
 import { RollupError } from 'rollup';
+import { red } from './colors';
 
 function create(name: 'log' | 'error') {
   const method = console[name];

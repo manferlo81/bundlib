@@ -1,5 +1,5 @@
 import { flattenMultilevel, MultilevelArray } from '../tools/multilevel-array';
-import type { Dictionary, Nullable, TypeCastCheckFunction, TypeCheckFunction } from '../types/helper-types';
+import type { AllowNullish, Dictionary, TypeCastCheckFunction, TypeCheckFunction } from '../types/helper-types';
 import { isDictionary, isNull, isString } from './basic';
 
 export function createOneOfLiteral<M>(...values: MultilevelArray<M>): TypeCheckFunction<M> {
@@ -25,7 +25,7 @@ export const composeOneOf = <M>(...checks: Array<TypeCheckFunction<M>>): TypeCas
   )
 );
 
-export const isStringOrNull = composeOneOf<Nullable<string>>(isNull, isString);
+export const isStringOrNullish = composeOneOf<AllowNullish<string>>(isNull, isString);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const isDictionaryOrNull = composeOneOf<Nullable<Dictionary<any>>>(isNull, isDictionary);
+export const isDictionaryOrNull = composeOneOf<AllowNullish<Dictionary<any>>>(isNull, isDictionary);

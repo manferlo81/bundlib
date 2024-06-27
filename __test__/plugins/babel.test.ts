@@ -1,39 +1,48 @@
-import { fixturePath } from '../tools/fixture-path';
-import getPluginNames from '../tools/get-plugin-names';
+import { greenBright, magentaBright, redBright } from '../../src/cli/tools/colors';
+import { mockGetPluginNames } from '../tools/mock-fs';
 
-describe('@rollup/plugin-babel plugin', () => {
+const babelPkgName = '@babel/core';
 
-  const cwd = fixturePath('export-number-js');
+const _pluginPkgName = magentaBright('@rollup/plugin-babel');
+const _babelPkgName = magentaBright(babelPkgName);
 
+describe(`${_pluginPkgName} plugin`, () => {
+
+  const cwd = process.cwd();
   const pluginName = 'babel';
-  const deps = { '@babel/core': '*' };
-  const outputFields: Array<{ field: string; text: string }> = [
+
+  const deps = { [babelPkgName]: '*' };
+
+  const outputFields = [
     { field: 'main', text: 'CommonJS Module' },
     { field: 'module', text: 'ES Module' },
     { field: 'browser', text: 'Browser build' },
     { field: 'bin', text: 'Binary build' },
   ];
+
   const dependenciesFields = ['dependencies', 'devDependencies'];
 
   outputFields.forEach(({ field, text }) => {
-
-    test(`Should not use on ${text} if @babel/core not installed`, async () => {
-      const [plugins] = await getPluginNames(cwd, false, {
+    test(`Should not use ${_pluginPkgName} on ${greenBright(text)} if ${_babelPkgName} not installed`, async () => {
+      const names = await mockGetPluginNames(cwd, {
         [field]: 'output.js',
+        bundlib: { input: 'index.js' },
       });
-      expect(plugins).not.toContain(pluginName);
+      expect(names).not.toContain(pluginName);
     });
+  });
 
-    dependenciesFields.forEach((depField) => {
-      test(`Should use on ${text} if @babel/core installed as "${depField}"`, async () => {
-        const [plugins] = await getPluginNames(cwd, false, {
+  dependenciesFields.forEach((depField) => {
+    outputFields.forEach(({ field, text }) => {
+      test(`Should use ${_pluginPkgName} on ${greenBright(text)} if ${_babelPkgName} installed as "${redBright(depField)}"`, async () => {
+        const names = await mockGetPluginNames(cwd, {
           [field]: 'output.js',
           [depField]: deps,
+          bundlib: { input: 'index.js' },
         });
-        expect(plugins).toContain(pluginName);
+        expect(names).toContain(pluginName);
       });
     });
-
   });
 
 });

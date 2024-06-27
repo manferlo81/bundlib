@@ -2,7 +2,7 @@ import { PartialResolvedId, ResolveIdHook } from 'rollup';
 import slash from 'slash';
 import { pluginChunks } from '../../src/api/plugins/chunks';
 
-describe('API Plugin', () => {
+describe('chunks plugin', () => {
 
   const cwd = process.cwd();
 

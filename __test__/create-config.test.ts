@@ -1,7 +1,7 @@
 import { Plugin } from 'rollup';
 import { createConfig } from '../src/api/tools/create-config';
 
-describe('createConfig private method', () => {
+describe('"createConfig" function', () => {
 
   test('Should create config', () => {
 

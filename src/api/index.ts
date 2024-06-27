@@ -4,3 +4,4 @@ export { default as configsFromPkg } from './configs-from-pkg';
 export { readPkg } from './package/read-pkg';
 export * from './types/pkg-json';
 export * from './types/types';
+export * from './types/deprecated-options';
