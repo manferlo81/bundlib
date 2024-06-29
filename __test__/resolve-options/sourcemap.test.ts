@@ -1,6 +1,13 @@
 import { resolveSourcemapOption } from '../../src/api/options/sourcemap';
+import { MODULE_BUILD_KEYS } from '../../src/api/selective/consts';
+import { BuildType } from '../../src/api/types/bundlib-options';
+import { GetSelectiveResultValue, createSelectiveResult, isApiKey } from '../tools/selective-tools';
 
-describe('"sourcemap" option', () => {
+describe('resolve "sourcemap" option', () => {
+
+  const createResult = <V>(getValue: GetSelectiveResultValue<BuildType, V>) => {
+    return createSelectiveResult<BuildType, V>(MODULE_BUILD_KEYS, getValue);
+  };
 
   test('Should throw on invalid "sourcemap" option', () => {
 
@@ -25,39 +32,30 @@ describe('"sourcemap" option', () => {
   });
 
   test('Should resolve null or undefined "sourcemap" option', () => {
-
+    const expected = createResult(() => true);
     [null, undefined].forEach((value) => {
-      expect(resolveSourcemapOption(value)).toEqual({
-        main: true,
-        module: true,
-        browser: true,
-        bin: true,
-      });
+      expect(resolveSourcemapOption(value)).toEqual(expected);
     });
-
   });
 
   test('Should resolve specific "sourcemap" option', () => {
-
     [true, false, 'inline' as const, 'hidden' as const].forEach((value) => {
-      expect(resolveSourcemapOption(value)).toEqual({
-        main: value,
-        module: value,
-        browser: value,
-        bin: value,
-      });
+      const expected = createResult(() => value);
+      expect(resolveSourcemapOption(value)).toEqual(expected);
     });
-
   });
 
   test('Should resolve build type as "sourcemap" option', () => {
 
     const values = [
-      { value: 'main' as const, expected: { main: true, module: false, browser: false, bin: false } },
-      { value: 'module' as const, expected: { main: false, module: true, browser: false, bin: false } },
-      { value: 'browser' as const, expected: { main: false, module: false, browser: true, bin: false } },
-      { value: 'bin' as const, expected: { main: false, module: false, browser: false, bin: true } },
-      { value: 'api' as const, expected: { main: true, module: true, browser: true, bin: false } },
+      ...MODULE_BUILD_KEYS.map((value) => ({
+        value,
+        expected: createResult((key) => key === value),
+      })),
+      {
+        value: 'api' as const,
+        expected: createResult(isApiKey),
+      },
     ];
 
     values.forEach(({ value, expected }) => {
@@ -69,8 +67,31 @@ describe('"sourcemap" option', () => {
   test('Should resolve array of build type as "sourcemap" option', () => {
 
     const values = [
-      { value: ['main', 'bin'] as ['main', 'bin'], expected: { main: true, module: false, browser: false, bin: true } },
-      { value: ['api'] as ['api'], expected: { main: true, module: true, browser: true, bin: false } },
+      ...MODULE_BUILD_KEYS.map((value) => ({
+        value: [value],
+        expected: createResult((key) => key === value),
+      })),
+      {
+        value: ['api'] as ['api'],
+        expected: {
+          main: true, module: true, browser: true, bin: false,
+        },
+      },
+      ...MODULE_BUILD_KEYS.map((value, i) => {
+        const next = MODULE_BUILD_KEYS[(i + 1) % MODULE_BUILD_KEYS.length];
+        const array = [value, next];
+        return {
+          value: array,
+          expected: createResult((key) => array.includes(key)),
+        };
+      }),
+      ...MODULE_BUILD_KEYS.map((value) => {
+        const array = ['api' as const, value];
+        return {
+          value: array,
+          expected: createResult((key) => isApiKey(key) || key === value),
+        };
+      }),
     ];
 
     values.forEach(({ value: array, expected }) => {

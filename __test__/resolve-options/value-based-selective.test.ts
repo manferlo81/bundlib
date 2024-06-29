@@ -3,13 +3,15 @@ import { invalidOptionMessage } from '../../src/api/errors/error-messages';
 import { API_SPECIAL_KEYS, MODULE_BUILD_KEYS } from '../../src/api/selective/consts';
 import { resolveValueBasedSelectiveOption } from '../../src/api/selective/object-based';
 import { isString } from '../../src/api/type-check/basic';
+import { BuildType } from '../../src/api/types/bundlib-options';
+import { GetSelectiveResultValue, createSelectiveResult, isApiKey } from '../tools/selective-tools';
 
-describe('value based selective option', () => {
+describe('resolve value based selective option', () => {
 
   const optionName = 'option';
   const urlHash = 'hash';
 
-  const resolve = (value: unknown) => {
+  const resolveValueBased = (value: unknown) => {
     return resolveValueBasedSelectiveOption(
       value,
       MODULE_BUILD_KEYS,
@@ -19,6 +21,10 @@ describe('value based selective option', () => {
       optionName,
       urlHash,
     );
+  };
+
+  const createResult = <V>(getValue: GetSelectiveResultValue<BuildType, V>) => {
+    return createSelectiveResult<BuildType, V>(MODULE_BUILD_KEYS, getValue);
   };
 
   test('Should throw on invalid value', () => {
@@ -40,7 +46,7 @@ describe('value based selective option', () => {
     ];
 
     invalidValues.forEach((invalid) => {
-      expect(() => resolve(invalid)).toThrow(
+      expect(() => resolveValueBased(invalid)).toThrow(
         error(invalidOptionMessage(optionName, urlHash)),
       );
     });
@@ -48,29 +54,21 @@ describe('value based selective option', () => {
   });
 
   test('Should resolve null or undefined value', () => {
+    const expected = createResult(() => null);
     [null, undefined].forEach((value) => {
-
-      expect(resolve(value)).toEqual({
-        main: null,
-        module: null,
-        browser: null,
-        bin: null,
-      });
-
+      expect(resolveValueBased(value)).toEqual(expected);
     });
   });
 
   test('Should resolve string value', () => {
-
-    const value = 'filename.js';
-
-    expect(resolve(value)).toEqual({
-      main: value,
-      module: value,
-      browser: value,
-      bin: value,
+    const values = [
+      '',
+      'filename.js',
+    ];
+    values.map((value) => {
+      const expected = createResult(() => value);
+      expect(resolveValueBased(value)).toEqual(expected);
     });
-
   });
 
   test('Should resolve object value', () => {
@@ -89,29 +87,30 @@ describe('value based selective option', () => {
         expected: {},
       },
       {
+        value: { default: '' },
+        expected: createResult(() => ''),
+      },
+      {
         value: { default: 'default.js' },
-        expected: { main: 'default.js', module: 'default.js', browser: 'default.js', bin: 'default.js' },
+        expected: createResult(() => 'default.js'),
       },
       {
         value: { default: 'default.js', api: 'api.js' },
-        expected: { main: 'api.js', module: 'api.js', browser: 'api.js', bin: 'default.js' },
+        expected: createResult((key) => isApiKey(key) ? 'api.js' : 'default.js'),
       },
       {
         value: { default: 'default.js', module: 'module.js' },
-        expected: { main: 'default.js', module: 'module.js', browser: 'default.js', bin: 'default.js' },
+        expected: createResult((key) => key === 'module' ? 'module.js' : 'default.js'),
       },
       {
         value: { main: 'main.js', module: null, browser: undefined },
-        expected: { main: 'main.js' },
+        expected: createSelectiveResult(['main' as const], () => 'main.js'),
       },
     ];
 
     values.forEach(({ value, expected }) => {
-      expect(resolve(value)).toEqual({
-        main: null,
-        module: null,
-        browser: null,
-        bin: null,
+      expect(resolveValueBased(value)).toEqual({
+        ...createResult(() => null),
         ...expected,
       });
     });

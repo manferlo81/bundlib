@@ -5,13 +5,13 @@ import { isString } from '../type-check/basic';
 import type { BuildType, SelectiveStringOption } from '../types/bundlib-options';
 import type { AllowNull } from '../types/helper-types';
 
-export const resolveInputOption = (value: SelectiveStringOption): SelectiveResolved<BuildType, AllowNull<string>> => (
-  resolveValueBasedSelectiveOption<BuildType, string, null>(
+export const resolveInputOption = (value: SelectiveStringOption): SelectiveResolved<BuildType, AllowNull<string>> => {
+  return resolveValueBasedSelectiveOption<BuildType, string, null>(
     value,
     MODULE_BUILD_KEYS,
     API_SPECIAL_KEYS,
     isString,
     null,
     'input',
-  )
-);
+  );
+};

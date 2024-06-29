@@ -29,27 +29,4 @@ export function resolveBoolBasedSelectiveOption<K extends string, V, D = V>(
     throw error(invalidOptionMessage(optionName, urlHash));
   }
 
-  // return (
-  //   resolveValid<K, V, D>(
-  //     value,
-  //     allKeys,
-  //     isValidValue,
-  //     defaultValue,
-  //   ) ||
-  //   resolveStrings<K>(
-  //     value,
-  //     allKeys,
-  //     isBuildType,
-  //     invalid,
-  //   ) ||
-  //   resolveObject<K, V, D>(
-  //     value,
-  //     allKeys,
-  //     isBuildType,
-  //     isValidValue,
-  //     defaultValue,
-  //     invalid,
-  //   )
-  // );
-
 }

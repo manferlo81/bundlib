@@ -1,6 +1,13 @@
 import { resolveSkipOption } from '../../src/api/options/skip';
+import { ALL_BUILD_KEYS } from '../../src/api/selective/consts';
+import { SelectiveSkipBuildType } from '../../src/api/types/bundlib-options';
+import { GetSelectiveResultValue, createSelectiveResult, isApiKey } from '../tools/selective-tools';
 
-describe('"skip" option', () => {
+describe('resolve "skip" option', () => {
+
+  const createResult = <V>(getValue: GetSelectiveResultValue<SelectiveSkipBuildType, V>) => {
+    return createSelectiveResult<SelectiveSkipBuildType, V>(ALL_BUILD_KEYS, getValue);
+  };
 
   test('Should throw on invalid "skip" option', () => {
 
@@ -26,49 +33,34 @@ describe('"skip" option', () => {
   });
 
   test('Should resolve null or undefined "skip" option', () => {
+    const expected = createResult(() => false);
     [null, undefined].forEach((value) => {
-      expect(resolveSkipOption(value)).toEqual({
-        main: false,
-        module: false,
-        browser: false,
-        bin: false,
-        types: false,
-      });
+      expect(resolveSkipOption(value)).toEqual(expected);
     });
   });
 
   test('Should resolve boolean "skip" option', () => {
     [true, false].forEach((value) => {
-      expect(resolveSkipOption(value)).toEqual({
-        main: value,
-        module: value,
-        browser: value,
-        bin: value,
-        types: value,
-      });
+      const expected = createResult(() => value);
+      expect(resolveSkipOption(value)).toEqual(expected);
     });
   });
 
   test('Should resolve build type "skip" option', () => {
 
     const values = [
-      { value: 'main' as const, expected: { main: true } },
-      { value: 'module' as const, expected: { module: true } },
-      { value: 'browser' as const, expected: { browser: true } },
-      { value: 'bin' as const, expected: { bin: true } },
-      { value: 'types' as const, expected: { types: true } },
-      { value: 'api' as const, expected: { main: true, module: true, browser: true } },
+      ...ALL_BUILD_KEYS.map((value) => ({
+        value,
+        expected: createResult((key) => key === value),
+      })),
+      {
+        value: 'api' as const,
+        expected: createResult(isApiKey),
+      },
     ];
 
     values.forEach(({ value, expected }) => {
-      expect(resolveSkipOption(value)).toEqual({
-        main: false,
-        module: false,
-        browser: false,
-        bin: false,
-        types: false,
-        ...expected,
-      });
+      expect(resolveSkipOption(value)).toEqual(expected);
     });
 
   });
@@ -76,25 +68,26 @@ describe('"skip" option', () => {
   test('Should resolve array of build type as "skip" option', () => {
 
     const values = [
-      { value: ['main'] as ['main'], expected: { main: true } },
-      { value: ['module'] as ['module'], expected: { module: true } },
-      { value: ['browser'] as ['browser'], expected: { browser: true } },
-      { value: ['bin'] as ['bin'], expected: { bin: true } },
-      { value: ['types'] as ['types'], expected: { types: true } },
-      { value: ['api'] as ['api'], expected: { main: true, module: true, browser: true } },
-      { value: ['main', 'bin'] as ['main', 'bin'], expected: { main: true, bin: true } },
-      { value: ['api', 'types'] as ['api', 'types'], expected: { main: true, module: true, browser: true, types: true } },
+      ...ALL_BUILD_KEYS.map((value) => ({
+        value: [value],
+        expected: createResult((key) => key === value),
+      })),
+      {
+        value: ['api'] as ['api'],
+        expected: createResult(isApiKey),
+      },
+      {
+        value: ['main', 'bin'] as ['main', 'bin'],
+        expected: createResult((key) => ['main', 'bin'].includes(key)),
+      },
+      {
+        value: ['api', 'types'] as ['api', 'types'],
+        expected: createResult((key) => isApiKey(key) || key === 'types'),
+      },
     ];
 
     values.forEach(({ value: array, expected }) => {
-      expect(resolveSkipOption(array)).toEqual({
-        main: false,
-        module: false,
-        browser: false,
-        bin: false,
-        types: false,
-        ...expected,
-      });
+      expect(resolveSkipOption(array)).toEqual(expected);
     });
 
   });
@@ -104,51 +97,44 @@ describe('"skip" option', () => {
     const values = [
       {
         value: {},
-        expected: {},
+        expected: createResult(() => false),
       },
       {
         value: { default: false },
-        expected: {},
+        expected: createResult(() => false),
       },
       {
         value: { default: true },
-        expected: { main: true, module: true, browser: true, bin: true, types: true },
+        expected: createResult(() => true),
       },
       {
         value: { default: false, main: true },
-        expected: { main: true },
+        expected: createResult((key) => key === 'main'),
       },
       {
         value: { default: true, module: false },
-        expected: { main: true, browser: true, bin: true, types: true },
+        expected: createResult((key) => key !== 'module'),
       },
       {
         value: { default: false, api: true, browser: false },
-        expected: { main: true, module: true },
+        expected: createResult((key) => isApiKey(key) && key !== 'browser'),
       },
       {
         value: { api: true, browser: false },
-        expected: { main: true, module: true },
+        expected: createResult((key) => ['main', 'module'].includes(key)),
       },
       {
         value: { main: false, module: null, browser: undefined },
-        expected: {},
+        expected: createResult(() => false),
       },
       {
         value: { main: true, module: null, bin: undefined },
-        expected: { main: true },
+        expected: createResult((key) => key === 'main'),
       },
     ];
 
     values.forEach(({ value, expected }) => {
-      expect(resolveSkipOption(value)).toEqual({
-        main: false,
-        module: false,
-        browser: false,
-        bin: false,
-        types: false,
-        ...expected,
-      });
+      expect(resolveSkipOption(value)).toEqual(expected);
     });
 
   });
