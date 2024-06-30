@@ -6,21 +6,16 @@ import { RollupError, RollupWarning } from 'rollup';
 import slash from 'slash';
 import { readPkg } from '../api';
 import { bundlib } from './bundlib';
-import { log, logError } from './tools/console';
 import { EVENT_BUILD_END, EVENT_END, EVENT_ERROR, EVENT_REBUILD, EVENT_WARN } from './consts';
+import { formatProjectInfo, tag } from './format';
+import { bold, cyan, green, yellow } from './tools/colors';
+import { log, logError } from './tools/console';
 import { BundlibEventEmitter } from './types/types';
-import { bold, cyan, inverse, yellow } from './tools/colors';
 
 // const { bold, inverse, cyan, yellow } = chalk;
 const greenBold = bold.green;
 const yellowBold = bold.yellow;
 const magentaBold = bold.magenta;
-
-function formatProjectInfo(name: string, ver: string) {
-  const projName = greenBold(name);
-  const projVer = yellowBold(`v${ver}`);
-  return `${projName} ${projVer}`;
-}
 
 export async function action(
   displayName: string,
@@ -67,22 +62,22 @@ export async function action(
     });
 
     emitter.on(EVENT_BUILD_END, (filename: string, size: number, duration: number) => {
-      const tag = inverse.green.bold(' built ');
+      const tag_ = tag(green.bold, 'built');
       const path = yellowBold(`./${slash(relative(cwd, filename))}`);
       const coloredSize = magentaBold(formatFileSize(size));
       const coloredDuration = magentaBold(prettyMs(duration, { secondsDecimalDigits: 2 }));
       const info = cyan(`( ${coloredSize} in ${coloredDuration} )`);
-      log(`${tag} ${path} ${info}`);
+      log(`${tag_} ${path} ${info}`);
     });
 
     emitter.on(EVENT_WARN, (warning: RollupWarning) => {
 
       const { plugin, message } = warning;
 
-      const tag = inverse.yellow(' warning! ');
+      const tag_ = tag(yellow, 'warning!');
       const pluginInfo = cyan(`( plugin: ${greenBold(plugin || '<UNKNOWN>')} )`);
 
-      log(`${tag} ${pluginInfo} ${yellow(message)}`);
+      log(`${tag_} ${pluginInfo} ${yellow(message)}`);
 
     });
 

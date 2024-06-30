@@ -1,12 +1,8 @@
-import chalk, { type Chalk as OriginalChalk } from 'chalk';
+import { default as chalk } from 'chalk';
 
 // ENABLE COLORS ON GIT BASH FOR WINDOWS
-if (!chalk.level && 'MINGW_CHOST' in process.env) {
+if (!chalk.level) {
   chalk.level = 1;
 }
 
-export type Chalk = OriginalChalk;
-
-export const { bold, inverse } = chalk;
-export const { red, green, blue, cyan, magenta, yellow } = chalk;
-export const { redBright, greenBright, blueBright, cyanBright, magentaBright, yellowBright } = chalk;
+export { black, blackBright, blue, blueBright, bold, cyan, cyanBright, green, greenBright, inverse, magenta, magentaBright, red, redBright, white, whiteBright, yellow, yellowBright, type Chalk } from 'chalk';

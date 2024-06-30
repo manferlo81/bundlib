@@ -1,17 +1,12 @@
 import { RollupError } from 'rollup';
+import { tag } from '../format';
 import { red } from './colors';
 
-function create(name: 'log' | 'error') {
-  const method = console[name];
-  return (msg: string) => method(msg);
-}
-
-export const log = create('log');
-export const error = create('error');
+export const { log, error } = console as unknown as Record<string, (msg: string) => void>;
 
 export function logError(err: Error | RollupError): void {
-  const tag = red.inverse.bold(' error ');
-  error(`${tag} ${red(err.message || err)}
+  const tag_ = tag(red.bold, 'error');
+  error(`${tag_} ${red(err.message || err)}
 `);
   if (err.stack) {
     error(`${err.stack}
