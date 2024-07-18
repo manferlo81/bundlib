@@ -2,6 +2,8 @@
 export { analyzePkg as analizePkg, analyzePkg } from './analyze/analyze';
 export { default as configsFromPkg } from './configs-from-pkg';
 export { readPkg } from './package/read-pkg';
+export * from './types/bundlib-options';
+export * from './types/deprecated-options';
+export * from './types/pkg-analyzed';
 export * from './types/pkg-json';
 export * from './types/types';
-export * from './types/deprecated-options';

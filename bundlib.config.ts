@@ -1,4 +1,4 @@
-import { BundlibConfig } from './src/api/types/bundlib-options';
+import { BundlibConfig } from './src/api';
 
 const config: BundlibConfig = {
   input: {
