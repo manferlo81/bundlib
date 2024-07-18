@@ -2,10 +2,9 @@ import { keysCheck } from '../../src/api/type-check/keys';
 
 describe('keysCheck function', () => {
 
-  const isPizza = (value: unknown): value is 'pizza' => value === 'pizza';
-  const isTea = (value: unknown): value is 'tea' => value === 'tea';
-
-  const check = (obj: Record<string, unknown>) => keysCheck(obj, isPizza, isTea);
+  const check = (obj: Record<string, unknown>) => keysCheck(obj, (key): key is ('pizza' | 'tea') => {
+    return key === 'pizza' || key === 'tea';
+  });
 
   test('Should return true if all keys match at least one of the checks', () => {
     expect(check({})).toBe(true);

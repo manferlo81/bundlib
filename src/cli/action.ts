@@ -10,15 +10,14 @@ import { EVENT_BUILD_END, EVENT_END, EVENT_ERROR, EVENT_REBUILD, EVENT_WARN } fr
 import { formatProjectInfo, tag } from './format';
 import { cyan, green, magenta, yellow } from './tools/colors';
 import { log, logError } from './tools/console';
-import { BundlibEventEmitter } from './types/types';
+import type { BundlibEventEmitter } from './types/types';
 
 const greenBold = green.bold;
-const yellowBold = yellow.bold;
 const magentaBold = magenta.bold;
 
 export async function action(
-  displayName: string,
-  version: string,
+  bundlibName: string,
+  bundlibVersion: string,
   dev: boolean,
   watch: boolean,
   silent: boolean,
@@ -28,8 +27,7 @@ export async function action(
   const pkg = await readPkg(cwd);
 
   if (!silent) {
-
-    log(`${formatProjectInfo(displayName, version)}
+    log(`${formatProjectInfo(bundlibName, bundlibVersion)}
 `);
 
     // TODO: Show detected modules & plugins with versions
@@ -49,7 +47,7 @@ export async function action(
     process.exit(1);
   };
 
-  const emitter: BundlibEventEmitter = new EventEmitter();
+  const emitter = new EventEmitter() as BundlibEventEmitter;
   emitter.on(EVENT_ERROR, showError);
 
   if (!silent) {
@@ -68,8 +66,8 @@ export async function action(
     });
 
     emitter.on(EVENT_BUILD_END, (filename: string, size: number, duration: number) => {
-      const tag_ = tag(green.bold, 'built');
-      const path = yellowBold(`./${slash(relative(cwd, filename))}`);
+      const tag_ = tag(greenBold, 'built');
+      const path = yellow.bold(`./${slash(relative(cwd, filename))}`);
       const coloredSize = magentaBold(formatFileSize(size));
       const coloredDuration = magentaBold(prettyMs(duration, { secondsDecimalDigits: 2 }));
       const info = cyan(`( ${coloredSize} in ${coloredDuration} )`);

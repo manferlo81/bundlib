@@ -1,8 +1,8 @@
 import { cosmiconfig } from 'cosmiconfig';
 import { resolve } from 'path';
 import { CONFIG_FILE_SEARCH_PLACES, PRODUCT_NAME } from '../consts/consts';
-import { AllowNullish } from '../types/helper-types';
-import { BundlibCosmiconfigResult } from './load-config-types';
+import type { AllowNullish } from '../types/helper-types';
+import type { BundlibCosmiconfigResult } from './load-config-types';
 
 export async function loadConfig(cwd: string, path: AllowNullish<string>): Promise<BundlibCosmiconfigResult> {
 

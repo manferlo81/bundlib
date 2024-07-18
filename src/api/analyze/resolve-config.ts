@@ -4,7 +4,7 @@ import { isStringOrNullish } from '../type-check/advanced';
 import { isDictionary } from '../type-check/basic';
 import type { BundlibConfig } from '../types/bundlib-options';
 import type { AllowNullish } from '../types/helper-types';
-import { loadConfig } from './load-config';
+import { loadConfig } from '../config-file/load-config';
 
 export async function resolveConfig(cwd: string, pkgBundlibConfig: AllowNullish<BundlibConfig | string>): Promise<BundlibConfig> {
 

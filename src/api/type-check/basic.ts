@@ -1,6 +1,6 @@
-import type { Dictionary } from '../types/helper-types';
+import type { Anything, Dictionary, Nullish } from '../types/helper-types';
 
-export function isNull(value: unknown): value is null | undefined {
+export function isNull(value: unknown): value is Nullish {
   return value == null;
 }
 
@@ -19,12 +19,11 @@ export function isBool(value: unknown): value is boolean {
 type ArrayIsArray = {
   <T extends unknown[]>(value: unknown): value is T;
   <T extends readonly unknown[]>(value: unknown): value is T;
-  <T = unknown>(value: unknown): value is T[];
+  <T>(value: unknown): value is T[];
 };
 
 export const isArray: ArrayIsArray = Array.isArray;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isDictionary<T extends Dictionary<any> = Dictionary<unknown>>(value: unknown): value is T {
+export function isDictionary<T extends Dictionary<Anything> = Dictionary<unknown>>(value: unknown): value is T {
   return isObject(value) && !isArray(value);
 }
