@@ -11,15 +11,16 @@
     "rollup"
   ],
   "type": "commonjs",
-  "main": "./dist/bundlib.cjs",
-  "module": "./dist/bundlib.mjs",
   "exports": {
     "types": "./dist/types/index.d.ts",
-    "import": "./dist/bundlib.mjs",
-    "require": "./dist/bundlib.cjs",
-    "node": "./dist/bundlib.cjs",
-    "default": "./dist/bundlib.cjs"
+    "import": "./dist/esm/bundlib.mjs",
+    "require": "./dist/commonjs/bundlib.cjs",
+    "node": "./dist/commonjs/bundlib.cjs",
+    "default": "./dist/commonjs/bundlib.cjs"
   },
+  "main": "./dist/commonjs/bundlib.cjs",
+  "module": "./dist/esm/bundlib.mjs",
+  "jsnext:main": "./dist/esm/bundlib.mjs",
   "bin": "./bin/bundlib.cjs",
   "types": "./dist/types/index.d.ts",
   "typings": "./dist/types/index.d.ts",
