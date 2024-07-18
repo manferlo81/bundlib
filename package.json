@@ -14,7 +14,10 @@
   "main": "./dist/bundlib.cjs",
   "module": "./dist/bundlib.mjs",
   "exports": {
+    "types": "./dist/types/index.d.ts",
     "import": "./dist/bundlib.mjs",
+    "require": "./dist/bundlib.cjs",
+    "node": "./dist/bundlib.cjs",
     "default": "./dist/bundlib.cjs"
   },
   "bin": "./bin/bundlib.cjs",
