@@ -7,31 +7,32 @@ type PkgJsonExportsValue = string | PkgJsonExportsObject;
 export type PkgJsonExportsPaths = Dictionary<PkgJsonExportsValue>;
 
 interface PkgJsonExportsObject {
-  import: PkgJsonExportsValue;
-  require: PkgJsonExportsValue;
-  node: PkgJsonExportsValue;
-  default: PkgJsonExportsValue;
+  readonly node?: PkgJsonExportsValue;
+  readonly import?: PkgJsonExportsValue;
+  readonly require?: PkgJsonExportsValue;
+  readonly types?: PkgJsonExportsValue;
+  readonly default?: PkgJsonExportsValue;
 }
 
-type PkgJsonExports = PkgJsonExportsValue | PkgJsonExportsPaths;
+type PkgJsonExports = PkgJsonExportsPaths | PkgJsonExportsObject;
 
-type PkgJsonDependencies = Dictionary<string>;
+type PkgJsonDependencies = Readonly<Dictionary<string>>;
 
 export interface BundlibPkgJson {
-  name?: string;
-  displayName?: string;
-  version?: string;
-  type?: PkgJsonModuleType;
-  exports?: PkgJsonExports;
-  main?: string;
-  module?: string;
-  'jsnext:main'?: string;
-  browser?: string;
-  bin?: string;
-  types?: string;
-  typings?: string;
-  dependencies?: PkgJsonDependencies;
-  devDependencies?: PkgJsonDependencies;
-  peerDependencies?: PkgJsonDependencies;
-  bundlib?: BundlibConfig | string;
+  readonly name?: string;
+  readonly displayName?: string;
+  readonly version?: string;
+  readonly type?: PkgJsonModuleType;
+  readonly exports?: PkgJsonExports;
+  readonly main?: string;
+  readonly module?: string;
+  readonly 'jsnext:main'?: string;
+  readonly browser?: string;
+  readonly bin?: string;
+  readonly types?: string;
+  readonly typings?: string;
+  readonly dependencies?: PkgJsonDependencies;
+  readonly devDependencies?: PkgJsonDependencies;
+  readonly peerDependencies?: PkgJsonDependencies;
+  readonly bundlib?: BundlibConfig | string;
 }
