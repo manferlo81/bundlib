@@ -1,7 +1,7 @@
-import { Chalk, bold } from './tools/colors';
+import { Chalk, green, yellow } from './tools/colors';
 
-const greenBold = bold.green;
-const yellowBold = bold.yellow;
+const greenBold = green.bold;
+const yellowBold = yellow.bold;
 
 export function formatProjectInfo(name: string, ver: string) {
   const projName = greenBold(name);

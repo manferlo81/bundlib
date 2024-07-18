@@ -8,14 +8,13 @@ import { readPkg } from '../api';
 import { bundlib } from './bundlib';
 import { EVENT_BUILD_END, EVENT_END, EVENT_ERROR, EVENT_REBUILD, EVENT_WARN } from './consts';
 import { formatProjectInfo, tag } from './format';
-import { bold, cyan, green, yellow } from './tools/colors';
+import { cyan, green, magenta, yellow } from './tools/colors';
 import { log, logError } from './tools/console';
 import { BundlibEventEmitter } from './types/types';
 
-// const { bold, inverse, cyan, yellow } = chalk;
-const greenBold = bold.green;
-const yellowBold = bold.yellow;
-const magentaBold = bold.magenta;
+const greenBold = green.bold;
+const yellowBold = yellow.bold;
+const magentaBold = magenta.bold;
 
 export async function action(
   displayName: string,
@@ -58,7 +57,14 @@ export async function action(
     const formatFileSize = createFormatter({
       unit: 'B',
       round: 2,
-      find: 1024,
+      find: {
+        base: 1024,
+        find: [
+          { pre: '', exp: 0 },
+          { pre: 'K', exp: 1 },
+          { pre: 'M', exp: 2 },
+        ],
+      },
     });
 
     emitter.on(EVENT_BUILD_END, (filename: string, size: number, duration: number) => {
