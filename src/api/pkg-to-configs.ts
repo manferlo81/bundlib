@@ -226,7 +226,7 @@ export function pkgToConfigs(
       exports: 'auto',
     };
 
-    commonjsChunks = { ...chunks, [inputFile]: outputFile };
+    commonjsChunks = { ...chunks, [inputFile]: cwd };
 
     configs.push(
       createConfig({
