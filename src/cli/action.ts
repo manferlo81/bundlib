@@ -2,7 +2,7 @@ import { EventEmitter } from 'events';
 import { createFormatter } from 'gen-unit';
 import { relative } from 'path';
 import prettyMs from 'pretty-ms';
-import { RollupError, RollupWarning } from 'rollup';
+import { RollupError, RollupLog as RollupWarning } from 'rollup';
 import slash from 'slash';
 import { readPkg } from '../api';
 import { bundlib } from './bundlib';

@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { RollupError, RollupWarning } from 'rollup';
+import { RollupError, RollupLog as RollupWarning } from 'rollup';
 
 export interface BundlibEventEmitter extends EventEmitter {
   on(event: 'start', listener: () => void): this;

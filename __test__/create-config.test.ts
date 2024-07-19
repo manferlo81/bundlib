@@ -11,7 +11,7 @@ describe('"createConfig" function', () => {
       format: 'cjs' as const,
       sourcemap: 'inline' as const,
       esModule: true,
-      interop: true,
+      interop: 'compat' as const,
     };
     const isExternal = () => false;
     const plugins: Plugin[] = [];
@@ -47,7 +47,7 @@ describe('"createConfig" function', () => {
       format: 'cjs' as const,
       sourcemap: 'inline' as const,
       esModule: true,
-      interop: true,
+      interop: 'compat' as const,
     };
     const isExternal = () => false;
     const plugins: Plugin[] = [];
@@ -85,7 +85,7 @@ describe('"createConfig" function', () => {
       format: 'cjs' as const,
       sourcemap: 'inline' as const,
       esModule: true,
-      interop: true,
+      interop: 'compat' as const,
     };
     const isExternal = () => false;
     const plugins: Plugin[] = [];

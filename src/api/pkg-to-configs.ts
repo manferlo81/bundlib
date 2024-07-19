@@ -27,7 +27,7 @@ import { keys } from './tools/helpers';
 import { renamePre } from './tools/rename-pre';
 import type { Dictionary, AllowNullish, TypeCheckFunction } from './types/helper-types';
 import type { PkgAnalyzed } from './types/pkg-analyzed';
-import type { BundlibAPIOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types/types';
+import type { BundlibAPIOptions, BundlibRollupBrowseOutputOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types/types';
 
 export function pkgToConfigs(
   analyzed: PkgAnalyzed,
@@ -209,7 +209,7 @@ export function pkgToConfigs(
 
   if (commonjsBuild) {
 
-    const { input, output, sourcemap, esModule, interop, min, project } = commonjsBuild;
+    const { input, output, sourcemap, esModule, interop: interopBool, min, project } = commonjsBuild;
     const inputFile = resolveInput(input);
 
     if (!inputFile) {
@@ -217,6 +217,8 @@ export function pkgToConfigs(
     }
 
     const outputFile = resolve(cwd, output);
+    const interop = interopBool ? 'compat' : 'default';
+
     const outputOptions: BundlibRollupModuleOutputOptions = {
       file: outputFile,
       format: 'cjs',
@@ -310,7 +312,7 @@ export function pkgToConfigs(
 
   if (moduleBuild) {
 
-    const { input, output, sourcemap, esModule, interop, min, project } = moduleBuild;
+    const { input, output, sourcemap, esModule, interop: interopBool, min, project } = moduleBuild;
     const inputFile = resolveInput(input);
 
     if (!inputFile) {
@@ -318,6 +320,8 @@ export function pkgToConfigs(
     }
 
     const outputFile = resolve(cwd, output);
+    const interop = interopBool ? 'compat' : 'default';
+
     const outputOptions: BundlibRollupModuleOutputOptions = {
       file: outputFile,
       format: 'es',
@@ -377,7 +381,7 @@ export function pkgToConfigs(
 
   if (browserBuild) {
 
-    const { input, output, sourcemap, esModule, interop, format, name, extend, id, globals, min, project } = browserBuild;
+    const { input, output, sourcemap, esModule, interop: interopBool, format, name, extend, id, globals: inputGlobals, min, project } = browserBuild;
     const browserInputFile = resolveInput(input);
 
     if (!browserInputFile) {
@@ -385,28 +389,31 @@ export function pkgToConfigs(
     }
 
     const browserOutputFile = resolve(cwd, output);
-    const outputOptions: BundlibRollupModuleOutputOptions = {
+    const interop = interopBool ? 'compat' : 'default';
+    const globals = inputGlobals ?? {};
+
+    let outputOptions: BundlibRollupBrowseOutputOptions = {
       file: browserOutputFile,
       format,
       sourcemap,
       esModule,
       interop,
       extend,
-      globals: globals || {},
+      globals,
     };
 
     if (format === 'iife' || format === 'umd') {
       if (!name) {
         throw error('option "name" is required for IIFE and UMD builds');
       }
-      outputOptions.name = name;
+      outputOptions = { ...outputOptions, name };
     }
 
     if (id && (format === 'amd' || format === 'umd')) {
-      outputOptions.amd = { id };
+      outputOptions = { ...outputOptions, amd: { id } };
     }
 
-    const isBrowserExternal = createIsExternal(globals ? keys(globals) : null);
+    const isBrowserExternal = createIsExternal(inputGlobals ? keys(inputGlobals) : null);
 
     configs.push(
       createConfig({
@@ -459,7 +466,7 @@ export function pkgToConfigs(
 
   if (binaryBuild) {
 
-    const { input, output, sourcemap, esModule, interop, min, project } = binaryBuild;
+    const { input, output, sourcemap, esModule, interop: interopBool, min, project } = binaryBuild;
     const inputFile = resolveInput(input);
 
     if (!inputFile) {
@@ -467,6 +474,8 @@ export function pkgToConfigs(
     }
 
     const outputFile = resolve(cwd, output);
+    const interop = interopBool ? 'compat' : 'default';
+
     const outputOptions: BundlibRollupModuleOutputOptions = {
       file: outputFile,
       format: 'cjs',

@@ -35,6 +35,7 @@ describe('shebang plugins', () => {
       transformed as string,
       { fileName: 'binary.js' } as never,
       { dir: cwd, file: resolve(cwd, 'binary.js'), sourcemap: false } as never,
+      {} as never,
     );
     expect(output).toMatch(shebang);
     expect(output).toMatch(code);
