@@ -4,28 +4,13 @@ orbs:
   codecov: codecov/codecov@1.2.3
 
 executors:
-  exec_node_20:
+  executor_node:
     docker:
-      - image: cimg/node:20.15.1
+      - image: cimg/node:22.3.0
     working_directory: ~/bundlib
 
 commands:
-  cmd_checkout_cache_and_install:
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v8-deps-bundlib-{{ checksum "package-lock.json" }}
-            - v8-deps-bundlib-
-      - run:
-          name: Install dependencies
-          command: npm install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v8-deps-bundlib-{{ checksum "package-lock.json" }}
-
-  cmd_npm_publish:
+  npm_publish:
     steps:
       - run:
           name: Login to npm
@@ -35,61 +20,69 @@ commands:
           command: npm publish
 
 jobs:
-  job_test_and_build:
-    executor: exec_node_20
+  test_and_build:
+    executor: executor_node
     steps:
-      - cmd_checkout_cache_and_install
+      - checkout
+      - restore_cache:
+          keys:
+            - v7-deps-bundlib-{{ checksum "package.json" }}
+            - v7-deps-bundlib-
+      - run:
+          name: Install dependencies
+          command: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v7-deps-bundlib-{{ checksum "package.json" }}
       - run:
           name: Test
           command: npm test
       - run:
           name: Build
           command: npm run build
-      - store_artifacts:
-          path: dist
       - persist_to_workspace:
           root: ~/bundlib
-          paths:
-            - .
+          paths: .
 
-  job_upload_coverage:
-    description: Upload coverage to Codecov
-    executor: exec_node_20
+  upload_coverage:
+    executor: executor_node
     steps:
       - attach_workspace:
           at: ~/bundlib
       - codecov/upload:
           file: coverage/*.json
 
-  job_publish_to_npm:
-    description: Publish package to npm
-    executor: exec_node_20
+  publish_to_npm:
+    executor: executor_node
     steps:
       - attach_workspace:
-          at: /
-      - cmd_npm_publish
+          at: ~/bundlib
+      - npm_publish
 
 workflows:
-  workflow_ci:
+  version: 2
+
+  workflow:
     jobs:
-      - job_test_and_build:
+      - test_and_build:
           filters:
             tags:
               only: /.*/
             branches:
               only: /.*/
 
-      - job_upload_coverage:
+      - upload_coverage:
           requires:
-            - job_test_and_build
+            - test_and_build
           filters:
             branches:
               only: /master/
 
-      - job_publish_to_npm:
+      - publish_to_npm:
           context: npm
           requires:
-            - job_test_and_build
+            - test_and_build
           filters:
             tags:
               only: /^v\d+\.\d+\.\d+$/
