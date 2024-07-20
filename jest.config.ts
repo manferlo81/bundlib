@@ -15,9 +15,8 @@ const config: JestConfig = {
   ],
   coverageDirectory: 'coverage',
   coverageReporters: [
-    process.env.CI ? 'json' : 'lcov',
+    process.env.CI ? 'json' : 'html',
     'text',
-    'text-summary',
   ],
 
   testMatch: [
