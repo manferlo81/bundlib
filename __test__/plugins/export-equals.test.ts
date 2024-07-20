@@ -25,6 +25,9 @@ describe(`${_pluginPkgName} plugin`, () => {
         bundlib: { ...bundlib, equals: false },
         [field]: 'output.js',
         types: 'index.d.ts',
+        devDependencies: {
+          typescript: '*',
+        },
       });
       expect(plugins).not.toContain(pluginName);
     });
@@ -35,6 +38,9 @@ describe(`${_pluginPkgName} plugin`, () => {
       const plugins = await mockGetPluginNames(cwd, {
         bundlib,
         [field]: 'output.js',
+        devDependencies: {
+          typescript: '*',
+        },
       });
       expect(plugins).not.toContain(pluginName);
     });
@@ -49,6 +55,9 @@ describe(`${_pluginPkgName} plugin`, () => {
         module: 'output.js',
         browser: 'output.js',
         types: 'index.d.ts',
+        devDependencies: {
+          typescript: '*',
+        },
       });
     });
 
@@ -62,6 +71,9 @@ describe(`${_pluginPkgName} plugin`, () => {
       bundlib,
       bin: 'output.js',
       types: 'index.d.ts',
+      devDependencies: {
+        typescript: '*',
+      },
     });
     expect(plugins).not.toContain(pluginName);
   });

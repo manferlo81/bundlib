@@ -25,9 +25,23 @@ describe('package to configs', () => {
       main: 'library.js',
       types: 'types/types.d.ts',
       bundlib: { input: 'src/index.ts' },
+      devDependencies: {
+        typescript: '*',
+      },
     });
 
     return expect(create).rejects.toThrow('Input filename and types filename have to match');
+
+  });
+
+  test('Should throw if input is typescript but typescript not installed', () => {
+
+    const create = () => createConfigs(cwd, false, {
+      main: 'library.js',
+      bundlib: { input: 'src/index.ts' },
+    });
+
+    return expect(create).rejects.toThrow('Can\'t use typescript input file if typescript is not installed');
 
   });
 
@@ -226,6 +240,9 @@ describe('package to configs', () => {
     const configs = await createConfigs(cwd, false, {
       bin: 'binary.js',
       bundlib: { input: 'src/index.ts' },
+      devDependencies: {
+        typescript: '*',
+      },
     });
 
     expect(configs).toHaveLength(1);
@@ -262,6 +279,7 @@ describe('package to configs', () => {
       },
       devDependencies: {
         'rollup-plugin-export-equals': '*',
+        typescript: '*',
       },
     });
 

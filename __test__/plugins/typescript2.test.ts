@@ -25,18 +25,8 @@ describe(`${_pluginPkgName} plugin`, () => {
   const bundlib = { input: { api: 'src/api/index.ts', bin: 'src/cli/index.ts' } };
 
   outputFields.forEach(({ field, text }) => {
-    test(`Should not use ${_pluginPkgName} on ${greenBright(text)} if not installed`, async () => {
-      const plugins = await mockGetPluginNames(cwd, {
-        bundlib,
-        [field]: 'output.js',
-      });
-      expect(plugins).not.toContain(pluginName);
-    });
-  });
-
-  outputFields.forEach(({ field, text }) => {
     test(`Should not use ${_pluginPkgName} on ${greenBright(text)} if input is javascript file`, async () => {
-      const plugins = await mockGetPluginNames(process.cwd(), {
+      const plugins = await mockGetPluginNames(cwd, {
         bundlib: { input: { api: 'src/api/index.js', bin: 'src/cli/index.js' } },
         [field]: 'output.js',
       });
@@ -47,7 +37,7 @@ describe(`${_pluginPkgName} plugin`, () => {
   dependenciesFields.forEach((depField) => {
     outputFields.forEach(({ field, text }) => {
       test(`Should not use ${_pluginPkgName} on ${greenBright(text)} if ${_typescriptPkgName} installed as "${redBright(depField)}" and input is javascript file`, async () => {
-        const plugins = await mockGetPluginNames(process.cwd(), {
+        const plugins = await mockGetPluginNames(cwd, {
           bundlib: { input: { api: 'src/api/index.js', bin: 'src/cli/index.js' } },
           [field]: 'output.js',
           [depField]: deps,
@@ -58,7 +48,7 @@ describe(`${_pluginPkgName} plugin`, () => {
 
     outputFields.forEach(({ field, text }) => {
       test(`Should use ${_pluginPkgName} on ${greenBright(text)} if ${_typescriptPkgName} installed as "${redBright(depField)}"`, async () => {
-        const plugins = await mockGetPluginNames(process.cwd(), {
+        const plugins = await mockGetPluginNames(cwd, {
           bundlib,
           [field]: 'output.js',
           [depField]: deps,

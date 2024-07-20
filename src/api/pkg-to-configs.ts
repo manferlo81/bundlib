@@ -18,7 +18,6 @@ import { error } from './errors/error';
 import { inputNotFoundMessage } from './errors/error-messages';
 import { pluginChunks } from './plugins/chunks';
 import { createConfig } from './tools/create-config';
-import { createImportFromCWD } from './tools/create-import-from-cwd';
 import { createIsExternal } from './tools/create-is-external';
 import { createIsInstalled } from './tools/create-is-installed';
 import { createResolveInput } from './tools/create-resolve-input';
@@ -54,12 +53,10 @@ export function pkgToConfigs(
     peer: peerDependencies,
   } = dependencies;
 
-  const importFromCWD = createImportFromCWD(cwd);
-
   const bundlibCachePath = resolve(cwd, cache || 'node_modules/.cache/bundlib');
   const typescriptCachePath = pathJoin(bundlibCachePath, 'rpt2');
 
-  const isExternal = createIsExternal(
+  const isNodeJSExternal = createIsExternal(
     runtimeDependencies ? keys(runtimeDependencies) : null,
     peerDependencies ? keys(peerDependencies) : null,
     builtinModules,
@@ -72,7 +69,9 @@ export function pkgToConfigs(
   const useESLint = isInstalled('eslint');
   const useTypescript = isInstalled('typescript');
   const useBabel = isInstalled('@babel/core');
-  const useChokidar = !!isInstalled('chokidar') && !!watch;
+  const useChokidar = isInstalled('chokidar');
+
+  const shouldUseChokidar = !!useChokidar && !!watch;
 
   const extensions = useTypescript ? TS_EXTENSIONS : JS_EXTENSIONS;
 
@@ -99,6 +98,11 @@ export function pkgToConfigs(
     const sourcemap = !!rollupSourcemap;
 
     const inputIsTypescript = extensionMatch(inputFile, TS_ONLY_EXTENSIONS);
+
+    if (inputIsTypescript && !useTypescript) {
+      throw error('Can\'t use typescript input file if typescript is not installed');
+    }
+
     const typesExpectedFilename = configs.length === 0 && !bin && typesBuild && resolve(
       cwd,
       extensionMatch(typesBuild.output, ['.ts']) ? typesBuild.output : pathJoin(typesBuild.output, 'index.d.ts'),
@@ -153,7 +157,6 @@ export function pkgToConfigs(
 
       useTypescript && inputIsTypescript && pluginTypescript({
         cwd,
-        typescript: importFromCWD<typeof import('typescript')>('typescript'),
         cacheRoot: typescriptCachePath,
         useTsconfigDeclarationDir: true,
         tsconfigDefaults: {
@@ -191,7 +194,6 @@ export function pkgToConfigs(
       }),
 
       mini && pluginTerser({
-        // sourcemap: removed on version 6
         toplevel: true,
         module: true,
         compress: {
@@ -234,7 +236,7 @@ export function pkgToConfigs(
       createConfig({
         input: inputFile,
         output: outputOptions,
-        isExternal,
+        isExternal: isNodeJSExternal,
         plugins: createPlugins(
           inputFile,
           outputFile,
@@ -246,7 +248,7 @@ export function pkgToConfigs(
           project,
         ),
         onwarn,
-        useChokidar,
+        useChokidar: shouldUseChokidar,
       }),
     );
 
@@ -259,7 +261,7 @@ export function pkgToConfigs(
         createConfig({
           input: inputFile,
           output: minOutputOptions,
-          isExternal,
+          isExternal: isNodeJSExternal,
           plugins: createPlugins(
             inputFile,
             minOutputFile,
@@ -271,14 +273,14 @@ export function pkgToConfigs(
             project,
           ),
           onwarn,
-          useChokidar,
+          useChokidar: shouldUseChokidar,
         }),
       );
 
     }
 
     if (chunks) {
-      keys(chunks).forEach((input) => {
+      for (const input of keys(chunks)) {
 
         const inputFile = resolve(cwd, input);
         const outputFile = resolve(cwd, chunks[input]);
@@ -289,7 +291,7 @@ export function pkgToConfigs(
           createConfig({
             input: inputFile,
             output: chunkOutputOptions,
-            isExternal,
+            isExternal: isNodeJSExternal,
             plugins: createPlugins(
               inputFile,
               outputFile,
@@ -301,11 +303,11 @@ export function pkgToConfigs(
               project,
             ),
             onwarn,
-            useChokidar,
+            useChokidar: shouldUseChokidar,
           }),
         );
 
-      });
+      }
     }
 
   }
@@ -334,7 +336,7 @@ export function pkgToConfigs(
       createConfig({
         input: inputFile,
         output: outputOptions,
-        isExternal,
+        isExternal: isNodeJSExternal,
         plugins: createPlugins(
           inputFile,
           outputFile,
@@ -346,7 +348,7 @@ export function pkgToConfigs(
           project,
         ),
         onwarn,
-        useChokidar,
+        useChokidar: shouldUseChokidar,
       }),
     );
 
@@ -359,7 +361,7 @@ export function pkgToConfigs(
         createConfig({
           input: inputFile,
           output: minOutputOptions,
-          isExternal,
+          isExternal: isNodeJSExternal,
           plugins: createPlugins(
             inputFile,
             minOutputFile,
@@ -371,7 +373,7 @@ export function pkgToConfigs(
             project,
           ),
           onwarn,
-          useChokidar,
+          useChokidar: shouldUseChokidar,
         }),
       );
 
@@ -431,7 +433,7 @@ export function pkgToConfigs(
           project,
         ),
         onwarn,
-        useChokidar,
+        useChokidar: shouldUseChokidar,
       }),
     );
 
@@ -456,7 +458,7 @@ export function pkgToConfigs(
             project,
           ),
           onwarn,
-          useChokidar,
+          useChokidar: shouldUseChokidar,
         }),
       );
 
@@ -489,7 +491,7 @@ export function pkgToConfigs(
       createConfig({
         input: inputFile,
         output: outputOptions,
-        isExternal,
+        isExternal: isNodeJSExternal,
         plugins: createPlugins(
           inputFile,
           outputFile,
@@ -501,7 +503,7 @@ export function pkgToConfigs(
           project,
         ),
         onwarn,
-        useChokidar,
+        useChokidar: shouldUseChokidar,
       }),
     );
 
@@ -514,7 +516,7 @@ export function pkgToConfigs(
         createConfig({
           input: inputFile,
           output: minOutputOptions,
-          isExternal,
+          isExternal: isNodeJSExternal,
           plugins: createPlugins(
             inputFile,
             minOutputFile,
@@ -526,7 +528,7 @@ export function pkgToConfigs(
             project,
           ),
           onwarn,
-          useChokidar,
+          useChokidar: shouldUseChokidar,
         }),
       );
 
