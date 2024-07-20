@@ -63,7 +63,7 @@ jobs:
       - attach_workspace:
           at: ~/bundlib
       - codecov/upload:
-          file: coverage/*.json
+          file: coverage/coverage-final.json
 
   job_publish_to_npm:
     executor: executor_node
