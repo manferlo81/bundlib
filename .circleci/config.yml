@@ -10,18 +10,7 @@ executors:
     working_directory: ~/bundlib
 
 commands:
-  npm_publish:
-    steps:
-      - run:
-          name: Login to npm
-          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
-      - run:
-          name: Publish to npm
-          command: npm publish
-
-jobs:
-  test_and_build:
-    executor: executor_node
+  cmd_checkout_cache_and_install:
     steps:
       - checkout
       - restore_cache:
@@ -35,17 +24,36 @@ jobs:
           paths:
             - node_modules
           key: v7-deps-bundlib-{{ checksum "package.json" }}
+
+  cmd_test_and_build:
+    steps:
       - run:
           name: Test
           command: npm test
       - run:
           name: Build
           command: npm run build
+
+  cmd_publish_to_npm:
+    steps:
+      - run:
+          name: Login to npm
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
+      - run:
+          name: Publish to npm
+          command: npm publish
+
+jobs:
+  job_test_and_build:
+    executor: executor_node
+    steps:
+      - cmd_checkout_cache_and_install
+      - cmd_test_and_build
       - persist_to_workspace:
           root: ~/bundlib
           paths: .
 
-  upload_coverage:
+  job_upload_coverage:
     executor: executor_node
     steps:
       - attach_workspace:
@@ -53,36 +61,36 @@ jobs:
       - codecov/upload:
           file: coverage/*.json
 
-  publish_to_npm:
+  job_publish_to_npm:
     executor: executor_node
     steps:
       - attach_workspace:
           at: ~/bundlib
-      - npm_publish
+      - cmd_publish_to_npm
 
 workflows:
   version: 2
 
   workflow:
     jobs:
-      - test_and_build:
+      - job_test_and_build:
           filters:
             tags:
               only: /.*/
             branches:
               only: /.*/
 
-      - upload_coverage:
+      - job_upload_coverage:
           requires:
-            - test_and_build
+            - job_test_and_build
           filters:
             branches:
               only: /master/
 
-      - publish_to_npm:
+      - job_publish_to_npm:
           context: npm
           requires:
-            - test_and_build
+            - job_test_and_build
           filters:
             tags:
               only: /^v\d+\.\d+\.\d+$/
