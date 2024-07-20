@@ -4,13 +4,28 @@ orbs:
   codecov: codecov/codecov@1.2.3
 
 executors:
-  node:
+  exec_node_20:
     docker:
-      - image: cimg/node:22.3.0
-    working_directory: &working_directory ~/bundlib
+      - image: cimg/node:20.15.1
+    working_directory: ~/bundlib
 
 commands:
-  npm_publish:
+  cmd_checkout_cache_and_install:
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v8-deps-bundlib-{{ checksum "package-lock.json" }}
+            - v8-deps-bundlib-
+      - run:
+          name: Install dependencies
+          command: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v8-deps-bundlib-{{ checksum "package-lock.json" }}
+
+  cmd_npm_publish:
     steps:
       - run:
           name: Login to npm
@@ -20,68 +35,63 @@ commands:
           command: npm publish
 
 jobs:
-  test_and_build:
-    executor: node
+  job_test_and_build:
+    executor: exec_node_20
     steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v7-deps-bundlib-{{ checksum "package.json" }}
-            - v7-deps-bundlib-
-      - run:
-          name: Install dependencies
-          command: npm install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v7-deps-bundlib-{{ checksum "package.json" }}
+      - cmd_checkout_cache_and_install
       - run:
           name: Test
           command: npm test
       - run:
           name: Build
           command: npm run build
+      - store_artifacts:
+          path: dist
       - persist_to_workspace:
-          root: *working_directory
-          paths: .
+          root: ~/bundlib
+          paths:
+            - bin
+            - dist
+            - coverage
 
-  upload_coverage:
-    executor: node
+  job_upload_coverage:
+    description: Upload coverage to Codecov
+    executor: exec_node_20
     steps:
-      - attach_workspace: &attach_workspace
-          at: *working_directory
+      - attach_workspace:
+          at: ~/bundlib
       - codecov/upload:
           file: coverage/*.json
 
-  publish_to_npm:
-    executor: node
+  job_publish_to_npm:
+    description: Publish package to npm
+    executor: exec_node_20
     steps:
-      - attach_workspace: *attach_workspace
-      - npm_publish
+      - attach_workspace:
+          at: /
+      - cmd_npm_publish
 
 workflows:
-  version: 2
-
-  workflow:
+  workflow_ci:
     jobs:
-      - test_and_build:
+      - job_test_and_build:
           filters:
             tags:
               only: /.*/
             branches:
               only: /.*/
 
-      - upload_coverage:
+      - job_upload_coverage:
           requires:
-            - test_and_build
+            - job_test_and_build
           filters:
             branches:
               only: /master/
 
-      - publish_to_npm:
+      - job_publish_to_npm:
           context: npm
           requires:
-            - test_and_build
+            - job_test_and_build
           filters:
             tags:
               only: /^v\d+\.\d+\.\d+$/
