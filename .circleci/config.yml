@@ -50,9 +50,7 @@ jobs:
       - persist_to_workspace:
           root: ~/bundlib
           paths:
-            - bin
-            - dist
-            - coverage
+            - .
 
   job_upload_coverage:
     description: Upload coverage to Codecov
