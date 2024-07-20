@@ -55,6 +55,7 @@ jobs:
             - bin/*
             - dist/*
             - coverage/*
+            - src/*
 
   job_upload_coverage:
     executor: executor_node
