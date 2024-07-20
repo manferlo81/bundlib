@@ -52,7 +52,9 @@ jobs:
       - persist_to_workspace:
           root: ~/bundlib
           paths:
-            - .
+            - bin/*
+            - dist/*
+            - coverage/*
 
   job_upload_coverage:
     executor: executor_node
