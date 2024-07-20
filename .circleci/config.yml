@@ -6,7 +6,7 @@ orbs:
 executors:
   executor_node:
     docker:
-      - image: cimg/node:22.3.0
+      - image: cimg/node:20.15.1
     working_directory: ~/bundlib
 
 commands:
@@ -15,15 +15,15 @@ commands:
       - checkout
       - restore_cache:
           keys:
-            - v7-deps-bundlib-{{ checksum "package.json" }}
-            - v7-deps-bundlib-
+            - v8-deps-bundlib-{{ checksum "package.json" }}
+            - v8-deps-bundlib-
       - run:
           name: Install dependencies
           command: npm install
       - save_cache:
           paths:
             - node_modules
-          key: v7-deps-bundlib-{{ checksum "package.json" }}
+          key: v8-deps-bundlib-{{ checksum "package.json" }}
 
   cmd_test_and_build:
     steps:
@@ -51,7 +51,8 @@ jobs:
       - cmd_test_and_build
       - persist_to_workspace:
           root: ~/bundlib
-          paths: .
+          paths:
+            - .
 
   job_upload_coverage:
     executor: executor_node
@@ -69,9 +70,7 @@ jobs:
       - cmd_publish_to_npm
 
 workflows:
-  version: 2
-
-  workflow:
+  workflow_ci:
     jobs:
       - job_test_and_build:
           filters:
