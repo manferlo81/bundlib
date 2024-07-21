@@ -4,29 +4,35 @@ orbs:
   codecov: codecov/codecov@4.1.0
 
 executors:
-  executor_node:
+  executor_node_18:
+    docker:
+      - image: cimg/node:18.20
+    working_directory: ~/bundlib
+
+  executor_node_20:
     docker:
       - image: cimg/node:20.15.1
     working_directory: ~/bundlib
 
 commands:
-  command_checkout_cache_install:
+  command_ci:
+    parameters:
+      cache_key:
+        type: string
+        default: deps-bundlib
     steps:
       - checkout
       - restore_cache:
           keys:
-            - v8-deps-bundlib-{{ checksum "package.json" }}
-            - v8-deps-bundlib-
+            - << parameters.cache_key >>-{{ checksum "package-lock.json" }}
+            - << parameters.cache_key >>
       - run:
           name: Install dependencies
           command: npm install
       - save_cache:
           paths:
             - node_modules
-          key: v8-deps-bundlib-{{ checksum "package.json" }}
-
-  command_test_and_build:
-    steps:
+          key: << parameters.cache_key >>-{{ checksum "package-lock.json" }}
       - run:
           name: Test
           command: npm test
@@ -46,7 +52,7 @@ commands:
       - attach_workspace:
           at: ~/bundlib
 
-  command_publish_to_npm:
+  command_npm_publish:
     steps:
       - run:
           name: Login to npm
@@ -56,30 +62,43 @@ commands:
           command: npm publish
 
 jobs:
-  job_test_and_build:
-    executor: executor_node
+  job_node_18_ci:
+    executor: executor_node_18
     steps:
-      - command_checkout_cache_install
-      - command_test_and_build
+      - command_ci:
+          cache_key: v8-node-18-deps-bundlib
+
+  job_node_20_ci:
+    executor: executor_node_20
+    steps:
+      - command_ci:
+          cache_key: v8-node-20-deps-bundlib
       - command_save_workspace
 
   job_upload_coverage:
-    executor: executor_node
+    executor: executor_node_20
     steps:
       - command_restore_workspace
       - codecov/upload:
           file: coverage/*.json
 
   job_publish_to_npm:
-    executor: executor_node
+    executor: executor_node_20
     steps:
       - command_restore_workspace
-      - command_publish_to_npm
+      - command_npm_publish
 
 workflows:
   workflow_ci:
     jobs:
-      - job_test_and_build:
+      - job_node_18_ci:
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              only: /.*/
+
+      - job_node_20_ci:
           filters:
             tags:
               only: /.*/
@@ -88,7 +107,8 @@ workflows:
 
       - job_upload_coverage:
           requires:
-            - job_test_and_build
+            - job_node_18_ci
+            - job_node_20_ci
           filters:
             branches:
               only: /master/
@@ -96,7 +116,8 @@ workflows:
       - job_publish_to_npm:
           context: npm
           requires:
-            - job_test_and_build
+            - job_node_18_ci
+            - job_node_20_ci
           filters:
             tags:
               only: /^v\d+\.\d+\.\d+$/
