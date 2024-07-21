@@ -2,6 +2,25 @@
 
 ## Version History
 
+## [0.19.0](https://github.com/manferlo81/bundlib/compare/v0.18.4...v0.19.0) (2024-07-21)
+
+
+### ⚠ BREAKING CHANGES
+
+* analyzePkg no longer throws on invalid
+
+### Features
+
+* Add new search places for config files ([3c5fb7e](https://github.com/manferlo81/bundlib/commit/3c5fb7ea9f1b5ad90ff9b24617ef88da59d8c0b9))
+* Expose readPkg function ([f53e80d](https://github.com/manferlo81/bundlib/commit/f53e80d01b101adcdf8efcef8d2e1086edb2ec44))
+* Use typescript only if it's installed ([1764ed9](https://github.com/manferlo81/bundlib/commit/1764ed9fe73e62fde7944aebd8031a2d16e1e873))
+
+
+### Bug Fixes
+
+* **deps:** Fixed vulnerabilities ([b26e999](https://github.com/manferlo81/bundlib/commit/b26e9992f05f03e1a9af9a65e885fa44e0778bbf))
+* Export missing types ([5f09706](https://github.com/manferlo81/bundlib/commit/5f09706db81ac28b410fe600cdf8018fbd936dbc))
+
 ### [0.18.4](https://github.com/manferlo81/bundlib/compare/v0.18.3...v0.18.4) (2020-12-03)
 
 
