@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  codecov: codecov/codecov@3.3.0
+  codecov: codecov/codecov@4.1.0
 
 executors:
   executor_node:
@@ -10,7 +10,7 @@ executors:
     working_directory: ~/bundlib
 
 commands:
-  cmd_checkout_cache_and_install:
+  command_checkout_cache_install:
     steps:
       - checkout
       - restore_cache:
@@ -25,7 +25,7 @@ commands:
             - node_modules
           key: v8-deps-bundlib-{{ checksum "package.json" }}
 
-  cmd_test_and_build:
+  command_test_and_build:
     steps:
       - run:
           name: Test
@@ -34,7 +34,19 @@ commands:
           name: Build
           command: npm run build
 
-  cmd_publish_to_npm:
+  command_save_workspace:
+    steps:
+      - persist_to_workspace:
+          root: ~/bundlib
+          paths:
+            - .
+
+  command_restore_workspace:
+    steps:
+      - attach_workspace:
+          at: ~/bundlib
+
+  command_publish_to_npm:
     steps:
       - run:
           name: Login to npm
@@ -47,30 +59,22 @@ jobs:
   job_test_and_build:
     executor: executor_node
     steps:
-      - cmd_checkout_cache_and_install
-      - cmd_test_and_build
-      - persist_to_workspace:
-          root: ~/bundlib
-          paths:
-            - bin/*
-            - dist/*
-            - coverage/*
-            - src/*
+      - command_checkout_cache_install
+      - command_test_and_build
+      - command_save_workspace
 
   job_upload_coverage:
     executor: executor_node
     steps:
-      - attach_workspace:
-          at: ~/bundlib
+      - command_restore_workspace
       - codecov/upload:
-          file: coverage/coverage-final.json
+          file: coverage/*.json
 
   job_publish_to_npm:
     executor: executor_node
     steps:
-      - attach_workspace:
-          at: ~/bundlib
-      - cmd_publish_to_npm
+      - command_restore_workspace
+      - command_publish_to_npm
 
 workflows:
   workflow_ci:
