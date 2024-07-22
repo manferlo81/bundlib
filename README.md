@@ -1,6 +1,13 @@
 # Bundlib
 
-[![CircleCI](https://circleci.com/gh/manferlo81/bundlib.svg?style=svg)](https://circleci.com/gh/manferlo81/bundlib) [![npm](https://badgen.net/npm/v/bundlib)](https://www.npmjs.com/package/bundlib) [![codecov](https://codecov.io/gh/manferlo81/bundlib/branch/main/graph/badge.svg)](https://codecov.io/gh/manferlo81/bundlib) [![Libraries.io dependency status for latest release](https://img.shields.io/librariesio/release/npm/bundlib)](https://libraries.io/npm/bundlib) [![packagephobia](https://badgen.net/packagephobia/install/bundlib)](https://packagephobia.now.sh/result?p=bundlib) [![types](https://img.shields.io/npm/types/bundlib.svg)](https://github.com/microsoft/typescript) [![Known Vulnerabilities](https://snyk.io/test/npm/bundlib/badge.svg)](https://snyk.io/test/npm/bundlib) [![license](https://badgen.net/github/license/manferlo81/bundlib)](LICENSE)
+[![CircleCI](https://circleci.com/gh/manferlo81/bundlib.svg?style=svg)](https://circleci.com/gh/manferlo81/bundlib)
+[![npm](https://badgen.net/npm/v/bundlib)](https://www.npmjs.com/package/bundlib)
+[![codecov](https://codecov.io/gh/manferlo81/bundlib/branch/main/graph/badge.svg?token=PrVW2D6bfl)](https://codecov.io/gh/manferlo81/bundlib)
+[![Libraries.io dependency status for latest release](https://img.shields.io/librariesio/release/npm/bundlib)](https://libraries.io/npm/bundlib)
+[![install size](https://packagephobia.com/badge?p=bundlib)](https://packagephobia.com/result?p=bundlib)
+[![types](https://img.shields.io/npm/types/bundlib.svg)](https://github.com/microsoft/typescript)
+[![Known Vulnerabilities](https://snyk.io/test/github/manferlo81/bundlib/main/badge.svg)](https://snyk.io/test/github/manferlo81/bundlib)
+[![license](https://badgen.net/github/license/manferlo81/bundlib)](LICENSE)
 
 An automatic library bundler powered by [Rollup.js](https://github.com/rollup/rollup).
 
