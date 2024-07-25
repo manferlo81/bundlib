@@ -111,7 +111,9 @@ workflows:
             - job_node_20_ci
           filters:
             branches:
-              only: /main/
+              only: /.*/
+            tags:
+              ignore: /.*/
 
       - job_publish_to_npm:
           context: npm
