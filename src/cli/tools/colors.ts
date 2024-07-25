@@ -1,4 +1,4 @@
-import { default as chalk } from 'chalk';
+import chalk from 'chalk';
 
 // ENABLE COLORS ON GIT BASH FOR WINDOWS
 if (!chalk.level) {

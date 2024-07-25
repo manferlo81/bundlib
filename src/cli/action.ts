@@ -1,8 +1,8 @@
 import { EventEmitter } from 'events';
 import { createFormatter } from 'gen-unit';
-import { relative } from 'path';
+import { relative, parse as pathParse } from 'path';
 import prettyMs from 'pretty-ms';
-import { RollupError, RollupLog as RollupWarning } from 'rollup';
+import type { RollupError } from 'rollup';
 import slash from 'slash';
 import { readPkg } from '../api';
 import { bundlib } from './bundlib';
@@ -11,9 +11,6 @@ import { formatProjectInfo, tag } from './format';
 import { cyan, green, magenta, yellow } from './tools/colors';
 import { log, logError } from './tools/console';
 import type { BundlibEventEmitter } from './types/types';
-
-const greenBold = green.bold;
-const magentaBold = magenta.bold;
 
 export async function action(
   bundlibName: string,
@@ -65,23 +62,34 @@ export async function action(
       },
     });
 
-    emitter.on(EVENT_BUILD_END, (filename: string, size: number, duration: number) => {
-      const tag_ = tag(greenBold, 'built');
-      const path = yellow.bold(`./${slash(relative(cwd, filename))}`);
-      const coloredSize = magentaBold(formatFileSize(size));
-      const coloredDuration = magentaBold(prettyMs(duration, { secondsDecimalDigits: 2 }));
+    emitter.on(EVENT_BUILD_END, (filename, size, duration) => {
+      const builtTag = tag(green, 'BUILT');
+
+      const { dir, base } = pathParse(filename);
+      const coloredDir = yellow(`./${slash(relative(cwd, dir))}/`);
+      const coloredFilename = yellow.bold(base);
+      const path = `${coloredDir}${coloredFilename}`;
+
+      const coloredSize = magenta.bold(formatFileSize(size));
+      const coloredDuration = magenta.bold(prettyMs(duration, { secondsDecimalDigits: 2 }));
       const info = cyan(`( ${coloredSize} in ${coloredDuration} )`);
-      log(`${tag_} ${path} ${info}`);
+
+      log(`${builtTag} ${path} ${info}`);
     });
 
-    emitter.on(EVENT_WARN, (warning: RollupWarning) => {
+    emitter.on(EVENT_WARN, (warning) => {
 
       const { plugin, message } = warning;
 
-      const tag_ = tag(yellow, 'warning!');
-      const pluginInfo = cyan(`( plugin: ${greenBold(plugin || '<UNKNOWN>')} )`);
+      const warningTag = tag(yellow, 'WARNING');
+      let pluginInfo = '';
 
-      log(`${tag_} ${pluginInfo} ${yellow(message)}`);
+      if (plugin) {
+        const pluginInfo_ = yellow(`[ ${cyan('plugin')}: ${magenta.bold(plugin)} ]`);
+        pluginInfo = `${pluginInfo_} `;
+      }
+
+      log(`${warningTag} ${pluginInfo}${cyan(message)}`);
 
     });
 
