@@ -4,6 +4,6 @@
     "src/api"
   ],
   "compilerOptions": {
-    "module": "ES2015"
+    "module": "ESNext"
   }
 }

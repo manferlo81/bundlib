@@ -1,11 +1,9 @@
 {
   "compilerOptions": {
-    "target": "ES2018",
+    "target": "ESNext",
     "module": "CommonJS",
-    "moduleResolution": "Node",
-    "lib": [
-      "ES2018"
-    ],
+    "moduleResolution": "Node10",
+    "lib": [],
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
@@ -25,6 +23,7 @@
     "__test__/**/*.ts",
     "__test__/**/*.js",
     "src/**/*.ts",
+    "eslint.config.mjs",
     "jest.config.ts",
     "package.json",
     "bundlib.config.ts"
