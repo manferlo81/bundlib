@@ -3,7 +3,7 @@ import stylistic from '@stylistic/eslint-plugin';
 import globals from 'globals';
 import { config, configs as typescriptConfigs } from 'typescript-eslint';
 
-const rule = options => ['error', options];
+const rule = (...options) => ['error', ...options];
 
 const pluginRules = (pluginName, rules) => Object.keys(rules).reduce((output, ruleName) => {
   const pluginPrefixedRuleName = `${pluginName}/${ruleName}`;
@@ -28,10 +28,12 @@ const stylisticRules = pluginRules('@stylistic', {
   'linebreak-style': rule('unix'),
   quotes: rule('single'),
   semi: rule('always'),
-  'quote-props': rule('as-needed'),
 
+  'quote-props': rule('as-needed'),
+  'arrow-parens': rule('always'),
   'comma-dangle': rule('always-multiline'),
   'member-delimiter-style': rule({}),
+  'no-extra-parens': 'error',
 
   'no-multiple-empty-lines': rule({
     max: 1,
@@ -50,8 +52,6 @@ const offRules = (...ruleNames) => ruleNames.reduce((output, ruleName) => ({ ...
 const toBeFixedRules = {
   ...pluginRules('@stylistic', offRules(
     'brace-style',
-    'arrow-parens',
-    'no-extra-parens',
     'multiline-ternary',
     'no-mixed-operators',
     'operator-linebreak',

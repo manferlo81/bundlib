@@ -19,11 +19,11 @@ export function createOneOfLiteral<M>(...values: MultilevelArray<M>): TypeCheckF
 
 }
 
-export const composeOneOf = <M>(...checks: Array<TypeCheckFunction<M>>): TypeCastCheckFunction<M> => (
-  <X = M>(value: unknown): value is X => checks.some(
+export function composeOneOf<M>(...checks: Array<TypeCheckFunction<M>>): TypeCastCheckFunction<M> {
+  return <X = M>(value: unknown): value is X => checks.some(
     (check) => check(value),
-  )
-);
+  );
+}
 
 export const isStringOrNullish = composeOneOf<AllowNullish<string>>(isNull, isString);
 
