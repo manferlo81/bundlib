@@ -1,33 +1,32 @@
-import { resolveValueBased, type SelectiveResolved } from 'selective-option';
+import type { Resolved } from 'selective-option';
+import { createValueBasedResolver } from 'selective-option';
 import { error } from '../errors/error';
 import { invalidOptionMessage } from '../errors/error-messages';
-import { createOneOfLiteral } from '../type-check/advanced';
-import { type Dictionary, type TypeCheckFunction } from '../types/helper-types';
+import type { Dictionary, TypeCheckFunction } from '../types/helper-types';
+import { OVERRIDE_KEY } from './consts';
 
 export function resolveValueBasedSelectiveOption<K extends string, V, D = V>(
   value: unknown,
-  allKeys: K[],
-  specialKeys: Dictionary<K[]>,
+  allKeys: readonly K[],
+  specialKeys: Readonly<Dictionary<readonly K[]>>,
   isValidValue: TypeCheckFunction<V>,
   defaultValue: D,
   optionName: string,
   urlHash?: string,
-): SelectiveResolved<K, V | D> {
+): Resolved<K, V | D> {
 
-  const isBuildType = createOneOfLiteral<K>(allKeys);
-  const invalid = error(invalidOptionMessage(optionName, urlHash));
+  const resolveValueBased = createValueBasedResolver(
+    allKeys,
+    isValidValue,
+    defaultValue,
+    OVERRIDE_KEY,
+    specialKeys as never,
+  );
 
   try {
-    return resolveValueBased(
-      value,
-      allKeys,
-      isBuildType,
-      specialKeys,
-      isValidValue,
-      defaultValue,
-    );
+    return resolveValueBased(value as never);
   } catch (e) {
-    throw invalid;
+    throw error(invalidOptionMessage(optionName, urlHash));
   }
 
   // return (

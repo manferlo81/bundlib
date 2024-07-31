@@ -67,7 +67,7 @@
     "rollup-plugin-export-equals": "^0.3.7",
     "rollup-plugin-strip-shebang": "^1.2.10",
     "rollup-plugin-typescript2": "^0.36.0",
-    "selective-option": "0.0.1",
+    "selective-option": "0.1.0",
     "slash": "^3.0.0"
   },
   "devDependencies": {

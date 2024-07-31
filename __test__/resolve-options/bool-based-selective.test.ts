@@ -1,8 +1,8 @@
-import { type SelectiveResolved } from 'selective-option';
+import type { Resolved } from 'selective-option';
 import { resolveBoolBasedSelectiveOption } from '../../src/api/selective/bool-based';
 import { API_SPECIAL_KEYS, MODULE_BUILD_KEYS } from '../../src/api/selective/consts';
 import { isBool } from '../../src/api/type-check/basic';
-import { type BuildType } from '../../src/api/types/bundlib-options';
+import type { BuildType } from '../../src/api/types/bundlib-options';
 import { GetSelectiveResultValue, createSelectiveResult, isApiKey } from '../tools/selective-tools';
 
 describe('resolve boolean based selective option', () => {
@@ -13,7 +13,7 @@ describe('resolve boolean based selective option', () => {
   function resolveBoolBased<D>(
     value: unknown,
     defaultValue: D,
-  ): SelectiveResolved<BuildType, boolean | D> {
+  ): Resolved<BuildType, boolean | D> {
     return resolveBoolBasedSelectiveOption<BuildType, boolean, D>(
       value,
       MODULE_BUILD_KEYS,

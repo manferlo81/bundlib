@@ -1,6 +1,7 @@
+import { BoolBasedSelectiveOption, ValueBasedSelectiveOption } from 'selective-option';
 import type { DeprecatedBundlibOptions } from './deprecated-options';
 import type { AllowNullish, Dictionary } from './helper-types';
-import type { BrowserBuildFormat, RollupSourcemap } from './types';
+import type { BrowserBuildFormat, RollupSourcemap, RollupSourcemapString } from './types';
 
 export type BuildTypeForAPI = 'main' | 'module' | 'browser';
 export type BuildType = BuildTypeForAPI | 'bin';
@@ -38,33 +39,31 @@ export interface BrowserOptions {
   globals?: GlobalsOptions;
 }
 
-export type SelectiveType<K extends string> = BuildTypeForAPI | K | 'api';
-export type ObjectSelectiveOptionsKey<K extends string> = SelectiveType<K> | 'default';
-
+/** @deprecated */
 export type ObjectSelectiveOptions<K extends string, T> = Partial<Record<ObjectSelectiveOptionsKey<K>, AllowNullish<T>>>;
 
+/** @deprecated */
 export type StringBasedSelectiveOption<K extends string> =
   | SelectiveType<K>
   | Array<SelectiveType<K>>;
 
-export type ObjectBasedSelectiveOption<K extends string, T> =
-  | AllowNullish<T>
-  | ObjectSelectiveOptions<K, T>;
+export type SelectiveType<K extends string> = K | 'api';
+export type OverrideKey = 'default';
+export type ObjectSelectiveOptionsKey<K extends string> = SelectiveType<K> | OverrideKey;
 
-export type SelectiveOption<K extends string, T> =
-  | StringBasedSelectiveOption<K>
-  | ObjectBasedSelectiveOption<K, T>;
+export type ObjectBasedSelectiveOption<K extends string, T> = ValueBasedSelectiveOption<ObjectSelectiveOptionsKey<K>, T>;
+export type SelectiveOption<K extends string, V = never> = BoolBasedSelectiveOption<SelectiveType<K>, V, OverrideKey>;
 
 export type SelectiveSkipBuildType = BuildType | 'types';
 
-export type SelectiveBooleanOption = SelectiveOption<BuildType, boolean>;
+export type SelectiveBooleanOption = SelectiveOption<BuildType>;
 export type SelectiveStringOption = ObjectBasedSelectiveOption<BuildType, string>;
-export type SelectiveSourcemap = SelectiveOption<BuildType, RollupSourcemap>;
-export type SelectiveSkipOption = SelectiveOption<SelectiveSkipBuildType, boolean>;
+export type SelectiveSourcemap = SelectiveOption<BuildType, RollupSourcemapString>;
+export type SelectiveSkipOption = SelectiveOption<SelectiveSkipBuildType>;
 
 export interface BundlibConfig extends DeprecatedBundlibOptions, Record<string, unknown> {
 
-  input?: AllowNullish<SelectiveStringOption>;
+  input?: SelectiveStringOption;
 
   sourcemap?: SelectiveSourcemap;
   esModule?: SelectiveBooleanOption;
