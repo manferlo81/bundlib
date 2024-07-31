@@ -46,7 +46,7 @@
     "node": ">=14"
   },
   "dependencies": {
-    "@babel/core": "^7.24.9",
+    "@babel/core": "^7.25.2",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-buble": "^1.0.3",
     "@rollup/plugin-commonjs": "^26.0.1",
