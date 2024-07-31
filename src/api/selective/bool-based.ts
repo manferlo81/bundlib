@@ -1,14 +1,14 @@
-import type { Resolved } from 'selective-option';
+import type { KeyList, Resolved, SpecialKeys } from 'selective-option';
 import { createBoolBasedResolver } from 'selective-option';
 import { error } from '../errors/error';
 import { invalidOptionMessage } from '../errors/error-messages';
-import type { Dictionary, TypeCheckFunction } from '../types/helper-types';
+import type { TypeCheckFunction } from '../types/helper-types';
 import { OVERRIDE_KEY } from './consts';
 
 export function resolveBoolBasedSelectiveOption<K extends string, V, D = V>(
   value: unknown,
-  allKeys: readonly K[],
-  specialKeys: Readonly<Dictionary<readonly K[]>>,
+  allKeys: KeyList<K>,
+  specialKeys: SpecialKeys<string, K>,
   isValidValue: TypeCheckFunction<V>,
   defaultValue: D,
   optionName: string,
@@ -20,7 +20,7 @@ export function resolveBoolBasedSelectiveOption<K extends string, V, D = V>(
     isValidValue,
     defaultValue,
     OVERRIDE_KEY,
-    specialKeys as never,
+    specialKeys,
   );
 
   try {
