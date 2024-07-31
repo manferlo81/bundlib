@@ -34,6 +34,8 @@ const stylisticRules = pluginRules('@stylistic', {
   'comma-dangle': rule('always-multiline'),
   'member-delimiter-style': rule({}),
   'no-extra-parens': 'error',
+  'no-mixed-operators': 'error',
+  'brace-style': rule('1tbs'),
 
   'no-multiple-empty-lines': rule({
     max: 1,
@@ -50,12 +52,6 @@ const offRules = (...ruleNames) => ruleNames.reduce((output, ruleName) => ({ ...
 // These are rules that caused problems when switched to eslint@9 + typescript-eslint + stylistic
 // TODO: I will fix them
 const toBeFixedRules = {
-  ...pluginRules('@stylistic', offRules(
-    'brace-style',
-    'multiline-ternary',
-    'no-mixed-operators',
-    'operator-linebreak',
-  )),
   ...pluginRules('@typescript-eslint', offRules(
     'prefer-nullish-coalescing',
     'no-confusing-void-expression',

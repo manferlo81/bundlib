@@ -129,8 +129,8 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
 
   if (
     !isNull(deprecatedMainOptions) && (deprecatedMainOptions !== false) && !(
-      isDictionary<ModuleBuildOptions>(deprecatedMainOptions) &&
-      keysCheck(deprecatedMainOptions, isCJSOptionKey)
+      isDictionary<ModuleBuildOptions>(deprecatedMainOptions)
+      && keysCheck(deprecatedMainOptions, isCJSOptionKey)
     )
   ) {
     throw error(invalidDeprecatedOptionMessage(
@@ -141,8 +141,8 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
 
   if (
     !isNull(deprecatedModuleOptions) && (deprecatedModuleOptions !== false) && !(
-      isDictionary<ModuleBuildOptions>(deprecatedModuleOptions) &&
-      keysCheck(deprecatedModuleOptions, isModuleOptionKey)
+      isDictionary<ModuleBuildOptions>(deprecatedModuleOptions)
+      && keysCheck(deprecatedModuleOptions, isModuleOptionKey)
     )
   ) {
     throw error(invalidDeprecatedOptionMessage(
@@ -153,13 +153,13 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
 
   if (
     !isNull(deprecatedBrowserOptions) && (deprecatedBrowserOptions !== false) && !(
-      isDictionary<BrowserBuildOptions>(deprecatedBrowserOptions) &&
-      keysCheck(deprecatedBrowserOptions, isBrowserOption) &&
-      isBrowserFormat(deprecatedBrowserOptions.format) &&
-      (['name', 'id'] as Array<keyof typeof deprecatedBrowserOptions>).every((key) => (
+      isDictionary<BrowserBuildOptions>(deprecatedBrowserOptions)
+      && keysCheck(deprecatedBrowserOptions, isBrowserOption)
+      && isBrowserFormat(deprecatedBrowserOptions.format)
+      && (['name', 'id'] as Array<keyof typeof deprecatedBrowserOptions>).every((key) => (
         isStringOrNullish(deprecatedBrowserOptions[key])
-      )) &&
-      isValidGlobals(deprecatedBrowserOptions.globals)
+      ))
+      && isValidGlobals(deprecatedBrowserOptions.globals)
     )
   ) {
     throw error(invalidDeprecatedOptionMessage(
@@ -170,8 +170,8 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
 
   if (
     !isNull(deprecatedBinaryOptions) && (deprecatedBinaryOptions !== false) && !(
-      isDictionary<ModuleBuildOptions>(deprecatedBinaryOptions) &&
-      keysCheck(deprecatedBinaryOptions, isCJSOptionKey)
+      isDictionary<ModuleBuildOptions>(deprecatedBinaryOptions)
+      && keysCheck(deprecatedBinaryOptions, isCJSOptionKey)
     )
   ) {
     throw error(invalidDeprecatedOptionMessage(
@@ -182,8 +182,8 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
 
   if (
     !isNull(deprecatedTypesOptions) && (deprecatedTypesOptions !== false) && !(
-      isDictionary<DeprecatedTypesOptions>(deprecatedTypesOptions) &&
-      keysCheck(deprecatedTypesOptions, isTypesOptionKey)
+      isDictionary<DeprecatedTypesOptions>(deprecatedTypesOptions)
+      && keysCheck(deprecatedTypesOptions, isTypesOptionKey)
     )
   ) {
     throw error(invalidDeprecatedOptionMessage('types', 'false | { equals?: boolean }'));
@@ -225,83 +225,93 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
 
   const typesOutputFile = typesFieldValue || typings;
 
-  const mainOutput: AllowNull<ModuleBuildOptions> = (deprecatedMainOptions === false || skipBuild.main || !mainOutputFile) ? null : {
-    input: perBuildInput.main,
-    output: mainOutputFile,
-    sourcemap: normalizeDeprecatedOption<'sourcemap', RollupSourcemap>(
-      deprecatedMainOptions,
-      'sourcemap',
-      isSourcemapOption,
-      perBuildSourcemap.main,
-    ),
-    esModule: normalizeBooleanOption(deprecatedMainOptions, 'esModule', perBuildESModule.main),
-    interop: normalizeBooleanOption(deprecatedMainOptions, 'interop', perBuildInterop.main),
-    min: normalizeBooleanOption(deprecatedMainOptions, 'min', perBuildMin.main),
-    project: perBuildProject.main,
-  };
+  const mainOutput: AllowNull<ModuleBuildOptions> = (deprecatedMainOptions === false || skipBuild.main || !mainOutputFile)
+    ? null
+    : {
+      input: perBuildInput.main,
+      output: mainOutputFile,
+      sourcemap: normalizeDeprecatedOption<'sourcemap', RollupSourcemap>(
+        deprecatedMainOptions,
+        'sourcemap',
+        isSourcemapOption,
+        perBuildSourcemap.main,
+      ),
+      esModule: normalizeBooleanOption(deprecatedMainOptions, 'esModule', perBuildESModule.main),
+      interop: normalizeBooleanOption(deprecatedMainOptions, 'interop', perBuildInterop.main),
+      min: normalizeBooleanOption(deprecatedMainOptions, 'min', perBuildMin.main),
+      project: perBuildProject.main,
+    };
 
-  const moduleOutput: AllowNull<ModuleBuildOptions> = (deprecatedModuleOptions === false || skipBuild.module || !moduleOutputFile) ? null : {
-    input: perBuildInput.module,
-    output: moduleOutputFile,
-    sourcemap: normalizeDeprecatedOption<'sourcemap', RollupSourcemap>(
-      deprecatedModuleOptions,
-      'sourcemap',
-      isSourcemapOption,
-      perBuildSourcemap.module,
-    ),
-    esModule: perBuildESModule.module,
-    interop: perBuildInterop.module,
-    min: normalizeBooleanOption(deprecatedModuleOptions, 'min', perBuildMin.module),
-    project: perBuildProject.module,
-  };
+  const moduleOutput: AllowNull<ModuleBuildOptions> = (deprecatedModuleOptions === false || skipBuild.module || !moduleOutputFile)
+    ? null
+    : {
+      input: perBuildInput.module,
+      output: moduleOutputFile,
+      sourcemap: normalizeDeprecatedOption<'sourcemap', RollupSourcemap>(
+        deprecatedModuleOptions,
+        'sourcemap',
+        isSourcemapOption,
+        perBuildSourcemap.module,
+      ),
+      esModule: perBuildESModule.module,
+      interop: perBuildInterop.module,
+      min: normalizeBooleanOption(deprecatedModuleOptions, 'min', perBuildMin.module),
+      project: perBuildProject.module,
+    };
 
-  const browserOutput: AllowNull<BrowserBuildOptions> = (deprecatedBrowserOptions === false || skipBuild.browser || !browserOutputFile) ? null : {
-    input: perBuildInput.browser,
-    output: browserOutputFile,
-    sourcemap: normalizeDeprecatedOption<'sourcemap', RollupSourcemap>(
-      deprecatedBrowserOptions,
-      'sourcemap',
-      isSourcemapOption,
-      perBuildSourcemap.browser,
-    ),
-    esModule: normalizeBooleanOption(deprecatedBrowserOptions, 'esModule', perBuildESModule.browser),
-    interop: normalizeBooleanOption(deprecatedBrowserOptions, 'interop', perBuildInterop.browser),
-    min: normalizeBooleanOption(deprecatedBrowserOptions, 'min', perBuildMin.browser),
-    format: (deprecatedBrowserOptions && !isNull(deprecatedBrowserOptions.format) ? deprecatedBrowserOptions.format : browserFormat) || 'umd',
-    name: normalizeBuildName(
-      cwd,
-      deprecatedBrowserOptions ? deprecatedBrowserOptions.name : null,
-      browserName,
-      packageName,
-    ),
-    id: deprecatedBrowserOptions && deprecatedBrowserOptions.id || amdId || null,
-    globals: normalizeBuildGlobals(
-      deprecatedBrowserOptions,
-      normalizeGlobals(browserGlobals),
-    ),
-    extend: !!normalizeBooleanOption(deprecatedBrowserOptions, 'extend', !!extend),
-    project: perBuildProject.browser,
-  };
+  const browserOutput: AllowNull<BrowserBuildOptions> = (deprecatedBrowserOptions === false || skipBuild.browser || !browserOutputFile)
+    ? null
+    : {
+      input: perBuildInput.browser,
+      output: browserOutputFile,
+      sourcemap: normalizeDeprecatedOption<'sourcemap', RollupSourcemap>(
+        deprecatedBrowserOptions,
+        'sourcemap',
+        isSourcemapOption,
+        perBuildSourcemap.browser,
+      ),
+      esModule: normalizeBooleanOption(deprecatedBrowserOptions, 'esModule', perBuildESModule.browser),
+      interop: normalizeBooleanOption(deprecatedBrowserOptions, 'interop', perBuildInterop.browser),
+      min: normalizeBooleanOption(deprecatedBrowserOptions, 'min', perBuildMin.browser),
+      format: (deprecatedBrowserOptions && !isNull(deprecatedBrowserOptions.format) ? deprecatedBrowserOptions.format : browserFormat) || 'umd',
+      name: normalizeBuildName(
+        cwd,
+        deprecatedBrowserOptions ? deprecatedBrowserOptions.name : null,
+        browserName,
+        packageName,
+      ),
+      id: (deprecatedBrowserOptions && deprecatedBrowserOptions.id) || amdId || null,
+      globals: normalizeBuildGlobals(
+        deprecatedBrowserOptions,
+        normalizeGlobals(browserGlobals),
+      ),
+      extend: !!normalizeBooleanOption(deprecatedBrowserOptions, 'extend', !!extend),
+      project: perBuildProject.browser,
+    };
 
-  const binaryOutput: AllowNull<ModuleBuildOptions> = (deprecatedBinaryOptions === false || skipBuild.bin || !binaryOutputFile) ? null : {
-    input: perBuildInput.bin,
-    output: binaryOutputFile,
-    sourcemap: normalizeDeprecatedOption<'sourcemap', RollupSourcemap>(
-      deprecatedBinaryOptions,
-      'sourcemap',
-      isSourcemapOption,
-      perBuildSourcemap.bin,
-    ),
-    esModule: normalizeBooleanOption(deprecatedBinaryOptions, 'esModule', perBuildESModule.bin),
-    interop: normalizeBooleanOption(deprecatedBinaryOptions, 'interop', perBuildInterop.bin),
-    min: normalizeBooleanOption(deprecatedBinaryOptions, 'min', perBuildMin.bin),
-    project: perBuildProject.bin,
-  };
+  const binaryOutput: AllowNull<ModuleBuildOptions> = (deprecatedBinaryOptions === false || skipBuild.bin || !binaryOutputFile)
+    ? null
+    : {
+      input: perBuildInput.bin,
+      output: binaryOutputFile,
+      sourcemap: normalizeDeprecatedOption<'sourcemap', RollupSourcemap>(
+        deprecatedBinaryOptions,
+        'sourcemap',
+        isSourcemapOption,
+        perBuildSourcemap.bin,
+      ),
+      esModule: normalizeBooleanOption(deprecatedBinaryOptions, 'esModule', perBuildESModule.bin),
+      interop: normalizeBooleanOption(deprecatedBinaryOptions, 'interop', perBuildInterop.bin),
+      min: normalizeBooleanOption(deprecatedBinaryOptions, 'min', perBuildMin.bin),
+      project: perBuildProject.bin,
+    };
 
-  const typesOutput: AllowNull<TypesBuildOptions> = (deprecatedTypesOptions === false || skipBuild.types || !typesOutputFile) ? null : {
-    output: typesOutputFile,
-    equals: !!equals,
-  };
+  const typesOutput: AllowNull<TypesBuildOptions> = (deprecatedTypesOptions === false || skipBuild.types || !typesOutputFile)
+    ? null
+    : {
+      output: typesOutputFile,
+      equals: !!equals,
+    };
 
   const dependencies: Dependencies = {
     runtime: runtimeDependencies || null,

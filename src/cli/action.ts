@@ -39,10 +39,12 @@ export async function action(
 
   }
 
-  const showError = watch ? logError : (err: RollupError) => {
-    logError(err);
-    process.exit(1);
-  };
+  const showError = watch
+    ? logError
+    : (err: RollupError) => {
+      logError(err);
+      process.exit(1);
+    };
 
   const emitter = new EventEmitter() as BundlibEventEmitter;
   emitter.on(EVENT_ERROR, showError);
