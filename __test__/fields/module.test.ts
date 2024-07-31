@@ -60,7 +60,7 @@ describe('package.json "module" field', () => {
     const moduleField = 'module.js';
     const analyzed = await mockAnalyzeWithPkgEmptyConfig(cwd, {
       'jsnext:main': 'jsnext.js',
-      'module': moduleField,
+      module: moduleField,
     });
     const { module: moduleOutput } = analyzed;
 

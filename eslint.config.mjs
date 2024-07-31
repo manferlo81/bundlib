@@ -24,10 +24,11 @@ const typescriptRules = pluginRules('@typescript-eslint', {
 });
 
 const stylisticRules = pluginRules('@stylistic', {
-  'indent': rule(2),
+  indent: rule(2),
   'linebreak-style': rule('windows'),
-  'quotes': rule('single'),
-  'semi': rule('always'),
+  quotes: rule('single'),
+  semi: rule('always'),
+  'quote-props': rule('as-needed'),
 
   'comma-dangle': rule('always-multiline'),
   'member-delimiter-style': rule({}),
@@ -49,7 +50,6 @@ const offRules = (...ruleNames) => ruleNames.reduce((output, ruleName) => ({ ...
 const toBeFixedRules = {
   ...pluginRules('@stylistic', offRules(
     'brace-style',
-    'quote-props',
     'arrow-parens',
     'no-extra-parens',
     'multiline-ternary',

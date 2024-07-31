@@ -11,7 +11,7 @@ describe(`${_pluginPkgName} plugin`, () => {
   const cwd = process.cwd();
   const pluginName = 'eslint';
 
-  const deps = { 'eslint': '*' };
+  const deps = { eslint: '*' };
   const outputFields: Array<{ field: string; text: string }> = [
     { field: 'main', text: 'CommonJS Module' },
     { field: 'module', text: 'ES Module' },
