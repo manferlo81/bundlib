@@ -1,4 +1,4 @@
-import { isNull } from '../../src/api/type-check/basic';
+import { isNullish } from '../../src/api/type-check/basic';
 import { arrays, booleans, functions, objects, nullish, numbers, strings } from '../tools/typed-values';
 
 describe('isNull function', () => {
@@ -15,7 +15,7 @@ describe('isNull function', () => {
     ];
 
     nonObjectValues.forEach((value) => {
-      expect(isNull(value)).toBe(false);
+      expect(isNullish(value)).toBe(false);
     });
 
   });
@@ -23,7 +23,7 @@ describe('isNull function', () => {
   test('Should return true on null & undefined values', () => {
 
     nullish.forEach((value) => {
-      expect(isNull(value)).toBe(true);
+      expect(isNullish(value)).toBe(true);
     });
 
   });

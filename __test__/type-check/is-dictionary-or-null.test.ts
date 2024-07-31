@@ -1,4 +1,4 @@
-import { isDictionaryOrNull } from '../../src/api/type-check/advanced';
+import { isDictionaryOrNullish } from '../../src/api/type-check/advanced';
 import { arrays, booleans, functions, objects, nullish, numbers, strings } from '../tools/typed-values';
 
 describe('isDictionaryOrNull function', () => {
@@ -14,7 +14,7 @@ describe('isDictionaryOrNull function', () => {
     ];
 
     nonObjectValues.forEach((value) => {
-      expect(isDictionaryOrNull(value)).toBe(false);
+      expect(isDictionaryOrNullish(value)).toBe(false);
     });
 
   });
@@ -27,7 +27,7 @@ describe('isDictionaryOrNull function', () => {
     ];
 
     arraysAndObject.forEach((value) => {
-      expect(isDictionaryOrNull(value)).toBe(true);
+      expect(isDictionaryOrNullish(value)).toBe(true);
     });
 
   });

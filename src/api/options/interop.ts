@@ -6,7 +6,13 @@ import type { BuildType, SelectiveInterop } from '../types/bundlib-options';
 import type { RollupBundlibInterop, RollupInteropOption } from '../types/types';
 import { composeOneOf, createOneOfLiteral } from '../type-check/advanced';
 
-export const isInteropString = createOneOfLiteral<RollupInteropOption>(['default', 'compat', 'auto', 'esModule', 'defaultOnly'] as const);
+export const isInteropString = createOneOfLiteral<RollupInteropOption>([
+  'default',
+  'compat',
+  'auto',
+  'esModule',
+  'defaultOnly',
+] as const);
 
 export const isInteropOption = composeOneOf(
   isInteropString,

@@ -6,20 +6,23 @@ import { isBool } from '../type-check/basic';
 import type { BuildType, SelectiveSourcemap } from '../types/bundlib-options';
 import type { RollupSourcemap, RollupSourcemapString } from '../types/types';
 
-export const isSourcemapStringOption = createOneOfLiteral<RollupSourcemapString>(['inline', 'hidden'] as const);
+export const isSourcemapStringOption = createOneOfLiteral<RollupSourcemapString>([
+  'inline',
+  'hidden',
+] as const);
 
 export const isSourcemapOption = composeOneOf<RollupSourcemap>(
   isSourcemapStringOption,
   isBool,
 );
 
-export const resolveSourcemapOption = (value: SelectiveSourcemap): SelectiveResolved<BuildType, RollupSourcemap> => (
-  resolveBoolBasedSelectiveOption<BuildType, RollupSourcemap, true>(
+export function resolveSourcemapOption(value: SelectiveSourcemap): SelectiveResolved<BuildType, RollupSourcemap> {
+  return resolveBoolBasedSelectiveOption<BuildType, RollupSourcemap, true>(
     value,
     MODULE_BUILD_KEYS,
     API_SPECIAL_KEYS,
     isSourcemapStringOption,
     true,
     'sourcemap',
-  )
-);
+  );
+}

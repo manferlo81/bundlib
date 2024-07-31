@@ -1,4 +1,4 @@
-import { isNull } from '../../type-check/basic';
+import { isNullish } from '../../type-check/basic';
 import type { AllowNullish, TypeCheckFunction } from '../../types/helper-types';
 
 export function normalizeDeprecatedOption<K extends string, T>(
@@ -14,7 +14,7 @@ export function normalizeDeprecatedOption<K extends string, T>(
 
   const { [key]: value } = build;
 
-  if (isNull(value) || !isValidValue(value)) {
+  if (isNullish(value) || !isValidValue(value)) {
     return def;
   }
 

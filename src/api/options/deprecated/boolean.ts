@@ -1,4 +1,4 @@
-import { isNull } from '../../type-check/basic';
+import { isNullish } from '../../type-check/basic';
 import type { AllowNullish } from '../../types/helper-types';
 
 export function normalizeBooleanOption<K extends string>(
@@ -7,15 +7,11 @@ export function normalizeBooleanOption<K extends string>(
   def: boolean,
 ): boolean {
 
-  if (!build) {
-    return def;
-  }
+  if (!build) return def;
 
   const { [key]: value } = build;
 
-  if (isNull(value)) {
-    return def;
-  }
+  if (isNullish(value)) return def;
 
   return !!value;
 

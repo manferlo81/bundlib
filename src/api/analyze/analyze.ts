@@ -1,9 +1,8 @@
 import { error } from '../errors/error';
 import { invalidDeprecatedOptionMessage, invalidOptionMessage, invalidPkgFieldMessage } from '../errors/error-messages';
-import { isValidChunks } from '../options/chunks';
 import { normalizeBooleanOption } from '../options/deprecated/boolean';
-import { isBrowserOption } from '../options/deprecated/browser';
-import { isCJSOptionKey } from '../options/deprecated/main-and-bin';
+import { isBrowserOptionKey } from '../options/deprecated/browser';
+import { isCJSOptionKey } from '../options/deprecated/commonjs';
 import { isModuleOptionKey } from '../options/deprecated/module';
 import { normalizeDeprecatedOption } from '../options/deprecated/normalize';
 import { isTypesOptionKey } from '../options/deprecated/types';
@@ -18,10 +17,10 @@ import { resolveProjectOption } from '../options/project';
 import { resolveSkipOption } from '../options/skip';
 import { isSourcemapOption, resolveSourcemapOption } from '../options/sourcemap';
 import { readPkg } from '../package/read-pkg';
-import { isDictionaryOrNull, isStringOrNullish } from '../type-check/advanced';
-import { isDictionary, isNull } from '../type-check/basic';
+import { isDictionaryOrNullish, isStringOrNullish } from '../type-check/advanced';
+import { isDictionary, isNullish } from '../type-check/basic';
 import { invalidKeys, keysCheck } from '../type-check/keys';
-import { DeprecatedTypesOptions } from '../types/deprecated-options';
+import type { DeprecatedTypesOptions } from '../types/deprecated-options';
 import type { AllowNull, Dictionary, Nullish } from '../types/helper-types';
 import type { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalyzed, TypesBuildOptions } from '../types/pkg-analyzed';
 import type { BundlibPkgJson } from '../types/pkg-json';
@@ -100,7 +99,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
   const perBuildInterop = resolveInteropOption(resolvedBundlibConfig.interop);
   const perBuildMin = resolveMinOption(resolvedBundlibConfig.min);
 
-  if (!isValidChunks(chunks)) {
+  if (!isDictionaryOrNullish(chunks)) {
     throw error(invalidOptionMessage('chunks'));
   }
 
@@ -128,7 +127,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
   const skipBuild = resolveSkipOption(resolvedBundlibConfig.skip);
 
   if (
-    !isNull(deprecatedMainOptions) && (deprecatedMainOptions !== false) && !(
+    !isNullish(deprecatedMainOptions) && (deprecatedMainOptions !== false) && !(
       isDictionary<ModuleBuildOptions>(deprecatedMainOptions)
       && keysCheck(deprecatedMainOptions, isCJSOptionKey)
     )
@@ -140,7 +139,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
   }
 
   if (
-    !isNull(deprecatedModuleOptions) && (deprecatedModuleOptions !== false) && !(
+    !isNullish(deprecatedModuleOptions) && (deprecatedModuleOptions !== false) && !(
       isDictionary<ModuleBuildOptions>(deprecatedModuleOptions)
       && keysCheck(deprecatedModuleOptions, isModuleOptionKey)
     )
@@ -152,9 +151,9 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
   }
 
   if (
-    !isNull(deprecatedBrowserOptions) && (deprecatedBrowserOptions !== false) && !(
+    !isNullish(deprecatedBrowserOptions) && (deprecatedBrowserOptions !== false) && !(
       isDictionary<BrowserBuildOptions>(deprecatedBrowserOptions)
-      && keysCheck(deprecatedBrowserOptions, isBrowserOption)
+      && keysCheck(deprecatedBrowserOptions, isBrowserOptionKey)
       && isBrowserFormat(deprecatedBrowserOptions.format)
       && (['name', 'id'] as Array<keyof typeof deprecatedBrowserOptions>).every((key) => (
         isStringOrNullish(deprecatedBrowserOptions[key])
@@ -169,7 +168,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
   }
 
   if (
-    !isNull(deprecatedBinaryOptions) && (deprecatedBinaryOptions !== false) && !(
+    !isNullish(deprecatedBinaryOptions) && (deprecatedBinaryOptions !== false) && !(
       isDictionary<ModuleBuildOptions>(deprecatedBinaryOptions)
       && keysCheck(deprecatedBinaryOptions, isCJSOptionKey)
     )
@@ -181,7 +180,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
   }
 
   if (
-    !isNull(deprecatedTypesOptions) && (deprecatedTypesOptions !== false) && !(
+    !isNullish(deprecatedTypesOptions) && (deprecatedTypesOptions !== false) && !(
       isDictionary<DeprecatedTypesOptions>(deprecatedTypesOptions)
       && keysCheck(deprecatedTypesOptions, isTypesOptionKey)
     )
@@ -209,15 +208,15 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     throw error(invalidPkgFieldMessage('bin', 'string'));
   }
 
-  if (!isDictionaryOrNull<Dictionary<string> | Nullish>(runtimeDependencies)) {
+  if (!isDictionaryOrNullish<Dictionary<string> | Nullish>(runtimeDependencies)) {
     throw error(invalidPkgFieldMessage('dependencies', 'Object'));
   }
 
-  if (!isDictionaryOrNull<Dictionary<string> | Nullish>(devDependencies)) {
+  if (!isDictionaryOrNullish<Dictionary<string> | Nullish>(devDependencies)) {
     throw error(invalidPkgFieldMessage('devDependencies', 'Object'));
   }
 
-  if (!isDictionaryOrNull<Dictionary<string> | Nullish>(peerDependencies)) {
+  if (!isDictionaryOrNullish<Dictionary<string> | Nullish>(peerDependencies)) {
     throw error(invalidPkgFieldMessage('peerDependencies', 'Object'));
   }
 
@@ -283,7 +282,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
         perBuildInterop.browser,
       ),
       min: normalizeBooleanOption(deprecatedBrowserOptions, 'min', perBuildMin.browser),
-      format: (deprecatedBrowserOptions && !isNull(deprecatedBrowserOptions.format) ? deprecatedBrowserOptions.format : browserFormat) ?? 'umd',
+      format: (deprecatedBrowserOptions && !isNullish(deprecatedBrowserOptions.format) ? deprecatedBrowserOptions.format : browserFormat) ?? 'umd',
       name: normalizeBuildName(
         cwd,
         deprecatedBrowserOptions ? deprecatedBrowserOptions.name : null,

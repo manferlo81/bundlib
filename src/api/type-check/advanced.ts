@@ -1,6 +1,6 @@
 import { flattenMultilevel, MultilevelArray } from '../tools/multilevel-array';
 import type { AllowNullish, Anything, Dictionary, TypeCastCheckFunction, TypeCheckFunction } from '../types/helper-types';
-import { isDictionary, isNull, isString } from './basic';
+import { isDictionary, isNullish, isString } from './basic';
 
 export function createOneOfLiteral<M>(...values: MultilevelArray<M>): TypeCheckFunction<M> {
 
@@ -20,6 +20,7 @@ export function createOneOfLiteral<M>(...values: MultilevelArray<M>): TypeCheckF
 }
 
 export function composeOneOf<A extends Array<TypeCheckFunction<unknown>>>(...checks: A): TypeCastCheckFunction<A extends Array<TypeCheckFunction<infer T>> ? T : never>;
+export function composeOneOf<A extends TypeCheckFunction<unknown>>(...checks: A[]): TypeCastCheckFunction<A extends TypeCheckFunction<infer T> ? T : never>;
 export function composeOneOf<M>(...checks: Array<TypeCheckFunction<M>>): TypeCastCheckFunction<M>;
 export function composeOneOf<M>(...checks: Array<TypeCheckFunction<M>>): TypeCastCheckFunction<M> {
   return <X = M>(value: unknown): value is X => checks.some(
@@ -27,6 +28,5 @@ export function composeOneOf<M>(...checks: Array<TypeCheckFunction<M>>): TypeCas
   );
 }
 
-export const isStringOrNullish = composeOneOf<AllowNullish<string>>(isNull, isString);
-
-export const isDictionaryOrNull = composeOneOf<AllowNullish<Dictionary<Anything>>>(isNull, isDictionary);
+export const isStringOrNullish = composeOneOf<AllowNullish<string>>(isNullish, isString);
+export const isDictionaryOrNullish = composeOneOf<AllowNullish<Dictionary<Anything>>>(isNullish, isDictionary);

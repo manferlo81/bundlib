@@ -1,6 +1,6 @@
 import type { Anything, Dictionary, Nullish } from '../types/helper-types';
 
-export function isNull(value: unknown): value is Nullish {
+export function isNullish(value: unknown): value is Nullish {
   return value == null;
 }
 
