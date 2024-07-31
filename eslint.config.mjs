@@ -25,7 +25,7 @@ const typescriptRules = pluginRules('@typescript-eslint', {
 
 const stylisticRules = pluginRules('@stylistic', {
   indent: rule(2),
-  'linebreak-style': rule('windows'),
+  'linebreak-style': rule('unix'),
   quotes: rule('single'),
   semi: rule('always'),
   'quote-props': rule('as-needed'),
