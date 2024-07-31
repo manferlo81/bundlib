@@ -53,7 +53,7 @@ export function pkgToConfigs(
     peer: peerDependencies,
   } = dependencies;
 
-  const bundlibCachePath = resolve(cwd, cache || 'node_modules/.cache/bundlib');
+  const bundlibCachePath = resolve(cwd, cache ?? 'node_modules/.cache/bundlib');
   const typescriptCachePath = pathJoin(bundlibCachePath, 'rpt2');
 
   const isNodeJSExternal = createIsExternal(
@@ -174,7 +174,7 @@ export function pkgToConfigs(
 
       pluginJSON({ preferConst: true }),
 
-      declarationDir && typesBuild && typesBuild.equals && pluginEquals({
+      declarationDir && typesBuild.equals && pluginEquals({
         file: resolve(cwd, pathJoin(declarationDir, typesGeneratedFilename)),
       }),
 
@@ -190,7 +190,7 @@ export function pkgToConfigs(
 
       bin && pluginAddShebang({
         include: outputFile,
-        shebang: () => shebang || '#!/usr/bin/env node',
+        shebang: () => shebang ?? '#!/usr/bin/env node',
       }),
 
       mini && pluginTerser({

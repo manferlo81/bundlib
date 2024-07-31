@@ -17,7 +17,7 @@ export function createIsExternal(...args: Array<AllowNullish<readonly string[]>>
   }
 
   // create external data
-  const externalData = filtered.reduce<Dictionary<true>>(
+  const externalData = filtered.reduce<Partial<Dictionary<true>>>(
     (result, dependencies) => {
       return dependencies.reduce((result, dependencyName) => {
         return { ...result, [dependencyName]: true };

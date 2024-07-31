@@ -22,7 +22,7 @@ import { isDictionaryOrNull, isStringOrNullish } from '../type-check/advanced';
 import { isDictionary, isNull } from '../type-check/basic';
 import { invalidKeys, keysCheck } from '../type-check/keys';
 import { DeprecatedTypesOptions } from '../types/deprecated-options';
-import type { AllowNull, Dictionary } from '../types/helper-types';
+import type { AllowNull, Dictionary, Nullish } from '../types/helper-types';
 import type { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalyzed, TypesBuildOptions } from '../types/pkg-analyzed';
 import type { BundlibPkgJson } from '../types/pkg-json';
 import type { RollupSourcemap } from '../types/types';
@@ -209,21 +209,21 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     throw error(invalidPkgFieldMessage('bin', 'string'));
   }
 
-  if (!isDictionaryOrNull<Dictionary<string>>(runtimeDependencies)) {
+  if (!isDictionaryOrNull<Dictionary<string> | Nullish>(runtimeDependencies)) {
     throw error(invalidPkgFieldMessage('dependencies', 'Object'));
   }
 
-  if (!isDictionaryOrNull<Dictionary<string>>(devDependencies)) {
+  if (!isDictionaryOrNull<Dictionary<string> | Nullish>(devDependencies)) {
     throw error(invalidPkgFieldMessage('devDependencies', 'Object'));
   }
 
-  if (!isDictionaryOrNull<Dictionary<string>>(peerDependencies)) {
+  if (!isDictionaryOrNull<Dictionary<string> | Nullish>(peerDependencies)) {
     throw error(invalidPkgFieldMessage('peerDependencies', 'Object'));
   }
 
-  const moduleOutputFile = moduleFieldValue || jsNextFieldValue;
+  const moduleOutputFile = moduleFieldValue ?? jsNextFieldValue;
 
-  const typesOutputFile = typesFieldValue || typings;
+  const typesOutputFile = typesFieldValue ?? typings;
 
   const mainOutput: AllowNull<ModuleBuildOptions> = (deprecatedMainOptions === false || skipBuild.main || !mainOutputFile)
     ? null
@@ -273,14 +273,14 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
       esModule: normalizeBooleanOption(deprecatedBrowserOptions, 'esModule', perBuildESModule.browser),
       interop: normalizeBooleanOption(deprecatedBrowserOptions, 'interop', perBuildInterop.browser),
       min: normalizeBooleanOption(deprecatedBrowserOptions, 'min', perBuildMin.browser),
-      format: (deprecatedBrowserOptions && !isNull(deprecatedBrowserOptions.format) ? deprecatedBrowserOptions.format : browserFormat) || 'umd',
+      format: (deprecatedBrowserOptions && !isNull(deprecatedBrowserOptions.format) ? deprecatedBrowserOptions.format : browserFormat) ?? 'umd',
       name: normalizeBuildName(
         cwd,
         deprecatedBrowserOptions ? deprecatedBrowserOptions.name : null,
         browserName,
         packageName,
       ),
-      id: (deprecatedBrowserOptions && deprecatedBrowserOptions.id) || amdId || null,
+      id: ((deprecatedBrowserOptions && deprecatedBrowserOptions.id) ?? amdId) ?? null,
       globals: normalizeBuildGlobals(
         deprecatedBrowserOptions,
         normalizeGlobals(browserGlobals),
@@ -314,12 +314,12 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     };
 
   const dependencies: Dependencies = {
-    runtime: runtimeDependencies || null,
-    dev: devDependencies || null,
-    peer: peerDependencies || null,
+    runtime: runtimeDependencies ?? null,
+    dev: devDependencies ?? null,
+    peer: peerDependencies ?? null,
   };
 
-  const cache: AllowNull<string> = cacheOption || null;
+  const cache: AllowNull<string> = cacheOption ?? null;
 
   return {
     cwd,
@@ -329,7 +329,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     browser: browserOutput,
     bin: binaryOutput,
     types: typesOutput,
-    chunks: chunks || null,
+    chunks: chunks ?? null,
     dependencies,
     cache,
   };

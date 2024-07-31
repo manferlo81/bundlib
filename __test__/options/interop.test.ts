@@ -67,9 +67,9 @@ describe('"interop" option', () => {
     ];
     values.forEach((value) => {
       void expect(analyzeWithInterop(value)).resolves.toEqual({
-        main: value.indexOf('main') !== -1,
-        browser: value.indexOf('browser') !== -1,
-        bin: value.indexOf('bin') !== -1,
+        main: value.includes('main'),
+        browser: value.includes('browser'),
+        bin: value.includes('bin'),
       });
     });
   });

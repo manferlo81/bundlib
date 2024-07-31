@@ -7,7 +7,7 @@ export function invalidDeprecatedOptionMessage(option: string, type: string) {
 }
 
 export function invalidOptionMessage(optionName: string, urlHash?: string) {
-  return `Invalid "${optionName}" option. Please check the documentation at https://github.com/manferlo81/bundlib#${urlHash || optionName}`;
+  return `Invalid "${optionName}" option. Please check the documentation at https://github.com/manferlo81/bundlib#${urlHash ?? optionName}`;
 }
 
 export function inputNotFoundMessage(type: string) {

@@ -2,7 +2,7 @@ import { dirname, join, relative, resolve } from 'path';
 import type { Plugin } from 'rollup';
 import slash from 'slash';
 import { keys } from '../tools/helpers';
-import type { Dictionary } from '../types/helper-types';
+import type { Dictionary, Void } from '../types/helper-types';
 
 export function pluginChunks(cwd: string, outputDir: string, extensions: string[], map: Dictionary<string>): Plugin {
 
@@ -25,15 +25,13 @@ export function pluginChunks(cwd: string, outputDir: string, extensions: string[
     {},
   );
 
-  function findTarget(resolved: string): string | void {
+  function findTarget(resolved: string): string | Void {
 
     if (resolvedMap[resolved]) {
       return resolvedMap[resolved];
     }
 
-    for (let i = 0; i < extensions.length; i++) {
-
-      const ext = extensions[i];
+    for (const ext of extensions) {
 
       const sourceWithExt = resolved + ext;
       if (resolvedMap[sourceWithExt]) {

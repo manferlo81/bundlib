@@ -30,7 +30,7 @@ export async function action(
     // TODO: Show detected modules & plugins with versions
 
     const { name: projectName, displayName: projectDisplayName, version: projectVersion } = pkg;
-    const prjInfoName = projectDisplayName || projectName;
+    const prjInfoName = projectDisplayName ?? projectName;
 
     if (prjInfoName && projectVersion) {
       log(`${cyan('building:')} ${formatProjectInfo(prjInfoName, projectVersion)}

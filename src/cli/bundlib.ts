@@ -20,9 +20,10 @@ export async function bundlib(
   const configs = await configsFromPkg(cwd, { dev, watch, onwarn }, pkg);
 
   if (watch) {
+    // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
     return watchBuild(configs, emitter);
   }
 
-  return build(configs, emitter);
+  build(configs, emitter);
 
 }

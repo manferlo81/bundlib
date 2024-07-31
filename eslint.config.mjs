@@ -47,25 +47,7 @@ const stylisticRules = pluginRules('@stylistic', {
 
 });
 
-const offRules = (...ruleNames) => ruleNames.reduce((output, ruleName) => ({ ...output, [ruleName]: 'off' }), {});
-
-// These are rules that caused problems when switched to eslint@9 + typescript-eslint + stylistic
-// TODO: I will fix them
-const toBeFixedRules = {
-  ...pluginRules('@typescript-eslint', offRules(
-    'prefer-nullish-coalescing',
-    'no-confusing-void-expression',
-    'no-invalid-void-type',
-    'consistent-type-definitions',
-    'no-unnecessary-condition',
-    'prefer-for-of',
-    'prefer-includes',
-    'only-throw-error',
-    'unified-signatures',
-  )),
-};
-
-const rules = { ...eslintRules, ...typescriptRules, ...stylisticRules, ...toBeFixedRules };
+const rules = { ...eslintRules, ...typescriptRules, ...stylisticRules };
 
 const typescriptFlatConfigs = config(
   ...typescriptConfigs.strictTypeChecked,

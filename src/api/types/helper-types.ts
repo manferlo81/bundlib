@@ -1,5 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Anything = any;
+// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 export type Void = void;
 
 export type Nullish = null | undefined | Void;

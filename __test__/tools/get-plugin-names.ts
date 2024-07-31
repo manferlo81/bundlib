@@ -10,7 +10,7 @@ export async function getAllPluginNames(cwd: string, dev: boolean, pkg: BundlibP
 
 export async function getPluginNames(cwd: string, dev: boolean, pkg: BundlibPkgJson = {}, index = 0): Promise<string[]> {
   const allNames = await getAllPluginNames(cwd, dev, pkg);
-  const names = allNames[index];
-  if (!names) throw null;
+  const names = allNames[index] as string[] | undefined;
+  if (!names) throw new Error('No plugins found');
   return names;
 }

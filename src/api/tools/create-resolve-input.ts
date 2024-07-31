@@ -11,7 +11,7 @@ export function createResolveInput(cwd: string, extensions: string[]): FindInput
 
   return (input: AllowNullish<string>): AllowNullish<string> => {
 
-    const key = input || 'null';
+    const key = input ?? 'null';
     const found = cache[key];
 
     if (found) {

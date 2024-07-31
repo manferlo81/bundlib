@@ -16,11 +16,11 @@ export function isBool(value: unknown): value is boolean {
   return value === true || value === false;
 }
 
-type ArrayIsArray = {
+interface ArrayIsArray {
   <T extends unknown[]>(value: unknown): value is T;
   <T extends readonly unknown[]>(value: unknown): value is T;
   <T>(value: unknown): value is T[];
-};
+}
 
 export const isArray: ArrayIsArray = Array.isArray;
 

@@ -11,6 +11,7 @@ async function configsFromPkg(
 ): Promise<Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>> {
   return pkgToConfigs(
     await analyzePkg(cwd, pkgJson),
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     options || {},
   );
 }
