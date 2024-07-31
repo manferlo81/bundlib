@@ -2,14 +2,14 @@ import type { KeyList, Resolved, SpecialKeys } from 'selective-option';
 import { createBoolBasedResolver } from 'selective-option';
 import { error } from '../errors/error';
 import { invalidOptionMessage } from '../errors/error-messages';
-import type { TypeCheckFunction } from '../types/helper-types';
+import type { AllowNullish, TypeCheckFunction } from '../types/helper-types';
 import { OVERRIDE_KEY } from './consts';
 
 export function resolveBoolBasedSelectiveOption<K extends string, V, D = V>(
   value: unknown,
   allKeys: KeyList<K>,
   specialKeys: SpecialKeys<string, K>,
-  isValidValue: TypeCheckFunction<V>,
+  isValidValue: AllowNullish<TypeCheckFunction<V>>,
   defaultValue: D,
   optionName: string,
   urlHash?: string,

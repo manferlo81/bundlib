@@ -1,13 +1,13 @@
 import { type BundlibPkgJson } from './pkg-json';
 import { type Dictionary, type AllowNull } from './helper-types';
-import { type BrowserBuildFormat, type RollupSourcemap } from './types';
+import { RollupBundlibInterop, RollupEsModuleOption, type BrowserBuildFormat, type RollupSourcemap } from './types';
 
 export interface ModuleBuildOptions {
   input: AllowNull<string>;
   output: string;
   sourcemap: RollupSourcemap;
-  esModule: boolean;
-  interop: boolean;
+  esModule: RollupEsModuleOption;
+  interop: RollupBundlibInterop;
   min: boolean;
   project: AllowNull<string>;
 }

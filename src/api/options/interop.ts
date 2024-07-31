@@ -2,16 +2,24 @@ import type { Resolved } from 'selective-option';
 import { resolveBoolBasedSelectiveOption } from '../selective/bool-based';
 import { API_SPECIAL_KEYS, MODULE_BUILD_KEYS } from '../selective/consts';
 import { isBool } from '../type-check/basic';
-import type { BuildType, SelectiveBooleanOption } from '../types/bundlib-options';
-import type { AllowNullish } from '../types/helper-types';
+import type { BuildType, SelectiveInterop } from '../types/bundlib-options';
+import type { RollupBundlibInterop, RollupInteropOption } from '../types/types';
+import { composeOneOf, createOneOfLiteral } from '../type-check/advanced';
 
-export function resolveInteropOption(value: AllowNullish<SelectiveBooleanOption>): Resolved<BuildType, boolean> {
-  return resolveBoolBasedSelectiveOption<BuildType, boolean>(
+export const isInteropString = createOneOfLiteral<RollupInteropOption>(['default', 'compat', 'auto', 'esModule', 'defaultOnly'] as const);
+
+export const isInteropOption = composeOneOf(
+  isInteropString,
+  isBool,
+);
+
+export function resolveInteropOption(value: SelectiveInterop): Resolved<BuildType, RollupBundlibInterop> {
+  return resolveBoolBasedSelectiveOption<BuildType, RollupBundlibInterop>(
     value,
     MODULE_BUILD_KEYS,
     API_SPECIAL_KEYS,
-    isBool,
-    false,
+    isInteropString,
+    false as boolean,
     'interop',
   );
 }

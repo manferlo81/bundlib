@@ -7,11 +7,11 @@ import { isCJSOptionKey } from '../options/deprecated/main-and-bin';
 import { isModuleOptionKey } from '../options/deprecated/module';
 import { normalizeDeprecatedOption } from '../options/deprecated/normalize';
 import { isTypesOptionKey } from '../options/deprecated/types';
-import { resolveESModuleOption } from '../options/es-module';
+import { isEsModuleOption, resolveESModuleOption } from '../options/es-module';
 import { isBrowserFormat } from '../options/format';
 import { isValidGlobals, normalizeBuildGlobals, normalizeGlobals } from '../options/globals';
 import { resolveInputOption } from '../options/input';
-import { resolveInteropOption } from '../options/interop';
+import { isInteropOption, resolveInteropOption } from '../options/interop';
 import { resolveMinOption } from '../options/min';
 import { normalizeBuildName } from '../options/name';
 import { resolveProjectOption } from '../options/project';
@@ -25,7 +25,7 @@ import { DeprecatedTypesOptions } from '../types/deprecated-options';
 import type { AllowNull, Dictionary, Nullish } from '../types/helper-types';
 import type { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalyzed, TypesBuildOptions } from '../types/pkg-analyzed';
 import type { BundlibPkgJson } from '../types/pkg-json';
-import type { RollupSourcemap } from '../types/types';
+import type { RollupBundlibInterop, RollupEsModuleOption, RollupSourcemap } from '../types/types';
 import { resolveConfig } from './resolve-config';
 
 export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<PkgAnalyzed> {
@@ -236,8 +236,8 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
         isSourcemapOption,
         perBuildSourcemap.main,
       ),
-      esModule: normalizeBooleanOption(deprecatedMainOptions, 'esModule', perBuildESModule.main),
-      interop: normalizeBooleanOption(deprecatedMainOptions, 'interop', perBuildInterop.main),
+      esModule: normalizeDeprecatedOption<'esModule', RollupEsModuleOption>(deprecatedMainOptions, 'esModule', isEsModuleOption, perBuildESModule.main),
+      interop: normalizeDeprecatedOption<'interop', RollupBundlibInterop>(deprecatedMainOptions, 'interop', isInteropOption, perBuildInterop.main),
       min: normalizeBooleanOption(deprecatedMainOptions, 'min', perBuildMin.main),
       project: perBuildProject.main,
     };
@@ -270,8 +270,18 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
         isSourcemapOption,
         perBuildSourcemap.browser,
       ),
-      esModule: normalizeBooleanOption(deprecatedBrowserOptions, 'esModule', perBuildESModule.browser),
-      interop: normalizeBooleanOption(deprecatedBrowserOptions, 'interop', perBuildInterop.browser),
+      esModule: normalizeDeprecatedOption<'esModule', RollupEsModuleOption>(
+        deprecatedBrowserOptions,
+        'esModule',
+        isEsModuleOption,
+        perBuildESModule.browser,
+      ),
+      interop: normalizeDeprecatedOption<'interop', RollupBundlibInterop>(
+        deprecatedBrowserOptions,
+        'interop',
+        isInteropOption,
+        perBuildInterop.browser,
+      ),
       min: normalizeBooleanOption(deprecatedBrowserOptions, 'min', perBuildMin.browser),
       format: (deprecatedBrowserOptions && !isNull(deprecatedBrowserOptions.format) ? deprecatedBrowserOptions.format : browserFormat) ?? 'umd',
       name: normalizeBuildName(
@@ -300,8 +310,18 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
         isSourcemapOption,
         perBuildSourcemap.bin,
       ),
-      esModule: normalizeBooleanOption(deprecatedBinaryOptions, 'esModule', perBuildESModule.bin),
-      interop: normalizeBooleanOption(deprecatedBinaryOptions, 'interop', perBuildInterop.bin),
+      esModule: normalizeDeprecatedOption<'esModule', RollupEsModuleOption>(
+        deprecatedBinaryOptions,
+        'esModule',
+        isEsModuleOption,
+        perBuildESModule.bin,
+      ),
+      interop: normalizeDeprecatedOption<'interop', RollupBundlibInterop>(
+        deprecatedBinaryOptions,
+        'interop',
+        isInteropOption,
+        perBuildInterop.bin,
+      ),
       min: normalizeBooleanOption(deprecatedBinaryOptions, 'min', perBuildMin.bin),
       project: perBuildProject.bin,
     };

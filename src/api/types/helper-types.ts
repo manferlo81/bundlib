@@ -18,3 +18,5 @@ export type IsInstalled = (id: string) => string | undefined | Void;
 
 export type TypeCheckFunction<T> = (value: unknown) => value is T;
 export type TypeCastCheckFunction<T> = <X = T>(value: unknown) => value is X;
+
+export type SelectFrom<P, T extends P> = T extends P ? T : never;

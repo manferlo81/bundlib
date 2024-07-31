@@ -19,6 +19,8 @@ export function createOneOfLiteral<M>(...values: MultilevelArray<M>): TypeCheckF
 
 }
 
+export function composeOneOf<A extends Array<TypeCheckFunction<unknown>>>(...checks: A): TypeCastCheckFunction<A extends Array<TypeCheckFunction<infer T>> ? T : never>;
+export function composeOneOf<M>(...checks: Array<TypeCheckFunction<M>>): TypeCastCheckFunction<M>;
 export function composeOneOf<M>(...checks: Array<TypeCheckFunction<M>>): TypeCastCheckFunction<M> {
   return <X = M>(value: unknown): value is X => checks.some(
     (check) => check(value),

@@ -1,17 +1,25 @@
 import type { Resolved } from 'selective-option';
 import { resolveBoolBasedSelectiveOption } from '../selective/bool-based';
 import { API_SPECIAL_KEYS, MODULE_BUILD_KEYS } from '../selective/consts';
+import type { BuildType, SelectiveEsModule } from '../types/bundlib-options';
+import { composeOneOf, createOneOfLiteral } from '../type-check/advanced';
+import { RollupEsModuleString } from '../types/types';
 import { isBool } from '../type-check/basic';
-import type { BuildType, SelectiveBooleanOption } from '../types/bundlib-options';
-import type { AllowNullish } from '../types/helper-types';
 
-export function resolveESModuleOption(value: AllowNullish<SelectiveBooleanOption>): Resolved<BuildType, boolean> {
-  return resolveBoolBasedSelectiveOption<BuildType, boolean, false>(
+export const isEsModuleString = createOneOfLiteral('if-default-prop' as const);
+
+export const isEsModuleOption = composeOneOf(
+  isEsModuleString,
+  isBool,
+);
+
+export function resolveESModuleOption(value: SelectiveEsModule): Resolved<BuildType, RollupEsModuleString | boolean> {
+  return resolveBoolBasedSelectiveOption(
     value,
     MODULE_BUILD_KEYS,
     API_SPECIAL_KEYS,
-    isBool,
-    false,
+    isEsModuleString,
+    false as boolean,
     'esModule',
     'esmodule',
   );

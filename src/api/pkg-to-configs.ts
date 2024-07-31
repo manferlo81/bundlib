@@ -26,7 +26,13 @@ import { keys } from './tools/helpers';
 import { renamePre } from './tools/rename-pre';
 import type { Dictionary, AllowNullish, TypeCheckFunction } from './types/helper-types';
 import type { PkgAnalyzed } from './types/pkg-analyzed';
-import type { BundlibAPIOptions, BundlibRollupBrowseOutputOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types/types';
+import type { BundlibAPIOptions, BundlibRollupBrowseOutputOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupBundlibInterop, RollupInteropOption, RollupSourcemap } from './types/types';
+
+function convertInterop(interopBool: RollupBundlibInterop): RollupInteropOption {
+  if (interopBool === true) return 'compat';
+  if (interopBool === false) return 'default';
+  return interopBool;
+}
 
 export function pkgToConfigs(
   analyzed: PkgAnalyzed,
@@ -219,7 +225,7 @@ export function pkgToConfigs(
     }
 
     const outputFile = resolve(cwd, output);
-    const interop = interopBool ? 'compat' : 'default';
+    const interop = convertInterop(interopBool);
 
     const outputOptions: BundlibRollupModuleOutputOptions = {
       file: outputFile,
@@ -322,7 +328,7 @@ export function pkgToConfigs(
     }
 
     const outputFile = resolve(cwd, output);
-    const interop = interopBool ? 'compat' : 'default';
+    const interop = convertInterop(interopBool);
 
     const outputOptions: BundlibRollupModuleOutputOptions = {
       file: outputFile,
@@ -391,7 +397,7 @@ export function pkgToConfigs(
     }
 
     const browserOutputFile = resolve(cwd, output);
-    const interop = interopBool ? 'compat' : 'default';
+    const interop = convertInterop(interopBool);
     const globals = inputGlobals ?? {};
 
     let outputOptions: BundlibRollupBrowseOutputOptions = {
@@ -476,7 +482,7 @@ export function pkgToConfigs(
     }
 
     const outputFile = resolve(cwd, output);
-    const interop = interopBool ? 'compat' : 'default';
+    const interop = convertInterop(interopBool);
 
     const outputOptions: BundlibRollupModuleOutputOptions = {
       file: outputFile,

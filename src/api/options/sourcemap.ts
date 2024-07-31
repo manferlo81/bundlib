@@ -4,10 +4,12 @@ import { API_SPECIAL_KEYS, MODULE_BUILD_KEYS } from '../selective/consts';
 import { composeOneOf, createOneOfLiteral } from '../type-check/advanced';
 import { isBool } from '../type-check/basic';
 import type { BuildType, SelectiveSourcemap } from '../types/bundlib-options';
-import type { RollupSourcemap } from '../types/types';
+import type { RollupSourcemap, RollupSourcemapString } from '../types/types';
+
+export const isSourcemapStringOption = createOneOfLiteral<RollupSourcemapString>(['inline', 'hidden'] as const);
 
 export const isSourcemapOption = composeOneOf<RollupSourcemap>(
-  createOneOfLiteral('inline', 'hidden'),
+  isSourcemapStringOption,
   isBool,
 );
 
@@ -16,7 +18,7 @@ export const resolveSourcemapOption = (value: SelectiveSourcemap): SelectiveReso
     value,
     MODULE_BUILD_KEYS,
     API_SPECIAL_KEYS,
-    isSourcemapOption,
+    isSourcemapStringOption,
     true,
     'sourcemap',
   )

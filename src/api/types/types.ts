@@ -1,11 +1,17 @@
-import type { IsExternal, OutputOptions as RollupOutputOptions, Plugin, RollupOptions, WarningHandlerWithDefault, WatcherOptions as RollupWatcherOptions } from 'rollup';
-import type { AllowNullish, Dictionary } from './helper-types';
+import type { IsExternal, ModuleFormat, Plugin, RollupOptions, OutputOptions as RollupOutputOptions, WatcherOptions as RollupWatcherOptions, WarningHandlerWithDefault } from 'rollup';
+import type { AllowNullish, Dictionary, SelectFrom } from './helper-types';
 
-export type RollupSourcemapString = 'inline' | 'hidden';
-export type RollupSourcemap = boolean | RollupSourcemapString;
+export type RollupSourcemap = Extract<RollupOutputOptions['sourcemap'], string | boolean>;
+export type RollupSourcemapString = Exclude<RollupSourcemap, boolean>;
 
-export type ModuleBuildFormat = 'cjs' | 'es';
-export type BrowserBuildFormat = 'iife' | 'amd' | 'umd';
+export type RollupEsModuleOption = Extract<RollupOutputOptions['esModule'], string | boolean>;
+export type RollupEsModuleString = Exclude<RollupEsModuleOption, boolean>;
+
+export type RollupInteropOption = Exclude<RollupOutputOptions['interop'], AllowNullish<CallableFunction>>;
+export type RollupBundlibInterop = Extract<RollupInteropOption, string> | boolean;
+
+export type ModuleBuildFormat = SelectFrom<ModuleFormat, 'cjs' | 'es'>;
+export type BrowserBuildFormat = SelectFrom<ModuleFormat, 'iife' | 'amd' | 'umd'>;
 
 export type BundlibBuildFormat = ModuleBuildFormat | BrowserBuildFormat;
 
@@ -13,11 +19,11 @@ export interface BundlibRollupModuleOutputOptions extends RollupOutputOptions {
   file: string;
   format: BundlibBuildFormat;
   sourcemap: RollupSourcemap;
-  esModule: RollupOutputOptions['esModule'];
-  interop: Exclude<RollupOutputOptions['interop'], AllowNullish<CallableFunction>>;
+  esModule: RollupEsModuleOption;
+  interop: RollupInteropOption;
 }
 
-export interface BundlibRollupBrowseOutputOptions extends BundlibRollupModuleOutputOptions {
+export interface BundlibRollupBrowseOutputOptions extends Omit<BundlibRollupModuleOutputOptions, 'format'> {
   format: BrowserBuildFormat;
   extend: boolean;
   globals: Dictionary<string>;
@@ -26,7 +32,7 @@ export interface BundlibRollupBrowseOutputOptions extends BundlibRollupModuleOut
   };
 }
 
-export interface BundlibRollupBrowseOutputOptionsWithName extends BundlibRollupBrowseOutputOptions {
+export interface BundlibRollupBrowseOutputOptionsWithName extends Omit<BundlibRollupBrowseOutputOptions, 'format'> {
   format: 'iife' | 'umd';
   name: string;
 }
