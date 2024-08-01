@@ -1,22 +1,24 @@
 import type { BundlibConfig } from './bundlib-options';
-import type { Dictionary } from './helper-types';
+
+type PkgJsonRecord<K extends string, T> = Readonly<Record<K, T>>;
 
 export type PkgJsonModuleType = 'commonjs' | 'module';
 
-type PkgJsonExportsValue = string | PkgJsonExportsObject;
-export type PkgJsonExportsPaths = Dictionary<PkgJsonExportsValue>;
+export type PkgJsonExportsPath = `./${string}`;
+export type PkgJsonExportsValue = PkgJsonExportsPath | PkgJsonExportsObject;
+export type PkgJsonExportsPathsObject = PkgJsonRecord<PkgJsonExportsPath, PkgJsonExportsValue>;
 
-interface PkgJsonExportsObject {
-  readonly node?: PkgJsonExportsValue;
+export interface PkgJsonExportsObject {
   readonly import?: PkgJsonExportsValue;
   readonly require?: PkgJsonExportsValue;
+  readonly node?: PkgJsonExportsValue;
   readonly types?: PkgJsonExportsValue;
   readonly default?: PkgJsonExportsValue;
 }
 
-type PkgJsonExports = PkgJsonExportsPaths | PkgJsonExportsObject;
+type PkgJsonExports = PkgJsonExportsPathsObject | PkgJsonExportsValue;
 
-type PkgJsonDependencies = Readonly<Dictionary<string>>;
+type PkgJsonDependencies = PkgJsonRecord<string, string>;
 
 export interface BundlibPkgJson {
   readonly name?: string;
