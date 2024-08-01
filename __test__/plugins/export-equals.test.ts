@@ -1,12 +1,10 @@
-import { greenBright, magentaBright, redBright } from '../../src/cli/tools/colors';
+import { buildTypeColor, filenameColor, javascriptValueColor, packageFieldColor, packageNameColor } from '../tools/colors';
 import { getAllPluginNames } from '../tools/get-plugin-names';
 import { mockFS2, mockGetPluginNames } from '../tools/mock-fs';
 
-const pluginPkgName = 'rollup-plugin-export-equals';
+const pluginPackageName = packageNameColor('rollup-plugin-export-equals');
 
-const _pluginPkgName = magentaBright(pluginPkgName);
-
-describe(`${_pluginPkgName} plugin`, () => {
+describe(`${pluginPackageName} plugin`, () => {
 
   const cwd = process.cwd();
   const pluginName = 'export-equals';
@@ -20,7 +18,7 @@ describe(`${_pluginPkgName} plugin`, () => {
   const bundlib = { input: { api: 'src/api/index.ts', bin: 'src/cli/index.ts' }, equals: true };
 
   outputFields.forEach(({ field, text }) => {
-    test(`Should not use ${_pluginPkgName} on ${greenBright(text)} if "${redBright('equals')}" option set to ${redBright('false')}`, async () => {
+    test(`Should not use ${pluginPackageName} on ${buildTypeColor(text)} if ${packageFieldColor('"equals"')} option set to ${javascriptValueColor('false')}`, async () => {
       const plugins = await mockGetPluginNames(cwd, {
         bundlib: { ...bundlib, equals: false },
         [field]: 'output.js',
@@ -34,7 +32,7 @@ describe(`${_pluginPkgName} plugin`, () => {
   });
 
   outputFields.forEach(({ field, text }) => {
-    test(`Should not use ${_pluginPkgName} on ${greenBright(text)} if no ${magentaBright('package.json')} "${redBright('types')}" field`, async () => {
+    test(`Should not use ${pluginPackageName} on ${buildTypeColor(text)} if no ${filenameColor('package.json')} ${packageFieldColor('"types"')} field`, async () => {
       const plugins = await mockGetPluginNames(cwd, {
         bundlib,
         [field]: 'output.js',
@@ -46,7 +44,7 @@ describe(`${_pluginPkgName} plugin`, () => {
     });
   });
 
-  test(`Should use ${_pluginPkgName} only on first build`, async () => {
+  test(`Should use ${pluginPackageName} only on first build`, async () => {
 
     const [modulePlugins, mainPlugins, browserPlugins] = await mockFS2(() => {
       return getAllPluginNames(cwd, false, {
@@ -66,7 +64,7 @@ describe(`${_pluginPkgName} plugin`, () => {
     expect(browserPlugins).not.toContain(pluginName);
   });
 
-  test(`Should not use ${_pluginPkgName} on ${greenBright('Binary build')}`, async () => {
+  test(`Should not use ${pluginPackageName} on ${buildTypeColor('Binary build')}`, async () => {
     const plugins = await mockGetPluginNames(cwd, {
       bundlib,
       bin: 'output.js',

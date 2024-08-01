@@ -1,0 +1,1 @@
+export { magentaBright as packageNameColor, greenBright as buildTypeColor, redBright as packageFieldColor, blueBright as javascriptValueColor, yellow as filenameColor } from '../../src/cli/tools/colors';

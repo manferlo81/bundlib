@@ -1,11 +1,12 @@
 import { DirectoryItems } from 'mock-fs/lib/filesystem';
 import { mockAnalyzeWithPkg, mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs';
+import { filenameColor, javascriptValueColor, packageFieldColor } from '../tools/colors';
 
-describe('package.json "bundlib" field', () => {
+describe(`${filenameColor('package.json')} ${packageFieldColor('"bundlib"')} field`, () => {
 
   const cwd = process.cwd();
 
-  test('Should throw on invalid "bundlib" field', () => {
+  test(`Should ${javascriptValueColor('throw')} on invalid ${packageFieldColor('"bundlib"')} field`, () => {
 
     const invalidBundlibConfig = [
       1,
@@ -18,7 +19,7 @@ describe('package.json "bundlib" field', () => {
 
   });
 
-  test('Should use "bundlib" field as config path', async () => {
+  test(`Should use ${packageFieldColor('"bundlib"')} field as config path`, async () => {
 
     const name = 'library';
     const configPath = 'bundlib.json';
@@ -40,7 +41,7 @@ describe('package.json "bundlib" field', () => {
 
   });
 
-  test('Should use "bundlib" field as config', async () => {
+  test(`Should use ${packageFieldColor('"bundlib"')} field as config`, async () => {
 
     const name = 'library';
     const config = { name };

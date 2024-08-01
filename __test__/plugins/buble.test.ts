@@ -1,17 +1,17 @@
-import { greenBright, magentaBright, redBright } from '../../src/cli/tools/colors';
+import { buildTypeColor, packageFieldColor, packageNameColor } from '../tools/colors';
 import { mockGetPluginNames } from '../tools/mock-fs';
 
-const babelPkgName = '@babel/core';
+const babelPackageDepName = '@babel/core';
 
-const _pluginPkgName = magentaBright('@rollup/plugin-buble');
-const _babelPkgName = magentaBright(babelPkgName);
+const pluginPackageName = packageNameColor('@rollup/plugin-buble');
+const babelPackageName = packageNameColor(babelPackageDepName);
 
-describe(`${_pluginPkgName} plugin`, () => {
+describe(`${pluginPackageName} plugin`, () => {
 
   const cwd = process.cwd();
   const pluginName = 'buble';
 
-  const deps = { [babelPkgName]: '*' };
+  const deps = { [babelPackageDepName]: '*' };
 
   const outputFields = [
     { field: 'main', text: 'CommonJS Module' },
@@ -23,7 +23,7 @@ describe(`${_pluginPkgName} plugin`, () => {
   const dependenciesFields = ['dependencies', 'devDependencies'];
 
   outputFields.forEach(({ field, text }) => {
-    test(`Should use ${_pluginPkgName} on ${greenBright(text)} if ${_babelPkgName} not installed`, async () => {
+    test(`Should use ${pluginPackageName} on ${buildTypeColor(text)} if ${babelPackageName} not installed`, async () => {
       const names = await mockGetPluginNames(cwd, {
         [field]: 'output.js',
       });
@@ -33,7 +33,7 @@ describe(`${_pluginPkgName} plugin`, () => {
 
   dependenciesFields.forEach((depField) => {
     outputFields.forEach(({ field, text }) => {
-      test(`Should not use ${_pluginPkgName} on ${greenBright(text)} if ${_babelPkgName} installed as "${redBright(depField)}"`, async () => {
+      test(`Should not use ${pluginPackageName} on ${buildTypeColor(text)} if ${babelPackageName} installed as ${packageFieldColor(`"${depField}"`)}`, async () => {
         const names = await mockGetPluginNames(cwd, {
           [field]: 'output.js',
           [depField]: deps,

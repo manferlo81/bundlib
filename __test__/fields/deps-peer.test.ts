@@ -1,6 +1,7 @@
+import { packageFieldColor } from '../tools/colors';
 import { mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs';
 
-describe('package.json "peerDependencies" field', () => {
+describe(`package.json ${packageFieldColor('"peerDependencies"')} field`, () => {
 
   const cwd = process.cwd();
 

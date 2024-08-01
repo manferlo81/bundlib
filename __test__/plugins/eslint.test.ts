@@ -1,12 +1,12 @@
-import { greenBright, magentaBright, redBright } from '../../src/cli/tools/colors';
+import { buildTypeColor, packageFieldColor, packageNameColor } from '../tools/colors';
 import { mockGetPluginNames } from '../tools/mock-fs';
 
-const eslintPkgName = 'eslint';
+const eslintPackageDepName = 'eslint';
 
-const _pluginPkgName = magentaBright('rollup-plugin-eslint');
-const _eslintPkgName = magentaBright(eslintPkgName);
+const pluginPackageName = packageNameColor('rollup-plugin-eslint');
+const eslintPackageName = packageNameColor(eslintPackageDepName);
 
-describe(`${_pluginPkgName} plugin`, () => {
+describe(`${pluginPackageName} plugin`, () => {
 
   const cwd = process.cwd();
   const pluginName = 'eslint';
@@ -21,7 +21,7 @@ describe(`${_pluginPkgName} plugin`, () => {
   const dependenciesFields = ['dependencies', 'devDependencies'];
 
   outputFields.forEach(({ field, text }) => {
-    test(`Should not use ${_pluginPkgName} on ${greenBright(text)} if ${_eslintPkgName} not installed`, async () => {
+    test(`Should not use ${pluginPackageName} on ${buildTypeColor(text)} if ${eslintPackageName} not installed`, async () => {
       const plugins = await mockGetPluginNames(cwd, {
         [field]: 'output.js',
       });
@@ -31,7 +31,7 @@ describe(`${_pluginPkgName} plugin`, () => {
 
   dependenciesFields.forEach((depField) => {
     outputFields.forEach(({ field, text }) => {
-      test(`Should use ${_pluginPkgName} on ${greenBright(text)} if ${_eslintPkgName} installed as "${redBright(depField)}"`, async () => {
+      test(`Should use ${pluginPackageName} on ${buildTypeColor(text)} if ${eslintPackageName} installed as ${packageFieldColor(`"${depField}"`)}`, async () => {
         const [plugins] = await mockGetPluginNames(cwd, {
           [field]: 'output.js',
           [depField]: deps,

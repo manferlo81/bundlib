@@ -1,9 +1,9 @@
-import { greenBright, magentaBright } from '../../src/cli/tools/colors';
+import { buildTypeColor, packageNameColor } from '../tools/colors';
 import { mockGetPluginNames } from '../tools/mock-fs';
 
-const _pluginPkgName = magentaBright('@rollup/plugin-node-resolve');
+const pluginPackageName = packageNameColor('@rollup/plugin-node-resolve');
 
-describe(`${_pluginPkgName} plugin`, () => {
+describe(`${pluginPackageName} plugin`, () => {
 
   const cwd = process.cwd();
   const pluginName = 'node-resolve';
@@ -16,7 +16,7 @@ describe(`${_pluginPkgName} plugin`, () => {
   ];
 
   outputFields.forEach(({ field, text }) => {
-    test(`Should use ${_pluginPkgName} on ${greenBright(text)}`, async () => {
+    test(`Should use ${pluginPackageName} on ${buildTypeColor(text)}`, async () => {
       const plugins = await mockGetPluginNames(cwd, {
         [field]: 'output.js',
       });

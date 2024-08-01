@@ -1,6 +1,7 @@
+import { filenameColor, javascriptValueColor, packageFieldColor } from '../tools/colors';
 import { mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs';
 
-describe('package.json types', () => {
+describe(`${filenameColor('package.json')} ${packageFieldColor('"types"')} and ${packageFieldColor('"typings"')} fields`, () => {
 
   const cwd = process.cwd();
 
@@ -8,7 +9,7 @@ describe('package.json types', () => {
   //   return mockAnalyzeWithPkgEmptyConfig(cwd, { [field]: value });
   // };
 
-  test('Should set types to null if no "types" | "typings" field present', async () => {
+  test(`Should set types to ${javascriptValueColor('null')} if no ${packageFieldColor('"types"')} | ${packageFieldColor('"typings"')} field present`, async () => {
 
     const analyzed = await mockAnalyzeWithPkgEmptyConfig(cwd, {});
     const { types } = analyzed;
@@ -17,7 +18,7 @@ describe('package.json types', () => {
 
   });
 
-  test('Should read "types" field', async () => {
+  test(`Should read ${packageFieldColor('"types"')} field`, async () => {
 
     const types = 'types.d.ts';
     const analyzed = await mockAnalyzeWithPkgEmptyConfig(cwd, { types });
@@ -30,7 +31,7 @@ describe('package.json types', () => {
 
   });
 
-  test('Should read "typings" field', async () => {
+  test(`Should read ${packageFieldColor('"typings"')} field`, async () => {
 
     const typings = 'typings.d.ts';
     const analyzed = await mockAnalyzeWithPkgEmptyConfig(cwd, { typings });
@@ -44,7 +45,7 @@ describe('package.json types', () => {
 
   });
 
-  test('Should read "types" over "typings" field', async () => {
+  test(`Should read ${packageFieldColor('"types"')} over ${packageFieldColor('"typings"')} field`, async () => {
 
     const typesField = 'types.d.ts';
 

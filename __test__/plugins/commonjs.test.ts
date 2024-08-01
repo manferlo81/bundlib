@@ -1,9 +1,9 @@
-import { greenBright, magentaBright } from '../../src/cli/tools/colors';
+import { buildTypeColor, packageNameColor } from '../tools/colors';
 import { mockGetPluginNames } from '../tools/mock-fs';
 
-const _pluginPkgName = magentaBright('@rollup/plugin-commonjs');
+const pluginPackageName = packageNameColor('@rollup/plugin-commonjs');
 
-describe(`${_pluginPkgName} plugin`, () => {
+describe(`${pluginPackageName} plugin`, () => {
 
   const cwd = process.cwd();
   const pluginName = 'commonjs';
@@ -14,7 +14,7 @@ describe(`${_pluginPkgName} plugin`, () => {
     { field: 'bin', text: 'Binary build' },
   ];
 
-  test(`Should use ${_pluginPkgName} on ${greenBright('Browser build')}`, async () => {
+  test(`Should use ${pluginPackageName} on ${buildTypeColor('Browser build')}`, async () => {
     const names = await mockGetPluginNames(cwd, {
       browser: 'output.js',
     });
@@ -22,7 +22,7 @@ describe(`${_pluginPkgName} plugin`, () => {
   });
 
   outputFields.forEach(({ field, text }) => {
-    test(`Should not use ${_pluginPkgName} on ${greenBright(text)}`, async () => {
+    test(`Should not use ${pluginPackageName} on ${buildTypeColor(text)}`, async () => {
       const plugins = await mockGetPluginNames(cwd, {
         [field]: 'output.js',
       });

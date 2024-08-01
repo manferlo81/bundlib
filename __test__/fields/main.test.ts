@@ -1,12 +1,13 @@
+import { filenameColor, javascriptValueColor, packageFieldColor } from '../tools/colors';
 import { mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs';
 
-describe('package.json "main" field', () => {
+describe(`${filenameColor('package.json')} ${packageFieldColor('"main"')} field`, () => {
 
   const cwd = process.cwd();
 
   const mockAnalyzeWithMainField = (main: string) => mockAnalyzeWithPkgEmptyConfig(cwd, { main });
 
-  test('Should throw on invalid "main" field', () => {
+  test(`Should ${javascriptValueColor('throw')} on invalid ${packageFieldColor('"main"')} field`, () => {
 
     const invalidMainFields = [
       1,
@@ -19,7 +20,7 @@ describe('package.json "main" field', () => {
 
   });
 
-  test('Should read "main" field', async () => {
+  test(`Should read ${packageFieldColor('"main"')} field`, async () => {
 
     const mainField = 'main.js';
     const analyzed = await mockAnalyzeWithMainField(mainField);

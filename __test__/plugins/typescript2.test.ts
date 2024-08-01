@@ -1,17 +1,17 @@
-import { greenBright, magentaBright, redBright } from '../../src/cli/tools/colors';
+import { buildTypeColor, packageFieldColor, packageNameColor } from '../tools/colors';
 import { mockGetPluginNames } from '../tools/mock-fs';
 
-const typescriptPkgName = 'typescript';
+const typescriptPackageDepName = 'typescript';
 
-const _pluginPkgName = magentaBright('rollup-plugin-typescript2');
-const _typescriptPkgName = magentaBright(typescriptPkgName);
+const pluginPackageName = packageNameColor('rollup-plugin-typescript2');
+const typescriptPackageName = packageNameColor(typescriptPackageDepName);
 
-describe(`${_pluginPkgName} plugin`, () => {
+describe(`${pluginPackageName} plugin`, () => {
 
   const cwd = process.cwd();
 
   const pluginName = 'rpt2';
-  const deps = { [typescriptPkgName]: '*' };
+  const deps = { [typescriptPackageDepName]: '*' };
 
   const outputFields: Array<{ field: string; text: string }> = [
     { field: 'main', text: 'CommonJS Module' },
@@ -25,7 +25,7 @@ describe(`${_pluginPkgName} plugin`, () => {
   const bundlib = { input: { api: 'src/api/index.ts', bin: 'src/cli/index.ts' } };
 
   outputFields.forEach(({ field, text }) => {
-    test(`Should not use ${_pluginPkgName} on ${greenBright(text)} if input is javascript file`, async () => {
+    test(`Should not use ${pluginPackageName} on ${buildTypeColor(text)} if input is javascript file`, async () => {
       const plugins = await mockGetPluginNames(cwd, {
         bundlib: { input: { api: 'src/api/index.js', bin: 'src/cli/index.js' } },
         [field]: 'output.js',
@@ -36,7 +36,7 @@ describe(`${_pluginPkgName} plugin`, () => {
 
   dependenciesFields.forEach((depField) => {
     outputFields.forEach(({ field, text }) => {
-      test(`Should not use ${_pluginPkgName} on ${greenBright(text)} if ${_typescriptPkgName} installed as "${redBright(depField)}" and input is javascript file`, async () => {
+      test(`Should not use ${pluginPackageName} on ${buildTypeColor(text)} if ${typescriptPackageName} installed as ${packageFieldColor(`"${depField}"`)} and input is javascript file`, async () => {
         const plugins = await mockGetPluginNames(cwd, {
           bundlib: { input: { api: 'src/api/index.js', bin: 'src/cli/index.js' } },
           [field]: 'output.js',
@@ -47,7 +47,7 @@ describe(`${_pluginPkgName} plugin`, () => {
     });
 
     outputFields.forEach(({ field, text }) => {
-      test(`Should use ${_pluginPkgName} on ${greenBright(text)} if ${_typescriptPkgName} installed as "${redBright(depField)}"`, async () => {
+      test(`Should use ${pluginPackageName} on ${buildTypeColor(text)} if ${typescriptPackageName} installed as ${packageFieldColor(`"${depField}"`)}`, async () => {
         const plugins = await mockGetPluginNames(cwd, {
           bundlib,
           [field]: 'output.js',

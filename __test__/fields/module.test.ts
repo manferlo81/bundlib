@@ -1,13 +1,14 @@
+import { filenameColor, javascriptValueColor, packageFieldColor } from '../tools/colors';
 import { mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs';
 
-describe('package.json "module" field', () => {
+describe(`${filenameColor('package.json')} ${packageFieldColor('"module"')} and ${packageFieldColor('"jsnext:main"')} fields`, () => {
 
   const cwd = process.cwd();
 
   const mockAnalyzeWithModuleField = (module: string) => mockAnalyzeWithPkgEmptyConfig(cwd, { module });
   const mockAnalyzeWithJSNextField = (jsnext: string) => mockAnalyzeWithPkgEmptyConfig(cwd, { 'jsnext:main': jsnext });
 
-  test('Should throw on invalid "module" field', () => {
+  test(`Should ${javascriptValueColor('throw')} on invalid ${packageFieldColor('"module"')} field`, () => {
 
     const invalidModuleFields = [
       1,
@@ -20,7 +21,7 @@ describe('package.json "module" field', () => {
 
   });
 
-  test('Should throw on invalid "jsnext:main" field', () => {
+  test(`Should ${javascriptValueColor('throw')} on invalid ${packageFieldColor('"jsnext:main"')} field`, () => {
 
     const invalidModuleFields = [
       1,
@@ -35,7 +36,7 @@ describe('package.json "module" field', () => {
 
   });
 
-  test('Should read "module" field', async () => {
+  test(`Should read ${packageFieldColor('"module"')} field`, async () => {
 
     const moduleField = 'out/lib.js';
     const analyzed = await mockAnalyzeWithModuleField(moduleField);
@@ -45,7 +46,7 @@ describe('package.json "module" field', () => {
 
   });
 
-  test('Should fallback to "jsnext:main" field', async () => {
+  test(`Should fallback to ${packageFieldColor('"jsnext:main"')} field`, async () => {
 
     const moduleField = 'out/lib.js';
     const analyzed = await mockAnalyzeWithJSNextField(moduleField);
@@ -55,7 +56,7 @@ describe('package.json "module" field', () => {
 
   });
 
-  test('Should read "module" over "jsnext:main" field', async () => {
+  test(`Should read ${packageFieldColor('"module"')} over ${packageFieldColor('"jsnext:main"')} field`, async () => {
 
     const moduleField = 'module.js';
     const analyzed = await mockAnalyzeWithPkgEmptyConfig(cwd, {

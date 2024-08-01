@@ -1,9 +1,9 @@
-import { greenBright, magentaBright } from '../../src/cli/tools/colors';
+import { buildTypeColor, packageNameColor } from '../tools/colors';
 import { mockGetPluginNames } from '../tools/mock-fs';
 
-const _pluginPkgName = magentaBright('rollup-plugin-add-shebang');
+const pluginPackageName = packageNameColor('rollup-plugin-add-shebang');
 
-describe(`${_pluginPkgName} plugin`, () => {
+describe(`${pluginPackageName} plugin`, () => {
 
   const cwd = process.cwd();
   const pluginName = 'shebang';
@@ -15,13 +15,13 @@ describe(`${_pluginPkgName} plugin`, () => {
   ];
 
   outputFields.forEach(({ field, text }) => {
-    test(`Should not use ${_pluginPkgName} on ${greenBright(text)}`, () => {
+    test(`Should not use ${pluginPackageName} on ${buildTypeColor(text)}`, () => {
       const promise = mockGetPluginNames(cwd, { [field]: 'output.js' });
       return expect(promise).resolves.not.toContain(pluginName);
     });
   });
 
-  test(`Should use ${_pluginPkgName} on ${greenBright('Binary build')}`, () => {
+  test(`Should use ${pluginPackageName} on ${buildTypeColor('Binary build')}`, () => {
     const promise = mockGetPluginNames(cwd, { bin: 'output.js' });
     return expect(promise).resolves.toContain(pluginName);
   });

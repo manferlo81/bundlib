@@ -1,6 +1,7 @@
+import { filenameColor, javascriptValueColor, packageFieldColor } from '../tools/colors';
 import { mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs';
 
-describe('package.json "browser" field', () => {
+describe(`${filenameColor('package.json')} ${packageFieldColor('"browser"')} field`, () => {
 
   const cwd = process.cwd();
 
@@ -8,7 +9,7 @@ describe('package.json "browser" field', () => {
     return mockAnalyzeWithPkgEmptyConfig(cwd, { browser });
   };
 
-  test('Should throw on invalid "browser" field', () => {
+  test(`Should ${javascriptValueColor('throw')} on invalid ${packageFieldColor('"browser"')} field`, () => {
 
     const invalidBrowserPaths = [
       1,
@@ -21,7 +22,7 @@ describe('package.json "browser" field', () => {
 
   });
 
-  test('Should read "browser" field', async () => {
+  test(`Should read ${packageFieldColor('"browser"')} field`, async () => {
 
     const browserField = 'browser.js';
     const analyzed = await mockAnalyzeWithBrowserField(browserField);
