@@ -17,6 +17,7 @@ export type Nullable<T> = AllowNullish<T>;
 export type IsInstalled = (id: string) => string | undefined | Void;
 
 export type TypeCheckFunction<T> = (value: unknown) => value is T;
-export type TypeCastCheckFunction<T> = <X = T>(value: unknown) => value is X;
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
+export type TypeCastCheckFunction<T> = <X extends T = T>(value: unknown) => value is X;
 
 export type SelectFrom<P, T extends P> = T extends P ? T : never;

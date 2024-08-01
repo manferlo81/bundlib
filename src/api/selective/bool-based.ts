@@ -25,7 +25,8 @@ export function resolveBoolBasedSelectiveOption<K extends string, V, D = V>(
 
   try {
     return resolveBoolBased(value as never);
-  } catch (e) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (_) {
     throw error(invalidOptionMessage(optionName, urlHash));
   }
 

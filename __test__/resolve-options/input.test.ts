@@ -3,14 +3,11 @@ import { MODULE_BUILD_KEYS } from '../../src/api/selective/consts';
 import { type BuildType } from '../../src/api/types/bundlib-options';
 import { createSelectiveResult, isApiKey, type GetSelectiveResultValue } from '../tools/selective-tools';
 
-isApiKey;
-
 describe('resolve "input" option', () => {
 
   const createResult = <V>(getValue: GetSelectiveResultValue<BuildType, V>) => {
     return createSelectiveResult<BuildType, V>(MODULE_BUILD_KEYS, getValue);
   };
-  createResult;
 
   test('Should throw on invalid "input" option', () => {
 

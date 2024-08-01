@@ -17,13 +17,16 @@ export function isBool(value: unknown): value is boolean {
 }
 
 interface ArrayIsArray {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
   <T extends unknown[]>(value: unknown): value is T;
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
   <T extends readonly unknown[]>(value: unknown): value is T;
   <T>(value: unknown): value is T[];
 }
 
 export const isArray: ArrayIsArray = Array.isArray;
 
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
 export function isDictionary<T extends Dictionary<Anything> = Dictionary<unknown>>(value: unknown): value is T {
   return isObject(value) && !isArray(value);
 }

@@ -25,25 +25,9 @@ export function resolveValueBasedSelectiveOption<K extends string, V, D = V>(
 
   try {
     return resolveValueBased(value as never);
-  } catch (e) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (_) {
     throw error(invalidOptionMessage(optionName, urlHash));
   }
-
-  // return (
-  //   resolveValid<K, V, D>(
-  //     value,
-  //     allKeys,
-  //     isValidValue,
-  //     defaultValue,
-  //   ) ||
-  //   resolveObject<K, V, D>(
-  //     value,
-  //     allKeys,
-  //     isBuildType,
-  //     isValidValue,
-  //     defaultValue,
-  //     invalid,
-  //   )
-  // );
 
 }

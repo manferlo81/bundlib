@@ -23,7 +23,8 @@ export function composeOneOf<A extends Array<TypeCheckFunction<unknown>>>(...che
 export function composeOneOf<A extends TypeCheckFunction<unknown>>(...checks: A[]): TypeCastCheckFunction<A extends TypeCheckFunction<infer T> ? T : never>;
 export function composeOneOf<M>(...checks: Array<TypeCheckFunction<M>>): TypeCastCheckFunction<M>;
 export function composeOneOf<M>(...checks: Array<TypeCheckFunction<M>>): TypeCastCheckFunction<M> {
-  return <X = M>(value: unknown): value is X => checks.some(
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
+  return <X extends M = M>(value: unknown): value is X => checks.some(
     (check) => check(value),
   );
 }
