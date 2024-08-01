@@ -24,7 +24,7 @@ import type { DeprecatedTypesOptions } from '../types/deprecated-options';
 import type { AllowNull, Dictionary, Nullish } from '../types/helper-types';
 import type { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalyzed, TypesBuildOptions } from '../types/pkg-analyzed';
 import type { BundlibPkgJson } from '../types/pkg-json';
-import type { RollupBundlibInterop, RollupEsModuleOption, RollupSourcemap } from '../types/types';
+import type { RollupBundlibInterop, RollupEsModuleOption, RollupSourcemap } from '../types/rollup';
 import { resolveConfig } from './resolve-config';
 
 export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<PkgAnalyzed> {

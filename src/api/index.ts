@@ -6,4 +6,5 @@ export * from './types/bundlib-options';
 export * from './types/deprecated-options';
 export * from './types/pkg-analyzed';
 export * from './types/pkg-json';
+export * from './types/rollup';
 export * from './types/types';

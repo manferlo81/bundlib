@@ -1,7 +1,7 @@
 import { BoolBasedSelectiveOption, ValueBasedSelectiveOption } from 'selective-option';
 import type { DeprecatedBundlibOptions } from './deprecated-options';
 import type { AllowNullish, Dictionary } from './helper-types';
-import type { BrowserBuildFormat, RollupBundlibInterop, RollupEsModuleString, RollupSourcemap, RollupSourcemapString } from './types';
+import type { BrowserBuildFormat, RollupBundlibInterop, RollupEsModuleString, RollupSourcemap, RollupSourcemapString } from './rollup';
 
 export type BuildTypeForAPI = 'main' | 'module' | 'browser';
 export type BuildType = BuildTypeForAPI | 'bin';

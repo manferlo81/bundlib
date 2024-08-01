@@ -1,7 +1,7 @@
 import { statSync } from 'fs';
 import type { RollupCache, RollupError } from 'rollup';
 import { rollup } from 'rollup';
-import type { BundlibRollupModuleOutputOptions, BundlibRollupOptions } from '../api/types/types';
+import type { BundlibRollupModuleOutputOptions, BundlibRollupOptions } from '../api/types/rollup';
 import { EVENT_BUILD_END, EVENT_END, EVENT_ERROR } from './consts';
 import { oneByOne } from './one-by-one';
 import type { BundlibEventEmitter } from './types/types';

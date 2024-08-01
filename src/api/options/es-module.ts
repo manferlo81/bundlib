@@ -3,7 +3,7 @@ import { resolveBoolBasedSelectiveOption } from '../selective/bool-based';
 import { API_SPECIAL_KEYS, MODULE_BUILD_KEYS } from '../selective/consts';
 import type { BuildType, SelectiveEsModule } from '../types/bundlib-options';
 import { composeOneOf, createOneOfLiteral } from '../type-check/advanced';
-import { RollupEsModuleString } from '../types/types';
+import { RollupEsModuleString } from '../types/rollup';
 import { isBool } from '../type-check/basic';
 
 export const isEsModuleString = createOneOfLiteral('if-default-prop' as const);

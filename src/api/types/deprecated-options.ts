@@ -1,6 +1,6 @@
 import type { AllowNullish } from './helper-types';
 import { GlobalsOptions } from './bundlib-options';
-import { BrowserBuildFormat, RollupSourcemap } from './types';
+import { BrowserBuildFormat, RollupSourcemap } from './rollup';
 
 /** @deprecated */
 export interface DeprecatedCommonJSBuildOptions {

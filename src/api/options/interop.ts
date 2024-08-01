@@ -3,7 +3,7 @@ import { resolveBoolBasedSelectiveOption } from '../selective/bool-based';
 import { API_SPECIAL_KEYS, MODULE_BUILD_KEYS } from '../selective/consts';
 import { isBool } from '../type-check/basic';
 import type { BuildType, SelectiveInterop } from '../types/bundlib-options';
-import type { RollupBundlibInterop, RollupInteropOption } from '../types/types';
+import type { RollupBundlibInterop, RollupInteropOption } from '../types/rollup';
 import { composeOneOf, createOneOfLiteral } from '../type-check/advanced';
 
 export const isInteropString = createOneOfLiteral<RollupInteropOption>([

@@ -4,7 +4,7 @@ import { API_SPECIAL_KEYS, MODULE_BUILD_KEYS } from '../selective/consts';
 import { composeOneOf, createOneOfLiteral } from '../type-check/advanced';
 import { isBool } from '../type-check/basic';
 import type { BuildType, SelectiveSourcemap } from '../types/bundlib-options';
-import type { RollupSourcemap, RollupSourcemapString } from '../types/types';
+import type { RollupSourcemap, RollupSourcemapString } from '../types/rollup';
 
 export const isSourcemapStringOption = createOneOfLiteral<RollupSourcemapString>([
   'inline',

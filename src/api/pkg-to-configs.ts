@@ -26,7 +26,8 @@ import { keys } from './tools/helpers';
 import { renamePre } from './tools/rename-pre';
 import type { Dictionary, AllowNullish, TypeCheckFunction } from './types/helper-types';
 import type { PkgAnalyzed } from './types/pkg-analyzed';
-import type { BundlibAPIOptions, BundlibRollupBrowseOutputOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupBundlibInterop, RollupInteropOption, RollupSourcemap } from './types/types';
+import type { BundlibRollupBrowseOutputOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupBundlibInterop, RollupInteropOption, RollupSourcemap } from './types/rollup';
+import { BundlibAPIOptions } from './types/types';
 
 function convertInterop(interopBool: RollupBundlibInterop): RollupInteropOption {
   if (interopBool === true) return 'compat';

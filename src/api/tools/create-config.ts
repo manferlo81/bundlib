@@ -1,6 +1,6 @@
 import type { IsExternal, Plugin, WarningHandlerWithDefault } from 'rollup';
 import { type AllowNullish } from '../types/helper-types';
-import type { BundlibRollupModuleOutputOptions, BundlibRollupOptions } from '../types/types';
+import type { BundlibRollupModuleOutputOptions, BundlibRollupOptions } from '../types/rollup';
 
 interface CreateConfigOptions<OutputOptions extends BundlibRollupModuleOutputOptions> {
   input: string;
