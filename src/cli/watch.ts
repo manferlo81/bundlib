@@ -13,9 +13,7 @@ export function watch(
   const handlers: { [K in RollupWatcherEvent['code']]?: (event: Extract<RollupWatcherEvent, { code: K }>) => void } = {
 
     START() {
-      if (buildIndex) {
-        emitter.emit(EVENT_REBUILD, buildIndex);
-      }
+      if (buildIndex) emitter.emit(EVENT_REBUILD, buildIndex);
       buildIndex++;
     },
 
@@ -23,24 +21,22 @@ export function watch(
       emitter.emit(EVENT_END);
     },
 
-    BUNDLE_END(e) {
-      const { length: len } = e.output;
-      for (let i = 0; i < len; i++) {
-        const stats = statSync(e.output[i]);
+    BUNDLE_END(event) {
+      const { output, duration } = event;
+      for (const filename of output) {
+        const { size } = statSync(filename);
         emitter.emit(
           EVENT_BUILD_END,
-          e.output[i],
-          stats.size,
-          e.duration,
+          filename,
+          size,
+          duration,
         );
       }
     },
 
-    ERROR(e) {
-      emitter.emit(
-        EVENT_ERROR,
-        e.error,
-      );
+    ERROR(event) {
+      const { error } = event;
+      emitter.emit(EVENT_ERROR, error);
     },
 
   };
