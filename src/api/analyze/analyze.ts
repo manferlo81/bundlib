@@ -30,17 +30,17 @@ import { resolveConfig } from './resolve-config';
 export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<PkgAnalyzed> {
 
   const {
-    name: packageName,
-    main: mainOutputFile,
-    module: moduleFieldValue,
-    'jsnext:main': jsNextFieldValue,
-    browser: browserOutputFile,
-    bin: binaryOutputFile,
-    types: typesFieldValue,
-    typings,
-    dependencies: runtimeDependencies,
-    devDependencies,
-    peerDependencies,
+    name: pkgName,
+    main: pkgMainField,
+    module: pkgModuleField,
+    'jsnext:main': pkgJSNextField,
+    browser: pkgBrowserField,
+    bin: pkgBinField,
+    types: pkgTypesField,
+    typings: pkgTypingsField,
+    dependencies: pkgRuntimeDependencies,
+    devDependencies: pkgDevDependencies,
+    peerDependencies: pkgPeerDependencies,
     bundlib: pkgBundlibConfig,
   } = pkg;
 
@@ -91,13 +91,14 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     bin: deprecatedBinaryOptions,
     types: deprecatedTypesOptions,
     equals,
+    input: inputOption,
+    sourcemap: sourcemapOption,
+    esModule: esModuleOption,
+    interop: interopOption,
+    min: minOption,
+    project: projectOption,
+    skip: skipOption,
   } = resolvedBundlibConfig;
-
-  const perBuildInput = resolveInputOption(resolvedBundlibConfig.input);
-  const perBuildSourcemap = resolveSourcemapOption(resolvedBundlibConfig.sourcemap);
-  const perBuildESModule = resolveESModuleOption(resolvedBundlibConfig.esModule);
-  const perBuildInterop = resolveInteropOption(resolvedBundlibConfig.interop);
-  const perBuildMin = resolveMinOption(resolvedBundlibConfig.min);
 
   if (!isDictionaryOrNullish(chunks)) {
     throw error(invalidOptionMessage('chunks'));
@@ -122,9 +123,6 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
   if (!isStringOrNullish(cacheOption)) {
     throw error(invalidOptionMessage('cache'));
   }
-
-  const perBuildProject = resolveProjectOption(resolvedBundlibConfig.project);
-  const skipBuild = resolveSkipOption(resolvedBundlibConfig.skip);
 
   if (
     !isNullish(deprecatedMainOptions) && (deprecatedMainOptions !== false) && !(
@@ -188,47 +186,56 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     throw error(invalidDeprecatedOptionMessage('types', 'false | { equals?: boolean }'));
   }
 
-  if ((deprecatedMainOptions !== false) && !isStringOrNullish(mainOutputFile)) {
+  if ((deprecatedMainOptions !== false) && !isStringOrNullish(pkgMainField)) {
     throw error(invalidPkgFieldMessage('main', 'string'));
   }
 
-  if ((deprecatedModuleOptions !== false) && !isStringOrNullish(moduleFieldValue)) {
+  if ((deprecatedModuleOptions !== false) && !isStringOrNullish(pkgModuleField)) {
     throw error(invalidPkgFieldMessage('module', 'string'));
   }
 
-  if (!moduleFieldValue && (deprecatedModuleOptions !== false) && !isStringOrNullish(jsNextFieldValue)) {
+  if (!pkgModuleField && (deprecatedModuleOptions !== false) && !isStringOrNullish(pkgJSNextField)) {
     throw error(invalidPkgFieldMessage('jsnext:main', 'string'));
   }
 
-  if ((deprecatedBrowserOptions !== false) && !isStringOrNullish(browserOutputFile)) {
+  if ((deprecatedBrowserOptions !== false) && !isStringOrNullish(pkgBrowserField)) {
     throw error(invalidPkgFieldMessage('browser', 'string'));
   }
 
-  if ((deprecatedBinaryOptions !== false) && !isStringOrNullish(binaryOutputFile)) {
+  if ((deprecatedBinaryOptions !== false) && !isStringOrNullish(pkgBinField)) {
     throw error(invalidPkgFieldMessage('bin', 'string'));
   }
 
-  if (!isDictionaryOrNullish<Dictionary<string> | Nullish>(runtimeDependencies)) {
+  if (!isDictionaryOrNullish<Dictionary<string> | Nullish>(pkgRuntimeDependencies)) {
     throw error(invalidPkgFieldMessage('dependencies', 'Object'));
   }
 
-  if (!isDictionaryOrNullish<Dictionary<string> | Nullish>(devDependencies)) {
+  if (!isDictionaryOrNullish<Dictionary<string> | Nullish>(pkgDevDependencies)) {
     throw error(invalidPkgFieldMessage('devDependencies', 'Object'));
   }
 
-  if (!isDictionaryOrNullish<Dictionary<string> | Nullish>(peerDependencies)) {
+  if (!isDictionaryOrNullish<Dictionary<string> | Nullish>(pkgPeerDependencies)) {
     throw error(invalidPkgFieldMessage('peerDependencies', 'Object'));
   }
 
-  const moduleOutputFile = moduleFieldValue ?? jsNextFieldValue;
+  const { main: mainInput, module: moduleInput, browser: browserInput, bin: binInput } = resolveInputOption(inputOption);
+  const perBuildSourcemap = resolveSourcemapOption(sourcemapOption);
+  const perBuildESModule = resolveESModuleOption(esModuleOption);
+  const perBuildInterop = resolveInteropOption(interopOption);
+  const perBuildMin = resolveMinOption(minOption);
 
-  const typesOutputFile = typesFieldValue ?? typings;
+  const perBuildProject = resolveProjectOption(projectOption);
+  const skipBuild = resolveSkipOption(skipOption);
 
-  const mainOutput: AllowNull<ModuleBuildOptions> = (deprecatedMainOptions === false || skipBuild.main || !mainOutputFile)
+  const moduleOutputFile = pkgModuleField ?? pkgJSNextField;
+
+  const typesOutputFile = pkgTypesField ?? pkgTypingsField;
+
+  const mainOutput: AllowNull<ModuleBuildOptions> = (deprecatedMainOptions === false || skipBuild.main || !pkgMainField)
     ? null
     : {
-      input: perBuildInput.main,
-      output: mainOutputFile,
+      input: mainInput,
+      output: pkgMainField,
       sourcemap: normalizeDeprecatedOption<'sourcemap', RollupSourcemap>(
         deprecatedMainOptions,
         'sourcemap',
@@ -244,7 +251,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
   const moduleOutput: AllowNull<ModuleBuildOptions> = (deprecatedModuleOptions === false || skipBuild.module || !moduleOutputFile)
     ? null
     : {
-      input: perBuildInput.module,
+      input: moduleInput,
       output: moduleOutputFile,
       sourcemap: normalizeDeprecatedOption<'sourcemap', RollupSourcemap>(
         deprecatedModuleOptions,
@@ -258,11 +265,11 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
       project: perBuildProject.module,
     };
 
-  const browserOutput: AllowNull<BrowserBuildOptions> = (deprecatedBrowserOptions === false || skipBuild.browser || !browserOutputFile)
+  const browserOutput: AllowNull<BrowserBuildOptions> = (deprecatedBrowserOptions === false || skipBuild.browser || !pkgBrowserField)
     ? null
     : {
-      input: perBuildInput.browser,
-      output: browserOutputFile,
+      input: browserInput,
+      output: pkgBrowserField,
       sourcemap: normalizeDeprecatedOption<'sourcemap', RollupSourcemap>(
         deprecatedBrowserOptions,
         'sourcemap',
@@ -287,7 +294,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
         cwd,
         deprecatedBrowserOptions ? deprecatedBrowserOptions.name : null,
         browserName,
-        packageName,
+        pkgName,
       ),
       id: ((deprecatedBrowserOptions && deprecatedBrowserOptions.id) ?? amdId) ?? null,
       globals: normalizeBuildGlobals(
@@ -298,11 +305,11 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
       project: perBuildProject.browser,
     };
 
-  const binaryOutput: AllowNull<ModuleBuildOptions> = (deprecatedBinaryOptions === false || skipBuild.bin || !binaryOutputFile)
+  const binaryOutput: AllowNull<ModuleBuildOptions> = (deprecatedBinaryOptions === false || skipBuild.bin || !pkgBinField)
     ? null
     : {
-      input: perBuildInput.bin,
-      output: binaryOutputFile,
+      input: binInput,
+      output: pkgBinField,
       sourcemap: normalizeDeprecatedOption<'sourcemap', RollupSourcemap>(
         deprecatedBinaryOptions,
         'sourcemap',
@@ -333,9 +340,9 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     };
 
   const dependencies: Dependencies = {
-    runtime: runtimeDependencies ?? null,
-    dev: devDependencies ?? null,
-    peer: peerDependencies ?? null,
+    runtime: pkgRuntimeDependencies ?? null,
+    dev: pkgDevDependencies ?? null,
+    peer: pkgPeerDependencies ?? null,
   };
 
   const cache: AllowNull<string> = cacheOption ?? null;
