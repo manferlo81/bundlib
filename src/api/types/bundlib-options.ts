@@ -1,60 +1,15 @@
 import { BoolBasedSelectiveOption, ValueBasedSelectiveOption } from 'selective-option';
 import type { DeprecatedBundlibOptions } from './deprecated-options';
 import type { AllowNullish, Dictionary } from './helper-types';
-import type { BrowserBuildFormat, RollupBundlibInterop, RollupEsModuleString, RollupSourcemap, RollupSourcemapString } from './rollup';
+import type { BrowserBuildFormat, RollupBundlibInterop, RollupEsModuleString, RollupSourcemapString } from './rollup';
 
 export type BuildTypeForAPI = 'main' | 'module' | 'browser';
 export type BuildType = BuildTypeForAPI | 'bin';
 
 export type GlobalsOptions = AllowNullish<Dictionary<string> | string[]>;
 
-export interface WithSourcemapOption {
-  sourcemap?: AllowNullish<RollupSourcemap>;
-}
-
-export interface WithModuleOptions {
-  esModule?: AllowNullish<boolean>;
-  interop?: AllowNullish<boolean>;
-}
-
-export interface WithMinOption {
-  min?: AllowNullish<boolean>;
-}
-
-export interface InputOptions {
-  api?: AllowNullish<string>;
-  bin?: AllowNullish<string>;
-}
-
-export type ModuleString = Exclude<BuildType, 'module'>;
-export type ModuleOption = AllowNullish<ModuleString | ModuleString[] | boolean>;
-
-export type MinOption = AllowNullish<BuildType | BuildType[] | boolean>;
-
-export interface BrowserOptions {
-  format?: AllowNullish<BrowserBuildFormat>;
-  name?: AllowNullish<string>;
-  id?: AllowNullish<string>;
-  extend?: AllowNullish<boolean>;
-  globals?: GlobalsOptions;
-}
-
-/** @deprecated */
-export type ObjectSelectiveOptions<K extends string, T> = Partial<Record<ObjectSelectiveOptionsKey<K>, AllowNullish<T>>>;
-
-/** @deprecated */
-export type StringBasedSelectiveOption<K extends string> =
-  | SelectiveType<K>
-  | Array<SelectiveType<K>>;
-
-/** @deprecated */
-export type SelectiveType<K extends string> = K | SelectiveSpecialKey;
-/** @deprecated */
-export type ObjectSelectiveOptionsKey<K extends string> = SelectiveType<K> | OverrideKey;
 /** @deprecated */
 export type SelectiveOption<K extends string, V = never> = BoolBasedSelectiveOption<SelectiveKey<K>, V, OverrideKey>;
-/** @deprecated */
-export type ObjectBasedSelectiveOption<K extends string, V> = ValueBasedSelectiveOption<SelectiveObjectKey<K>, V>;
 /** @deprecated */
 export type SelectiveBooleanOption = SelectiveBoolBasedOption<BuildType>;
 /** @deprecated */

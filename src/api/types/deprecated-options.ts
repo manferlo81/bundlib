@@ -44,17 +44,10 @@ export interface DeprecatedBrowserBuildOptions {
   globals?: GlobalsOptions;
 }
 
-/** @deprecated */
-export interface DeprecatedTypesOptions {
-  /** @deprecated use top level "equals" option */
-  equals?: AllowNullish<boolean>;
-}
-
 export type DeprecatedMainOption = AllowNullish<DeprecatedCommonJSBuildOptions | false>;
 export type DeprecatedModuleOption = AllowNullish<DeprecatedESModuleBuildOptions | false>;
 export type DeprecatedBrowserOption = AllowNullish<DeprecatedBrowserBuildOptions | false>;
 export type DeprecatedBinaryOption = AllowNullish<DeprecatedCommonJSBuildOptions | string | false>;
-export type DeprecatedTypesOption = AllowNullish<DeprecatedTypesOptions | false>;
 
 /** @deprecated */
 export interface DeprecatedBundlibOptions {
