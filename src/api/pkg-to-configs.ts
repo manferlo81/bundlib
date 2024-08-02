@@ -1,7 +1,7 @@
 import pluginBabel from '@rollup/plugin-babel';
 import pluginBuble from '@rollup/plugin-buble';
 import pluginCommonJS from '@rollup/plugin-commonjs';
-import { default as pluginESLint } from '@rollup/plugin-eslint';
+import pluginESLint from '@rollup/plugin-eslint';
 import pluginJSON from '@rollup/plugin-json';
 import pluginNodeResolve from '@rollup/plugin-node-resolve';
 import pluginTerser from '@rollup/plugin-terser';
@@ -24,10 +24,10 @@ import { createResolveInput } from './tools/create-resolve-input';
 import { extensionMatch } from './tools/extension-match';
 import { keys } from './tools/helpers';
 import { renamePre } from './tools/rename-pre';
-import type { Dictionary, AllowNullish, TypeCheckFunction } from './types/helper-types';
+import type { AllowNullish, Dictionary, TypeCheckFunction } from './types/helper-types';
 import type { PkgAnalyzed } from './types/pkg-analyzed';
 import type { BundlibRollupBrowseOutputOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupBundlibInterop, RollupInteropOption, RollupSourcemap } from './types/rollup';
-import { BundlibAPIOptions } from './types/types';
+import type { BundlibAPIOptions } from './types/types';
 
 function convertInterop(interopBool: RollupBundlibInterop): RollupInteropOption {
   if (interopBool === true) return 'compat';
