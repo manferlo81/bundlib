@@ -3,7 +3,7 @@ import { resolveBoolBasedSelectiveOption } from '../selective/bool-based';
 import { API_SPECIAL_KEYS, MODULE_BUILD_KEYS } from '../selective/consts';
 import { composeOneOf, createOneOfLiteral } from '../type-check/advanced';
 import { isBool } from '../type-check/basic';
-import type { BuildType, SelectiveSourcemap } from '../types/bundlib-options';
+import type { BuildType, SelectiveSourcemapOption } from '../types/bundlib-options';
 import type { RollupSourcemap, RollupSourcemapString } from '../types/rollup';
 
 export const isSourcemapStringOption = createOneOfLiteral<RollupSourcemapString>([
@@ -16,7 +16,7 @@ export const isSourcemapOption = composeOneOf<RollupSourcemap>(
   isBool,
 );
 
-export function resolveSourcemapOption(value: SelectiveSourcemap): SelectiveResolved<BuildType, RollupSourcemap> {
+export function resolveSourcemapOption(value: SelectiveSourcemapOption): SelectiveResolved<BuildType, RollupSourcemap> {
   return resolveBoolBasedSelectiveOption<BuildType, RollupSourcemap, true>(
     value,
     MODULE_BUILD_KEYS,

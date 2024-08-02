@@ -1,11 +1,11 @@
-import { BuildType, SelectiveOption } from '../../src/api/types/bundlib-options';
+import type { BuildType, SelectiveBoolBasedOption } from '../../src/api/types/bundlib-options';
 import { mockAnalyzeWithPkg, mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs';
 
 describe('"esModule" option', () => {
 
   const cwd = process.cwd();
 
-  const analyzeWithESModuleOption = (esModule: SelectiveOption<BuildType, boolean>) => mockAnalyzeWithPkg(cwd, {
+  const analyzeWithESModuleOption = (esModule: SelectiveBoolBasedOption<BuildType, boolean>) => mockAnalyzeWithPkg(cwd, {
     main: 'main.js',
     browser: 'browser.js',
     bin: 'bin.js',

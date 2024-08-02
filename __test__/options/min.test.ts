@@ -1,11 +1,11 @@
-import { SelectiveBooleanOption } from '../../src/api/types/bundlib-options';
+import type { SelectiveMinOption } from '../../src/api/types/bundlib-options';
 import { mockAnalyzeWithPkg } from '../tools/mock-fs';
 
 describe('"min" option', () => {
 
   const cwd = process.cwd();
 
-  const analyzeWithMin = (min: SelectiveBooleanOption) => mockAnalyzeWithPkg(cwd, {
+  const analyzeWithMin = (min: SelectiveMinOption) => mockAnalyzeWithPkg(cwd, {
     main: 'main.js',
     module: 'module.js',
     browser: 'browser.js',

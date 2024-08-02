@@ -1,5 +1,5 @@
-import { SelectiveBooleanOption } from '../../src/api/types/bundlib-options';
-import { PkgAnalyzed } from '../../src/api/types/pkg-analyzed';
+import type { AllowNullish } from '../../src/api/types/helper-types';
+import type { PkgAnalyzed } from '../../src/api/types/pkg-analyzed';
 import { mockAnalyzeWithPkg } from '../tools/mock-fs';
 
 describe('"interop" option', () => {
@@ -15,7 +15,7 @@ describe('"interop" option', () => {
     };
   };
 
-  const analyzeWithBuildInterop = async (field: string, interop: SelectiveBooleanOption) => {
+  const analyzeWithBuildInterop = async (field: string, interop: AllowNullish<boolean>) => {
     return createResult(
       await mockAnalyzeWithPkg(cwd, {
         main: 'main.js',
@@ -39,7 +39,7 @@ describe('"interop" option', () => {
 
   test('Should read per-build interop option over top-level one', () => {
 
-    const getResult = async (field: string, interop: SelectiveBooleanOption) => createResult(
+    const getResult = async (field: string, interop: AllowNullish<boolean>) => createResult(
       await mockAnalyzeWithPkg(cwd, {
         main: 'main.js',
         browser: 'browser.js',

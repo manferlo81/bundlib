@@ -1,5 +1,5 @@
-import { BuildType, SelectiveBooleanOption } from '../../src/api/types/bundlib-options';
-import { PkgAnalyzed } from '../../src/api/types/pkg-analyzed';
+import type { BuildType, SelectiveInteropOption } from '../../src/api/types/bundlib-options';
+import type { PkgAnalyzed } from '../../src/api/types/pkg-analyzed';
 import { mockAnalyzeWithPkg } from '../tools/mock-fs';
 
 describe('"interop" option', () => {
@@ -15,7 +15,7 @@ describe('"interop" option', () => {
     };
   };
 
-  const analyzeWithInterop = async (interop: SelectiveBooleanOption) => {
+  const analyzeWithInterop = async (interop: SelectiveInteropOption) => {
     return createResult(
       await mockAnalyzeWithPkg(cwd, {
         main: 'main.js',
