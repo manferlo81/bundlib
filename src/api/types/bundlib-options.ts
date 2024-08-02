@@ -77,26 +77,26 @@ export type SelectiveInterop = SelectiveBoolBasedOption<BuildType, RollupBundlib
 export type SelectiveMin = SelectiveBoolBasedOption<BuildType>;
 export type SelectiveSkipOption = SelectiveBoolBasedOption<SelectiveSkipBuildType>;
 
-export interface BundlibConfig extends DeprecatedBundlibOptions, Record<string, unknown> {
+export interface BundlibConfig extends DeprecatedBundlibOptions {
 
-  input?: SelectiveString;
+  readonly input?: SelectiveString;
 
-  sourcemap?: SelectiveSourcemap;
-  esModule?: SelectiveEsModule;
-  interop?: SelectiveInterop;
-  min?: SelectiveMin;
-  skip?: SelectiveSkipOption;
-  project?: SelectiveString;
+  readonly sourcemap?: SelectiveSourcemap;
+  readonly esModule?: SelectiveEsModule;
+  readonly interop?: SelectiveInterop;
+  readonly min?: SelectiveMin;
+  readonly skip?: SelectiveSkipOption;
+  readonly project?: SelectiveString;
 
-  cache?: AllowNullish<string>;
-  chunks?: AllowNullish<Dictionary<string>>;
+  readonly cache?: AllowNullish<string>;
+  readonly chunks?: AllowNullish<Dictionary<string>>;
 
-  format?: AllowNullish<BrowserBuildFormat>;
-  name?: AllowNullish<string>;
-  id?: AllowNullish<string>;
-  extend?: AllowNullish<boolean>;
-  globals?: GlobalsOptions;
+  readonly format?: AllowNullish<BrowserBuildFormat>;
+  readonly name?: AllowNullish<string>;
+  readonly id?: AllowNullish<string>;
+  readonly extend?: AllowNullish<boolean>;
+  readonly globals?: GlobalsOptions;
 
-  equals?: AllowNullish<boolean>;
+  readonly equals?: AllowNullish<boolean>;
 
 }
