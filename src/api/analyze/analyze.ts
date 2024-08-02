@@ -1,14 +1,13 @@
 import { error } from '../errors/error';
 import { invalidDeprecatedOptionMessage, invalidOptionMessage, invalidPkgFieldMessage } from '../errors/error-messages';
 import { normalizeBooleanOption } from '../options/deprecated/boolean';
-import { isBrowserOptionKey } from '../options/deprecated/browser';
 import { isModuleOptionKey } from '../options/deprecated/module';
 import { normalizeDeprecatedOption } from '../options/deprecated/normalize';
-import { isEsModuleOption, resolveESModuleOption } from '../options/es-module';
+import { resolveESModuleOption } from '../options/es-module';
 import { isBrowserFormat } from '../options/format';
-import { isValidGlobals, normalizeBuildGlobals, normalizeGlobals } from '../options/globals';
+import { isValidGlobals, normalizeGlobals } from '../options/globals';
 import { resolveInputOption } from '../options/input';
-import { isInteropOption, resolveInteropOption } from '../options/interop';
+import { resolveInteropOption } from '../options/interop';
 import { resolveMinOption } from '../options/min';
 import { normalizeBuildName } from '../options/name';
 import { resolveProjectOption } from '../options/project';
@@ -22,7 +21,7 @@ import type { BundlibConfig } from '../types/bundlib-options';
 import type { AllowNull, Dictionary, Nullish } from '../types/helper-types';
 import type { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalyzed, TypesBuildOptions } from '../types/pkg-analyzed';
 import type { BundlibPkgJson } from '../types/pkg-json';
-import type { RollupBundlibInterop, RollupEsModuleOption, RollupSourcemap } from '../types/rollup';
+import type { RollupSourcemap } from '../types/rollup';
 import { resolveConfig } from './resolve-config';
 
 export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<PkgAnalyzed> {
@@ -44,7 +43,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
 
   const resolvedBundlibConfig = await resolveConfig(cwd, pkgBundlibConfig);
 
-  const invalidOptions = invalidKeys(
+  const invalidOptions = invalidKeys<keyof BundlibConfig>(
     resolvedBundlibConfig as Readonly<Record<keyof BundlibConfig, unknown>>,
     [
       'input',
@@ -62,9 +61,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
       'project',
       'skip',
       'equals',
-      'main',
       'module',
-      'browser',
     ],
   );
 
@@ -82,7 +79,6 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     globals: browserGlobals,
     cache: cacheOption,
     module: deprecatedModuleOptions,
-    browser: deprecatedBrowserOptions,
     equals,
     input: inputOption,
     sourcemap: sourcemapOption,
@@ -129,23 +125,6 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     ));
   }
 
-  if (
-    !isNullish(deprecatedBrowserOptions) && (deprecatedBrowserOptions !== false) && !(
-      isDictionary<BrowserBuildOptions>(deprecatedBrowserOptions)
-      && keysCheck(deprecatedBrowserOptions, isBrowserOptionKey)
-      && isBrowserFormat(deprecatedBrowserOptions.format)
-      && (['name', 'id'] as Array<keyof typeof deprecatedBrowserOptions>).every((key) => (
-        isStringOrNullish(deprecatedBrowserOptions[key])
-      ))
-      && isValidGlobals(deprecatedBrowserOptions.globals)
-    )
-  ) {
-    throw error(invalidDeprecatedOptionMessage(
-      'browser',
-      'false | { sourcemap?: boolean | "inline", esModule?: boolean, interop?: boolean, min?: boolean, ... }',
-    ));
-  }
-
   if (!isStringOrNullish(pkgMainField)) {
     throw error(invalidPkgFieldMessage('main', 'string'));
   }
@@ -158,7 +137,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     throw error(invalidPkgFieldMessage('jsnext:main', 'string'));
   }
 
-  if ((deprecatedBrowserOptions !== false) && !isStringOrNullish(pkgBrowserField)) {
+  if (!isStringOrNullish(pkgBrowserField)) {
     throw error(invalidPkgFieldMessage('browser', 'string'));
   }
 
@@ -220,43 +199,24 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
       project: perBuildProject.module,
     };
 
-  const browserOutput: AllowNull<BrowserBuildOptions> = (deprecatedBrowserOptions === false || skipBuild.browser || !pkgBrowserField)
+  const browserOutput: AllowNull<BrowserBuildOptions> = (skipBuild.browser || !pkgBrowserField)
     ? null
     : {
       input: browserInput,
       output: pkgBrowserField,
-      sourcemap: normalizeDeprecatedOption<'sourcemap', RollupSourcemap>(
-        deprecatedBrowserOptions,
-        'sourcemap',
-        isSourcemapOption,
-        perBuildSourcemap.browser,
-      ),
-      esModule: normalizeDeprecatedOption<'esModule', RollupEsModuleOption>(
-        deprecatedBrowserOptions,
-        'esModule',
-        isEsModuleOption,
-        perBuildESModule.browser,
-      ),
-      interop: normalizeDeprecatedOption<'interop', RollupBundlibInterop>(
-        deprecatedBrowserOptions,
-        'interop',
-        isInteropOption,
-        perBuildInterop.browser,
-      ),
-      min: normalizeBooleanOption(deprecatedBrowserOptions, 'min', perBuildMin.browser),
-      format: (deprecatedBrowserOptions && !isNullish(deprecatedBrowserOptions.format) ? deprecatedBrowserOptions.format : browserFormat) ?? 'umd',
+      sourcemap: perBuildSourcemap.browser,
+      esModule: perBuildESModule.browser,
+      interop: perBuildInterop.browser,
+      min: perBuildMin.browser,
+      format: browserFormat ?? 'umd',
       name: normalizeBuildName(
-        cwd,
-        deprecatedBrowserOptions ? deprecatedBrowserOptions.name : null,
         browserName,
         pkgName,
+        cwd,
       ),
-      id: ((deprecatedBrowserOptions && deprecatedBrowserOptions.id) ?? amdId) ?? null,
-      globals: normalizeBuildGlobals(
-        deprecatedBrowserOptions,
-        normalizeGlobals(browserGlobals),
-      ),
-      extend: !!normalizeBooleanOption(deprecatedBrowserOptions, 'extend', !!extend),
+      id: amdId ?? null,
+      globals: normalizeGlobals(browserGlobals),
+      extend: !!normalizeBooleanOption(null, 'extend', !!extend),
       project: perBuildProject.browser,
     };
 
