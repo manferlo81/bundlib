@@ -2,7 +2,6 @@ import { error } from '../errors/error';
 import { invalidDeprecatedOptionMessage, invalidOptionMessage, invalidPkgFieldMessage } from '../errors/error-messages';
 import { normalizeBooleanOption } from '../options/deprecated/boolean';
 import { isBrowserOptionKey } from '../options/deprecated/browser';
-import { isCJSOptionKey } from '../options/deprecated/commonjs';
 import { isModuleOptionKey } from '../options/deprecated/module';
 import { normalizeDeprecatedOption } from '../options/deprecated/normalize';
 import { isEsModuleOption, resolveESModuleOption } from '../options/es-module';
@@ -66,8 +65,6 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
       'main',
       'module',
       'browser',
-      'bin',
-      'types',
     ],
   );
 
@@ -84,7 +81,6 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     id: amdId,
     globals: browserGlobals,
     cache: cacheOption,
-    main: deprecatedMainOptions,
     module: deprecatedModuleOptions,
     browser: deprecatedBrowserOptions,
     equals,
@@ -122,18 +118,6 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
   }
 
   if (
-    !isNullish(deprecatedMainOptions) && (deprecatedMainOptions !== false) && !(
-      isDictionary<ModuleBuildOptions>(deprecatedMainOptions)
-      && keysCheck(deprecatedMainOptions, isCJSOptionKey)
-    )
-  ) {
-    throw error(invalidDeprecatedOptionMessage(
-      'main',
-      'false | { sourcemap?: boolean | "inline", esModule?: boolean, interop?: boolean, min?: boolean }',
-    ));
-  }
-
-  if (
     !isNullish(deprecatedModuleOptions) && (deprecatedModuleOptions !== false) && !(
       isDictionary<ModuleBuildOptions>(deprecatedModuleOptions)
       && keysCheck(deprecatedModuleOptions, isModuleOptionKey)
@@ -162,7 +146,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     ));
   }
 
-  if ((deprecatedMainOptions !== false) && !isStringOrNullish(pkgMainField)) {
+  if (!isStringOrNullish(pkgMainField)) {
     throw error(invalidPkgFieldMessage('main', 'string'));
   }
 
@@ -207,20 +191,15 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
 
   const typesOutputFile = pkgTypesField ?? pkgTypingsField;
 
-  const mainOutput: AllowNull<ModuleBuildOptions> = (deprecatedMainOptions === false || skipBuild.main || !pkgMainField)
+  const mainOutput: AllowNull<ModuleBuildOptions> = (skipBuild.main || !pkgMainField)
     ? null
     : {
       input: mainInput,
       output: pkgMainField,
-      sourcemap: normalizeDeprecatedOption<'sourcemap', RollupSourcemap>(
-        deprecatedMainOptions,
-        'sourcemap',
-        isSourcemapOption,
-        perBuildSourcemap.main,
-      ),
-      esModule: normalizeDeprecatedOption<'esModule', RollupEsModuleOption>(deprecatedMainOptions, 'esModule', isEsModuleOption, perBuildESModule.main),
-      interop: normalizeDeprecatedOption<'interop', RollupBundlibInterop>(deprecatedMainOptions, 'interop', isInteropOption, perBuildInterop.main),
-      min: normalizeBooleanOption(deprecatedMainOptions, 'min', perBuildMin.main),
+      sourcemap: perBuildSourcemap.main,
+      esModule: perBuildESModule.main,
+      interop: perBuildInterop.main,
+      min: perBuildMin.main,
       project: perBuildProject.main,
     };
 

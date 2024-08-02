@@ -1,18 +1,6 @@
+import type { GlobalsOptions } from './bundlib-options';
 import type { AllowNullish } from './helper-types';
-import { GlobalsOptions } from './bundlib-options';
-import { BrowserBuildFormat, RollupSourcemap } from './rollup';
-
-/** @deprecated */
-export interface DeprecatedCommonJSBuildOptions {
-  /** @deprecated use top level "sourcemap" option */
-  sourcemap?: AllowNullish<RollupSourcemap>;
-  /** @deprecated use top level "esModule" option */
-  esModule?: AllowNullish<boolean>;
-  /** @deprecated use top level "interop" option */
-  interop?: AllowNullish<boolean>;
-  /** @deprecated use top level "min" option */
-  min?: AllowNullish<boolean>;
-}
+import type { BrowserBuildFormat, RollupSourcemap } from './rollup';
 
 /** @deprecated */
 export interface DeprecatedESModuleBuildOptions {
@@ -44,14 +32,11 @@ export interface DeprecatedBrowserBuildOptions {
   globals?: GlobalsOptions;
 }
 
-export type DeprecatedMainOption = AllowNullish<DeprecatedCommonJSBuildOptions | false>;
 export type DeprecatedModuleOption = AllowNullish<DeprecatedESModuleBuildOptions | false>;
 export type DeprecatedBrowserOption = AllowNullish<DeprecatedBrowserBuildOptions | false>;
 
 /** @deprecated */
 export interface DeprecatedBundlibOptions {
-  /** @deprecated */
-  main?: DeprecatedMainOption;
   /** @deprecated */
   module?: DeprecatedModuleOption;
   /** @deprecated */
