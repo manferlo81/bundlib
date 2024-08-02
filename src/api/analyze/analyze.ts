@@ -19,7 +19,7 @@ import { readPkg } from '../package/read-pkg';
 import { isDictionaryOrNullish, isStringOrNullish } from '../type-check/advanced';
 import { isDictionary, isNullish } from '../type-check/basic';
 import { invalidKeys, keysCheck } from '../type-check/keys';
-import { BundlibConfig } from '../types/bundlib-options';
+import type { BundlibConfig } from '../types/bundlib-options';
 import type { AllowNull, Dictionary, Nullish } from '../types/helper-types';
 import type { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalyzed, TypesBuildOptions } from '../types/pkg-analyzed';
 import type { BundlibPkgJson } from '../types/pkg-json';
@@ -87,7 +87,6 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     main: deprecatedMainOptions,
     module: deprecatedModuleOptions,
     browser: deprecatedBrowserOptions,
-    bin: deprecatedBinaryOptions,
     equals,
     input: inputOption,
     sourcemap: sourcemapOption,
@@ -163,18 +162,6 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     ));
   }
 
-  if (
-    !isNullish(deprecatedBinaryOptions) && (deprecatedBinaryOptions !== false) && !(
-      isDictionary<ModuleBuildOptions>(deprecatedBinaryOptions)
-      && keysCheck(deprecatedBinaryOptions, isCJSOptionKey)
-    )
-  ) {
-    throw error(invalidDeprecatedOptionMessage(
-      'bin',
-      'false | { sourcemap?: boolean | "inline", esModule?: boolean, interop?: boolean, min?: boolean }',
-    ));
-  }
-
   if ((deprecatedMainOptions !== false) && !isStringOrNullish(pkgMainField)) {
     throw error(invalidPkgFieldMessage('main', 'string'));
   }
@@ -191,7 +178,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     throw error(invalidPkgFieldMessage('browser', 'string'));
   }
 
-  if ((deprecatedBinaryOptions !== false) && !isStringOrNullish(pkgBinField)) {
+  if (!isStringOrNullish(pkgBinField)) {
     throw error(invalidPkgFieldMessage('bin', 'string'));
   }
 
@@ -294,30 +281,15 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
       project: perBuildProject.browser,
     };
 
-  const binaryOutput: AllowNull<ModuleBuildOptions> = (deprecatedBinaryOptions === false || skipBuild.bin || !pkgBinField)
+  const binaryOutput: AllowNull<ModuleBuildOptions> = (skipBuild.bin || !pkgBinField)
     ? null
     : {
       input: binInput,
       output: pkgBinField,
-      sourcemap: normalizeDeprecatedOption<'sourcemap', RollupSourcemap>(
-        deprecatedBinaryOptions,
-        'sourcemap',
-        isSourcemapOption,
-        perBuildSourcemap.bin,
-      ),
-      esModule: normalizeDeprecatedOption<'esModule', RollupEsModuleOption>(
-        deprecatedBinaryOptions,
-        'esModule',
-        isEsModuleOption,
-        perBuildESModule.bin,
-      ),
-      interop: normalizeDeprecatedOption<'interop', RollupBundlibInterop>(
-        deprecatedBinaryOptions,
-        'interop',
-        isInteropOption,
-        perBuildInterop.bin,
-      ),
-      min: normalizeBooleanOption(deprecatedBinaryOptions, 'min', perBuildMin.bin),
+      sourcemap: perBuildSourcemap.bin,
+      esModule: perBuildESModule.bin,
+      interop: perBuildInterop.bin,
+      min: perBuildMin.bin,
       project: perBuildProject.bin,
     };
 

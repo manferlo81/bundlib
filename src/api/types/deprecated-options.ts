@@ -47,7 +47,6 @@ export interface DeprecatedBrowserBuildOptions {
 export type DeprecatedMainOption = AllowNullish<DeprecatedCommonJSBuildOptions | false>;
 export type DeprecatedModuleOption = AllowNullish<DeprecatedESModuleBuildOptions | false>;
 export type DeprecatedBrowserOption = AllowNullish<DeprecatedBrowserBuildOptions | false>;
-export type DeprecatedBinaryOption = AllowNullish<DeprecatedCommonJSBuildOptions | string | false>;
 
 /** @deprecated */
 export interface DeprecatedBundlibOptions {
@@ -57,6 +56,4 @@ export interface DeprecatedBundlibOptions {
   module?: DeprecatedModuleOption;
   /** @deprecated */
   browser?: DeprecatedBrowserOption;
-  /** @deprecated */
-  bin?: DeprecatedBinaryOption;
 }
