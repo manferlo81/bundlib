@@ -1,5 +1,4 @@
 import type { BoolBasedSelectiveOption, ValueBasedSelectiveOption } from 'selective-option';
-import type { DeprecatedBundlibOptions } from './deprecated-options';
 import type { AllowNullish, Dictionary } from './helper-types';
 import type { BrowserBuildFormat, RollupBundlibInterop, RollupEsModuleString, RollupSourcemapString } from './rollup';
 
@@ -28,7 +27,7 @@ export type SelectiveSkipOption = SelectiveBoolBasedOption<SelectiveSkipBuildTyp
 export type StringOption = AllowNullish<string>;
 export type BooleanOption = AllowNullish<boolean>;
 
-export interface BundlibConfig extends DeprecatedBundlibOptions {
+export interface BundlibConfig {
 
   readonly input?: SelectiveStringOption;
 

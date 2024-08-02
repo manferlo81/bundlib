@@ -1,6 +1,5 @@
 import mock from 'mock-fs';
 import { DirectoryItems } from 'mock-fs/lib/filesystem';
-import { resolve } from 'path';
 import { BundlibPkgJson, analyzePkg } from '../../src/api';
 import { getPluginNames } from './get-plugin-names';
 
@@ -27,14 +26,6 @@ export const mockAnalyzeWithPkgEmptyConfig = (cwd: string, pkg: BundlibPkgJson) 
     cwd,
     { bundlib: {}, ...pkg },
   );
-};
-
-export const structureWithNodeModules = (structure: DirectoryItems, cwd: string): DirectoryItems => {
-  const modulesDirName = 'node_modules';
-  return {
-    ...structure,
-    [modulesDirName]: mock.load(resolve(cwd, modulesDirName)),
-  };
 };
 
 export function mockGetPluginNames(cwd: string, pkg: BundlibPkgJson) {

@@ -1,8 +1,5 @@
 import { error } from '../errors/error';
-import { invalidDeprecatedOptionMessage, invalidOptionMessage, invalidPkgFieldMessage } from '../errors/error-messages';
-import { normalizeBooleanOption } from '../options/deprecated/boolean';
-import { isModuleOptionKey } from '../options/deprecated/module';
-import { normalizeDeprecatedOption } from '../options/deprecated/normalize';
+import { invalidOptionMessage, invalidPkgFieldMessage } from '../errors/error-messages';
 import { resolveESModuleOption } from '../options/es-module';
 import { isBrowserFormat } from '../options/format';
 import { isValidGlobals, normalizeGlobals } from '../options/globals';
@@ -12,16 +9,14 @@ import { resolveMinOption } from '../options/min';
 import { normalizeBuildName } from '../options/name';
 import { resolveProjectOption } from '../options/project';
 import { resolveSkipOption } from '../options/skip';
-import { isSourcemapOption, resolveSourcemapOption } from '../options/sourcemap';
+import { resolveSourcemapOption } from '../options/sourcemap';
 import { readPkg } from '../package/read-pkg';
 import { isDictionaryOrNullish, isStringOrNullish } from '../type-check/advanced';
-import { isDictionary, isNullish } from '../type-check/basic';
-import { invalidKeys, keysCheck } from '../type-check/keys';
+import { invalidKeys } from '../type-check/keys';
 import type { BundlibConfig } from '../types/bundlib-options';
 import type { AllowNull, Dictionary, Nullish } from '../types/helper-types';
 import type { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalyzed, TypesBuildOptions } from '../types/pkg-analyzed';
 import type { BundlibPkgJson } from '../types/pkg-json';
-import type { RollupSourcemap } from '../types/rollup';
 import { resolveConfig } from './resolve-config';
 
 export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<PkgAnalyzed> {
@@ -61,7 +56,6 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
       'project',
       'skip',
       'equals',
-      'module',
     ],
   );
 
@@ -78,7 +72,6 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     id: amdId,
     globals: browserGlobals,
     cache: cacheOption,
-    module: deprecatedModuleOptions,
     equals,
     input: inputOption,
     sourcemap: sourcemapOption,
@@ -113,27 +106,15 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     throw error(invalidOptionMessage('cache'));
   }
 
-  if (
-    !isNullish(deprecatedModuleOptions) && (deprecatedModuleOptions !== false) && !(
-      isDictionary<ModuleBuildOptions>(deprecatedModuleOptions)
-      && keysCheck(deprecatedModuleOptions, isModuleOptionKey)
-    )
-  ) {
-    throw error(invalidDeprecatedOptionMessage(
-      'module',
-      'false | { sourcemap?: boolean | "inline", min?: boolean }',
-    ));
-  }
-
   if (!isStringOrNullish(pkgMainField)) {
     throw error(invalidPkgFieldMessage('main', 'string'));
   }
 
-  if ((deprecatedModuleOptions !== false) && !isStringOrNullish(pkgModuleField)) {
+  if (!isStringOrNullish(pkgModuleField)) {
     throw error(invalidPkgFieldMessage('module', 'string'));
   }
 
-  if (!pkgModuleField && (deprecatedModuleOptions !== false) && !isStringOrNullish(pkgJSNextField)) {
+  if (!pkgModuleField && !isStringOrNullish(pkgJSNextField)) {
     throw error(invalidPkgFieldMessage('jsnext:main', 'string'));
   }
 
@@ -182,20 +163,15 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
       project: perBuildProject.main,
     };
 
-  const moduleOutput: AllowNull<ModuleBuildOptions> = (deprecatedModuleOptions === false || skipBuild.module || !moduleOutputFile)
+  const moduleOutput: AllowNull<ModuleBuildOptions> = (skipBuild.module || !moduleOutputFile)
     ? null
     : {
       input: moduleInput,
       output: moduleOutputFile,
-      sourcemap: normalizeDeprecatedOption<'sourcemap', RollupSourcemap>(
-        deprecatedModuleOptions,
-        'sourcemap',
-        isSourcemapOption,
-        perBuildSourcemap.module,
-      ),
+      sourcemap: perBuildSourcemap.module,
       esModule: perBuildESModule.module,
       interop: perBuildInterop.module,
-      min: normalizeBooleanOption(deprecatedModuleOptions, 'min', perBuildMin.module),
+      min: perBuildMin.module,
       project: perBuildProject.module,
     };
 
@@ -216,7 +192,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
       ),
       id: amdId ?? null,
       globals: normalizeGlobals(browserGlobals),
-      extend: !!normalizeBooleanOption(null, 'extend', !!extend),
+      extend: !!extend,
       project: perBuildProject.browser,
     };
 
