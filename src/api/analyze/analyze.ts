@@ -5,7 +5,6 @@ import { isBrowserOptionKey } from '../options/deprecated/browser';
 import { isCJSOptionKey } from '../options/deprecated/commonjs';
 import { isModuleOptionKey } from '../options/deprecated/module';
 import { normalizeDeprecatedOption } from '../options/deprecated/normalize';
-import { isTypesOptionKey } from '../options/deprecated/types';
 import { isEsModuleOption, resolveESModuleOption } from '../options/es-module';
 import { isBrowserFormat } from '../options/format';
 import { isValidGlobals, normalizeBuildGlobals, normalizeGlobals } from '../options/globals';
@@ -20,7 +19,7 @@ import { readPkg } from '../package/read-pkg';
 import { isDictionaryOrNullish, isStringOrNullish } from '../type-check/advanced';
 import { isDictionary, isNullish } from '../type-check/basic';
 import { invalidKeys, keysCheck } from '../type-check/keys';
-import type { DeprecatedTypesOptions } from '../types/deprecated-options';
+import { BundlibConfig } from '../types/bundlib-options';
 import type { AllowNull, Dictionary, Nullish } from '../types/helper-types';
 import type { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalyzed, TypesBuildOptions } from '../types/pkg-analyzed';
 import type { BundlibPkgJson } from '../types/pkg-json';
@@ -47,7 +46,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
   const resolvedBundlibConfig = await resolveConfig(cwd, pkgBundlibConfig);
 
   const invalidOptions = invalidKeys(
-    resolvedBundlibConfig,
+    resolvedBundlibConfig as Readonly<Record<keyof BundlibConfig, unknown>>,
     [
       'input',
       'extend',
@@ -89,7 +88,6 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     module: deprecatedModuleOptions,
     browser: deprecatedBrowserOptions,
     bin: deprecatedBinaryOptions,
-    types: deprecatedTypesOptions,
     equals,
     input: inputOption,
     sourcemap: sourcemapOption,
@@ -175,15 +173,6 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
       'bin',
       'false | { sourcemap?: boolean | "inline", esModule?: boolean, interop?: boolean, min?: boolean }',
     ));
-  }
-
-  if (
-    !isNullish(deprecatedTypesOptions) && (deprecatedTypesOptions !== false) && !(
-      isDictionary<DeprecatedTypesOptions>(deprecatedTypesOptions)
-      && keysCheck(deprecatedTypesOptions, isTypesOptionKey)
-    )
-  ) {
-    throw error(invalidDeprecatedOptionMessage('types', 'false | { equals?: boolean }'));
   }
 
   if ((deprecatedMainOptions !== false) && !isStringOrNullish(pkgMainField)) {
@@ -332,7 +321,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
       project: perBuildProject.bin,
     };
 
-  const typesOutput: AllowNull<TypesBuildOptions> = (deprecatedTypesOptions === false || skipBuild.types || !typesOutputFile)
+  const typesOutput: AllowNull<TypesBuildOptions> = (skipBuild.types || !typesOutputFile)
     ? null
     : {
       output: typesOutputFile,

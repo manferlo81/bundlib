@@ -66,6 +66,4 @@ export interface DeprecatedBundlibOptions {
   browser?: DeprecatedBrowserOption;
   /** @deprecated */
   bin?: DeprecatedBinaryOption;
-  /** @deprecated */
-  types?: DeprecatedTypesOption;
 }
