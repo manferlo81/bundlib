@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import { createFormatter } from 'gen-unit';
+import { EOL } from 'os';
 import { parse as pathParse, relative } from 'path';
 import prettyMs from 'pretty-ms';
 import type { RollupError } from 'rollup';
@@ -24,9 +25,22 @@ export async function action(
   const cwd = process.cwd();
   const pkg = await readPkg(cwd);
 
+  const logErrorAndExit = (err: RollupError) => {
+    logError(err);
+    process.exit(1);
+  };
+
+  const nodeVersion = process.versions.node;
+  const [nodeMajorVersion] = nodeVersion.split('.');
+
+  if (+nodeMajorVersion < 18) {
+    logErrorAndExit(new Error(`You are running NodeJS v${nodeVersion}. This version is not supported. Please install NodeJS v18 or greater.`));
+  }
+
   if (!silent) {
-    log(`${formatProjectInfo(bundlibName, bundlibVersion)}
-`);
+    log(`${formatProjectInfo(bundlibName, bundlibVersion)}${EOL}`);
+
+    log(`${formatProjectInfo('NodeJS', nodeVersion)}${EOL}`);
 
     // TODO: Show detected modules & plugins with versions
 
@@ -34,18 +48,14 @@ export async function action(
     const projectDisplayName = displayName ?? projectName;
 
     if (projectDisplayName && projectVersion) {
-      log(`${cyan('building:')} ${formatProjectInfo(projectDisplayName, projectVersion)}
-`);
+      log(`${cyan('building:')} ${formatProjectInfo(projectDisplayName, projectVersion)}${EOL}`);
     }
 
   }
 
   const showError = watch
     ? logError
-    : (err: RollupError) => {
-      logError(err);
-      process.exit(1);
-    };
+    : logErrorAndExit;
 
   const emitter = new EventEmitter() as BundlibEventEmitter;
   emitter.on(EVENT_ERROR, showError);
@@ -99,14 +109,11 @@ export async function action(
     if (watch) {
 
       emitter.on(EVENT_REBUILD, () => {
-        log(cyan(`rebuilding...
-`));
+        log(cyan(`rebuilding...${EOL}`));
       });
 
       emitter.on(EVENT_END, () => {
-        log(cyan(`
-waiting for changes...`));
-
+        log(cyan(`${EOL}waiting for changes...`));
       });
 
     }
