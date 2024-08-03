@@ -1,13 +1,11 @@
-import { BooleanOptionNameOrder, BooleanOptionNames } from '../types/boolean-options';
+import type { BooleanOptionNameOrder } from '../types/cli-options';
 
-export const booleanOptions: BooleanOptionNameOrder = [
-  'dev',
-  'watch',
-  'silent',
-];
-
-export const booleanOptionDescMap: Record<BooleanOptionNames, string> = {
-  dev: 'create development builds',
-  watch: 'run bundlib in watch mode',
-  silent: 'prevent messages from showing in the console',
+type ArrayMap<A = BooleanOptionNameOrder> = {
+  [K in keyof A]: K extends ('0' | '1' | '2') ? { flag: A[K]; desc: string } : never;
 };
+
+export const booleanOptions: ArrayMap = [
+  { flag: 'dev', desc: 'create development builds' },
+  { flag: 'watch', desc: 'run bundlib in watch mode' },
+  { flag: 'silent', desc: 'prevent messages from showing in the console' },
+];

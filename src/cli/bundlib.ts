@@ -7,19 +7,19 @@ import { watch as watchBuild } from './watch';
 
 export async function bundlib(
   cwd: string,
-  dev: boolean,
-  watch: boolean,
+  devMode: unknown,
+  watchMode: unknown,
   emitter: BundlibEventEmitter,
-  pkg?: BundlibPkgJson,
+  pkg: BundlibPkgJson,
 ): Promise<void> {
 
   const onwarn: WarningHandlerWithDefault = (warning) => {
     emitter.emit(EVENT_WARN, warning);
   };
 
-  const configs = await configsFromPkg(cwd, { dev, watch, onwarn }, pkg);
+  const configs = await configsFromPkg(cwd, { dev: !!devMode, watch: !!watchMode, onwarn }, pkg);
 
-  if (watch) {
+  if (watchMode) {
     // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
     return watchBuild(configs, emitter);
   }

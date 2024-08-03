@@ -1,10 +1,8 @@
 import { createCommand } from 'commander';
 import { name as bundlibCommandName, description, version } from '../../../package.json';
-import { BooleanProgramOptions } from './types/boolean-options';
-import { booleanOptionDescMap, booleanOptions } from './options/boolean';
+import { booleanOptions } from './options/boolean';
 import { createFlags } from './options/flags';
-
-type ProgramOptions = BooleanProgramOptions;
+import type { ProgramOptions } from './types/cli-options';
 
 export function handleCLI(action: (options: ProgramOptions) => void) {
 
@@ -17,9 +15,8 @@ export function handleCLI(action: (options: ProgramOptions) => void) {
     .helpOption(createFlags('help'), 'display this help screen');
 
   booleanOptions.forEach(
-    (flag) => {
+    ({ flag, desc }) => {
       const flags = createFlags(flag);
-      const desc = booleanOptionDescMap[flag];
       program.option(flags, desc);
     },
   );

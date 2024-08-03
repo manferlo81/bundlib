@@ -1,11 +1,12 @@
 import { EventEmitter } from 'events';
 import { createFormatter } from 'gen-unit';
-import { relative, parse as pathParse } from 'path';
+import { parse as pathParse, relative } from 'path';
 import prettyMs from 'pretty-ms';
 import type { RollupError } from 'rollup';
 import slash from 'slash';
 import { readPkg } from '../api';
 import { bundlib } from './bundlib';
+import type { ProgramOptions } from './command/types/cli-options';
 import { EVENT_BUILD_END, EVENT_END, EVENT_ERROR, EVENT_REBUILD, EVENT_WARN } from './consts';
 import { formatProjectInfo, tag } from './format';
 import { cyan, green, magenta, yellow } from './tools/colors';
@@ -15,10 +16,10 @@ import type { BundlibEventEmitter } from './types/types';
 export async function action(
   bundlibName: string,
   bundlibVersion: string,
-  dev: boolean,
-  watch: boolean,
-  silent: boolean,
+  options: ProgramOptions,
 ): Promise<void> {
+
+  const { dev, watch, silent } = options;
 
   const cwd = process.cwd();
   const pkg = await readPkg(cwd);
@@ -29,11 +30,11 @@ export async function action(
 
     // TODO: Show detected modules & plugins with versions
 
-    const { name: projectName, displayName: projectDisplayName, version: projectVersion } = pkg;
-    const prjInfoName = projectDisplayName ?? projectName;
+    const { name: projectName, displayName, version: projectVersion } = pkg;
+    const projectDisplayName = displayName ?? projectName;
 
-    if (prjInfoName && projectVersion) {
-      log(`${cyan('building:')} ${formatProjectInfo(prjInfoName, projectVersion)}
+    if (projectDisplayName && projectVersion) {
+      log(`${cyan('building:')} ${formatProjectInfo(projectDisplayName, projectVersion)}
 `);
     }
 
