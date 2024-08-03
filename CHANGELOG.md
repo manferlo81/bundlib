@@ -4,7 +4,6 @@
 
 ## [0.19.0](https://github.com/manferlo81/bundlib/compare/v0.18.4...v0.19.0) (2024-07-21)
 
-
 ### ⚠ BREAKING CHANGES
 
 * analyzePkg no longer throws on invalid
@@ -15,14 +14,12 @@
 * Expose readPkg function ([f53e80d](https://github.com/manferlo81/bundlib/commit/f53e80d01b101adcdf8efcef8d2e1086edb2ec44))
 * Use typescript only if it's installed ([1764ed9](https://github.com/manferlo81/bundlib/commit/1764ed9fe73e62fde7944aebd8031a2d16e1e873))
 
-
 ### Bug Fixes
 
 * **deps:** Fixed vulnerabilities ([b26e999](https://github.com/manferlo81/bundlib/commit/b26e9992f05f03e1a9af9a65e885fa44e0778bbf))
 * Export missing types ([5f09706](https://github.com/manferlo81/bundlib/commit/5f09706db81ac28b410fe600cdf8018fbd936dbc))
 
 ### [0.18.4](https://github.com/manferlo81/bundlib/compare/v0.18.3...v0.18.4) (2020-12-03)
-
 
 ### Bug Fixes
 
@@ -32,7 +29,6 @@
 
 ### [0.18.2](https://github.com/manferlo81/bundlib/compare/v0.18.1...v0.18.2) (2020-11-10)
 
-
 ### Bug Fixes
 
 * Throw on array option if not supported ([9d2bde6](https://github.com/manferlo81/bundlib/commit/9d2bde6804eb646615b4a3eeb4ed28076c876433))
@@ -41,13 +37,11 @@
 
 ## [0.18.0](https://github.com/manferlo81/bundlib/compare/v0.17.8...v0.18.0) (2020-10-28)
 
-
 ### Features
 
 * CommonJS chunks ([59f7927](https://github.com/manferlo81/bundlib/commit/59f7927972952142800952f91a0f325b4cf5a819))
 
 ### [0.17.8](https://github.com/manferlo81/bundlib/compare/v0.17.7...v0.17.8) (2020-10-28)
-
 
 ### Bug Fixes
 
@@ -58,7 +52,6 @@
 
 ### [0.17.6](https://github.com/manferlo81/bundlib/compare/v0.17.5...v0.17.6) (2020-10-21)
 
-
 ### Bug Fixes
 
 * Prevent declartionMap option warning ([e58073a](https://github.com/manferlo81/bundlib/commit/e58073ac568938672446f4481eae707fb5ec9b7a))
@@ -66,7 +59,6 @@
 ### [0.17.5](https://github.com/manferlo81/bundlib/compare/v0.17.4...v0.17.5) (2020-10-18)
 
 ### [0.17.4](https://github.com/manferlo81/bundlib/compare/v0.17.3...v0.17.4) (2020-10-18)
-
 
 ### Bug Fixes
 
@@ -76,20 +68,17 @@
 
 ### [0.17.2](https://github.com/manferlo81/bundlib/compare/v0.17.1...v0.17.2) (2020-08-04)
 
-
 ### Bug Fixes
 
 * Explicitly set rollup exports option ([63e62ef](https://github.com/manferlo81/bundlib/commit/63e62ef1cdfa544ce31b22c8d23cf34d1413981e))
 
 ### [0.17.1](https://github.com/manferlo81/bundlib/compare/v0.17.0...v0.17.1) (2020-08-02)
 
-
 ### Bug Fixes
 
 * Crash if peer deps not installed ([d19fd46](https://github.com/manferlo81/bundlib/commit/d19fd46bba532eb1d3ed8e8f9402ffce6c8fea38))
 
 ## [0.17.0](https://github.com/manferlo81/bundlib/compare/v0.16.4...v0.17.0) (2020-07-15)
-
 
 ### ⚠ BREAKING CHANGES
 
@@ -100,13 +89,11 @@
 
 ### [0.16.4](https://github.com/manferlo81/bundlib/compare/v0.16.3...v0.16.4) (2020-05-30)
 
-
 ### Bug Fixes
 
 * rollup-plugin-terser sourcemap option ([256cd7b](https://github.com/manferlo81/bundlib/commit/256cd7b62a72e7fcbc773d541a429978e872cad9))
 
 ### [0.16.3](https://github.com/manferlo81/bundlib/compare/v0.16.2...v0.16.3) (2020-04-30)
-
 
 ### Bug Fixes
 
@@ -115,7 +102,6 @@
 ### [0.16.2](https://github.com/manferlo81/bundlib/compare/v0.16.1...v0.16.2) (2020-04-29)
 
 ### [0.16.1](https://github.com/manferlo81/bundlib/compare/v0.16.0...v0.16.1) (2020-04-28)
-
 
 ### Features
 
@@ -126,7 +112,7 @@
 ### ⚠ BREAKING CHANGES
 
 * `configFromPkg` resolves to CommonJS configs first
-* analizePkg result new format
+* analyzePkg result new format
 
 ### Features
 
@@ -177,7 +163,7 @@
 
 ### Features
 
-* analizePkg no longer returns resolved paths ([ad8e8ba](https://github.com/manferlo81/bundlib/commit/ad8e8ba43c8dec13870d449ea083db238034e05b))
+* analyzePkg no longer returns resolved paths ([ad8e8ba](https://github.com/manferlo81/bundlib/commit/ad8e8ba43c8dec13870d449ea083db238034e05b))
 * eslint, babel & json as optional plugins ([a4d28be](https://github.com/manferlo81/bundlib/commit/a4d28befb23efc24e0f36f09a0b6bca37ea84ea5))
 * find input files ([b551b7d](https://github.com/manferlo81/bundlib/commit/b551b7d2f387e0828bfd74259034e8f4211add5e))
 * implemented "project" option ([0bd3b36](https://github.com/manferlo81/bundlib/commit/0bd3b36c8a8d1be55e3790c3b17becd4d2101117))
@@ -210,11 +196,11 @@
 
 ### ⚠ BREAKING CHANGES
 
-* **analize:** analizePkg returns dependencies versions
+* **analyze:** analyzePkg returns dependencies versions
 
 ### Features
 
-* **analize:** analized dependencies versions ([f06b5c0](https://github.com/manferlo81/bundlib/commit/f06b5c0ef6d136ce1141e233bbb0e4c7e6456d79))
+* **analyze:** analyzed dependencies versions ([f06b5c0](https://github.com/manferlo81/bundlib/commit/f06b5c0ef6d136ce1141e233bbb0e4c7e6456d79))
 
 ### Bug Fixes
 
@@ -325,7 +311,7 @@
 * `input` option additional functionalities
 * `bin` option additional functionalities
 * `bin` option old functionality deprecated
-* `analizePkg` returns a totally different object
+* `analyzePkg` returns a totally different object
 
 ### [0.9.0](https://github.com/manferlo81/bundlib/compare/v0.8.5...v0.9.0) (2019-07-09)
 
@@ -361,10 +347,10 @@
 
 ### [0.8.0](https://github.com/manferlo81/bundlib/compare/v0.7.3...v0.8.0) (2019-07-05)
 
-* `configsFromPkg` throws on non `*.ts` input instead of `analizePkg`
+* `configsFromPkg` throws on non `*.ts` input instead of `analyzePkg`
 * `optionalDependencies` as external
 * `jsnext:main` field as `module` field fallback
-* analized dependencies as null if not present
+* analyzed dependencies as null if not present
 * dependencies updated
 
 ### [0.7.3](https://github.com/manferlo81/bundlib/compare/v0.7.2...v0.7.3) (2019-06-30)
@@ -497,7 +483,7 @@
 
 ### [0.2.0](https://github.com/manferlo81/bundlib/compare/v0.1.0...v0.2.0) (2019-04-25)
 
-* analized package format refactoring
+* analyzed package format refactoring
 
 ### [0.1.0](https://github.com/manferlo81/bundlib/compare/v0.0.4...v0.1.0) (2019-04-23)
 

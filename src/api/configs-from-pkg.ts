@@ -5,16 +5,12 @@ import type { BundlibPkgJson } from './types/pkg-json';
 import type { BundlibRollupModuleOutputOptions, BundlibRollupOptions } from './types/rollup';
 import type { BundlibAPIOptions } from './types/types';
 
-async function configsFromPkg(
+export async function configsFromPkg(
   cwd: string,
   options?: AllowNullish<BundlibAPIOptions | false>,
   pkgJson?: BundlibPkgJson,
 ): Promise<Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>> {
-  return pkgToConfigs(
-    await analyzePkg(cwd, pkgJson),
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    options || {},
-  );
+  const normalizedOptions = options ? options : {};
+  const analyzed = await analyzePkg(cwd, pkgJson);
+  return pkgToConfigs(analyzed, normalizedOptions);
 }
-
-export default configsFromPkg;
