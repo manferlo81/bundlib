@@ -14,8 +14,18 @@ executors:
       - image: cimg/node:20.15.1
     working_directory: ~/bundlib
 
+  executor_node_21:
+    docker:
+      - image: cimg/node:21.7.3
+    working_directory: ~/bundlib
+
+  executor_node_22:
+    docker:
+      - image: cimg/node:22.5.1
+    working_directory: ~/bundlib
+
 commands:
-  command_ci:
+  command_prepare:
     parameters:
       cache_key:
         type: string
@@ -33,9 +43,9 @@ commands:
           paths:
             - node_modules
           key: << parameters.cache_key >>-{{ checksum "package-lock.json" }}
-      - run:
-          name: Lint
-          command: npm run lint
+
+  command_ci:
+    steps:
       - run:
           name: Test
           command: npm test
@@ -65,18 +75,43 @@ commands:
           command: npm publish
 
 jobs:
+  job_lint:
+    executor: executor_node_20
+    steps:
+      - command_prepare:
+          cache_key: v1-node-20-deps-bundlib
+      - run:
+          name: Lint
+          command: npm run lint
+      - command_save_workspace
+
   job_node_18_ci:
     executor: executor_node_18
     steps:
-      - command_ci:
-          cache_key: v8-node-18-deps-bundlib
+      - command_prepare:
+          cache_key: v1-node-18-deps-bundlib
+      - command_ci
 
   job_node_20_ci:
     executor: executor_node_20
     steps:
-      - command_ci:
-          cache_key: v8-node-20-deps-bundlib
+      - command_restore_workspace
+      - command_ci
       - command_save_workspace
+
+  job_node_21_ci:
+    executor: executor_node_21
+    steps:
+      - command_prepare:
+          cache_key: v1-node-21-deps-bundlib
+      - command_ci
+
+  job_node_22_ci:
+    executor: executor_node_22
+    steps:
+      - command_prepare:
+          cache_key: v1-node-22-deps-bundlib
+      - command_ci
 
   job_upload_coverage:
     executor: executor_node_20
@@ -94,7 +129,16 @@ jobs:
 workflows:
   workflow_ci:
     jobs:
+      - job_lint:
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              only: /.*/
+
       - job_node_18_ci:
+          requires:
+            - job_lint
           filters:
             tags:
               only: /.*/
@@ -102,6 +146,26 @@ workflows:
               only: /.*/
 
       - job_node_20_ci:
+          requires:
+            - job_lint
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              only: /.*/
+
+      - job_node_21_ci:
+          requires:
+            - job_lint
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              only: /.*/
+
+      - job_node_22_ci:
+          requires:
+            - job_lint
           filters:
             tags:
               only: /.*/
@@ -112,6 +176,8 @@ workflows:
           requires:
             - job_node_18_ci
             - job_node_20_ci
+            - job_node_21_ci
+            - job_node_22_ci
           filters:
             branches:
               only: /.*/
@@ -123,6 +189,8 @@ workflows:
           requires:
             - job_node_18_ci
             - job_node_20_ci
+            - job_node_21_ci
+            - job_node_22_ci
           filters:
             tags:
               only: /^v\d+\.\d+\.\d+$/
