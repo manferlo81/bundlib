@@ -3,7 +3,9 @@ import { isNullish } from '../type-check/basic';
 import type { AllowNullish } from '../types/helper-types';
 import type { BrowserBuildFormat } from '../types/rollup';
 
-export const isBrowserFormat = composeOneOf<AllowNullish<BrowserBuildFormat>>(
+const isBrowserFormat = createOneOfLiteral<BrowserBuildFormat>('iife', 'amd', 'umd');
+
+export const isBrowserFormatOrNullish = composeOneOf<AllowNullish<BrowserBuildFormat>>(
   isNullish,
-  createOneOfLiteral('iife', 'amd', 'umd'),
+  isBrowserFormat,
 );

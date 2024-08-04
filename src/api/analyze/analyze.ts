@@ -1,7 +1,7 @@
 import { error } from '../errors/error';
 import { invalidOptionMessage, invalidPkgFieldMessage } from '../errors/error-messages';
 import { resolveESModuleOption } from '../options/es-module';
-import { isBrowserFormat } from '../options/format';
+import { isBrowserFormatOrNullish } from '../options/format';
 import { isValidGlobals, normalizeGlobals } from '../options/globals';
 import { resolveInputOption } from '../options/input';
 import { resolveInteropOption } from '../options/interop';
@@ -86,7 +86,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     throw error(invalidOptionMessage('chunks'));
   }
 
-  if (!isBrowserFormat(browserFormat)) {
+  if (!isBrowserFormatOrNullish(browserFormat)) {
     throw error(invalidOptionMessage('format'));
   }
 

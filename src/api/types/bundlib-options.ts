@@ -1,6 +1,6 @@
 import type { BoolBasedSelectiveOption, ValueBasedSelectiveOption } from 'selective-option';
 import type { AllowNullish, Dictionary } from './helper-types';
-import type { BrowserBuildFormat, RollupBundlibInterop, RollupEsModuleString, RollupSourcemapString } from './rollup';
+import type { BrowserBuildFormat, RollupEsModuleString, RollupInterop, RollupSourcemapString } from './rollup';
 
 export type BuildTypeForAPI = 'main' | 'module' | 'browser';
 export type BuildType = BuildTypeForAPI | 'bin';
@@ -13,16 +13,16 @@ export type OverrideKey = 'default';
 export type SelectiveObjectKey<K extends string> = SelectiveKey<K> | OverrideKey;
 
 export type SelectiveValueBasedOption<K extends string, V> = ValueBasedSelectiveOption<SelectiveObjectKey<K>, V>;
-export type SelectiveBoolBasedOption<K extends string, V = never> = BoolBasedSelectiveOption<SelectiveKey<K>, V, OverrideKey>;
+export type SelectiveBoolBasedOption<K extends string, V> = BoolBasedSelectiveOption<SelectiveKey<K>, V, OverrideKey>;
 
 export type SelectiveSkipBuildType = BuildType | 'types';
 
 export type SelectiveStringOption = SelectiveValueBasedOption<BuildType, string>;
 export type SelectiveSourcemapOption = SelectiveBoolBasedOption<BuildType, RollupSourcemapString>;
 export type SelectiveEsModuleOption = SelectiveBoolBasedOption<BuildType, RollupEsModuleString>;
-export type SelectiveInteropOption = SelectiveBoolBasedOption<BuildType, RollupBundlibInterop>;
-export type SelectiveMinOption = SelectiveBoolBasedOption<BuildType>;
-export type SelectiveSkipOption = SelectiveBoolBasedOption<SelectiveSkipBuildType>;
+export type SelectiveInteropOption = SelectiveBoolBasedOption<BuildType, RollupInterop>;
+export type SelectiveMinOption = SelectiveBoolBasedOption<BuildType, never>;
+export type SelectiveSkipOption = SelectiveBoolBasedOption<SelectiveSkipBuildType, never>;
 
 export type StringOption = AllowNullish<string>;
 export type BooleanOption = AllowNullish<boolean>;

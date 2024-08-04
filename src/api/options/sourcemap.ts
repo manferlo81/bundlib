@@ -5,17 +5,17 @@ import { createOneOfLiteral } from '../type-check/advanced';
 import type { BuildType, SelectiveSourcemapOption } from '../types/bundlib-options';
 import type { RollupSourcemap, RollupSourcemapString } from '../types/rollup';
 
-export const isSourcemapStringOption = createOneOfLiteral<RollupSourcemapString>([
+export const isSourcemapString = createOneOfLiteral<RollupSourcemapString>(
   'inline',
   'hidden',
-] as const);
+);
 
 export function resolveSourcemapOption(value: SelectiveSourcemapOption): SelectiveResolved<BuildType, RollupSourcemap> {
   return resolveBoolBasedSelectiveOption<BuildType, RollupSourcemap, true>(
     value,
     MODULE_BUILD_KEYS,
     API_SPECIAL_KEYS,
-    isSourcemapStringOption,
+    isSourcemapString,
     true,
     'sourcemap',
   );

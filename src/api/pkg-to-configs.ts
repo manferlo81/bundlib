@@ -26,10 +26,10 @@ import { keys } from './tools/helpers';
 import { renamePre } from './tools/rename-pre';
 import type { AllowNullish, Dictionary, TypeCheckFunction } from './types/helper-types';
 import type { PkgAnalyzed } from './types/pkg-analyzed';
-import type { BundlibRollupBrowseOutputOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupBundlibInterop, RollupInteropOption, RollupSourcemap } from './types/rollup';
+import type { BundlibRollupBrowseOutputOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupBundlibInterop, RollupInterop, RollupSourcemap } from './types/rollup';
 import type { BundlibAPIOptions } from './types/types';
 
-function convertInterop(interopBool: RollupBundlibInterop): RollupInteropOption {
+function convertInterop(interopBool: RollupBundlibInterop): RollupInterop {
   if (interopBool === true) return 'compat';
   if (interopBool === false) return 'default';
   return interopBool;
