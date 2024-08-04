@@ -18,40 +18,70 @@ An automatic library bundler powered by [Rollup.js](https://github.com/rollup/ro
 * [Install](#install)
 * [Build](#build)
 * [Configuration](#configuration)
-* [Advanced Configuration](#advanced-configuration)
+  * [Automatic Configuration](#automatic-configuration)
+  * [Advanced Configuration](#advanced-configuration)
 * [Options](#options)
-  * [input](#input)
-  * [sourcemap](#sourcemap)
-  * [esModule](#esmodule)
-  * [interop](#interop)
-  * [chunks](#chunks)
-  * [format](#format)
-  * [name](#name)
-  * [id](#id)
-  * [extend](#extend)
-  * [globals](#globals)
-  * [min](#min)
-  * [equals](#equals)
-  * [cache](#cache)
-  * [project](#project)
-  * [skip](#skip)
+  * [input](#option-input)
+  * [sourcemap](#option-sourcemap)
+  * [esModule](#option-esmodule)
+  * [interop](#option-interop)
+  * [chunks](#option-chunks)
+  * [format](#option-format)
+  * [name](#option-name)
+  * [id](#option-id)
+  * [extend](#option-extend)
+  * [globals](#option-globals)
+  * [min](#option-min)
+  * [equals](#option-equals)
+  * [cache](#option-cache)
+  * [project](#option-project)
+  * [skip](#option-skip)
 * [Selective Options](#selective-options)
-  * [Object based selective format](#object-based-selective-format)
-  * [String based selective format](#string-based-selective-format)
+  * [Value based selective format](#value-based-selective-format)
+    * [As value](#as-value)
+    * [As nullish](#as-nullish)
+    * [As object](#as-object)
+      * [The special `default` property](#the-special-default-property)
+      * [The special `api` property](#the-special-api-property)
+  * [Boolean based selective format](#boolean-based-selective-format)
+    * [As boolean](#as-boolean)
+    * [As key](#as-key)
+    * [As array of keys](#as-array-of-keys)
+    * [The special `api` key](#the-special-api-key)
+    * [As value based](#as-value-based)
 * [Using the CLI tool](#using-the-cli-tool)
 * [Using **Bundlib** programmatically](#using-bundlib-programmatically)
-* [Types](#types)
+  * [Functions](#functions)
+    * [function `readPkg`](#function-readpkg)
+    * [function `analyzePkg`](#function-analyzepkg)
+    * [function `configsFromPkg`](#function-configsfrompkg)
+  * [Types](#types)
+    * [type `BundlibConfig`](#type-bundlibconfig)
+    * [type `PkgAnalyzed`](#type-pkganalyzed)
+    * [type `ModuleBuildOptions`](#type-modulebuildoptions)
+    * [type `BrowserBuildOptions`](#type-browserbuildoptions)
+    * [type `TypesBuildOptions`](#type-typesbuildoptions)
+  * [Selective Types](#selective-types)
+    * [type `SelectiveValueBasedOption`](#type-selectivevaluebasedoption)
+    * [type `SelectiveBoolBasedOption`](#type-selectiveboolbasedoption)
+    * [type `BuildType`](#type-buildtype)
+    * [type `SelectiveStringOption`](#type-selectivestringoption)
+    * [type `SelectiveSourcemapOption`](#type-selectivesourcemapoption)
+    * [type `SelectiveEsModuleOption`](#type-selectiveesmoduleoption)
+    * [type `SelectiveInteropOption`](#type-selectiveinteropoption)
+    * [type `SelectiveMinOption`](#type-selectiveminoption)
+    * [type `SelectiveSkipOption`](#type-selectiveskipoption)
 * [Features](#features)
 
 ## Install
 
 ```bash
-npm i -D bundlib
+npm install bundlib --save-dev # or for short: npm i bundlib -D
 ```
 
 ## Build
 
-**Bundlib** will try to find your entry point file in the **`src`** folder. You can manually set your entry points using the [`input`](#input) option.
+**Bundlib** will try to find your entry point file in the **`src`** folder. You can manually set your entry points using the [`input`](#option-input) option.
 
 ### CommonJS module
 
@@ -63,7 +93,7 @@ To build a `ES Module` add a `"module"` field to your `package.json` pointing to
 
 ### IIFE, AMD and UMD build
 
-For `IIFE`, `AMD` or `UMD` builds, add a `"browser"` field to your `package.json`. The default format is `"umd"` but it can be changed to `"iife"` or `"amd"` using the [`format`](#format) option, see the [configuration section](#configuration) for more info and extra options.
+For `IIFE`, `AMD` or `UMD` builds, add a `"browser"` field to your `package.json`. The default format is `"umd"` but it can be changed to `"iife"` or `"amd"` using the [`format`](#option-format) option, see the [configuration section](#configuration) for more info and extra options.
 
 ## Configuration
 
@@ -73,27 +103,27 @@ For `IIFE`, `AMD` or `UMD` builds, add a `"browser"` field to your `package.json
 
 #### "main"
 
-The `"main"` field will be used as your **CommonJS module** output, if not present, **CommonJS Module** build will be skipped. You can skip the build manually using the [`skip`](#skip) option.
+The `"main"` field will be used as your **CommonJS module** output, if not present, **CommonJS Module** build will be skipped. You can skip the build manually using the [`skip`](#option-skip) option.
 
 #### "module" or "jsnext:main"
 
-The `"module"` field will be used as your **ES Module** output, if not present, **ES Module** build will be skipped. You can skip the build manually using the [`skip`](#skip) option. `"jsnext:main"` field will also be honored if `"module"` field is not present, but it is recommended to use the `"module"` field.
+The `"module"` field will be used as your **ES Module** output, if not present, **ES Module** build will be skipped. You can skip the build manually using the [`skip`](#option-skip) option. `"jsnext:main"` field will also be honored if `"module"` field is not present, but it is recommended to use the `"module"` field.
 
 #### "browser"
 
-The `"browser"` field will be used as your **Browser** build output, if not present, **Browser** build will be skipped. You can skip the build manually using the [`skip`](#skip) option. **Bundlib** only supports `string` type `"browser"` field, it will **throw** otherwise.
+The `"browser"` field will be used as your **Browser** build output, if not present, **Browser** build will be skipped. You can skip the build manually using the [`skip`](#option-skip) option. **Bundlib** only supports `string` type `"browser"` field, it will **throw** otherwise.
 
 #### "bin"
 
-The `"bin"` field will be used as your **Binary** build output, if not present, **Binary** build will be skipped. You can skip the build manually using the [`skip`](#skip) option. **Bundlib** only supports `string` type `"bin"` field, it will **throw** otherwise.
+The `"bin"` field will be used as your **Binary** build output, if not present, **Binary** build will be skipped. You can skip the build manually using the [`skip`](#option-skip) option. **Bundlib** only supports `string` type `"bin"` field, it will **throw** otherwise.
 
 #### "types" or "typings"
 
-The `"types"` field will be used as your **Types** output if you are using `typescript`. You can skip types generation using the [`skip`](#skip) option. `"typings"` field will also be honored if `"types"` field is not present.
+The `"types"` field will be used as your **Types** output if you are using `typescript`. You can skip types generation using the [`skip`](#option-skip) option. `"typings"` field will also be honored if `"types"` field is not present.
 
 #### "dependencies"
 
-The `"dependencies"` field will be used to detect installed packages, it will also be used to set external dependencies for your **CommonJS module**, **ES module**, and **Binary** builds, for **Browser** build dependencies will be bundled into the output file unless otherwise specified using the [`"globals"`](#globals) option.
+The `"dependencies"` field will be used to detect installed packages, it will also be used to set external dependencies for your **CommonJS module**, **ES module**, and **Binary** builds, for **Browser** build dependencies will be bundled into the output file unless otherwise specified using the [`globals`](#option-globals) option.
 
 #### "devDependencies"
 
@@ -130,7 +160,7 @@ Set `"bundlib"` field in your `package.json` to an `object` with your configurat
 }
 ```
 
-You can also set `"bundlib"` field in `package.json` to a `string` as a path, relative to the project root, pointing to a `.json`, `.yaml`, `.yml` or `.js` configuration file.
+You can also set `"bundlib"` field in `package.json` to a `string` as a path, relative to the project root, pointing to a `.json`, `.yaml`, `.yml`, `.js`, `.cjs`, `.mjs` or `.ts`, or `json` or `yaml` format file without extension containing the configuration.
 
 ***example***
 
@@ -140,7 +170,7 @@ You can also set `"bundlib"` field in `package.json` to a `string` as a path, re
   "name": "my-lib",
   "version": "1.0.0",
   "browser" : "dist/my-lib.amd.js",
-  "bundlib": "custom-options.yaml"
+  "bundlib": "options.yml"
   // ...
 }
 ```
@@ -148,7 +178,7 @@ You can also set `"bundlib"` field in `package.json` to a `string` as a path, re
 then...
 
 ```yaml
-# custom-options.yaml
+# options.yaml
 format: amd
 ```
 
@@ -168,85 +198,83 @@ If `"bundlib"` field not present in your `package.json`, **Bundlib** will try to
 
 See the [list of options](#options) below.
 
-### Options
+## Options
 
 The option object may contain any of the following properties. Any invalid or unknown option will cause **Bundlib** to **throw** at build time. Any option or sub-option set to `null` will be ignored.
 
-#### input
+### option `input`
+
+The path to the files to be used as entry points for each of your builds. This option supports [`value based selective format`](#value-based-selective-format).
 
 ```typescript
-input: string | SelectiveOption;
+input: SelectiveStringOption;
 ```
 
-The path to the files to be used as entry points for each of your builds.
+See [`SelectiveStringOption`](#type-selectivestringoption).
 
-This option supports `object` based [`selective format`](#selective-options). See [Selective Options](#selective-options) for more information.
+### option `sourcemap`
 
-#### sourcemap
+Whether or not to generate source maps, see [Rollup documentation](https://rollupjs.org/guide/en/#outputsourcemap) for more information. If not specified or set to `null` it will default to `true`. This option supports [value based](#value-based-selective-format) and [boolean based](#boolean-based-selective-format) selective format.
 
 ```typescript
-sourcemap: boolean | 'inline' | 'hidden' | SelectiveOption;
+sourcemap: SelectiveSourcemapOption;
 
 default true;
 ```
 
-Whether or not to generate source maps, See [Rollup documentation](https://rollupjs.org/guide/en/#outputsourcemap) for more information. If not specified or set to `null` it will default to `true`.
+See [`SelectiveSourcemapOption`](#type-selectivesourcemapoption).
 
-This option supports `object` based and `string` based [`selective format`](#selective-options). See [Selective Options](#selective-options) for more information.
+### option `esModule`
 
-#### esModule
+Whether or not to add a `__esModule: true` property to your module. This option supports [value based](#value-based-selective-format) and [boolean based](#boolean-based-selective-format) selective format.
 
 ```typescript
-esModule: boolean | SelectiveOption;
+esModule: SelectiveEsModuleOption;
 
 default false;
 ```
 
-Whether or not to add a `__esModule: true` property to your module. If `esModule = true` it will affect all builds.
+See [`SelectiveEsModuleOption`](#type-selectiveesmoduleoption).
 
-This option supports `object` based and `string` based [`selective format`](#selective-options). See [Selective Options](#selective-options) for more information.
+### option `interop`
 
-#### interop
+Whether or not to add an interop block. This option supports [value based](#value-based-selective-format) and [boolean based](#boolean-based-selective-format) selective format.
 
 ```typescript
-interop: boolean | SelectiveOption;
+interop: SelectiveInteropOption;
 
 default false;
 ```
 
-Whether or not to add an interop block. If `interop = true` it will affect all builds.
+See [`SelectiveInteropOption`](#type-selectiveinteropoption).
 
-This option supports `object` based and `string` based [`selective format`](#selective-options). See [Selective Options](#selective-options) for more information.
+### option `chunks`
 
-#### chunks
+A map of chunks to be built as `CommonJS` modules. The object `key` represents the input file and the `value` represents the output file, relative to the project root. Files created using this option won't be bundled into the `CommonJS` and `Binary` builds and will be imported (required) instead.
 
 ```typescript
 chunks: Record<string, string>;
 ```
 
-A map of chunks to be built as `CommonJS` modules. The object `key` represents the input file and the `value` represents the output file, relative to the project root.
-
-Files created using this option won't be bundled into the `CommonJS` and `Binary` builds and will be imported (required) instead.
-
-#### format
-
-```typescript
-format: "iife" | "amd" | "umd";
-
-default "umd";
-```
+### option `format`
 
 Defines the format to be used for the `Browser` build.
 
-#### name
+```typescript
+format: 'iife' | 'amd' | 'umd';
+
+default 'umd';
+```
+
+### option `name`
+
+The name to be used to expose your library to the global scope in a `IIFE` or `UMD` browser build. If not provided it will default to the camelcased, unscoped `"name"` field in `package.json` or the camelcased directory name. If none of those can be obtained, it will **throw** at build time.
 
 ```typescript
 name: string;
 ```
 
-The name to be used to expose your library to the global scope in a `IIFE` or `UMD` browser build. If not provided it will default to the camelcased, unscoped `"name"` field in `package.json` or the camelcased directory name. If none of those can be obtained, it will **throw** at build time.
-
-#### id
+### option `id`
 
 ```typescript
 id: string;
@@ -256,7 +284,9 @@ Optional amd id for `AMD` or `UMD` build.
 
 If not present, `AMD` `define` method will use no id.
 
-#### extend
+### option `extend`
+
+Whether or not to extend the globally exposed [name](#option-name) on a `IIFE` or `UMD` build.
 
 ```typescript
 extend: boolean;
@@ -264,9 +294,9 @@ extend: boolean;
 default false;
 ```
 
-Whether or not to extend the globally exposed [name](#name) on a `IIFE` or `UMD` build.
+### option `globals`
 
-#### globals
+`Object` or `array` to map names to globals in `Browser` build.
 
 ```typescript
 globals: { [name: string]: string } | string[];
@@ -274,21 +304,23 @@ globals: { [name: string]: string } | string[];
 default {};
 ```
 
-`Object` or `array` to map names to globals in `Browser` build.
+### option `min`
 
-#### min
+Defines which files should be used to build an additional minified version, if `true` will affect all modules. The minified file will be renamed from `*.ext` to `*.min.ext`. This option will override the default behavior of the [`--dev`, `-d` *cli option*](#--dev--d) , which means only the minified version will be actually minified, the normal version will **NOT** be minified even if you don't set the [`--dev`, `-d` cli option](#--dev--d). This option supports  [boolean based selective format](#boolean-based-selective-format).
 
 ```typescript
-min: boolean | SelectiveOption;
+min: SelectiveMinOption;
 
 default false;
 ```
 
-Defines which files should be used to build an additional minified version, if `true` will affect all modules. The minified file will be renamed from `*.ext` to `*.min.ext`. This option will override the default behavior of the [`--dev`, `-d` *cli option*](#-dev-d) , which means only the minified version will be actually minified, the normal version will **NOT** be minified even if you don't set the [`--dev`, `-d` cli option](#-dev-d).
+See [`SelectiveMinOption`](#type-selectiveminoption).
 
-This option supports `object` based and `string` based [`selective format`](#selective-options). See [Selective Options](#selective-options) for more information.
+### option `equals`
 
-#### equals
+Transforms type export for CommonJS module using `export = ...` instead of `export default ...`.
+
+> :warning: *Note that this option should only be used when your library has a* `default` *export and no* `named` *exports, otherwise it may cause the type declarations to become invalid.*
 
 ```typescript
 equals: boolean;
@@ -296,11 +328,9 @@ equals: boolean;
 default false;
 ```
 
-Transforms type export for CommonJS module using `export = ...` instead of `export default ...`.
+### option `cache`
 
-> :warning: *Note that this option should only be used when your library has a* `default` *export and no* `named` *exports, otherwise it may cause the type declarations to become invalid.*
-
-#### cache
+Defines the directory to be used for cache, relative to the project root.
 
 ```typescript
 cache: string;
@@ -308,168 +338,138 @@ cache: string;
 default "node_modules/.cache/bundlib";
 ```
 
-Defines the directory to be used for cache, relative to the project root.
+### option `project`
 
-#### project
+Defines the location of typescript `tsconfig.json` file, relative to the project root. This option supports [value based selective format](#value-based-selective-format).
 
 ```typescript
-project: string | SelectiveOption;
+project: SelectiveStringOption;
 
 default "tsconfig.json"
 ```
 
-Defines the location of typescript `tsconfig.json` file, relative to the project root.
+See [`SelectiveStringOption`](#type-selectivestringoption).
 
-This option supports `object` based [`selective format`](#selective-options). See [Selective Options](#selective-options) for more information.
+### option `skip`
 
-#### skip
+Defined which build **Bundlib** should skip. This option supports [boolean based selective format](#boolean-based-selective-format).
 
 ```typescript
-min: boolean | SelectiveOption;
+min: SelectiveSkipOption;
 
 default false;
 ```
 
-Defined which build **Bundlib** should skip.
+See [`SelectiveSkipOption`](#type-selectiveskipoption).
 
-This option supports `object` based and `string` based [`selective format`](#selective-options). See [Selective Options](#selective-options) for more information.
+## Selective Options
 
-### Selective Options
+Some options support a `selective` format to allow for a more flexible configuration.
 
-Some options support a selective format to allow for a more flexible configuration. See [`SelectiveOption`](#selectiveoption) type for more information.
+See [Selective Types](#selective-types) section for more information.
 
-Note that some options support different selective formats. `Boolean` type options support `string` based format and `object` based format while others support only `object` based format.
+Note that some options support different selective formats. `Boolean` type options support `boolean` based format which is an extension of `value` based format, while others support only `value` based format.
 
-See [input](#input), [sourcemap](#sourcemap), [esModule](#esmodule), [interop](#interop), [min](#min) and [project](#project) options.
+See [`input` option](#option-input), [`sourcemap` option](#option-sourcemap), [`esModule` option](#option-esmodule), [`interop` option](#option-interop), [`min` option](#option-min) and [`project` option](#option-project).
 
-#### Object based selective format
+### Value based selective format
 
-`object` based format works by preserving the default value and overriding it with the provided configuration.
+The `value` based selective format allows you to enter a `value` or an `object` to set independent values.
 
-***example***
+#### As value
 
-```javascript
-// assuming default = false...
-
-{
-  main: true
-}
-
-// ... will resolve to
-
-/*
-{
-  main: true,
-  ...others: false
-}
-*/
+```typescript
+const value: SelectiveValueBasedOption<BuildType, string> = 'string';
 ```
 
-##### The special `default` property
+#### As nullish
 
-You can override the default value as well using the `"default"` object key.
-
-***example***
-
-```javascript
-// assuming default = false
-
-{
-  default: true,
-  bin: false
-}
-
-// ... will resolve to
-
-/*
-{
-  bin: false,
-  ...others: true
-}
-*/
+```typescript
+const value: SelectiveValueBasedOption<BuildType, string> = null;
+const value: SelectiveValueBasedOption<BuildType, string> = undefined;
 ```
 
-##### The special `api` property
+#### As object
 
-The `"api"` object key represents `main`, `module` and `browser`.
-
-***example***
-
-```javascript
-// assuming default = false...
-
-{
-  api: true
-}
-
-// ... will resolve to
-
-/*
-{
-  main: true,
-  module: true,
-  browser: true,
-  ...others: false
-}
-*/
+```typescript
+const value: SelectiveValueBasedOption<BuildType, string> = { main: 'string' };
+const value: SelectiveValueBasedOption<BuildType, string> = { module: 'module' };
 ```
 
-#### String based selective format
+#### The special `default` property
 
-`string` based format works in a different way, it does not preserve the default value, included build types will be set to `true` and the others will be set to `false`. It can be a `string` or an `string array`.
+You can override the default value as well using the `default` object key.
 
-##### As string
+```typescript
+const value: SelectiveValueBasedOption<BuildType, string> = {
+  default: 'default',
+  main: 'string',
+};
 
-***example***
-
-```javascript
-'module'
-
-// ... will resolve to
-
-/*
-{
-  module: true,
-  ...others: false
-}
-*/
+const value: SelectiveValueBasedOption<BuildType, string> = {
+  default: 'default',
+  module: 'module',
+};
 ```
 
-##### As array of strings
+#### The special `api` property
 
-***example***
+The `api` object key represents `main`, `module` and `browser`.
 
-```javascript
-['main', 'module']
-
-// ... will resolve to
-
-/*
-{
-  main: true,
-  module: true,
-  ...others: false
-}
-*/
+```typescript
+const value: SelectiveValueBasedOption<BuildType, string> = {
+  api: 'string',
+};
 ```
 
-##### The special `api` build type
+### Boolean based selective format
 
-***example***
+The `boolean` based selective format is an extension of the a `value` based selective format, except `boolean` can be used as a value as well, and it allows `keys` in the `positive` or `negative` format in addition to what `value` based selective format normally accepts.
 
-```javascript
-'api'
+#### As boolean
 
-// ... will resolve to
+You can set it to a `boolean` value.
 
-/*
-{
-  main: true,
-  module: true,
-  browser: true,
-  ...others: false
-}
-*/
+```typescript
+const value: SelectiveBoolBasedOption<BuildType, never> = true;
+const value: SelectiveBoolBasedOption<BuildType, never> = false;
+```
+
+#### As key
+
+You can set it to any of the valid keys, in the `positive` format (ex: `main` or `+main`) or `negative` format (ex: `!main` or `-main`). Valid keys are usually: `main`, `module`, `browser` and `bin` except for [`SelectiveSkipOption`](#type-selectiveskipoption) which also accepts `types` as key. It will also accepts [the special `api` key](#the-special-api-key).
+
+```typescript
+const value: SelectiveBoolBasedOption<BuildType, never> = 'main';
+const value: SelectiveBoolBasedOption<BuildType, never> = 'api';
+const value: SelectiveBoolBasedOption<BuildType, never> = '!api';
+```
+
+#### As array of keys
+
+Any key that can be used as as [`single key`](#as-key), can be as well used in an array. The first key sets the default state for the result, and the additional keys extend that initial state.
+
+```typescript
+const value: SelectiveBoolBasedOption<BuildType, never> = ['main', 'module'];
+const value: SelectiveBoolBasedOption<BuildType, never> = ['!browser', '!main'];
+```
+
+#### The special `api` key
+
+The `api` special keys sets (or removes) `main`, `module` and `browser` at the same time.
+
+```typescript
+const value: SelectiveBoolBasedOption<BuildType, never> = 'api';
+const value: SelectiveBoolBasedOption<BuildType, never> = ['api', '!browser'];
+```
+
+#### As value based
+
+The `boolean` based selective format is an extension of the `value` based one. It accepts values as `boolean` and objects containing `boolean` values, in addition to what a `value` based selective format normally accepts.
+
+```typescript
+const value: SelectiveBoolBasedOption<BuildType, 'text'> = true;
+const value: SelectiveBoolBasedOption<BuildType, 'text'> = { default: false, main: 'text' };
 ```
 
 ## Using the CLI tool
@@ -484,7 +484,7 @@ Combine options according to your needs. Run `bundlib --help` or `bundlib -h` fo
 
 #### `--dev`, `-d`
 
-Create development, not minified builds. Builds affected by the [`min`](#min) option will ignore this option.
+Create development, not minified builds. Builds affected by the [`min`](#option-min) option will ignore this option.
 
 #### `--watch`, `-w`
 
@@ -504,12 +504,14 @@ Show detailed help about the CLI tool.
 
 ## Using Bundlib programmatically
 
+Bundlib exposes some `function` and `types` you can `import`
+
 ***example***
 
 ```javascript
 // rollup.config.js
 
-import { configsFromPkg } from "bundlib";
+import { configsFromPkg } from 'bundlib';
 
 const dev = !process.env.production;
 
@@ -519,40 +521,93 @@ export default configsFromPkg(
 );
 ```
 
-### readPkg
+## Functions
+
+### function `readPkg`
+
+Reads the content of `package.json` and returns it. It will throw a `TypeError` if `package.json` content is not an `object`.
+
+* *Syntax*
 
 ```typescript
 function readPkg(cwd: string): Promise<BundlibPkgJson>;
 ```
 
-Reads the content of `package.json` (it will throw a TypeError if its not an object) and return it.
+* *Arguments*
+  * `cwd`: A string representing the path where `package.json` is located.
+* `return`: A `Promise` which resolves to `package.json` content.
 
-### analyzePkg
+### function `analyzePkg`
+
+Analyzes `package.json` content, resolve bundlib `configuration` and it turns it into more useful information about the build.
+
+* *Syntax*
 
 ```typescript
 function analyzePkg(
   cwd: string,
-  pkg: PkgJson = read(cwd + "/package.json"),
+  pkg: PkgJson,
 ): Promise<PkgAnalyzed>;
 ```
 
-Analyzes `package.json` and returns a `Promise` that resolves to useful normalized information, [*see* `PkgAnalyzed`](#pkganalyzed). If `pkg` not provided it will be read from the current working directory `cwd`.
+* *Arguments*
+  * `cwd`: A string representing the path where configuration file should be located.
+  * `pkg`: The content of `package.json`.
+* `return`: A `Promise` which resolves to information and tools, useful to configure rollup.
 
-### configsFromPkg
+> If `pkg` not provided it will read `package.json` from the current working directory `cwd`. But this behavior will be removed in the future. So, to avoid problems in the future, please pass `pkg`
+
+See [`PkgAnalyzed`](#type-pkganalyzed).
+
+### function `configsFromPkg`
+
+Creates an array of rollup config object, based on the content of `package.json` and bundlib configuration file.
 
 ```typescript
 function configsFromPkg(
   cwd: string,
-  options: { dev? boolean, watch?: boolean } | null | false,
-  pkg: PkgJson = read(cwd + "/package.json"),
-): Promise<RollupOptions[]>;
+  options: { dev? boolean, watch?: boolean, onwarn: rollup.WarningHandlerWithDefault } | null | false,
+  pkg: PkgJson = read(cwd + '/package.json'),
+): Promise<rollup.RollupOptions[]>;
 ```
 
-Returns a `Promise` that resolves to an array of Rollup configs based on the content of `package.json`. If `pkg` not provided it will be read from the current working directory `cwd`.
+* *Arguments*
+  * `cwd`: A string representing the path where `package.json` and configuration file should be located.
+  * `options`: An object with options to create the configs.
+  * `pkg`: The content of `package.json`.
+* `return`: A `Promise` which resolves to information and tools, useful to configure rollup.
+
+If `pkg` not provided it will be read from the current working directory `cwd`.
 
 ## Types
 
-### PkgAnalyzed
+This are som of the types exported but bundlib.
+
+### type `BundlibConfig`
+
+```typescript
+interface BundlibConfig {
+  readonly input?: SelectiveStringOption;
+  readonly sourcemap?: SelectiveSourcemapOption;
+  readonly esModule?: SelectiveEsModuleOption;
+  readonly interop?: SelectiveInteropOption;
+  readonly cache?: string | null;
+  readonly chunks?: Record<string, string> | null;
+  readonly format?: 'amd' | 'iife' | 'umd' | null;
+  readonly name?: string | null;
+  readonly id?: string | null;
+  readonly extend?: boolean | null;
+  readonly globals?: Record<string, string> | string[] | null;
+  readonly equals?: boolean | null;
+  readonly min?: SelectiveMinOption;
+  readonly skip?: SelectiveSkipOption;
+  readonly project?: SelectiveStringOption;
+}
+```
+
+See options [`input`](#option-input), [`sourcemap`](#option-sourcemap), [`esModule`](#option-esmodule), [`interop`](#option-interop), [`cache`](#option-cache), [`chunks`](#option-chunks), [`format`](#option-format), [`name`](#option-name), [`id`](#option-id), [`extend`](#option-extend), [`globals`](#option-globals), [`equals`](#option-equals), [`min`](#option-min), [`skip`](#option-skip) and [`project`](#option-project), and types [`SelectiveStringOption`](#type-selectivestringoption), [`SelectiveSourcemapOption`](#type-selectivesourcemapoption), [`SelectiveEsModuleOption`](#type-selectiveesmoduleoption), [`SelectiveInteropOption`](#type-selectiveinteropoption), [`SelectiveMinOption`](#type-selectiveminoption) and [`SelectiveSkipOption`](#type-selectiveskipoption).
+
+### type `PkgAnalyzed`
 
 ```typescript
 interface PkgAnalyzed {
@@ -573,27 +628,27 @@ interface PkgAnalyzed {
 }
 ```
 
-*see also:* [`ModuleBuildOptions`](#modulebuildoptions), [`BrowserBuildOptions`](#browserbuildoptions) and [`TypesBuildOptions`](#typesbuildoptions).
+See [`ModuleBuildOptions`](#type-modulebuildoptions), [`BrowserBuildOptions`](#type-browserbuildoptions) and [`TypesBuildOptions`](#type-browserbuildoptions)
 
-### ModuleBuildOptions
+### type `ModuleBuildOptions`
 
 ```typescript
 interface ModuleBuildOptions {
   input: string | null;
   output: string;
   sourcemap: boolean | 'inline' | 'hidden';
-  esModule: boolean;
-  interop: boolean;
+  esModule: boolean | 'if-default-prop';
+  interop: boolean | 'compat' | 'auto' | 'esModule' | 'default' | 'defaultOnly';
   min: boolean;
   project: string | null;
 }
 ```
 
-### BrowserBuildOptions
+### type `BrowserBuildOptions`
 
 ```typescript
 interface BrowserBuildOptions extends ModuleBuildOptions {
-  format: "iife" | "amd" | "umd";
+  format: 'iife' | 'amd' | 'umd';
   name: string | null;
   id: string | null;
   globals: Record<string, string> | null;
@@ -601,7 +656,9 @@ interface BrowserBuildOptions extends ModuleBuildOptions {
 }
 ```
 
-### TypesBuildOptions
+See [`ModuleBuildOptions`](#type-modulebuildoptions).
+
+### type `TypesBuildOptions`
 
 ```typescript
 interface TypesBuildOptions {
@@ -610,18 +667,76 @@ interface TypesBuildOptions {
 }
 ```
 
-### SelectiveOption
+## Selective Types
+
+### type `SelectiveValueBasedOption`
 
 ```typescript
-interface ObjectBasedSelectiveOption<T> {
-  default: T;
-  [K: BuildType]: T;
-}
-
-type StringBasedSelectiveOption = BuildType | BuildType[];
-
-type BuildType = 'main' | 'module' | 'browser' | 'bin' | 'api' | ...others;
+type SelectiveObjectKey<K extends string> = K | 'api' | 'default';
+type SelectiveValueBasedOption<K extends string, V> = ValueBasedSelectiveOption<SelectiveObjectKey<K>, V>;
 ```
+
+### type `SelectiveBoolBasedOption`
+
+```typescript
+type SelectiveKey<K extends string> = K | 'api';
+type SelectiveBoolBasedOption<K extends string, V = never> = BoolBasedSelectiveOption<SelectiveKey<K>, V, 'default'>;
+```
+
+### type `BuildType`
+
+```typescript
+type BuildType =  'main' | 'module' | 'browser' | 'bin';
+```
+
+### type `SelectiveStringOption`
+
+```typescript
+type SelectiveStringOption = SelectiveValueBasedOption<BuildType, string>;
+```
+
+See [`SelectiveValueBasedOption`](#type-selectivevaluebasedoption) and [`BuildType`](#type-buildtype).
+
+### type `SelectiveSourcemapOption`
+
+```typescript
+type SelectiveSourcemapOption = SelectiveBoolBasedOption<BuildType, 'inline' | 'hidden'>;
+```
+
+See [`SelectiveBoolBasedOption`](#type-selectiveboolbasedoption) and [`BuildType`](#type-buildtype).
+
+### type `SelectiveEsModuleOption`
+
+```typescript
+type SelectiveEsModuleOption = SelectiveBoolBasedOption<BuildType, 'if-default-prop'>;
+```
+
+See [`SelectiveBoolBasedOption`](#type-selectiveboolbasedoption) and [`BuildType`](#type-buildtype).
+
+### type `SelectiveInteropOption`
+
+```typescript
+type SelectiveInteropOption = SelectiveBoolBasedOption<BuildType, 'default' | 'esModule' | 'compat' | 'auto' | 'defaultOnly'>;
+```
+
+See [`SelectiveBoolBasedOption`](#type-selectiveboolbasedoption) and [`BuildType`](#type-buildtype).
+
+### type `SelectiveMinOption`
+
+```typescript
+type SelectiveMinOption = SelectiveBoolBasedOption<BuildType, never>;
+```
+
+See [`SelectiveBoolBasedOption`](#type-selectiveboolbasedoption) and [`BuildType`](#type-buildtype)
+
+### type `SelectiveSkipOption`
+
+```typescript
+type SelectiveSkipBuildType = BuildType | 'types';
+type SelectiveSkipOption = SelectiveBoolBasedOption<SelectiveSkipBuildType, never>;
+```
+
+See [`SelectiveBoolBasedOption`](#type-selectiveboolbasedoption) and [`BuildType`](#type-buildtype)
 
 ## Features
 
@@ -630,8 +745,8 @@ type BuildType = 'main' | 'module' | 'browser' | 'bin' | 'api' | ...others;
 * Uses `"browser"` field in your `package.json` to build a `Browser` module. It only supports `"browser"` field as `string`, `object` format not supported.
 * Uses `"bin"` field in your `package.json` to build a `Binary` module. It only supports `"bin"` field as `string`, `object` format not supported.
 * Uses `"types"` field in your `package.json` (or `"typings"` field) as path for types declarations.
-* Uses `"dependencies"` and `"peerDependencies"` to set external modules for `CommonJS Module`, `ES Module` and `Binary` builds. Dependencies will be bundled by default in `Browser` builds, unless otherwise specified using the [`global`](#globals) option.
-* Skip any build based on [options](#skip).
+* Uses `"dependencies"` and `"peerDependencies"` to set external modules for `CommonJS Module`, `ES Module` and `Binary` builds. Dependencies will be bundled by default in `Browser` builds, unless otherwise specified using the [`global`](#option-globals) option.
+* Skip any build based on [options](#option-skip).
 * Uses [`rollup-plugin-typescript2`](https://www.npmjs.com/package/rollup-plugin-typescript2) if [`typescript`](https://www.npmjs.com/package/typescript) installed as runtime or dev dependency.
 * Uses [`@rollup/plugin-babel`](https://www.npmjs.com/package/@rollup/plugin-babel) if [`@babel/core`](https://www.npmjs.com/package/@babel/core) installed as runtime or dev dependency, otherwise it uses [`@rollup/plugin-buble`](https://www.npmjs.com/package/@rollup/plugin-buble).
 * Uses [`rollup-plugin-strip-shebang`](https://www.npmjs.com/package/rollup-plugin-strip-shebang) and [`rollup-plugin-add-shebang`](https://www.npmjs.com/package/rollup-plugin-add-shebang) to ensure a shebang on binary build.
@@ -648,7 +763,7 @@ type BuildType = 'main' | 'module' | 'browser' | 'bin' | 'api' | ...others;
 
 ## Known issues
 
-* Type declarations for chunks created using the [`chunks`](#chunks) options may not work properly.
+* Type declarations for chunks created using the [`chunks`](#option-chunks) option may not work properly.
 
 ## License
 
