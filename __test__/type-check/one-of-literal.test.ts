@@ -4,7 +4,7 @@ describe('createOneOfLiteral function', () => {
 
   const pizza = 'pizza';
   const drinks = ['tea' as const, 'coffee' as const] as const;
-  const isPizzaOrDrinkOrZero = createOneOfLiteral<'pizza' | 'tea' | 'coffee' | 0>(pizza, drinks, 0);
+  const isPizzaOrDrinkOrZero = createOneOfLiteral<'pizza' | 'tea' | 'coffee' | 0>(pizza, ...drinks, 0);
 
   test('Should return false on non matching values', () => {
 

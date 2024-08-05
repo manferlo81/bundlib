@@ -5,13 +5,13 @@ import { createOneOfLiteral } from '../type-check/advanced';
 import type { BuildType, SelectiveInteropOption } from '../types/bundlib-options';
 import type { RollupBundlibInterop, RollupInterop } from '../types/rollup';
 
-export const isInteropString = createOneOfLiteral<RollupInterop>([
-  'default',
-  'compat',
+export const isInteropString = createOneOfLiteral<RollupInterop>(
   'auto',
+  'compat',
   'esModule',
+  'default',
   'defaultOnly',
-]);
+);
 
 export function resolveInteropOption(value: SelectiveInteropOption): Resolved<BuildType, RollupBundlibInterop> {
   return resolveBoolBasedSelectiveOption<BuildType, RollupBundlibInterop>(
