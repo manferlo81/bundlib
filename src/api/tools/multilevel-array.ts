@@ -6,7 +6,7 @@ export function flattenMultilevel<T>(array: MultilevelArray<T>, target: T[] = []
   return array.reduce<T[]>(
     (acc, item) => {
 
-      if (isArray<MultilevelArray<T>>(item)) {
+      if (isArray(item)) {
         return flattenMultilevel(item, acc);
       }
 

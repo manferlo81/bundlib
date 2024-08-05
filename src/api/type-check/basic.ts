@@ -17,11 +17,8 @@ export function isBool(value: unknown): value is boolean {
 }
 
 interface ArrayIsArray {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
-  <T extends unknown[]>(value: unknown): value is T;
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
-  <T extends readonly unknown[]>(value: unknown): value is T;
-  <T>(value: unknown): value is T[];
+  (value: unknown): value is readonly unknown[];
+  (value: unknown): value is unknown[];
 }
 
 export const isArray: ArrayIsArray = Array.isArray;
