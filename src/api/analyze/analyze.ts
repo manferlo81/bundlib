@@ -14,7 +14,6 @@ import { readPkg } from '../package/read-pkg';
 import { isDictionaryOrNullish, isStringOrNullish } from '../type-check/advanced';
 import { invalidKeys } from '../type-check/keys';
 import type { BundlibConfig } from '../types/bundlib-options';
-import type { AllowNull, Dictionary, Nullish } from '../types/helper-types';
 import type { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalyzed, TypesBuildOptions } from '../types/pkg-analyzed';
 import type { BundlibPkgJson } from '../types/pkg-json';
 import { resolveConfig } from './resolve-config';
@@ -126,15 +125,15 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     throw error(invalidPkgFieldMessage('bin', 'string'));
   }
 
-  if (!isDictionaryOrNullish<Dictionary<string> | Nullish>(pkgRuntimeDependencies)) {
+  if (!isDictionaryOrNullish(pkgRuntimeDependencies)) {
     throw error(invalidPkgFieldMessage('dependencies', 'Object'));
   }
 
-  if (!isDictionaryOrNullish<Dictionary<string> | Nullish>(pkgDevDependencies)) {
+  if (!isDictionaryOrNullish(pkgDevDependencies)) {
     throw error(invalidPkgFieldMessage('devDependencies', 'Object'));
   }
 
-  if (!isDictionaryOrNullish<Dictionary<string> | Nullish>(pkgPeerDependencies)) {
+  if (!isDictionaryOrNullish(pkgPeerDependencies)) {
     throw error(invalidPkgFieldMessage('peerDependencies', 'Object'));
   }
 
@@ -151,7 +150,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
 
   const typesOutputFile = pkgTypesField ?? pkgTypingsField;
 
-  const mainOutput: AllowNull<ModuleBuildOptions> = (skipBuild.main || !pkgMainField)
+  const mainOutput: ModuleBuildOptions | null = (skipBuild.main || !pkgMainField)
     ? null
     : {
       input: mainInput,
@@ -163,7 +162,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
       project: perBuildProject.main,
     };
 
-  const moduleOutput: AllowNull<ModuleBuildOptions> = (skipBuild.module || !moduleOutputFile)
+  const moduleOutput: ModuleBuildOptions | null = (skipBuild.module || !moduleOutputFile)
     ? null
     : {
       input: moduleInput,
@@ -175,7 +174,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
       project: perBuildProject.module,
     };
 
-  const browserOutput: AllowNull<BrowserBuildOptions> = (skipBuild.browser || !pkgBrowserField)
+  const browserOutput: BrowserBuildOptions | null = (skipBuild.browser || !pkgBrowserField)
     ? null
     : {
       input: browserInput,
@@ -196,7 +195,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
       project: perBuildProject.browser,
     };
 
-  const binaryOutput: AllowNull<ModuleBuildOptions> = (skipBuild.bin || !pkgBinField)
+  const binaryOutput: ModuleBuildOptions | null = (skipBuild.bin || !pkgBinField)
     ? null
     : {
       input: binInput,
@@ -208,7 +207,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
       project: perBuildProject.bin,
     };
 
-  const typesOutput: AllowNull<TypesBuildOptions> = (skipBuild.types || !typesOutputFile)
+  const typesOutput: TypesBuildOptions | null = (skipBuild.types || !typesOutputFile)
     ? null
     : {
       output: typesOutputFile,
@@ -221,7 +220,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     peer: pkgPeerDependencies ?? null,
   };
 
-  const cache: AllowNull<string> = cacheOption ?? null;
+  const cache: string | null = cacheOption ?? null;
 
   return {
     cwd,

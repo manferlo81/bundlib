@@ -1,6 +1,6 @@
-import { type BundlibPkgJson } from './pkg-json';
-import { type Dictionary, type AllowNull } from './helper-types';
-import { RollupBundlibInterop, RollupEsModule, type BrowserBuildFormat, type RollupSourcemap } from './rollup';
+import type { AllowNull, Dictionary } from './helper-types';
+import type { BundlibPkgJson, PkgJsonDependencies } from './pkg-json';
+import type { BrowserBuildFormat, RollupBundlibInterop, RollupEsModule, RollupSourcemap } from './rollup';
 
 export interface ModuleBuildOptions {
   input: AllowNull<string>;
@@ -26,9 +26,9 @@ export interface TypesBuildOptions {
 }
 
 export interface Dependencies {
-  runtime: AllowNull<Dictionary<string>>;
-  dev: AllowNull<Dictionary<string>>;
-  peer: AllowNull<Dictionary<string>>;
+  runtime: AllowNull<PkgJsonDependencies>;
+  dev: AllowNull<PkgJsonDependencies>;
+  peer: AllowNull<PkgJsonDependencies>;
 }
 
 export interface PkgAnalyzed {
