@@ -1,3 +1,4 @@
+import { resolveConfig } from '../config-file/resolve-config';
 import { error } from '../errors/error';
 import { invalidOptionMessage, invalidPkgFieldMessage } from '../errors/error-messages';
 import { resolveESModuleOption } from '../options/es-module';
@@ -16,7 +17,6 @@ import { invalidKeys } from '../type-check/keys';
 import type { BundlibConfig } from '../types/bundlib-options';
 import type { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalyzed, TypesBuildOptions } from '../types/pkg-analyzed';
 import type { BundlibPkgJson } from '../types/pkg-json';
-import { resolveConfig } from './resolve-config';
 
 export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<PkgAnalyzed> {
 

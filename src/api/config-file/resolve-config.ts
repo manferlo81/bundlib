@@ -4,8 +4,15 @@ import { isStringOrNullish } from '../type-check/advanced';
 import { isDictionary } from '../type-check/basic';
 import type { BundlibConfig } from '../types/bundlib-options';
 import type { AllowNullish } from '../types/helper-types';
-import { loadConfig } from '../config-file/load-config';
+import { loadConfig } from './load-config';
 
+/**
+ * Resolve Bundlib configuration
+ *
+ * @param cwd directory where to search for configuration files if needed
+ * @param pkgBundlibConfig package.json "bundlib" field content
+ * @returns resolved Bundlib configuration
+ */
 export async function resolveConfig(cwd: string, pkgBundlibConfig: AllowNullish<BundlibConfig | string>): Promise<BundlibConfig> {
 
   // return if config is and object
@@ -21,6 +28,7 @@ export async function resolveConfig(cwd: string, pkgBundlibConfig: AllowNullish<
   }
 
   // try to load configuration
+  // it will throw if you pass an invalid path as string
   const loadedConfig = await loadConfig(cwd, pkgBundlibConfig);
 
   // return empty config if not found
@@ -36,6 +44,7 @@ export async function resolveConfig(cwd: string, pkgBundlibConfig: AllowNullish<
     throw error(`Invalid config found on file "${filepath}".`);
   }
 
+  // return configuration
   return config;
 
 }
