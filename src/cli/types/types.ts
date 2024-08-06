@@ -1,18 +1,10 @@
-import { EventEmitter } from 'events';
 import type { RollupError, RollupLog } from 'rollup';
 
-export interface BundlibEventEmitter extends EventEmitter {
-  on(event: 'start' | 'end', listener: () => void): this;
-  on(event: 'build-start', listener: (filename: string) => void): this;
-  on(event: 'build-end', listener: (filename: string, size: number, duration: number) => void): this;
-  on(event: 'rebuild', listener: (index: number) => void): this;
-  on(event: 'warn', listener: (warning: RollupLog) => void): this;
-  on(event: 'error', listener: (error: RollupError) => void): this;
-  //
-  emit(event: 'start' | 'end'): boolean;
-  emit(event: 'build-start', filename: string): boolean;
-  emit(event: 'build-end', filename: string, size: number, duration: number): boolean;
-  emit(event: 'rebuild', index: number): boolean;
-  emit(event: 'warn', warning: RollupLog): boolean;
-  emit(event: 'error', error: RollupError): boolean;
+type NoArgumentsEvents = 'start' | 'end' | 'rebuild';
+
+export interface BundlibEventMap extends Record<NoArgumentsEvents, []> {
+  'build-start': [filename: string];
+  'build-end': [filename: string, size: number, duration: number];
+  warn: [warning: RollupLog];
+  error: [error: RollupError];
 }

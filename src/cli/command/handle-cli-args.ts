@@ -4,7 +4,7 @@ import { booleanOptions } from './options/boolean';
 import { createFlags } from './options/flags';
 import type { ProgramOptions } from './types/cli-options';
 
-export function handleCLI(action: (options: ProgramOptions) => void) {
+export function handleCLI(action: (options: ProgramOptions) => void | Promise<void>) {
 
   const program = createCommand();
 
@@ -24,7 +24,7 @@ export function handleCLI(action: (options: ProgramOptions) => void) {
   void program
     .action(() => {
       const options = program.opts<ProgramOptions>();
-      action(options);
+      void action(options);
     })
     .parseAsync();
 

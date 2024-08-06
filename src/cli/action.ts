@@ -3,29 +3,27 @@ import { createFormatter } from 'gen-unit';
 import { EOL } from 'os';
 import { parse as pathParse, relative } from 'path';
 import prettyMs from 'pretty-ms';
-import type { RollupError } from 'rollup';
+import type { RollupError, WarningHandlerWithDefault } from 'rollup';
 import slash from 'slash';
-import { readPkg } from '../api';
-import { bundlib } from './bundlib';
+import { displayName as bundlibName, version as bundlibVersion } from '../../package.json';
+import { analyzePkg, pkgToConfigs, readPkg } from '../api';
+import { rollupBuild } from './build';
 import type { ProgramOptions } from './command/types/cli-options';
 import { EVENT_BUILD_END, EVENT_END, EVENT_ERROR, EVENT_REBUILD, EVENT_WARN } from './consts';
 import { formatProjectInfo, tag } from './format';
 import { cyan, green, magenta, yellow } from './tools/colors';
 import { log, logError } from './tools/console';
-import type { BundlibEventEmitter } from './types/types';
+import type { BundlibEventMap } from './types/types';
+import { rollupWatch } from './watch';
 
-export async function action(
-  bundlibName: string,
-  bundlibVersion: string,
-  options: ProgramOptions,
-): Promise<void> {
+export async function action(options: ProgramOptions): Promise<void> {
 
-  const { dev, watch, silent } = options;
+  const { dev: developmentMode, watch: watchMode, silent: silentMode } = options;
 
   const cwd = process.cwd();
   const pkg = await readPkg(cwd);
 
-  const logErrorAndExit = (err: RollupError) => {
+  const logErrorAndExit = (err: Error | RollupError) => {
     logError(err);
     process.exit(1);
   };
@@ -33,13 +31,23 @@ export async function action(
   const nodeVersion = process.versions.node;
   const [nodeMajorVersion] = nodeVersion.split('.');
 
+  // throw Error if NodeJS version is lower than 18
   if (+nodeMajorVersion < 18) {
     logErrorAndExit(new Error(`You are running NodeJS v${nodeVersion}. This version is not supported. Please install NodeJS v18 or greater.`));
   }
 
-  if (!silent) {
-    log(`${formatProjectInfo(bundlibName, bundlibVersion)}${EOL}`);
+  const showError = watchMode
+    ? logError
+    : logErrorAndExit;
 
+  const emitter = new EventEmitter<BundlibEventMap>();
+  emitter.on(EVENT_ERROR, showError);
+
+  // analyze package.json
+  const analyzed = await analyzePkg(cwd, pkg);
+
+  if (!silentMode) {
+    log(formatProjectInfo(bundlibName, bundlibVersion));
     log(`${formatProjectInfo('NodeJS', nodeVersion)}${EOL}`);
 
     // TODO: Show detected modules & plugins with versions
@@ -50,17 +58,6 @@ export async function action(
     if (projectDisplayName && projectVersion) {
       log(`${cyan('building:')} ${formatProjectInfo(projectDisplayName, projectVersion)}${EOL}`);
     }
-
-  }
-
-  const showError = watch
-    ? logError
-    : logErrorAndExit;
-
-  const emitter = new EventEmitter() as BundlibEventEmitter;
-  emitter.on(EVENT_ERROR, showError);
-
-  if (!silent) {
 
     const formatFileSize = createFormatter({
       unit: 'B',
@@ -106,7 +103,7 @@ export async function action(
 
     });
 
-    if (watch) {
+    if (watchMode) {
 
       emitter.on(EVENT_REBUILD, () => {
         log(cyan(`rebuilding...${EOL}`));
@@ -121,13 +118,20 @@ export async function action(
   }
 
   try {
-    await bundlib(
-      cwd,
-      dev,
-      watch,
-      emitter,
-      pkg,
-    );
+
+    const configs = pkgToConfigs(analyzed, { dev: developmentMode, watch: watchMode });
+
+    const onwarn: WarningHandlerWithDefault = (warning) => {
+      emitter.emit(EVENT_WARN, warning);
+    };
+
+    const rollupConfigs = configs.map((config) => {
+      return { ...config, onwarn };
+    });
+
+    const method = watchMode ? rollupWatch : rollupBuild;
+    method(rollupConfigs, emitter);
+
   } catch (err) {
     showError(err as RollupError);
   }

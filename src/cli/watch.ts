@@ -1,21 +1,20 @@
+import type { EventEmitter } from 'events';
 import { statSync } from 'fs';
-import { RollupOptions, RollupWatcherEvent, watch as rollupWatch } from 'rollup';
+import type { RollupOptions, RollupWatcher, RollupWatcherEvent } from 'rollup';
+import { watch } from 'rollup';
 import { EVENT_BUILD_END, EVENT_END, EVENT_ERROR, EVENT_REBUILD } from './consts';
-import { BundlibEventEmitter } from './types/types';
+import type { BundlibEventMap } from './types/types';
 
-export function watch(
+export function rollupWatch(
   configs: RollupOptions[],
-  emitter: BundlibEventEmitter,
-): void {
+  emitter: EventEmitter<BundlibEventMap>,
+): RollupWatcher {
 
-  let buildIndex = 0;
+  type WatcherHandlerMap = {
+    [K in RollupWatcherEvent['code']]?: (event: Extract<RollupWatcherEvent, { code: K }>) => void;
+  };
 
-  const handlers: { [K in RollupWatcherEvent['code']]?: (event: Extract<RollupWatcherEvent, { code: K }>) => void } = {
-
-    START() {
-      if (buildIndex) emitter.emit(EVENT_REBUILD, buildIndex);
-      buildIndex++;
-    },
+  const handlers: WatcherHandlerMap = {
 
     END() {
       emitter.emit(EVENT_END);
@@ -41,11 +40,15 @@ export function watch(
 
   };
 
-  rollupWatch(configs).on('event', (event) => {
-    const handleEvent = handlers[event.code];
-    if (handleEvent) {
-      handleEvent(event as never);
-    }
-  });
+  return watch(configs)
+    .on('restart', () => {
+      emitter.emit(EVENT_REBUILD);
+    })
+    .on('event', (event) => {
+      const handleEvent = handlers[event.code];
+      if (handleEvent) {
+        handleEvent(event as never);
+      }
+    });
 
 }
