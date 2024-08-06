@@ -1,12 +1,12 @@
-type GetObjectKeys = <K extends string | number | symbol>(object: Partial<Record<K, unknown>>) => K[];
-export const keys: GetObjectKeys = Object.keys;
+interface ExtendedObjectConstructor extends ObjectConstructor {
+  keys: <K extends string | number>(object: Readonly<Record<K, unknown>>) => Array<K extends string ? K : `${K}`>;
+}
+
+export const { keys, prototype } = Object as ExtendedObjectConstructor;
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
-const { hasOwnProperty } = {};
+const { hasOwnProperty } = prototype;
 
-export function hasOwn(obj: unknown, key: string): boolean;
-export function hasOwn<K extends keyof T, T>(obj: T, key: K): obj is T & Record<K, unknown>;
-export function hasOwn<K extends string, T>(obj: T, key: K): obj is T & Record<K, unknown>;
 export function hasOwn(obj: unknown, key: string): boolean {
   return hasOwnProperty.call(obj, key);
 }
