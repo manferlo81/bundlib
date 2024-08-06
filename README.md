@@ -54,6 +54,7 @@ An automatic library bundler powered by [Rollup.js](https://github.com/rollup/ro
   * [Functions](#functions)
     * [function `readPkg`](#function-readpkg)
     * [function `analyzePkg`](#function-analyzepkg)
+    * [function `pkgToConfigs`](#function-pkgtoconfigs)
     * [function `configsFromPkg`](#function-configsfrompkg)
   * [Types](#types)
     * [type `BundlibConfig`](#type-bundlibconfig)
@@ -61,6 +62,7 @@ An automatic library bundler powered by [Rollup.js](https://github.com/rollup/ro
     * [type `ModuleBuildOptions`](#type-modulebuildoptions)
     * [type `BrowserBuildOptions`](#type-browserbuildoptions)
     * [type `TypesBuildOptions`](#type-typesbuildoptions)
+    * [type `BundlibAPIOptions`](#type-bundlibapioptions)
   * [Selective Types](#selective-types)
     * [type `SelectiveValueBasedOption`](#type-selectivevaluebasedoption)
     * [type `SelectiveBoolBasedOption`](#type-selectiveboolbasedoption)
@@ -559,9 +561,29 @@ function analyzePkg(
 
 See [`PkgAnalyzed`](#type-pkganalyzed).
 
+### function `pkgToConfigs`
+
+Takes a [`PkgAnalyzed`](#type-pkganalyzed) object an turns it into an array of config objects, ready to be used by Rollup.
+
+* *Syntax*
+
+```typescript
+function pkgToConfigs(
+  analyzed: PkgAnalyzed,
+  options: BundlibAPIOptions,
+): Array<rollup.RollupOptions> {
+```
+
+* *Arguments*
+  * `analyzed`: The [`PkgAnalyzed`](#type-pkganalyzed) returned by [`analyzePkg`](#function-analyzepkg) function.
+  * `options`: Some options which define some configurations.
+* `return`: An array of Rollup configs.
+
+See [`PkgAnalyzed`](#type-pkganalyzed) and [`BundlibAPIOptions`](#type-bundlibapioptions).
+
 ### function `configsFromPkg`
 
-Creates an array of rollup config object, based on the content of `package.json` and bundlib configuration file.
+Creates an array of rollup config object, based on the content of `package.json` and bundlib configuration file. It is a combination of [`readPkg`](#function-readpkg), [`analyzePkg`](#function-analyzepkg) and [`pkgToConfigs`](#function-pkgtoconfigs) functions. It is exported as a way to "do it all in one step", but you can use the independent functions to have a bit mor control over the process.
 
 ```typescript
 function configsFromPkg(
@@ -664,6 +686,16 @@ See [`ModuleBuildOptions`](#type-modulebuildoptions).
 interface TypesBuildOptions {
   output: string;
   equals: boolean;
+}
+```
+
+### type `BundlibAPIOptions`
+
+```typescript
+export interface BundlibAPIOptions {
+  dev?: boolean;
+  watch?: boolean;
+  onwarn?: rollup.WarningHandlerWithDefault;
 }
 ```
 

@@ -1,5 +1,5 @@
-import { type BrowserBuildFormat } from '../src/api';
-import { pkgToConfigs } from '../src/api/pkg-to-configs';
+import type { BrowserBuildFormat } from '../src/api';
+import { pkgToConfigs } from '../src/api';
 import { createConfigs } from './tools/create-configs';
 import { mockAnalyzeWithPkg } from './tools/mock-fs';
 
