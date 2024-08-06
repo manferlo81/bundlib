@@ -241,6 +241,7 @@ export async function analyzePkg(cwd: string, inputPkg?: BundlibPkgJson): Promis
   if (inputPkg) {
     return analyzePkg2(cwd, inputPkg);
   }
+  console.warn('Function analyzePkg should receive package.json content. Please use readPkg to get it and pass it to analyzePkg. We will do it for you this time. This warning will become an error in the future.');
   const pkg = await readPkg(cwd);
   return analyzePkg2(cwd, pkg);
 }
