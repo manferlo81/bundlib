@@ -95,14 +95,14 @@ export function pkgToConfigs(
     inputFile: string,
     outputFile: string,
     rollupSourcemap: RollupSourcemap,
-    mini: boolean,
-    browser: boolean,
-    bin: boolean,
+    minifyOutput: boolean,
+    isBrowserBuild: boolean,
+    isBinaryBuild: boolean,
     chunks: AllowNullish<Dictionary<string>>,
     project: AllowNullish<string>,
   ): Plugin[] {
 
-    const sourcemap = !!rollupSourcemap;
+    const sourcemap = rollupSourcemap !== false;
 
     const inputIsTypescript = extensionMatch(inputFile, TS_ONLY_EXTENSIONS);
 
@@ -110,18 +110,20 @@ export function pkgToConfigs(
       throw error('Can\'t use typescript input file if typescript is not installed');
     }
 
-    const typesExpectedFilename = configs.length === 0 && !bin && typesBuild && resolve(
+    const generateTypes = configs.length === 0 && !isBinaryBuild && typesBuild;
+
+    if (generateTypes && !inputIsTypescript) {
+      throw error('Can\'t generate types from a non typescript file.');
+    }
+
+    const typesExpectedFilename = generateTypes && resolve(
       cwd,
       extensionMatch(typesBuild.output, ['.ts']) ? typesBuild.output : pathJoin(typesBuild.output, 'index.d.ts'),
     );
 
-    if (typesExpectedFilename && !inputIsTypescript) {
-      throw error('Can\'t generate types from a non typescript file.');
-    }
-
     const typesGeneratedFilename = renamePre(basename(inputFile), TS_DEF_PREFIX);
 
-    if (typesExpectedFilename && typesGeneratedFilename !== basename(typesExpectedFilename)) {
+    if (typesExpectedFilename && basename(typesExpectedFilename) !== typesGeneratedFilename) {
       throw error('Input filename and types filename have to match.');
     }
 
@@ -138,7 +140,7 @@ export function pkgToConfigs(
         throwOnError: false,
       }),
 
-      bin && pluginStripShebang({
+      isBinaryBuild && pluginStripShebang({
         capture: (capturedShebang: string) => shebang = capturedShebang,
         sourcemap,
       }),
@@ -151,12 +153,12 @@ export function pkgToConfigs(
       ),
 
       pluginNodeResolve({
-        preferBuiltins: !browser,
+        preferBuiltins: !isBrowserBuild,
         extensions,
         rootDir: cwd,
       }),
 
-      browser && pluginCommonJS({
+      isBrowserBuild && pluginCommonJS({
         sourceMap: sourcemap,
         defaultIsModuleExports: true,
         requireReturnsDefault: true,
@@ -195,17 +197,15 @@ export function pkgToConfigs(
           transforms: { dangerousForOf: true },
         }),
 
-      bin && pluginAddShebang({
+      isBinaryBuild && pluginAddShebang({
         include: outputFile,
         shebang: () => shebang ?? '#!/usr/bin/env node',
       }),
 
-      mini && pluginTerser({
+      minifyOutput && pluginTerser({
         toplevel: true,
         module: true,
-        compress: {
-          passes: 2,
-        },
+        compress: { passes: 2 },
       }),
 
     ];
