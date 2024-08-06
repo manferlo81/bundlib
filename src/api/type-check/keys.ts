@@ -1,14 +1,19 @@
 import { keys } from '../tools/helpers';
-import type { Dictionary, AllowNull, TypeCheckFunction, Anything } from '../types/helper-types';
+import type { Dictionary, AllowNull, TypeCheckFunction } from '../types/helper-types';
 
-export function invalidKeys<K extends string>(object: Dictionary<unknown>, list: K[]): AllowNull<K[]>;
-export function invalidKeys(object: Dictionary<unknown>, list: string[]): AllowNull<string[]> {
-  const invalid = keys(object).filter(
-    (key) => !list.includes(key),
-  );
-  return invalid.length ? invalid : null;
+interface InvalidKeyList extends Array<string> {
+  0: string;
+  [K: number]: string;
 }
 
-export function keysCheck<M extends string>(obj: Dictionary<Anything>, check: TypeCheckFunction<M>): obj is Record<M, unknown> {
+export function invalidKeys<K extends string>(object: Dictionary<unknown>, validKeys: K[]): AllowNull<InvalidKeyList>;
+export function invalidKeys(object: Dictionary<unknown>, validKeys: string[]): AllowNull<string[]> {
+  const invalid = keys(object).filter(
+    (key) => !validKeys.includes(key),
+  );
+  return invalid.length > 0 ? invalid : null;
+}
+
+export function keysCheck<M extends string>(obj: Dictionary<unknown>, check: TypeCheckFunction<M>): obj is Record<M, unknown> {
   return keys(obj).every(check);
 }

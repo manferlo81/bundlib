@@ -1,5 +1,6 @@
 import { keys } from '../tools/helpers';
-import { isArray, isNullish, isObject, isString } from '../type-check/basic';
+import { isNullish, isObject, isString } from '../type-check/basic';
+import { isArray } from '../type-check/is-array';
 import type { GlobalsOptions } from '../types/bundlib-options';
 
 export function isValidGlobals(value: unknown): value is GlobalsOptions {
