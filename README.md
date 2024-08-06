@@ -52,6 +52,7 @@ An automatic library bundler powered by [Rollup.js](https://github.com/rollup/ro
 * [Using the CLI tool](#using-the-cli-tool)
 * [Using **Bundlib** programmatically](#using-bundlib-programmatically)
   * [Functions](#functions)
+    * [function `bundlib`](#function-bundlib)
     * [function `readPkg`](#function-readpkg)
     * [function `analyzePkg`](#function-analyzepkg)
     * [function `pkgToConfigs`](#function-pkgtoconfigs)
@@ -525,6 +526,24 @@ export default configsFromPkg(
 
 ## Functions
 
+### function `bundlib`
+
+An All-in-one function combining `readPkg`, `analyzePkg` and `pkgToConfigs`. Just pass the directory where `package.json` is located, and it will return an array of Rollup configuration objects.
+
+* *Syntax*
+
+```typescript
+async function bundlib(
+  cwd: string,
+  options?: BundlibAPIOptions | null | undefined,
+): Promise<Array<rollup.RollupOptions>>;
+```
+
+* `arguments`
+  * `cwd`: A string representing the path where `package.json` is located.
+  * `options`: Some options to be passed to [`pkgToConfigs`](#function-pkgtoconfigs) function.
+* `return`: An array of Rollup configs.
+
 ### function `readPkg`
 
 Reads the content of `package.json` and returns it. It will throw a `TypeError` if `package.json` content is not an `object`.
@@ -532,10 +551,10 @@ Reads the content of `package.json` and returns it. It will throw a `TypeError` 
 * *Syntax*
 
 ```typescript
-function readPkg(cwd: string): Promise<BundlibPkgJson>;
+async function readPkg(cwd: string): Promise<PkgJson>;
 ```
 
-* *Arguments*
+* `arguments`
   * `cwd`: A string representing the path where `package.json` is located.
 * `return`: A `Promise` which resolves to `package.json` content.
 
@@ -546,13 +565,13 @@ Analyzes `package.json` content, resolve bundlib `configuration` and it turns it
 * *Syntax*
 
 ```typescript
-function analyzePkg(
+async function analyzePkg(
   cwd: string,
   pkg: PkgJson,
 ): Promise<PkgAnalyzed>;
 ```
 
-* *Arguments*
+* `arguments`
   * `cwd`: A string representing the path where configuration file should be located.
   * `pkg`: The content of `package.json`.
 * `return`: A `Promise` which resolves to information and tools, useful to configure rollup.
@@ -570,11 +589,11 @@ Takes a [`PkgAnalyzed`](#type-pkganalyzed) object an turns it into an array of c
 ```typescript
 function pkgToConfigs(
   analyzed: PkgAnalyzed,
-  options: BundlibAPIOptions,
-): Array<rollup.RollupOptions> {
+  options?: BundlibAPIOptions | null | undefined,
+): Array<rollup.RollupOptions>;
 ```
 
-* *Arguments*
+* `arguments`
   * `analyzed`: The [`PkgAnalyzed`](#type-pkganalyzed) returned by [`analyzePkg`](#function-analyzepkg) function.
   * `options`: Some options which define some configurations.
 * `return`: An array of Rollup configs.
@@ -586,14 +605,14 @@ See [`PkgAnalyzed`](#type-pkganalyzed) and [`BundlibAPIOptions`](#type-bundlibap
 Creates an array of rollup config object, based on the content of `package.json` and bundlib configuration file. It is a combination of [`readPkg`](#function-readpkg), [`analyzePkg`](#function-analyzepkg) and [`pkgToConfigs`](#function-pkgtoconfigs) functions. It is exported as a way to "do it all in one step", but you can use the independent functions to have a bit mor control over the process.
 
 ```typescript
-function configsFromPkg(
+async function configsFromPkg(
   cwd: string,
-  options: { dev? boolean, watch?: boolean, onwarn: rollup.WarningHandlerWithDefault } | null | false,
+  options?: BundlibAPIOptions | null | undefined | false,
   pkg: PkgJson = read(cwd + '/package.json'),
-): Promise<rollup.RollupOptions[]>;
+): Promise<Array<rollup.RollupOptions>>;
 ```
 
-* *Arguments*
+* `arguments`
   * `cwd`: A string representing the path where `package.json` and configuration file should be located.
   * `options`: An object with options to create the configs.
   * `pkg`: The content of `package.json`.

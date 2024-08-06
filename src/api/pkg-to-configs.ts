@@ -24,7 +24,7 @@ import { createResolveInput } from './tools/create-resolve-input';
 import { extensionMatch } from './tools/extension-match';
 import { keys } from './tools/helpers';
 import { renamePre } from './tools/rename-pre';
-import type { AllowNullish, Dictionary, TypeCheckFunction } from './types/helper-types';
+import type { AllowNullish, Dictionary, Nullish, TypeCheckFunction } from './types/helper-types';
 import type { PkgAnalyzed } from './types/pkg-analyzed';
 import type { BundlibRollupBrowseOutputOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupBundlibInterop, RollupInterop, RollupSourcemap } from './types/rollup';
 import type { BundlibAPIOptions } from './types/types';
@@ -37,7 +37,7 @@ function convertInterop(interopBool: RollupBundlibInterop): RollupInterop {
 
 export function pkgToConfigs(
   analyzed: PkgAnalyzed,
-  options: BundlibAPIOptions,
+  options?: BundlibAPIOptions | Nullish,
 ): Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>> {
 
   const {
@@ -52,7 +52,7 @@ export function pkgToConfigs(
     cache,
   } = analyzed;
 
-  const { dev, watch, onwarn } = options;
+  const { dev, watch, onwarn } = options ?? {} as BundlibAPIOptions;
 
   const {
     runtime: runtimeDependencies,

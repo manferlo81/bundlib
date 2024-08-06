@@ -1,5 +1,7 @@
+import mock from 'mock-fs';
 import { configsFromPkg } from '../src/api';
 import { mockFS2 } from './tools/mock-fs';
+import { resolve } from 'path';
 
 describe('configsFromPkg function', () => {
 
@@ -31,6 +33,7 @@ describe('configsFromPkg function', () => {
         bin: 'binary.js',
         bundlib: { input: 'src/index.js' },
       }),
+      node_modules: mock.load(resolve(cwd, 'node_modules')),
     };
 
     const configs = await mockFS2(() => {
@@ -51,6 +54,7 @@ describe('configsFromPkg function', () => {
         bin: 'binary.js',
         bundlib: { input: 'src/index.js' },
       }),
+      node_modules: mock.load(resolve(cwd, 'node_modules')),
     };
 
     const configs = await mockFS2(() => {

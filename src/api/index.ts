@@ -1,5 +1,6 @@
 // Backwards support for previous typo
 export { analyzePkg } from './analyze/analyze';
+export { bundlib } from './bundlib';
 export { configsFromPkg } from './configs-from-pkg';
 export { readPkg } from './package/read-pkg';
 export { pkgToConfigs } from './pkg-to-configs';
