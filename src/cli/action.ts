@@ -32,7 +32,7 @@ function getDetections(analyzed: PkgAnalyzed, watchMode?: boolean) {
       .map((installed) => {
         const { id } = installed;
         const plugin = optionalPlugins[id];
-        return `${green.bold(id)} detected, using ${green.bold(plugin)}`;
+        return `${green.bold(id)} detected, using plugin ${green.bold(plugin)}`;
       }),
     buildingBinary && `${green.bold('Binary')} build detected, using plugin ${binaryPlugins.map((name) => green.bold(name)).join(' and ')}`,
     usingChokidar && `${green.bold(usingChokidar.id)} detected, using it to watch for file change`,
