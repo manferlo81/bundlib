@@ -79,6 +79,13 @@ export async function action(options: ProgramOptions): Promise<void> {
     // Show NodeJS version
     logInfo(`${formatProjectInfo('NodeJS', nodeVersion)}${EOL}`);
 
+    const { name: projectName, displayName, version: projectVersion } = pkg;
+    const projectDisplayName = displayName ?? projectName;
+
+    if (projectDisplayName && projectVersion) {
+      logInfo(`building: ${formatProjectInfo(projectDisplayName, projectVersion)}${EOL}`);
+    }
+
     const detections = getDetections(analyzed, watchMode);
 
     detections.forEach((message) => {
@@ -86,13 +93,6 @@ export async function action(options: ProgramOptions): Promise<void> {
     });
 
     if (detections.length > 0) logInfo('');
-
-    const { name: projectName, displayName, version: projectVersion } = pkg;
-    const projectDisplayName = displayName ?? projectName;
-
-    if (projectDisplayName && projectVersion) {
-      logInfo(`building: ${formatProjectInfo(projectDisplayName, projectVersion)}${EOL}`);
-    }
 
     const formatFileSize = createFormatter({
       unit: 'B',
