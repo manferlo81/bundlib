@@ -2,6 +2,50 @@
 
 ## Version History
 
+## [0.20.0](https://github.com/manferlo81/bundlib/compare/v0.19.0...v0.20.0) (2024-08-07)
+
+### ⚠ BREAKING CHANGES
+
+* **type:** Remove old type `BundlibRollupBrowseOutputOptionsWithName`
+* **types:** type RollupEsModuleOption renamed to RollupEsModule, RollupInteropOption renamed to RollupInterop
+* Removed wrongly spelled function `analizePkg`, use `analyzePkg`... it's been there since v0.17.4 (18/Oct/2020)
+* deprecated `module` option has been removed
+* deprecated types DeprecatedBundlibOptions, DeprecatedModuleOption & DeprecatedESModuleBuildOptions has been removed
+* deprecated `browser` option has been removed
+* deprecated types DeprecatedBrowserOption & DeprecatedBrowserBuildOptions has been removed
+* deprecated `main` option has been removed
+* deprecated types DeprecatedCommonJSBuildOptions & DeprecatedMainOption has been removed
+* deprecated `bin` option has been removed
+* deprecated type `DeprecatedBinaryOption` has been removed
+* **types:** type SelectiveOption renamed to SelectiveBoolBasedOption
+* **types:** type SelectiveBooleanOption has been removed in favor of SelectiveSourcemapOption, SelectiveEsModuleOption, SelectiveInteropOption, SelectiveMinOption & SelectiveSkipOption
+* **types:** unused types WithSourcemapOption, WithModuleOptions, WithMinOption, InputOptions, ModuleString, ModuleOption, MinOption & BrowserOptions have been removed
+* **types:** deprecated types ObjectSelectiveOptions, StringBasedSelectiveOption, SelectiveType, ObjectSelectiveOptionsKey, ObjectBasedSelectiveOption, DeprecatedTypesOptions & DeprecatedTypesOption have been removed
+* deprecated `types` option has been removed
+
+### Features
+
+* **api:** Detect installed modules during `analyze` phase ([686218e](https://github.com/manferlo81/bundlib/commit/686218e0251997c697f83c82a8b881e67427314d))
+* Better detected module info ([2f5c87d](https://github.com/manferlo81/bundlib/commit/2f5c87d6baa811dccd4f5beeb06db529ddbfb00e))
+* **cli:** Show information about detected modules and plugins ([2a59887](https://github.com/manferlo81/bundlib/commit/2a59887617712486b8e29a39258b489d9d1d118d))
+* Export `bundlib` function ([7fb4b65](https://github.com/manferlo81/bundlib/commit/7fb4b653f3af0de72d378ed6607cf1b8463a065d))
+* Export pkgToConfigs function ([bc1d4ae](https://github.com/manferlo81/bundlib/commit/bc1d4ae71af2b2603d94110638176e496fe5bc44))
+* Positive and Negative selective option ([f541d34](https://github.com/manferlo81/bundlib/commit/f541d34be4db36adcac26568d7909340bde552ac))
+* Show Error on not supported versions on NodeJS ([839ad6c](https://github.com/manferlo81/bundlib/commit/839ad6c7545907eea42fa93ee379848c709ca938))
+* Use rollup esModule & interop options at full potential ([f05bff6](https://github.com/manferlo81/bundlib/commit/f05bff6da4ced9b3f35ce72c8095c210622842f4))
+
+* Remove deprecated `browser` option ([8a39704](https://github.com/manferlo81/bundlib/commit/8a397040603e053acd5385307a614f41eaf915cc))
+* Remove deprecated `main` option ([7c466d3](https://github.com/manferlo81/bundlib/commit/7c466d3da20507e8fcf991ef55079597f27ddad2))
+* Remove deprecated `module` option ([b204525](https://github.com/manferlo81/bundlib/commit/b204525be07782242ef0c46a8e584cdf22a50c11))
+* Remove deprecated bin option ([599a9e7](https://github.com/manferlo81/bundlib/commit/599a9e7e603cc37bbc85374ac6c7a47b44e23bd7))
+* Remove deprecated types ([41256ba](https://github.com/manferlo81/bundlib/commit/41256ba8fa59170ddc4274d9866c957c3d778abd))
+* Remove deprecated types option ([15696d1](https://github.com/manferlo81/bundlib/commit/15696d133a10bebe5b0ce1353c294de998484962))
+* Remove wrongly spelled function ([a3d2038](https://github.com/manferlo81/bundlib/commit/a3d20380ef553978c4fe722181a53a628f97b1de))
+* **type:** Remove old type `BundlibRollupBrowseOutputOptionsWithName` ([1aca070](https://github.com/manferlo81/bundlib/commit/1aca070cf9739f447013718561461c558eabd392))
+* **types:** Remove deprecated types ([b50524c](https://github.com/manferlo81/bundlib/commit/b50524c3ebfed4b9ddc3b05b6b59fd95c81b0d3c))
+* **types:** Remove deprecated types ([3c7c7c7](https://github.com/manferlo81/bundlib/commit/3c7c7c7c021386219599084b237caa309f1de10a))
+* **types:** Rename some types ([556ef22](https://github.com/manferlo81/bundlib/commit/556ef22ea26bbd11422d546096527fe501086645))
+
 ## [0.19.0](https://github.com/manferlo81/bundlib/compare/v0.18.4...v0.19.0) (2024-07-21)
 
 ### ⚠ BREAKING CHANGES
