@@ -31,13 +31,26 @@ export interface Dependencies {
   peer: AllowNull<PkgJsonDependencies>;
 }
 
-export type OptionalModules =
+type OptionalModulesKeys =
   | 'babel'
   | 'eslint'
   | 'chokidar'
   | 'typescript';
 
-export type InstalledModules = Readonly<Record<OptionalModules, string | undefined>>;
+interface OptionalModulesMap {
+  babel: '@babel/core';
+};
+type GetModuleName<K extends string> = K extends keyof OptionalModulesMap ? OptionalModulesMap[K] : K;
+
+export type OptionalModules = GetModuleName<OptionalModulesKeys>;
+export interface ModuleInstalled<I extends OptionalModules> {
+  id: I;
+  version: string;
+}
+
+export type InstalledModules = {
+  [K in OptionalModulesKeys]: ModuleInstalled<GetModuleName<K>> | null;
+};
 
 export interface PkgAnalyzed {
   cwd: string;
@@ -53,6 +66,3 @@ export interface PkgAnalyzed {
   isInstalled: IsInstalled;
   installed: InstalledModules;
 }
-
-// Backwards support for previous typo
-export { PkgAnalyzed as PkgAnalized };

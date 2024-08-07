@@ -668,10 +668,10 @@ interface PkgAnalyzed {
   cache: string | null;
   isInstalled: (id: string) => string | undefined;
   installed: {
-    babel: string | undefined;
-    eslint: string | undefined;
-    chokidar: string | undefined;
-    typescript: string | undefined;
+    babel: { id: '@babel/core'; version: string } | null;
+    eslint: { id: 'eslint'; version: string } | null;
+    chokidar: { id: 'chokidar'; version: string } | null;
+    typescript: { id: 'typescript'; version: string } | null;
   };
 }
 ```

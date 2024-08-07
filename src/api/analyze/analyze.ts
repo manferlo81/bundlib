@@ -16,8 +16,8 @@ import { createIsInstalled } from '../tools/create-is-installed';
 import { isDictionaryOrNullish, isStringOrNullish } from '../type-check/advanced';
 import { invalidKeys } from '../type-check/keys';
 import type { BundlibConfig } from '../types/bundlib-options';
-import { AllowNull } from '../types/helper-types';
-import type { BrowserBuildOptions, Dependencies, InstalledModules, ModuleBuildOptions, PkgAnalyzed, TypesBuildOptions } from '../types/pkg-analyzed';
+import type { AllowNull } from '../types/helper-types';
+import type { BrowserBuildOptions, Dependencies, InstalledModules, ModuleBuildOptions, ModuleInstalled, OptionalModules, PkgAnalyzed, TypesBuildOptions } from '../types/pkg-analyzed';
 import type { BundlibPkgJson } from '../types/pkg-json';
 
 export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<PkgAnalyzed> {
@@ -226,11 +226,20 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
 
   const isInstalled = createIsInstalled(pkgRuntimeDependencies, pkgDevDependencies);
 
+  const checkInstalled = <I extends OptionalModules>(id: I): ModuleInstalled<I> | null => {
+    const installed = isInstalled(id);
+    if (!installed) return null;
+    return {
+      id,
+      version: installed,
+    };
+  };
+
   const installed: InstalledModules = {
-    babel: isInstalled('@babel/core'),
-    eslint: isInstalled('eslint'),
-    chokidar: isInstalled('chokidar'),
-    typescript: isInstalled('typescript'),
+    babel: checkInstalled('@babel/core'),
+    eslint: checkInstalled('eslint'),
+    chokidar: checkInstalled('chokidar'),
+    typescript: checkInstalled('typescript'),
   };
 
   return {
