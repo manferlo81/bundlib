@@ -5,8 +5,6 @@ import { cyan, red, yellow } from './colors';
 
 const { log: consoleLog, warn: consoleWarn, error: consoleError } = console as unknown as Record<string, (msg: string) => void>;
 
-export { consoleLog as log };
-
 export function logInfo(message: string) {
   consoleLog(cyan(message));
 };
