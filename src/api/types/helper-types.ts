@@ -9,11 +9,6 @@ export type Dictionary<T> = Record<string, T>;
 export type AllowNull<T> = T | null;
 export type AllowNullish<T> = T | Nullish;
 
-/** @deprecated */
-export type StrictNullable<T> = AllowNull<T>;
-/** @deprecated */
-export type Nullable<T> = AllowNullish<T>;
-
 export type IsInstalled = (id: string) => string | undefined;
 
 export type TypeCheckFunction<T> = (value: unknown) => value is T;
