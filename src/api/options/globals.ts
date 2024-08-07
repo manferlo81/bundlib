@@ -2,6 +2,7 @@ import { keys } from '../tools/helpers';
 import { isNullish, isObject, isString } from '../type-check/basic';
 import { isArray } from '../type-check/is-array';
 import type { GlobalsOptions } from '../types/bundlib-options';
+import { AllowNull } from '../types/helper-types';
 
 export function isValidGlobals(value: unknown): value is GlobalsOptions {
   if (isNullish(value)) return true;
@@ -12,7 +13,7 @@ export function isValidGlobals(value: unknown): value is GlobalsOptions {
   });
 }
 
-export function normalizeGlobals(globals: GlobalsOptions): Record<string, string> | null {
+export function normalizeGlobals(globals: GlobalsOptions): AllowNull<Record<string, string>> {
   if (!globals) return null;
   if (!isArray(globals)) return globals;
   return globals.reduce<Record<string, string>>((result, value) => {

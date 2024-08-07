@@ -23,7 +23,7 @@ import { createResolveInput } from './tools/create-resolve-input';
 import { extensionMatch } from './tools/extension-match';
 import { keys } from './tools/helpers';
 import { renamePre } from './tools/rename-pre';
-import type { AllowNullish, Dictionary, Nullish, TypeCheckFunction } from './types/helper-types';
+import type { AllowNull, AllowNullish, Dictionary, TypeCheckFunction } from './types/helper-types';
 import type { PkgAnalyzed } from './types/pkg-analyzed';
 import type { BundlibRollupBrowseOutputOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupBundlibInterop, RollupInterop, RollupSourcemap } from './types/rollup';
 import type { BundlibAPIOptions } from './types/types';
@@ -36,7 +36,7 @@ function convertInterop(interopBool: RollupBundlibInterop): RollupInterop {
 
 export function pkgToConfigs(
   analyzed: PkgAnalyzed,
-  options?: BundlibAPIOptions | Nullish,
+  options?: AllowNullish<BundlibAPIOptions>,
 ): Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>> {
 
   const {
@@ -205,7 +205,7 @@ export function pkgToConfigs(
 
   }
 
-  let commonjsChunks: Dictionary<string> | null = null;
+  let commonjsChunks: AllowNull<Dictionary<string>> = null;
 
   if (commonjsBuild) {
 

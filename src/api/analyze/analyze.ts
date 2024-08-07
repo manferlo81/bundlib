@@ -16,6 +16,7 @@ import { createIsInstalled } from '../tools/create-is-installed';
 import { isDictionaryOrNullish, isStringOrNullish } from '../type-check/advanced';
 import { invalidKeys } from '../type-check/keys';
 import type { BundlibConfig } from '../types/bundlib-options';
+import { AllowNull } from '../types/helper-types';
 import type { BrowserBuildOptions, Dependencies, InstalledModules, ModuleBuildOptions, PkgAnalyzed, TypesBuildOptions } from '../types/pkg-analyzed';
 import type { BundlibPkgJson } from '../types/pkg-json';
 
@@ -151,7 +152,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
 
   const typesOutputFile = pkgTypesField ?? pkgTypingsField;
 
-  const mainOutput: ModuleBuildOptions | null = (skipBuild.main || !pkgMainField)
+  const mainOutput: AllowNull<ModuleBuildOptions> = (skipBuild.main || !pkgMainField)
     ? null
     : {
       input: mainInput,
@@ -163,7 +164,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
       project: perBuildProject.main,
     };
 
-  const moduleOutput: ModuleBuildOptions | null = (skipBuild.module || !moduleOutputFile)
+  const moduleOutput: AllowNull<ModuleBuildOptions> = (skipBuild.module || !moduleOutputFile)
     ? null
     : {
       input: moduleInput,
@@ -175,7 +176,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
       project: perBuildProject.module,
     };
 
-  const browserOutput: BrowserBuildOptions | null = (skipBuild.browser || !pkgBrowserField)
+  const browserOutput: AllowNull<BrowserBuildOptions> = (skipBuild.browser || !pkgBrowserField)
     ? null
     : {
       input: browserInput,
@@ -196,7 +197,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
       project: perBuildProject.browser,
     };
 
-  const binaryOutput: ModuleBuildOptions | null = (skipBuild.bin || !pkgBinField)
+  const binaryOutput: AllowNull<ModuleBuildOptions> = (skipBuild.bin || !pkgBinField)
     ? null
     : {
       input: binInput,
@@ -208,7 +209,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
       project: perBuildProject.bin,
     };
 
-  const typesOutput: TypesBuildOptions | null = (skipBuild.types || !typesOutputFile)
+  const typesOutput: AllowNull<TypesBuildOptions> = (skipBuild.types || !typesOutputFile)
     ? null
     : {
       output: typesOutputFile,
@@ -221,7 +222,7 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     peer: pkgPeerDependencies ?? null,
   };
 
-  const cache: string | null = cacheOption ?? null;
+  const cache: AllowNull<string> = cacheOption ?? null;
 
   const isInstalled = createIsInstalled(pkgRuntimeDependencies, pkgDevDependencies);
 
