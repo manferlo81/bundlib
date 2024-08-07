@@ -9,7 +9,7 @@ export type AllowNull<T> = T | null;
 export type AllowNullish<T> = T | Nullish;
 export type AllowVoid<T> = T | Void;
 
-export type SelectFrom<P, T extends P> = T extends P ? T : never;
+export type ExtractFrom<F, S extends F> = Extract<F, S>;
 
 export type Dictionary<T> = Record<string, T>;
 export type IsInstalled = (id: string) => string | undefined;

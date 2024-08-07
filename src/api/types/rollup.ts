@@ -1,5 +1,5 @@
 import type { IsExternal, ModuleFormat, Plugin, RollupOptions, OutputOptions as RollupOutputOptions, WatcherOptions as RollupWatcherOptions } from 'rollup';
-import type { Dictionary, SelectFrom } from './helper-types';
+import type { Dictionary, ExtractFrom } from './helper-types';
 
 export type RollupSourcemap = Extract<RollupOutputOptions['sourcemap'], string | boolean>;
 export type RollupSourcemapString = Exclude<RollupSourcemap, boolean>;
@@ -10,8 +10,8 @@ export type RollupEsModuleString = Exclude<RollupEsModule, boolean>;
 export type RollupInterop = Extract<RollupOutputOptions['interop'], string>;
 export type RollupBundlibInterop = RollupInterop | boolean;
 
-export type ModuleBuildFormat = SelectFrom<ModuleFormat, 'cjs' | 'es'>;
-export type BrowserBuildFormat = SelectFrom<ModuleFormat, 'iife' | 'amd' | 'umd'>;
+export type ModuleBuildFormat = ExtractFrom<ModuleFormat, 'cjs' | 'es'>;
+export type BrowserBuildFormat = ExtractFrom<ModuleFormat, 'iife' | 'amd' | 'umd'>;
 
 export type BundlibBuildFormat = ModuleBuildFormat | BrowserBuildFormat;
 
@@ -32,12 +32,7 @@ export interface BundlibRollupBrowseOutputOptions extends Omit<BundlibRollupModu
   };
 }
 
-export interface BundlibRollupBrowseOutputOptionsWithName extends Omit<BundlibRollupBrowseOutputOptions, 'format'> {
-  format: 'iife' | 'umd';
-  name: string;
-}
-
-export interface BundlibRollupOptions<OutputOptions extends BundlibRollupModuleOutputOptions> extends RollupOptions {
+export interface BundlibRollupOptions<OutputOptions extends RollupOutputOptions> extends RollupOptions {
   input: string;
   output: OutputOptions;
   external: IsExternal;
