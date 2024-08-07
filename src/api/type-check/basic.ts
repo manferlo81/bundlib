@@ -1,4 +1,4 @@
-import type { Dictionary, Nullish, TypeCheckFunction } from '../types/helper-types';
+import type { NonArrayObject, Nullish, TypeCheckFunction } from '../types/helper-types';
 import { is } from './is';
 import { isArray } from './is-array';
 
@@ -14,6 +14,6 @@ export function isBool(value: unknown): value is boolean {
   return value === true || value === false;
 }
 
-export function isDictionary(value: unknown): value is Dictionary<unknown> {
+export function isDictionary(value: unknown): value is NonArrayObject<unknown> {
   return isObject(value) && !isArray(value);
 }

@@ -1,5 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type Anything = any;
 // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 export type Void = void;
 
@@ -11,6 +9,8 @@ export type AllowVoid<T> = T | Void;
 
 export type ExtractFrom<F, S extends F> = Extract<F, S>;
 
+export type NonArrayObject<T> = Record<string | number | symbol, T>;
 export type Dictionary<T> = Record<string, T>;
+
 export type IsInstalled = (id: string) => string | undefined;
 export type TypeCheckFunction<T> = (value: unknown) => value is T;
