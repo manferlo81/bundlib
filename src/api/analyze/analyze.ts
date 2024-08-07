@@ -12,10 +12,11 @@ import { resolveProjectOption } from '../options/project';
 import { resolveSkipOption } from '../options/skip';
 import { resolveSourcemapOption } from '../options/sourcemap';
 import { readPkg } from '../package/read-pkg';
+import { createIsInstalled } from '../tools/create-is-installed';
 import { isDictionaryOrNullish, isStringOrNullish } from '../type-check/advanced';
 import { invalidKeys } from '../type-check/keys';
 import type { BundlibConfig } from '../types/bundlib-options';
-import type { BrowserBuildOptions, Dependencies, ModuleBuildOptions, PkgAnalyzed, TypesBuildOptions } from '../types/pkg-analyzed';
+import type { BrowserBuildOptions, Dependencies, InstalledModules, ModuleBuildOptions, PkgAnalyzed, TypesBuildOptions } from '../types/pkg-analyzed';
 import type { BundlibPkgJson } from '../types/pkg-json';
 
 export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<PkgAnalyzed> {
@@ -222,6 +223,15 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
 
   const cache: string | null = cacheOption ?? null;
 
+  const isInstalled = createIsInstalled(pkgRuntimeDependencies, pkgDevDependencies);
+
+  const installed: InstalledModules = {
+    babel: isInstalled('@babel/core'),
+    eslint: isInstalled('eslint'),
+    chokidar: isInstalled('chokidar'),
+    typescript: isInstalled('typescript'),
+  };
+
   return {
     cwd,
     pkg,
@@ -233,6 +243,8 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
     chunks: chunks ?? null,
     dependencies,
     cache,
+    isInstalled,
+    installed,
   };
 
 }

@@ -1,4 +1,4 @@
-import type { AllowNull, Dictionary } from './helper-types';
+import type { AllowNull, Dictionary, IsInstalled } from './helper-types';
 import type { BundlibPkgJson, PkgJsonDependencies } from './pkg-json';
 import type { BrowserBuildFormat, RollupBundlibInterop, RollupEsModule, RollupSourcemap } from './rollup';
 
@@ -31,6 +31,14 @@ export interface Dependencies {
   peer: AllowNull<PkgJsonDependencies>;
 }
 
+export type OptionalModules =
+  | 'babel'
+  | 'eslint'
+  | 'chokidar'
+  | 'typescript';
+
+export type InstalledModules = Readonly<Record<OptionalModules, string | undefined>>;
+
 export interface PkgAnalyzed {
   cwd: string;
   pkg: BundlibPkgJson;
@@ -42,6 +50,8 @@ export interface PkgAnalyzed {
   chunks: AllowNull<Dictionary<string>>;
   dependencies: Dependencies;
   cache: AllowNull<string>;
+  isInstalled: IsInstalled;
+  installed: InstalledModules;
 }
 
 // Backwards support for previous typo

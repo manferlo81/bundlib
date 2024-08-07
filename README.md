@@ -661,11 +661,18 @@ interface PkgAnalyzed {
   types: TypesBuildOptions | null;
   chunks: Record<string, string> | null;
   dependencies: {
-    runtime: { [name: string]: string } | null;
-    dev: { [name: string]: string } | null;
-    peer: { [name: string]: string } | null;
+    runtime: PkgJsonDependencies | null;
+    dev: PkgJsonDependencies | null;
+    peer: PkgJsonDependencies | null;
   };
   cache: string | null;
+  isInstalled: (id: string) => string | undefined;
+  installed: {
+    babel: string | undefined;
+    eslint: string | undefined;
+    chokidar: string | undefined;
+    typescript: string | undefined;
+  };
 }
 ```
 

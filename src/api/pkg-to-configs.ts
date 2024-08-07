@@ -19,7 +19,6 @@ import { inputNotFoundMessage } from './errors/error-messages';
 import { pluginChunks } from './plugins/chunks';
 import { createConfig } from './tools/create-config';
 import { createIsExternal } from './tools/create-is-external';
-import { createIsInstalled } from './tools/create-is-installed';
 import { createResolveInput } from './tools/create-resolve-input';
 import { extensionMatch } from './tools/extension-match';
 import { keys } from './tools/helpers';
@@ -50,15 +49,12 @@ export function pkgToConfigs(
     chunks,
     dependencies,
     cache,
+    installed,
   } = analyzed;
 
   const { dev, watch, onwarn } = options ?? {} as BundlibAPIOptions;
 
-  const {
-    runtime: runtimeDependencies,
-    dev: devDependencies,
-    peer: peerDependencies,
-  } = dependencies;
+  const { runtime: runtimeDependencies, peer: peerDependencies } = dependencies;
 
   const bundlibCachePath = resolve(cwd, cache ?? 'node_modules/.cache/bundlib');
   const typescriptCachePath = pathJoin(bundlibCachePath, 'rpt2');
@@ -71,12 +67,7 @@ export function pkgToConfigs(
 
   const isProduction = !dev;
 
-  const isInstalled = createIsInstalled(runtimeDependencies, devDependencies);
-
-  const useESLint = isInstalled('eslint');
-  const useTypescript = isInstalled('typescript');
-  const useBabel = isInstalled('@babel/core');
-  const useChokidar = isInstalled('chokidar');
+  const { eslint: useESLint, babel: useBabel, chokidar: useChokidar, typescript: useTypescript } = installed;
 
   const shouldUseChokidar = !!useChokidar && !!watch;
 

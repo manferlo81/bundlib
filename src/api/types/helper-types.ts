@@ -14,7 +14,7 @@ export type StrictNullable<T> = AllowNull<T>;
 /** @deprecated */
 export type Nullable<T> = AllowNullish<T>;
 
-export type IsInstalled = (id: string) => string | undefined | Void;
+export type IsInstalled = (id: string) => string | undefined;
 
 export type TypeCheckFunction<T> = (value: unknown) => value is T;
 
