@@ -49,7 +49,7 @@ export function pluginChunks(cwd: string, outputDir: string, extensions: string[
 
   return {
 
-    name: 'api',
+    name: 'bundlib-chunks',
 
     resolveId(moduleId, from) {
 
@@ -64,7 +64,13 @@ export function pluginChunks(cwd: string, outputDir: string, extensions: string[
         ),
       );
 
-      return id ? { id, external: true, moduleSideEffects: false } : null;
+      if (!id) return null;
+
+      return {
+        id,
+        external: true,
+        moduleSideEffects: false,
+      };
 
     },
 

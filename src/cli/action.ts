@@ -6,15 +6,39 @@ import prettyMs from 'pretty-ms';
 import type { RollupError, WarningHandlerWithDefault } from 'rollup';
 import slash from 'slash';
 import { displayName as bundlibName, version as bundlibVersion } from '../../package.json';
+import type { ModuleInstalled, PkgAnalyzed } from '../api';
 import { analyzePkg, pkgToConfigs, readPkg } from '../api';
 import { rollupBuild } from './build';
 import type { ProgramOptions } from './command/types/cli-options';
 import { EVENT_BUILD_END, EVENT_END, EVENT_ERROR, EVENT_REBUILD, EVENT_WARN } from './consts';
-import { formatProjectInfo, tag } from './format';
+import { consoleTag, formatProjectInfo } from './format';
+import type { OptionalModulePlugin } from './optional-modules';
+import { binaryPlugins, optionalPlugins } from './optional-modules';
 import { cyan, green, magenta, yellow } from './tools/colors';
-import { log, logError } from './tools/console';
+import { logError, logInfo, logWarning } from './tools/console';
 import type { BundlibEventMap } from './types/types';
 import { rollupWatch } from './watch';
+
+function getDetections(analyzed: PkgAnalyzed, watchMode?: boolean) {
+
+  const { installed: { babel, eslint, chokidar: chokidarInstalled, typescript }, bin } = analyzed;
+
+  const usingChokidar = watchMode && chokidarInstalled;
+  const buildingBinary = bin;
+
+  return [
+    ...[babel, eslint, typescript]
+      .filter<Exclude<ModuleInstalled<OptionalModulePlugin>, null>>(Boolean as never)
+      .map((installed) => {
+        const { id } = installed;
+        const plugin = optionalPlugins[id];
+        return `${green.bold(id)} detected, using ${green.bold(plugin)}`;
+      }),
+    buildingBinary && `${green.bold('Binary')} build detected, using plugin ${binaryPlugins.map((name) => green.bold(name)).join(' and ')}`,
+    usingChokidar && `${green.bold(usingChokidar.id)} detected, using it to watch for file change`,
+  ].filter<string>(Boolean as never);
+
+}
 
 export async function action(options: ProgramOptions): Promise<void> {
 
@@ -46,17 +70,28 @@ export async function action(options: ProgramOptions): Promise<void> {
   // analyze package.json
   const analyzed = await analyzePkg(cwd, pkg);
 
+  //
   if (!silentMode) {
-    log(formatProjectInfo(bundlibName, bundlibVersion));
-    log(`${formatProjectInfo('NodeJS', nodeVersion)}${EOL}`);
 
-    // TODO: Show detected modules & plugins with versions
+    // Show Bundlib version
+    logInfo(formatProjectInfo(bundlibName, bundlibVersion));
+
+    // Show NodeJS version
+    logInfo(`${formatProjectInfo('NodeJS', nodeVersion)}${EOL}`);
+
+    const detections = getDetections(analyzed, watchMode);
+
+    detections.forEach((message) => {
+      logInfo(message);
+    });
+
+    if (detections.length > 0) logInfo('');
 
     const { name: projectName, displayName, version: projectVersion } = pkg;
     const projectDisplayName = displayName ?? projectName;
 
     if (projectDisplayName && projectVersion) {
-      log(`${cyan('building:')} ${formatProjectInfo(projectDisplayName, projectVersion)}${EOL}`);
+      logInfo(`building: ${formatProjectInfo(projectDisplayName, projectVersion)}${EOL}`);
     }
 
     const formatFileSize = createFormatter({
@@ -73,7 +108,7 @@ export async function action(options: ProgramOptions): Promise<void> {
     });
 
     emitter.on(EVENT_BUILD_END, (filename, size, duration) => {
-      const builtTag = tag(green, 'BUILT');
+      const builtTag = consoleTag('BUILT', green);
 
       const { dir, base } = pathParse(filename);
       const coloredDir = yellow(`./${slash(relative(cwd, dir))}/`);
@@ -82,35 +117,31 @@ export async function action(options: ProgramOptions): Promise<void> {
 
       const coloredSize = magenta.bold(formatFileSize(size));
       const coloredDuration = magenta.bold(prettyMs(duration, { secondsDecimalDigits: 2 }));
-      const info = cyan(`( ${coloredSize} in ${coloredDuration} )`);
+      const info = `( ${coloredSize} in ${coloredDuration} )`;
 
-      log(`${builtTag} ${path} ${info}`);
+      logInfo(`${builtTag} ${path} ${info}`);
     });
 
     emitter.on(EVENT_WARN, (warning) => {
 
       const { plugin, message } = warning;
 
-      const warningTag = tag(yellow, 'WARNING');
-      let pluginInfo = '';
+      const pluginInfo = plugin
+        ? `[ ${cyan('plugin')}: ${magenta.bold(plugin)} ] `
+        : '';
 
-      if (plugin) {
-        const pluginInfo_ = yellow(`[ ${cyan('plugin')}: ${magenta.bold(plugin)} ]`);
-        pluginInfo = `${pluginInfo_} `;
-      }
-
-      log(`${warningTag} ${pluginInfo}${cyan(message)}`);
+      logWarning(`${pluginInfo}${message}`);
 
     });
 
     if (watchMode) {
 
       emitter.on(EVENT_REBUILD, () => {
-        log(cyan(`rebuilding...${EOL}`));
+        logInfo(`rebuilding...${EOL}`);
       });
 
       emitter.on(EVENT_END, () => {
-        log(cyan(`${EOL}waiting for changes...`));
+        logInfo(`${EOL}waiting for changes...`);
       });
 
     }

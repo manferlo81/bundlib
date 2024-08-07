@@ -8,6 +8,7 @@ export type AllowNullish<T> = T | Nullish;
 export type AllowVoid<T> = T | Void;
 
 export type ExtractFrom<F, S extends F> = Extract<F, S>;
+export type ExcludeFrom<F, S extends F> = Exclude<F, S>;
 
 export type NonArrayObject<T> = Record<string | number | symbol, T>;
 export type Dictionary<T> = Record<string, T>;

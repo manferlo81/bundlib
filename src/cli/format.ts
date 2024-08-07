@@ -7,7 +7,6 @@ export function formatProjectInfo(name: string, ver: string) {
   return `${projName} ${projVer}`;
 }
 
-export function tag(color: Chalk, text: string) {
-  const tag = color.inverse.bold(` ${text} `);
-  return tag;
+export function consoleTag(text: string, color: Chalk) {
+  return color.inverse.bold(` ${text} `);
 }
