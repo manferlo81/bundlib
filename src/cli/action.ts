@@ -10,7 +10,7 @@ import type { ModuleInstalled, PkgAnalyzed } from '../api';
 import { analyzePkg, pkgToConfigs, readPkg } from '../api';
 import { rollupBuild } from './build';
 import type { ProgramOptions } from './command/types/cli-options';
-import { EVENT_BUILD_END, EVENT_END, EVENT_ERROR, EVENT_REBUILD, EVENT_WARN } from './consts';
+import { EVENT_BUILD_END, EVENT_END, EVENT_ERROR, EVENT_REBUILD, EVENT_WARN } from './events';
 import { consoleTag, formatProjectInfo } from './format';
 import type { OptionalModulePlugin } from './optional-modules';
 import { binaryPlugins, optionalPlugins } from './optional-modules';
