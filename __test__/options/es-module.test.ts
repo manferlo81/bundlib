@@ -1,11 +1,11 @@
-import type { BuildType, SelectiveBoolBasedOption } from '../../src/api/types/bundlib-options';
+import type { SelectiveEsModuleOption } from '../../src/api/types/bundlib-options';
 import { mockAnalyzeWithPkg, mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs';
 
 describe('"esModule" option', () => {
 
   const cwd = process.cwd();
 
-  const analyzeWithESModuleOption = (esModule: SelectiveBoolBasedOption<BuildType, boolean>) => mockAnalyzeWithPkg(cwd, {
+  const analyzeWithESModuleOption = (esModule: SelectiveEsModuleOption) => mockAnalyzeWithPkg(cwd, {
     main: 'main.js',
     browser: 'browser.js',
     bin: 'bin.js',
@@ -86,6 +86,17 @@ describe('"esModule" option', () => {
     expect(main?.esModule).toBe(false);
     expect(browser?.esModule).toBe(false);
     expect(bin?.esModule).toBe(false);
+
+  });
+
+  test('Should read esModule string as "esModule" option', async () => {
+
+    const value = 'if-default-prop';
+    const { main, browser, bin } = await analyzeWithESModuleOption(value);
+
+    expect(main?.esModule).toBe(value);
+    expect(browser?.esModule).toBe(value);
+    expect(bin?.esModule).toBe(value);
 
   });
 

@@ -84,6 +84,23 @@ describe('"interop" option', () => {
     });
   });
 
+  test('Should read interop string as "interop" option', () => {
+    const interopStrings = [
+      'auto',
+      'compat',
+      'esModule',
+      'default',
+      'defaultOnly',
+    ] as const;
+    interopStrings.forEach((value) => {
+      void expect(analyzeWithInterop(value)).resolves.toEqual({
+        main: value,
+        browser: value,
+        bin: value,
+      });
+    });
+  });
+
   test('Should default to false if "interop" option not present', async () => {
 
     const result = createResult(
