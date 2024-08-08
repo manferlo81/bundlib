@@ -5,7 +5,7 @@ import type { BrowserBuildFormat, RollupEsModuleString, RollupInterop, RollupSou
 export type BuildTypeForAPI = 'main' | 'module' | 'browser';
 export type BuildType = BuildTypeForAPI | 'bin';
 
-export type GlobalsOptions = AllowNullish<Dictionary<string> | string[]>;
+export type GlobalsOption = AllowNullish<Dictionary<string> | string[]>;
 
 export type SelectiveSpecialKey = 'api';
 export type SelectiveKey<K extends string> = K | SelectiveSpecialKey;
@@ -45,7 +45,7 @@ export interface BundlibConfig {
   readonly name?: StringOption;
   readonly id?: StringOption;
   readonly extend?: BooleanOption;
-  readonly globals?: GlobalsOptions;
+  readonly globals?: GlobalsOption;
 
   readonly equals?: BooleanOption;
 
