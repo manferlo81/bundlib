@@ -2,9 +2,9 @@ import { createCommand } from 'commander';
 import { name as bundlibCommandName, description, version } from '../../../package.json';
 import { booleanOptions } from './options/boolean';
 import { createFlags } from './options/flags';
-import type { ProgramOptions } from './types/cli-options';
+import type { ProgramOptions } from './options/option-types';
 
-export function handleCLI(action: (options: ProgramOptions) => void | Promise<void>) {
+export function handleCLI(action: (options: ProgramOptions) => void | Promise<void>): void {
 
   const program = createCommand();
 
@@ -26,6 +26,6 @@ export function handleCLI(action: (options: ProgramOptions) => void | Promise<vo
       const options = program.opts<ProgramOptions>();
       void action(options);
     })
-    .parseAsync();
+    .parseAsync(process.argv, { from: 'node' });
 
 }

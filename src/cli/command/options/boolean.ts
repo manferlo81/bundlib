@@ -1,10 +1,10 @@
-import type { BooleanOptionNameOrder } from '../types/cli-options';
+import type { BooleanOptionNameOrder } from './option-types';
 
-type ArrayMap<A = BooleanOptionNameOrder> = {
-  [K in keyof A]: K extends ('0' | '1' | '2') ? { flag: A[K]; desc: string } : never;
+type BooleanOptionArray<A extends readonly unknown[]> = {
+  [K in keyof A]: { flag: A[K]; desc: string }
 };
 
-export const booleanOptions: ArrayMap = [
+export const booleanOptions: BooleanOptionArray<BooleanOptionNameOrder> = [
   { flag: 'dev', desc: 'create development builds' },
   { flag: 'watch', desc: 'run bundlib in watch mode' },
   { flag: 'silent', desc: 'prevent messages from showing in the console' },

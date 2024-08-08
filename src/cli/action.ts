@@ -7,7 +7,7 @@ import slash from 'slash';
 import { displayName as bundlibName, version as bundlibVersion } from '../../package.json';
 import type { ModuleInstalled, PkgAnalyzed } from '../api';
 import { analyzePkg, pkgToConfigs, readPkg } from '../api';
-import type { ProgramOptions } from './command/types/cli-options';
+import type { ProgramOptions } from './command/options/option-types';
 import { EVENT_BUILD_END, EVENT_END, EVENT_ERROR, EVENT_REBUILD, EVENT_WARN } from './events';
 import type { OptionalModulePlugin } from './optional-modules';
 import { binaryPlugins, optionalPlugins } from './optional-modules';
