@@ -1,5 +1,6 @@
+import { BuildType } from '../../src/api';
 import { API_BUILD_KEYS } from '../../src/api/selective/constants';
-import type { BuildTypeForAPI } from '../../src/api/types/bundlib-options';
+import { ExtractFrom } from '../../src/api/types/helper-types';
 
 export type GetSelectiveResultValue<K extends string, V> = (key: K, output: Record<K, V>) => V;
 
@@ -10,4 +11,6 @@ export function createSelectiveResult<K extends string, V>(keys: readonly K[], g
   }, {});
 }
 
-export const isApiKey = (key: unknown): key is BuildTypeForAPI => API_BUILD_KEYS.includes(key as never);
+type APIBuildType = ExtractFrom<BuildType, 'main' | 'module' | 'browser'>;
+
+export const isApiKey = (key: unknown): key is APIBuildType => API_BUILD_KEYS.includes(key as never);

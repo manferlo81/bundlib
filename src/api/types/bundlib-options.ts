@@ -2,8 +2,7 @@ import type { BoolBasedSelectiveOption, ValueBasedSelectiveOption } from 'select
 import type { AllowNullish, Dictionary } from './helper-types';
 import type { BrowserBuildFormat, RollupEsModuleString, RollupInterop, RollupSourcemapString } from './rollup';
 
-export type BuildTypeForAPI = 'main' | 'module' | 'browser';
-export type BuildType = BuildTypeForAPI | 'bin';
+export type BuildType = 'main' | 'module' | 'browser' | 'bin';
 
 export type GlobalsOption = AllowNullish<Dictionary<string> | string[]>;
 
