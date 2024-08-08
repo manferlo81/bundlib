@@ -1,6 +1,5 @@
 import { EventEmitter } from 'events';
 import { createFormatter } from 'gen-unit';
-import { EOL } from 'os';
 import { parse as pathParse, relative } from 'path';
 import prettyMs from 'pretty-ms';
 import type { RollupError, WarningHandlerWithDefault } from 'rollup';
@@ -8,16 +7,15 @@ import slash from 'slash';
 import { displayName as bundlibName, version as bundlibVersion } from '../../package.json';
 import type { ModuleInstalled, PkgAnalyzed } from '../api';
 import { analyzePkg, pkgToConfigs, readPkg } from '../api';
-import { rollupBuild } from './build';
 import type { ProgramOptions } from './command/types/cli-options';
 import { EVENT_BUILD_END, EVENT_END, EVENT_ERROR, EVENT_REBUILD, EVENT_WARN } from './events';
-import { consoleTag, formatProjectInfo } from './format';
 import type { OptionalModulePlugin } from './optional-modules';
 import { binaryPlugins, optionalPlugins } from './optional-modules';
+import { rollupBuild } from './rollup/build';
+import { rollupWatch } from './rollup/watch';
 import { cyan, green, magenta, yellow } from './tools/colors';
-import { logError, logInfo, logWarning } from './tools/console';
+import { consoleTag, formatProjectInfo, logError, logInfo, logWarning } from './tools/console';
 import type { BundlibEventMap } from './types/types';
-import { rollupWatch } from './watch';
 
 function getDetections(analyzed: PkgAnalyzed, watchMode?: boolean) {
 
@@ -77,13 +75,13 @@ export async function action(options: ProgramOptions): Promise<void> {
     logInfo(formatProjectInfo(bundlibName, bundlibVersion));
 
     // Show NodeJS version
-    logInfo(`${formatProjectInfo('NodeJS', nodeVersion)}${EOL}`);
+    logInfo(formatProjectInfo('NodeJS', nodeVersion), '');
 
     const { name: projectName, displayName, version: projectVersion } = pkg;
     const projectDisplayName = displayName ?? projectName;
 
     if (projectDisplayName && projectVersion) {
-      logInfo(`building: ${formatProjectInfo(projectDisplayName, projectVersion)}${EOL}`);
+      logInfo(`building: ${formatProjectInfo(projectDisplayName, projectVersion)}`, '');
     }
 
     const detections = getDetections(analyzed, watchMode);
@@ -136,12 +134,12 @@ export async function action(options: ProgramOptions): Promise<void> {
 
     if (watchMode) {
 
-      emitter.on(EVENT_REBUILD, () => {
-        logInfo(`rebuilding...${EOL}`);
+      emitter.on(EVENT_END, () => {
+        logInfo('', 'waiting for changes...');
       });
 
-      emitter.on(EVENT_END, () => {
-        logInfo(`${EOL}waiting for changes...`);
+      emitter.on(EVENT_REBUILD, () => {
+        logInfo('rebuilding...', '');
       });
 
     }
