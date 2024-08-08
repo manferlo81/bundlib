@@ -8,7 +8,6 @@ import { GetSelectiveResultValue, createSelectiveResult, isApiKey } from '../too
 describe('resolve boolean based selective option', () => {
 
   const optionName = 'boolean';
-  const urlHash = 'bool';
 
   function resolveBoolBased<D>(
     value: unknown,
@@ -21,7 +20,6 @@ describe('resolve boolean based selective option', () => {
       isBool,
       defaultValue,
       optionName,
-      urlHash,
     );
   }
 

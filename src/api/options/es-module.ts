@@ -17,6 +17,5 @@ export function resolveESModuleOption(value: SelectiveEsModuleOption): Resolved<
     isEsModuleString,
     false as boolean,
     'esModule',
-    'esmodule',
   );
 }

@@ -9,7 +9,6 @@ import { GetSelectiveResultValue, createSelectiveResult, isApiKey } from '../too
 describe('resolve value based selective option', () => {
 
   const optionName = 'option';
-  const urlHash = 'hash';
 
   const resolveValueBased = (value: unknown) => {
     return resolveValueBasedSelectiveOption(
@@ -19,7 +18,6 @@ describe('resolve value based selective option', () => {
       isString,
       null,
       optionName,
-      urlHash,
     );
   };
 
@@ -47,7 +45,7 @@ describe('resolve value based selective option', () => {
 
     invalidValues.forEach((invalid) => {
       expect(() => resolveValueBased(invalid)).toThrow(
-        error(invalidOptionMessage(optionName, urlHash)),
+        error(invalidOptionMessage(optionName)),
       );
     });
 

@@ -12,7 +12,6 @@ export function resolveValueBasedSelectiveOption<K extends string, V, D = V>(
   isValidValue: TypeCheckFunction<V>,
   defaultValue: D,
   optionName: string,
-  urlHash?: string,
 ): Resolved<K, V | D> {
 
   const resolveValueBased = createValueBasedResolver(
@@ -27,7 +26,7 @@ export function resolveValueBasedSelectiveOption<K extends string, V, D = V>(
     return resolveValueBased(value as never);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (_) {
-    throw error(invalidOptionMessage(optionName, urlHash));
+    throw error(invalidOptionMessage(optionName));
   }
 
 }
