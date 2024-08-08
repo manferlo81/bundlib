@@ -1,4 +1,4 @@
-import type { BuildType, GlobalsOption } from './bundlib-options';
+import type { BuildType, GlobalsOption, SelectiveSkipKey } from './bundlib-options';
 import type { ExtractFrom } from './helper-types';
 
 /** @deprecated */
@@ -6,3 +6,6 @@ export type BuildTypeForAPI = ExtractFrom<BuildType, 'main' | 'module' | 'browse
 
 /** @deprecated */
 export type GlobalsOptions = GlobalsOption;
+
+/** @deprecated */
+export type SelectiveSkipBuildType = SelectiveSkipKey;

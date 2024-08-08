@@ -1,13 +1,13 @@
 import { resolveSkipOption } from '../../src/api/options/skip';
-import { ALL_BUILD_KEYS } from '../../src/api/selective/constants';
-import type { SelectiveSkipBuildType } from '../../src/api/types/bundlib-options';
+import { SKIP_OPTION_KEYS } from '../../src/api/selective/constants';
+import type { SelectiveSkipKey } from '../../src/api/types/bundlib-options';
 import type { GetSelectiveResultValue } from '../tools/selective-tools';
 import { createSelectiveResult, isApiKey } from '../tools/selective-tools';
 
 describe('resolve "skip" option', () => {
 
-  const createResult = <V>(getValue: GetSelectiveResultValue<SelectiveSkipBuildType, V>) => {
-    return createSelectiveResult<SelectiveSkipBuildType, V>(ALL_BUILD_KEYS, getValue);
+  const createResult = <V>(getValue: GetSelectiveResultValue<SelectiveSkipKey, V>) => {
+    return createSelectiveResult<SelectiveSkipKey, V>(SKIP_OPTION_KEYS, getValue);
   };
 
   test('Should throw on invalid "skip" option', () => {
@@ -50,7 +50,7 @@ describe('resolve "skip" option', () => {
   test('Should resolve build type "skip" option', () => {
 
     const values = [
-      ...ALL_BUILD_KEYS.map((value) => ({
+      ...SKIP_OPTION_KEYS.map((value) => ({
         value,
         expected: createResult((key) => key === value),
       })),
@@ -69,7 +69,7 @@ describe('resolve "skip" option', () => {
   test('Should resolve array of build type as "skip" option', () => {
 
     const values = [
-      ...ALL_BUILD_KEYS.map((value) => ({
+      ...SKIP_OPTION_KEYS.map((value) => ({
         value: [value],
         expected: createResult((key) => key === value),
       })),

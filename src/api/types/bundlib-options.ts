@@ -14,14 +14,14 @@ export type SelectiveObjectKey<K extends string> = SelectiveKey<K> | OverrideKey
 export type SelectiveValueBasedOption<K extends string, V> = ValueBasedSelectiveOption<SelectiveObjectKey<K>, V>;
 export type SelectiveBoolBasedOption<K extends string, V> = BoolBasedSelectiveOption<SelectiveKey<K>, V, OverrideKey>;
 
-export type SelectiveSkipBuildType = BuildType | 'types';
+export type SelectiveSkipKey = BuildType | 'types';
 
 export type SelectiveStringOption = SelectiveValueBasedOption<BuildType, string>;
 export type SelectiveSourcemapOption = SelectiveBoolBasedOption<BuildType, RollupSourcemapString>;
 export type SelectiveEsModuleOption = SelectiveBoolBasedOption<BuildType, RollupEsModuleString>;
 export type SelectiveInteropOption = SelectiveBoolBasedOption<BuildType, RollupInterop>;
 export type SelectiveMinOption = SelectiveBoolBasedOption<BuildType, never>;
-export type SelectiveSkipOption = SelectiveBoolBasedOption<SelectiveSkipBuildType, never>;
+export type SelectiveSkipOption = SelectiveBoolBasedOption<SelectiveSkipKey, never>;
 
 export type StringOption = AllowNullish<string>;
 export type BooleanOption = AllowNullish<boolean>;
