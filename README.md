@@ -734,12 +734,16 @@ type SelectiveObjectKey<K extends string> = K | 'api' | 'default';
 type SelectiveValueBasedOption<K extends string, V> = ValueBasedSelectiveOption<SelectiveObjectKey<K>, V>;
 ```
 
+See [`ValueBasedSelectiveOption`](https://github.com/manferlo81/selective-option?tab=readme-ov-file#type-valuebasedselectiveoption) on [selective-option](https://github.com/manferlo81/selective-option) module.
+
 ### type `SelectiveBoolBasedOption`
 
 ```typescript
 type SelectiveKey<K extends string> = K | 'api';
 type SelectiveBoolBasedOption<K extends string, V = never> = BoolBasedSelectiveOption<SelectiveKey<K>, V, 'default'>;
 ```
+
+See [`BoolBasedSelectiveOption`](https://github.com/manferlo81/selective-option?tab=readme-ov-file#type-boolbasedselectiveoption) on [selective-option](https://github.com/manferlo81/selective-option) module.
 
 ### type `BuildType`
 
