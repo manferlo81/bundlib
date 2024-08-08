@@ -1,7 +1,8 @@
 import { resolveInputOption } from '../../src/api/options/input';
-import { MODULE_BUILD_KEYS } from '../../src/api/selective/consts';
-import { type BuildType } from '../../src/api/types/bundlib-options';
-import { createSelectiveResult, isApiKey, type GetSelectiveResultValue } from '../tools/selective-tools';
+import { MODULE_BUILD_KEYS } from '../../src/api/selective/constants';
+import type { BuildType } from '../../src/api/types/bundlib-options';
+import type { GetSelectiveResultValue } from '../tools/selective-tools';
+import { createSelectiveResult, isApiKey } from '../tools/selective-tools';
 
 describe('resolve "input" option', () => {
 

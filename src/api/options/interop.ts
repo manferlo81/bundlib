@@ -1,6 +1,7 @@
 import type { Resolved } from 'selective-option';
-import { resolveBoolBasedSelectiveOption } from '../selective/bool-based';
-import { API_SPECIAL_KEYS, MODULE_BUILD_KEYS } from '../selective/consts';
+import { createBoolBasedResolver } from 'selective-option';
+import { API_SPECIAL_KEYS, MODULE_BUILD_KEYS, OVERRIDE_KEY } from '../selective/constants';
+import { resolveOptionOrThrow } from '../selective/resolve-or-throw';
 import { createOneOfLiteral } from '../type-check/advanced';
 import type { BuildType, SelectiveInteropOption } from '../types/bundlib-options';
 import type { RollupBundlibInterop, RollupInterop } from '../types/rollup';
@@ -13,13 +14,18 @@ export const isInteropString = createOneOfLiteral<RollupInterop>(
   'defaultOnly',
 );
 
+const interopOptionResolver = createBoolBasedResolver(
+  MODULE_BUILD_KEYS,
+  isInteropString,
+  false,
+  OVERRIDE_KEY,
+  API_SPECIAL_KEYS,
+);
+
 export function resolveInteropOption(value: SelectiveInteropOption): Resolved<BuildType, RollupBundlibInterop> {
-  return resolveBoolBasedSelectiveOption<BuildType, RollupBundlibInterop>(
+  return resolveOptionOrThrow(
+    interopOptionResolver,
     value,
-    MODULE_BUILD_KEYS,
-    API_SPECIAL_KEYS,
-    isInteropString,
-    false as boolean,
     'interop',
   );
 }

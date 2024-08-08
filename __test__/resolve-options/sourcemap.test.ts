@@ -1,7 +1,8 @@
 import { resolveSourcemapOption } from '../../src/api/options/sourcemap';
-import { MODULE_BUILD_KEYS } from '../../src/api/selective/consts';
-import { BuildType } from '../../src/api/types/bundlib-options';
-import { GetSelectiveResultValue, createSelectiveResult, isApiKey } from '../tools/selective-tools';
+import { MODULE_BUILD_KEYS } from '../../src/api/selective/constants';
+import type { BuildType } from '../../src/api/types/bundlib-options';
+import type { GetSelectiveResultValue } from '../tools/selective-tools';
+import { createSelectiveResult, isApiKey } from '../tools/selective-tools';
 
 describe('resolve "sourcemap" option', () => {
 

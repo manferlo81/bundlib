@@ -1,22 +1,28 @@
-import type { Resolved as SelectiveResolved } from 'selective-option';
-import { resolveBoolBasedSelectiveOption } from '../selective/bool-based';
-import { API_SPECIAL_KEYS, MODULE_BUILD_KEYS } from '../selective/consts';
+import type { Resolved } from 'selective-option';
+import { createBoolBasedResolver } from 'selective-option';
+import { API_SPECIAL_KEYS, MODULE_BUILD_KEYS, OVERRIDE_KEY } from '../selective/constants';
+import { resolveOptionOrThrow } from '../selective/resolve-or-throw';
 import { createOneOfLiteral } from '../type-check/advanced';
 import type { BuildType, SelectiveSourcemapOption } from '../types/bundlib-options';
 import type { RollupSourcemap, RollupSourcemapString } from '../types/rollup';
 
-export const isSourcemapString = createOneOfLiteral<RollupSourcemapString>(
+const isSourcemapString = createOneOfLiteral<RollupSourcemapString>(
   'inline',
   'hidden',
 );
 
-export function resolveSourcemapOption(value: SelectiveSourcemapOption): SelectiveResolved<BuildType, RollupSourcemap> {
-  return resolveBoolBasedSelectiveOption<BuildType, RollupSourcemap, true>(
+const sourcemapOptionResolver = createBoolBasedResolver(
+  MODULE_BUILD_KEYS,
+  isSourcemapString,
+  true,
+  OVERRIDE_KEY,
+  API_SPECIAL_KEYS,
+);
+
+export function resolveSourcemapOption(value: SelectiveSourcemapOption): Resolved<BuildType, RollupSourcemap> {
+  return resolveOptionOrThrow(
+    sourcemapOptionResolver,
     value,
-    MODULE_BUILD_KEYS,
-    API_SPECIAL_KEYS,
-    isSourcemapString,
-    true,
     'sourcemap',
   );
 }

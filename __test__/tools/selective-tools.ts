@@ -1,5 +1,5 @@
-import { API_BUILD_KEYS } from '../../src/api/selective/consts';
-import { BuildTypeForAPI } from '../../src/api/types/bundlib-options';
+import { API_BUILD_KEYS } from '../../src/api/selective/constants';
+import type { BuildTypeForAPI } from '../../src/api/types/bundlib-options';
 
 export type GetSelectiveResultValue<K extends string, V> = (key: K, output: Record<K, V>) => V;
 

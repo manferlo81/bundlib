@@ -1,16 +1,21 @@
-import type { Resolved as SelectiveResolved } from 'selective-option';
-import { resolveBoolBasedSelectiveOption } from '../selective/bool-based';
-import { ALL_BUILD_KEYS, API_SPECIAL_KEYS } from '../selective/consts';
-import { isBool } from '../type-check/basic';
+import type { Resolved } from 'selective-option';
+import { createBoolBasedResolver } from 'selective-option';
+import { ALL_BUILD_KEYS, API_SPECIAL_KEYS, OVERRIDE_KEY } from '../selective/constants';
+import { resolveOptionOrThrow } from '../selective/resolve-or-throw';
 import type { SelectiveSkipBuildType, SelectiveSkipOption } from '../types/bundlib-options';
 
-export function resolveSkipOption(value: SelectiveSkipOption): SelectiveResolved<SelectiveSkipBuildType, boolean> {
-  return resolveBoolBasedSelectiveOption<SelectiveSkipBuildType, boolean>(
+const skipOptionResolver = createBoolBasedResolver(
+  ALL_BUILD_KEYS,
+  null,
+  false,
+  OVERRIDE_KEY,
+  API_SPECIAL_KEYS,
+);
+
+export function resolveSkipOption(value: SelectiveSkipOption): Resolved<SelectiveSkipBuildType, boolean> {
+  return resolveOptionOrThrow(
+    skipOptionResolver,
     value,
-    ALL_BUILD_KEYS,
-    API_SPECIAL_KEYS,
-    isBool,
-    false,
     'skip',
   );
 }

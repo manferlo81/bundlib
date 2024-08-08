@@ -1,7 +1,8 @@
 import { resolveSkipOption } from '../../src/api/options/skip';
-import { ALL_BUILD_KEYS } from '../../src/api/selective/consts';
-import { SelectiveSkipBuildType } from '../../src/api/types/bundlib-options';
-import { GetSelectiveResultValue, createSelectiveResult, isApiKey } from '../tools/selective-tools';
+import { ALL_BUILD_KEYS } from '../../src/api/selective/constants';
+import type { SelectiveSkipBuildType } from '../../src/api/types/bundlib-options';
+import type { GetSelectiveResultValue } from '../tools/selective-tools';
+import { createSelectiveResult, isApiKey } from '../tools/selective-tools';
 
 describe('resolve "skip" option', () => {
 
