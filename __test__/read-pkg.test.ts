@@ -1,15 +1,16 @@
 import { DirectoryItems } from 'mock-fs/lib/filesystem';
 import { join as pathJoin } from 'path';
 import { BundlibPkgJson, readPkg } from '../src/api';
+import { colorizeMessage } from './tools/colors';
 import { mockFS2 } from './tools/mock-fs';
 
-describe('read package.json', () => {
+describe(colorizeMessage('Read package.json'), () => {
+
+  const cwd = process.cwd();
 
   async function mockReadPkgWithStructure(pkgCWD: string, structure: DirectoryItems = {}): Promise<BundlibPkgJson> {
     return await mockFS2(() => readPkg(pkgCWD), structure);
   }
-
-  const cwd = process.cwd();
 
   async function mockReadPkgWithContent(content: unknown): Promise<BundlibPkgJson> {
     const structure = {
@@ -18,17 +19,17 @@ describe('read package.json', () => {
     return await mockReadPkgWithStructure(cwd, structure);
   }
 
-  test('Should throw on no package.json', () => {
+  test(colorizeMessage('Should throw on no package.json'), () => {
     const promise = mockReadPkgWithStructure(cwd, {});
     return expect(promise).rejects.toThrow();
   });
 
-  test('Should throw on invalid folder', () => {
+  test(colorizeMessage('Should throw on invalid folder'), () => {
     const promise = mockReadPkgWithStructure(pathJoin(cwd, 'does-not-exist'), {});
     return expect(promise).rejects.toThrow();
   });
 
-  test('Should throw on invalid package.json', async () => {
+  test(colorizeMessage('Should throw on invalid package.json'), async () => {
     const msg = 'Invalid package.json content';
     await expect(mockReadPkgWithContent(0)).rejects.toThrow(msg);
     await expect(mockReadPkgWithContent(1)).rejects.toThrow(msg);
@@ -39,7 +40,7 @@ describe('read package.json', () => {
     await expect(mockReadPkgWithContent(false)).rejects.toThrow(msg);
   });
 
-  test('Should read package.json', async () => {
+  test(colorizeMessage('Should read package.json'), async () => {
 
     const mockPkg = {
       name: 'lib',

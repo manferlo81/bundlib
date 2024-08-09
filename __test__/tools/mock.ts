@@ -3,24 +3,39 @@ import * as readPkgModule from '../../src/api/package/read-pkg';
 import * as analyzePkgModule from '../../src/api/analyze/analyze';
 
 type UnknownFunction = (...args: never[]) => unknown;
-type ModuleObject = Record<string, UnknownFunction>;
-type SpyOnMethodCallback<F extends UnknownFunction, R> = (mock: jest.SpyInstance<ReturnType<F>, Parameters<F>>) => R | Promise<R>;
+type SpyOnMethodCallback<F extends UnknownFunction, R> = (mock: jest.SpyInstance<ReturnType<F>, Parameters<F>>) => R;
 
-async function spyOnModuleMethod<M extends ModuleObject, K extends keyof M, R>(moduleObject: M, method: K, callback: SpyOnMethodCallback<M[K], R>): Promise<R> {
-  const mock = jest.spyOn(moduleObject, method as never);
-  const result = await callback(mock as never);
-  mock.mockRestore();
-  return result;
+export function spyOnMethod<O extends object, K extends keyof O, R>(object: O, method: K, callback: SpyOnMethodCallback<O[K] extends UnknownFunction ? O[K] : never, R>): R;
+export async function spyOnMethod<O extends object, K extends keyof O, R>(object: O, method: K, callback: SpyOnMethodCallback<O[K] extends UnknownFunction ? O[K] : never, Promise<R>>): Promise<R>;
+export async function spyOnMethod<O extends object, K extends keyof O, R>(object: O, method: K, callback: SpyOnMethodCallback<O[K] extends UnknownFunction ? O[K] : never, R | Promise<R>>): Promise<R> {
+  const mock = jest.spyOn(object, method as never);
+  try {
+    return await callback(mock as never);
+  } finally {
+    mock.mockRestore();
+  }
 }
 
-export async function spyOnReadPkg<R>(callback: SpyOnMethodCallback<typeof readPkgModule.readPkg, R>): Promise<R> {
-  return spyOnModuleMethod(readPkgModule, 'readPkg', callback);
+export function spyOnReadPkg<R>(callback: SpyOnMethodCallback<typeof readPkgModule.readPkg, R>): R {
+  return spyOnMethod(
+    readPkgModule,
+    'readPkg',
+    callback,
+  );
 }
 
-export async function spyOnAnalyzePkg<R>(callback: SpyOnMethodCallback<typeof analyzePkgModule.analyzePkg2, R>): Promise<R> {
-  return spyOnModuleMethod(analyzePkgModule, 'analyzePkg2', callback);
+export function spyOnAnalyzePkg<R>(callback: SpyOnMethodCallback<typeof analyzePkgModule.analyzePkg2, R>): R {
+  return spyOnMethod(
+    analyzePkgModule,
+    'analyzePkg2',
+    callback,
+  );
 }
 
-export async function spyOnPkgToConfigs<R>(callback: SpyOnMethodCallback<typeof pkgToConfigsModule.pkgToConfigs, R>): Promise<R> {
-  return spyOnModuleMethod(pkgToConfigsModule, 'pkgToConfigs', callback);
+export function spyOnPkgToConfigs<R>(callback: SpyOnMethodCallback<typeof pkgToConfigsModule.pkgToConfigs, R>): R {
+  return spyOnMethod(
+    pkgToConfigsModule,
+    'pkgToConfigs',
+    callback,
+  );
 }

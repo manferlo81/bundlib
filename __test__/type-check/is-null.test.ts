@@ -1,9 +1,10 @@
 import { isNullish } from '../../src/api/type-check/basic';
+import { colorizeMessage } from '../tools/colors';
 import { arrays, booleans, functions, objects, nullish, numbers, strings } from '../tools/typed-values';
 
-describe('isNull function', () => {
+describe(colorizeMessage('isNullish function'), () => {
 
-  test('Should return false on non null values', () => {
+  test(colorizeMessage('Should return false on non nullish values'), () => {
 
     const nonObjectValues = [
       ...numbers,
@@ -20,7 +21,7 @@ describe('isNull function', () => {
 
   });
 
-  test('Should return true on null & undefined values', () => {
+  test(colorizeMessage('Should return true on null & undefined values'), () => {
 
     nullish.forEach((value) => {
       expect(isNullish(value)).toBe(true);

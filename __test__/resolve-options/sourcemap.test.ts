@@ -1,16 +1,17 @@
 import { resolveSourcemapOption } from '../../src/api/options/sourcemap';
 import { MODULE_BUILD_KEYS } from '../../src/api/selective/constants';
 import type { BuildType } from '../../src/api/types/bundlib-options';
+import { colorizeMessage } from '../tools/colors';
 import type { GetSelectiveResultValue } from '../tools/selective-tools';
 import { createSelectiveResult, isApiKey } from '../tools/selective-tools';
 
-describe('resolve "sourcemap" option', () => {
+describe(colorizeMessage('resolve "sourcemap" option'), () => {
 
   const createResult = <V>(getValue: GetSelectiveResultValue<BuildType, V>) => {
     return createSelectiveResult<BuildType, V>(MODULE_BUILD_KEYS, getValue);
   };
 
-  test('Should throw on invalid "sourcemap" option', () => {
+  test(colorizeMessage('Should throw on invalid "sourcemap" option'), () => {
 
     const invalidSourcemapOptionValues = [
       0,
@@ -32,21 +33,21 @@ describe('resolve "sourcemap" option', () => {
 
   });
 
-  test('Should resolve null or undefined "sourcemap" option', () => {
+  test(colorizeMessage('Should resolve nullish "sourcemap" option'), () => {
     const expected = createResult(() => true);
     [null, undefined].forEach((value) => {
       expect(resolveSourcemapOption(value)).toEqual(expected);
     });
   });
 
-  test('Should resolve specific "sourcemap" option', () => {
+  test(colorizeMessage('Should resolve string "sourcemap" option'), () => {
     [true, false, 'inline' as const, 'hidden' as const].forEach((value) => {
       const expected = createResult(() => value);
       expect(resolveSourcemapOption(value)).toEqual(expected);
     });
   });
 
-  test('Should resolve build type as "sourcemap" option', () => {
+  test(colorizeMessage('Should resolve build type as "sourcemap" option'), () => {
 
     const values = [
       ...MODULE_BUILD_KEYS.map((value) => ({
@@ -65,7 +66,7 @@ describe('resolve "sourcemap" option', () => {
 
   });
 
-  test('Should resolve array of build type as "sourcemap" option', () => {
+  test(colorizeMessage('Should resolve array of build type as "sourcemap" option'), () => {
 
     const values = [
       ...MODULE_BUILD_KEYS.map((value) => ({
@@ -101,7 +102,7 @@ describe('resolve "sourcemap" option', () => {
 
   });
 
-  test('Should resolve selective object as "sourcemap" option', () => {
+  test(colorizeMessage('Should resolve selective object as "sourcemap" option'), () => {
 
     const values = [
       {

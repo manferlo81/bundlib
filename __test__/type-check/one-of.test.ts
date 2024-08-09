@@ -1,8 +1,9 @@
 import { composeOneOf } from '../../src/api/type-check/advanced';
 import { isBool, isString } from '../../src/api/type-check/basic';
+import { colorizeMessage } from '../tools/colors';
 import { arrays, booleans, functions, nullish, numbers, objects, strings } from '../tools/typed-values';
 
-describe('composeOneOf function', () => {
+describe(colorizeMessage('composeOneOf function'), () => {
 
   const isZero = (value: unknown): value is 0 => {
     return value === 0;
@@ -23,7 +24,7 @@ describe('composeOneOf function', () => {
     ...functions,
   ];
 
-  test('Should return false on not matching values', () => {
+  test(colorizeMessage('Should return false on not matching values'), () => {
 
     [...nonNumberValues, ...numbers].forEach((value) => {
       expect(isStringOrBoolean(value)).toBe(false);
@@ -35,7 +36,7 @@ describe('composeOneOf function', () => {
 
   });
 
-  test('Should return true on matching values', () => {
+  test(colorizeMessage('Should return true on matching values'), () => {
 
     stringsAndBooleans.forEach((value) => {
       expect(isStringOrBoolean(value)).toBe(true);

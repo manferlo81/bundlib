@@ -1,9 +1,9 @@
 import { PartialResolvedId, ResolveIdHook } from 'rollup';
 import slash from 'slash';
 import { pluginChunks } from '../../src/api/plugins/chunks';
-import { filenameColor, javascriptValueColor } from '../tools/colors';
+import { colorizeMessage, filenameColor } from '../tools/colors';
 
-describe('chunks plugin', () => {
+describe(colorizeMessage('chunks plugin'), () => {
 
   const cwd = process.cwd();
 
@@ -15,7 +15,7 @@ describe('chunks plugin', () => {
   });
   const resolveIdFunction = resolveId as ResolveIdHook;
 
-  test(`Should return ${javascriptValueColor('null')} if module import itself and let rollup deal with it`, () => {
+  test(colorizeMessage('Should return null if module import itself and let rollup deal with it'), () => {
 
     expect(resolveIdFunction.call(
       null as never,
@@ -33,7 +33,7 @@ describe('chunks plugin', () => {
 
   });
 
-  test(`Should return ${javascriptValueColor('null')} if no importer`, () => {
+  test(colorizeMessage('Should return null if no importer'), () => {
 
     const resolved = resolveIdFunction.call(
       null as never,
@@ -46,7 +46,7 @@ describe('chunks plugin', () => {
 
   });
 
-  test(`Should return ${javascriptValueColor('null')} if target not found`, () => {
+  test(colorizeMessage('Should return null if target not found'), () => {
 
     const resolved = resolveIdFunction.call(
       null as never,
@@ -59,7 +59,7 @@ describe('chunks plugin', () => {
 
   });
 
-  test('Should resolve file from another file', () => {
+  test(colorizeMessage('Should resolve file from another file'), () => {
 
     const resolved = resolveIdFunction.call(
       null as never,
@@ -76,7 +76,7 @@ describe('chunks plugin', () => {
 
   });
 
-  test('Should resolve file from another file', () => {
+  test(colorizeMessage('Should resolve file from another file'), () => {
 
     const resolved = resolveIdFunction.call(
       null as never,
@@ -93,7 +93,7 @@ describe('chunks plugin', () => {
 
   });
 
-  test(`Should resolve file inferring ${filenameColor('index.js')}`, () => {
+  test(colorizeMessage(`Should resolve file inferring ${filenameColor('index.js')}`), () => {
 
     const resolved = resolveIdFunction.call(
       null as never,

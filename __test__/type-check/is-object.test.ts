@@ -1,9 +1,10 @@
 import { isObject } from '../../src/api/type-check/basic';
+import { colorizeMessage } from '../tools/colors';
 import { arrays, booleans, functions, objects, nullish, numbers, strings } from '../tools/typed-values';
 
-describe('isObject function', () => {
+describe(colorizeMessage('isObject function'), () => {
 
-  test('Should return false on non object and null values', () => {
+  test(colorizeMessage('Should return false on non object and null values'), () => {
 
     const nonObjectValues = [
       ...numbers,
@@ -19,7 +20,7 @@ describe('isObject function', () => {
 
   });
 
-  test('Should return true on non null object values', () => {
+  test(colorizeMessage('Should return true on non null object values'), () => {
 
     const arraysAndObject = [
       ...arrays,

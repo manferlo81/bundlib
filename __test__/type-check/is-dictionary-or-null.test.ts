@@ -1,9 +1,10 @@
 import { isDictionaryOrNullish } from '../../src/api/type-check/advanced';
+import { colorizeMessage } from '../tools/colors';
 import { arrays, booleans, functions, objects, nullish, numbers, strings } from '../tools/typed-values';
 
-describe('isDictionaryOrNull function', () => {
+describe(colorizeMessage('isDictionaryOrNullish function'), () => {
 
-  test('Should return false on non dictionary and null values', () => {
+  test(colorizeMessage('Should return false on non dictionary and nullish values'), () => {
 
     const nonObjectValues = [
       ...numbers,
@@ -19,7 +20,7 @@ describe('isDictionaryOrNull function', () => {
 
   });
 
-  test('Should return true on dictionary and null values', () => {
+  test(colorizeMessage('Should return true on dictionary and null values'), () => {
 
     const arraysAndObject = [
       ...objects,

@@ -1,14 +1,15 @@
-import { filenameColor, javascriptValueColor, packageFieldColor } from '../tools/colors';
+import { colorizeMessage } from '../tools/colors';
+import { expectMultiPromise } from '../tools/expect-multi';
 import { mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs';
 
-describe(`${filenameColor('package.json')} ${packageFieldColor('"module"')} and ${packageFieldColor('"jsnext:main"')} fields`, () => {
+describe(colorizeMessage('package.json "module" and "jsnext:main" fields'), () => {
 
   const cwd = process.cwd();
 
   const mockAnalyzeWithModuleField = (module: string) => mockAnalyzeWithPkgEmptyConfig(cwd, { module });
   const mockAnalyzeWithJSNextField = (jsnext: string) => mockAnalyzeWithPkgEmptyConfig(cwd, { 'jsnext:main': jsnext });
 
-  test(`Should ${javascriptValueColor('throw')} on invalid ${packageFieldColor('"module"')} field`, () => {
+  test(colorizeMessage('Should throw on invalid "module" field'), () => {
 
     const invalidModuleFields = [
       1,
@@ -21,22 +22,20 @@ describe(`${filenameColor('package.json')} ${packageFieldColor('"module"')} and 
 
   });
 
-  test(`Should ${javascriptValueColor('throw')} on invalid ${packageFieldColor('"jsnext:main"')} field`, () => {
+  test(colorizeMessage('Should throw on invalid "jsnext:main" field'), () => {
 
     const invalidModuleFields = [
       1,
       { name: 'value' },
     ];
 
-    expect.assertions(invalidModuleFields.length);
-
-    invalidModuleFields.forEach((moduleField) => {
-      void expect(mockAnalyzeWithJSNextField(moduleField as never)).rejects.toThrow('Invalid package.json "jsnext:main" field');
+    return expectMultiPromise(invalidModuleFields, (moduleField) => {
+      return expect(mockAnalyzeWithJSNextField(moduleField as never)).rejects.toThrow('Invalid package.json "jsnext:main" field');
     });
 
   });
 
-  test(`Should read ${packageFieldColor('"module"')} field`, async () => {
+  test(colorizeMessage('Should read "module" field'), async () => {
 
     const moduleField = 'out/lib.js';
     const analyzed = await mockAnalyzeWithModuleField(moduleField);
@@ -46,7 +45,7 @@ describe(`${filenameColor('package.json')} ${packageFieldColor('"module"')} and 
 
   });
 
-  test(`Should fallback to ${packageFieldColor('"jsnext:main"')} field`, async () => {
+  test(colorizeMessage('Should fallback to "jsnext:main" field'), async () => {
 
     const moduleField = 'out/lib.js';
     const analyzed = await mockAnalyzeWithJSNextField(moduleField);
@@ -56,7 +55,7 @@ describe(`${filenameColor('package.json')} ${packageFieldColor('"module"')} and 
 
   });
 
-  test(`Should read ${packageFieldColor('"module"')} over ${packageFieldColor('"jsnext:main"')} field`, async () => {
+  test(colorizeMessage('Should read "module" over "jsnext:main" field'), async () => {
 
     const moduleField = 'module.js';
     const analyzed = await mockAnalyzeWithPkgEmptyConfig(cwd, {

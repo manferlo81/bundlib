@@ -1,16 +1,17 @@
 import { resolveInputOption } from '../../src/api/options/input';
 import { MODULE_BUILD_KEYS } from '../../src/api/selective/constants';
 import type { BuildType } from '../../src/api/types/bundlib-options';
+import { colorizeMessage } from '../tools/colors';
 import type { GetSelectiveResultValue } from '../tools/selective-tools';
 import { createSelectiveResult, isApiKey } from '../tools/selective-tools';
 
-describe('resolve "input" option', () => {
+describe(colorizeMessage('resolve "input" option'), () => {
 
   const createResult = <V>(getValue: GetSelectiveResultValue<BuildType, V>) => {
     return createSelectiveResult<BuildType, V>(MODULE_BUILD_KEYS, getValue);
   };
 
-  test('Should throw on invalid "input" option', () => {
+  test(colorizeMessage('Should throw on invalid "input" option'), () => {
 
     const invalidInputValues = [
       0,
@@ -31,21 +32,21 @@ describe('resolve "input" option', () => {
 
   });
 
-  test('Should resolve null or undefined "input" option', () => {
+  test(colorizeMessage('Should resolve nullish "input" option'), () => {
     const expected = createResult(() => null);
     [null, undefined].forEach((value) => {
       expect(resolveInputOption(value)).toEqual(expected);
     });
   });
 
-  test('Should resolve specific "input" option', () => {
+  test(colorizeMessage('Should resolve string "input" option'), () => {
     ['input1.ts', 'input2.ts', 'input3.js'].forEach((value) => {
       const expected = createResult(() => value);
       expect(resolveInputOption(value)).toEqual(expected);
     });
   });
 
-  test('Should resolve selective object as "input" option', () => {
+  test(colorizeMessage('Should resolve selective object as "input" option'), () => {
 
     const values = [
       {

@@ -1,6 +1,8 @@
 import { DirectoryItems } from 'mock-fs/lib/filesystem';
 import { mockAnalyzeWithPkg } from './tools/mock-fs';
 import { BundlibConfig } from '../src/api/types/bundlib-options';
+import { expectMultiPromise } from './tools/expect-multi';
+import { colorizeMessage, filenameColor } from './tools/colors';
 
 describe('Invalid configuration file', () => {
 
@@ -21,29 +23,22 @@ describe('Invalid configuration file', () => {
     return analyzePkgWithInvalidConfig('config.json', structure);
   };
 
-  async function multiAsyncTest<I>(invalidConfigs: I[], callback: (item: I) => Promise<unknown>) {
-    expect.assertions(invalidConfigs.length);
-    for (const invalid of invalidConfigs) {
-      await callback(invalid);
-    }
-  }
-
-  test('Should throw on invalid configuration on package.json', () => {
+  test(colorizeMessage(`Should throw on invalid configuration on ${filenameColor('package.json')}`), () => {
     const invalidConfigs = [
       10,
       20,
     ];
-    return multiAsyncTest(invalidConfigs, (invalid) => {
+    return expectMultiPromise(invalidConfigs, (invalid) => {
       return expect(analyzePkgWithInvalidConfig(invalid as never, {})).rejects.toThrow('Invalid package.json "bundlib" field');
     });
   });
 
-  test('Should throw on invalid configuration file', () => {
+  test(colorizeMessage('Should throw on invalid configuration file'), () => {
     const invalidConfigs = [
       10,
       20,
     ];
-    return multiAsyncTest(invalidConfigs, (invalid) => {
+    return expectMultiPromise(invalidConfigs, (invalid) => {
       return expect(analyzePkgWithInvalidFileConfig(invalid)).rejects.toThrow('Invalid config found on file');
     });
   });

@@ -1,15 +1,13 @@
 import { configsFromPkg } from '../src/api';
+import { colorizeMessage } from './tools/colors';
+import { spyOnMethod } from './tools/mock';
 import { mockFS2 } from './tools/mock-fs';
 
-afterEach(() => {
-  jest.restoreAllMocks();
-});
-
-describe('configsFromPkg function', () => {
+describe(colorizeMessage('configsFromPkg function'), () => {
 
   const cwd = process.cwd();
 
-  test('Should return configs', async () => {
+  test(colorizeMessage('Should return configs'), async () => {
 
     const configs = await mockFS2(() => {
       return configsFromPkg(cwd, {}, {
@@ -25,52 +23,82 @@ describe('configsFromPkg function', () => {
 
   });
 
-  test('Should return configs, no pkg passed', async () => {
+  test(colorizeMessage('Should return configs, no pkg passed'), async () => {
+    return spyOnMethod(console, 'warn', async (consoleWarn) => {
 
-    const warn = jest.spyOn(console, 'warn').mockImplementation();
+      consoleWarn.mockImplementation();
 
-    const structure = {
-      'package.json': JSON.stringify({
-        main: 'main.js',
-        module: 'module.js',
-        browser: 'browser.js',
-        bin: 'binary.js',
-        bundlib: { input: 'src/index.js' },
-      }),
-    };
+      const structure = {
+        'package.json': JSON.stringify({
+          main: 'main.js',
+          module: 'module.js',
+          browser: 'browser.js',
+          bin: 'binary.js',
+          bundlib: { input: 'src/index.js' },
+        }),
+      };
 
-    const configs = await mockFS2(() => {
-      return configsFromPkg(cwd, {});
-    }, structure);
+      const configs = await mockFS2(() => {
+        return configsFromPkg(cwd, {});
+      }, structure);
 
-    expect(warn).toHaveBeenCalledTimes(1);
-    expect(warn).toHaveBeenCalledWith(expect.stringMatching('analyzePkg should receive package.json content'));
-    expect(configs).toHaveLength(4);
+      expect(consoleWarn).toHaveBeenCalledTimes(1);
+      expect(consoleWarn).toHaveBeenCalledWith(expect.stringMatching('analyzePkg should receive package.json content'));
+      expect(configs).toHaveLength(4);
 
+    });
   });
 
-  test('Should return configs, no options passed', async () => {
+  test(colorizeMessage('Should return configs, no options passed'), async () => {
+    return spyOnMethod(console, 'warn', async (consoleWarn) => {
 
-    const warn = jest.spyOn(console, 'warn').mockImplementation();
+      consoleWarn.mockImplementation();
 
-    const structure = {
-      'package.json': JSON.stringify({
-        main: 'main.js',
-        module: 'module.js',
-        browser: 'browser.js',
-        bin: 'binary.js',
-        bundlib: { input: 'src/index.js' },
-      }),
-    };
+      const structure = {
+        'package.json': JSON.stringify({
+          main: 'main.js',
+          module: 'module.js',
+          browser: 'browser.js',
+          bin: 'binary.js',
+          bundlib: { input: 'src/index.js' },
+        }),
+      };
 
-    const configs = await mockFS2(() => {
-      return configsFromPkg(cwd);
-    }, structure);
+      const configs = await mockFS2(async () => {
+        return configsFromPkg(cwd);
+      }, structure);
 
-    expect(warn).toHaveBeenCalledTimes(1);
-    expect(warn).toHaveBeenCalledWith(expect.stringMatching('analyzePkg should receive package.json content'));
-    expect(configs).toHaveLength(4);
+      expect(consoleWarn).toHaveBeenCalledTimes(1);
+      expect(consoleWarn).toHaveBeenCalledWith(expect.stringMatching('analyzePkg should receive package.json content'));
+      expect(configs).toHaveLength(4);
 
+    });
+  });
+
+  test(colorizeMessage('Should return configs, false as options passed'), async () => {
+    return spyOnMethod(console, 'warn', async (consoleWarn) => {
+
+      consoleWarn.mockImplementation();
+
+      const structure = {
+        'package.json': JSON.stringify({
+          main: 'main.js',
+          module: 'module.js',
+          browser: 'browser.js',
+          bin: 'binary.js',
+          bundlib: { input: 'src/index.js' },
+        }),
+      };
+
+      const configs = await mockFS2(async () => {
+        return configsFromPkg(cwd, false);
+      }, structure);
+
+      expect(consoleWarn).toHaveBeenCalledTimes(1);
+      expect(consoleWarn).toHaveBeenCalledWith(expect.stringMatching('analyzePkg should receive package.json content'));
+      expect(configs).toHaveLength(4);
+
+    });
   });
 
 });

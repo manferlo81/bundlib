@@ -1,9 +1,10 @@
 import { Plugin } from 'rollup';
 import { createConfig } from '../src/api/tools/create-config';
+import { colorizeMessage, javascriptValueColor } from './tools/colors';
 
-describe('"createConfig" function', () => {
+describe(colorizeMessage('createConfig function'), () => {
 
-  test('Should create config', () => {
+  test(colorizeMessage('Should create config'), () => {
 
     const input = 'src/index.js';
     const output = {
@@ -39,7 +40,7 @@ describe('"createConfig" function', () => {
 
   });
 
-  test('Should create config with onwarn', () => {
+  test(colorizeMessage(`Should create config with ${javascriptValueColor('onwarn')}`), () => {
 
     const input = 'src/index.js';
     const output = {
@@ -77,7 +78,7 @@ describe('"createConfig" function', () => {
 
   });
 
-  test('Should create config with chokidar as boolean', () => {
+  test(colorizeMessage('Should create config with chokidar as boolean'), () => {
 
     const input = 'src/index.js';
     const output = {

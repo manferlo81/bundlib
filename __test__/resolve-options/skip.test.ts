@@ -1,16 +1,17 @@
 import { resolveSkipOption } from '../../src/api/options/skip';
 import { SKIP_OPTION_KEYS } from '../../src/api/selective/constants';
 import type { SelectiveSkipKey } from '../../src/api/types/bundlib-options';
+import { colorizeMessage } from '../tools/colors';
 import type { GetSelectiveResultValue } from '../tools/selective-tools';
 import { createSelectiveResult, isApiKey } from '../tools/selective-tools';
 
-describe('resolve "skip" option', () => {
+describe(colorizeMessage('resolve "skip" option'), () => {
 
   const createResult = <V>(getValue: GetSelectiveResultValue<SelectiveSkipKey, V>) => {
     return createSelectiveResult<SelectiveSkipKey, V>(SKIP_OPTION_KEYS, getValue);
   };
 
-  test('Should throw on invalid "skip" option', () => {
+  test(colorizeMessage('Should throw on invalid "skip" option'), () => {
 
     const invalidSkipOptionValues = [
       0,
@@ -33,21 +34,21 @@ describe('resolve "skip" option', () => {
 
   });
 
-  test('Should resolve null or undefined "skip" option', () => {
+  test(colorizeMessage('Should resolve nullish "skip" option'), () => {
     const expected = createResult(() => false);
     [null, undefined].forEach((value) => {
       expect(resolveSkipOption(value)).toEqual(expected);
     });
   });
 
-  test('Should resolve boolean "skip" option', () => {
+  test(colorizeMessage('Should resolve boolean "skip" option'), () => {
     [true, false].forEach((value) => {
       const expected = createResult(() => value);
       expect(resolveSkipOption(value)).toEqual(expected);
     });
   });
 
-  test('Should resolve build type "skip" option', () => {
+  test(colorizeMessage('Should resolve build type "skip" option'), () => {
 
     const values = [
       ...SKIP_OPTION_KEYS.map((value) => ({
@@ -66,7 +67,7 @@ describe('resolve "skip" option', () => {
 
   });
 
-  test('Should resolve array of build type as "skip" option', () => {
+  test(colorizeMessage('Should resolve array of build type as "skip" option'), () => {
 
     const values = [
       ...SKIP_OPTION_KEYS.map((value) => ({
@@ -93,7 +94,7 @@ describe('resolve "skip" option', () => {
 
   });
 
-  test('Should resolve selective object "skip" option', () => {
+  test(colorizeMessage('Should resolve selective object "skip" option'), () => {
 
     const values = [
       {
