@@ -17,7 +17,6 @@ export async function bundlib(
   const analyzed = await analyzePkg2(cwd, pkgJson);
 
   // create configs
-  const normalizedOptions = options ? options : {};
-  return pkgToConfigs(analyzed, normalizedOptions);
+  return pkgToConfigs(analyzed, options);
 
 }
