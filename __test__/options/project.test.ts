@@ -1,7 +1,8 @@
 import { SelectiveStringOption } from '../../src/api/types/bundlib-options';
+import { colorizeMessage } from '../tools/colors';
 import { mockAnalyzeWithPkg } from '../tools/mock-fs';
 
-describe('"project" option', () => {
+describe(colorizeMessage('"project" option'), () => {
 
   const cwd = process.cwd();
 
@@ -13,7 +14,7 @@ describe('"project" option', () => {
     bundlib: { project },
   });
 
-  test('Should throw on invalid "project" option', () => {
+  test(colorizeMessage('Should throw on invalid "project" option'), () => {
 
     const invalidProjectOptions = [
       1,
@@ -27,7 +28,7 @@ describe('"project" option', () => {
 
   });
 
-  test('Should read "project" option', async () => {
+  test(colorizeMessage('Should read "project" option'), async () => {
 
     const projectPath = 'tsconfig-2.json';
 
@@ -40,7 +41,7 @@ describe('"project" option', () => {
 
   });
 
-  test('Should be null if "project" option not present', async () => {
+  test(colorizeMessage('Should be null if "project" option not present'), async () => {
 
     const { main, module: moduleOutput, browser, bin } = await analyzeWithProjectOption(undefined as never);
 

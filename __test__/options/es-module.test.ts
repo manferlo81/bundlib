@@ -1,7 +1,8 @@
 import type { SelectiveEsModuleOption } from '../../src/api/types/bundlib-options';
+import { colorizeMessage } from '../tools/colors';
 import { mockAnalyzeWithPkg, mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs';
 
-describe('"esModule" option', () => {
+describe(colorizeMessage('"esModule" option'), () => {
 
   const cwd = process.cwd();
 
@@ -12,7 +13,7 @@ describe('"esModule" option', () => {
     bundlib: { esModule },
   });
 
-  test('Should throw on invalid "esModule" option', () => {
+  test(colorizeMessage('Should throw on invalid "esModule" option'), () => {
 
     const invalid = [
       1,
@@ -29,7 +30,7 @@ describe('"esModule" option', () => {
 
   });
 
-  test('Should read string main "esModule" option', async () => {
+  test(colorizeMessage('Should read string main "esModule" option'), async () => {
 
     const { main, browser, bin } = await analyzeWithESModuleOption('main');
 
@@ -39,7 +40,7 @@ describe('"esModule" option', () => {
 
   });
 
-  test('Should read string browser "esModule" option', async () => {
+  test(colorizeMessage('Should read string browser "esModule" option'), async () => {
 
     const { main, browser, bin } = await analyzeWithESModuleOption('browser');
 
@@ -49,7 +50,7 @@ describe('"esModule" option', () => {
 
   });
 
-  test('Should read string bin "esModule" option', async () => {
+  test(colorizeMessage('Should read string bin "esModule" option'), async () => {
 
     const { main, browser, bin } = await analyzeWithESModuleOption('bin');
 
@@ -59,7 +60,7 @@ describe('"esModule" option', () => {
 
   });
 
-  test('Should read array "esModule" option', async () => {
+  test(colorizeMessage('Should read array "esModule" option'), async () => {
 
     const { main, browser, bin } = await analyzeWithESModuleOption(['main', 'bin']);
 
@@ -69,7 +70,7 @@ describe('"esModule" option', () => {
 
   });
 
-  test('Should read true as "esModule" option', async () => {
+  test(colorizeMessage('Should read true as "esModule" option'), async () => {
 
     const { main, browser, bin } = await analyzeWithESModuleOption(true);
 
@@ -79,7 +80,7 @@ describe('"esModule" option', () => {
 
   });
 
-  test('Should read false as "esModule" option', async () => {
+  test(colorizeMessage('Should read false as "esModule" option'), async () => {
 
     const { main, browser, bin } = await analyzeWithESModuleOption(false);
 
@@ -89,7 +90,7 @@ describe('"esModule" option', () => {
 
   });
 
-  test('Should read esModule string as "esModule" option', async () => {
+  test(colorizeMessage('Should read esModule string as "esModule" option'), async () => {
 
     const value = 'if-default-prop';
     const { main, browser, bin } = await analyzeWithESModuleOption(value);
@@ -100,7 +101,7 @@ describe('"esModule" option', () => {
 
   });
 
-  test('Should default to false if "esModule" option not present', async () => {
+  test(colorizeMessage('Should default to false if "esModule" option not present'), async () => {
 
     const { main, browser, bin } = await mockAnalyzeWithPkgEmptyConfig(cwd, {
       main: 'out/lib.cjs.js',

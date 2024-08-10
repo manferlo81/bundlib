@@ -1,10 +1,11 @@
+import { colorizeMessage } from '../tools/colors';
 import { mockAnalyzeWithPkg } from '../tools/mock-fs';
 
-describe('"input" option', () => {
+describe(colorizeMessage('"input" option'), () => {
 
   const cwd = process.cwd();
 
-  test('Should throw on invalid "input" option', () => {
+  test(colorizeMessage('Should throw on invalid "input" option'), () => {
 
     const invalidInputs = [
       1,
@@ -20,7 +21,7 @@ describe('"input" option', () => {
 
   });
 
-  test('Should read input option as string', async () => {
+  test(colorizeMessage('Should read input option as string'), async () => {
 
     const input = 'src/main.ts';
     const analyzed = await mockAnalyzeWithPkg(cwd, {
@@ -31,18 +32,14 @@ describe('"input" option', () => {
       bundlib: { input },
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    expect(analyzed.main!.input).toBe(input);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    expect(analyzed.module!.input).toBe(input);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    expect(analyzed.browser!.input).toBe(input);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    expect(analyzed.bin!.input).toBe(input);
+    expect(analyzed.main?.input).toBe(input);
+    expect(analyzed.module?.input).toBe(input);
+    expect(analyzed.browser?.input).toBe(input);
+    expect(analyzed.bin?.input).toBe(input);
 
   });
 
-  test('Should read api input option from object', async () => {
+  test(colorizeMessage('Should read api input option from object'), async () => {
 
     const api = 'src/main.ts';
     const analyzed = await mockAnalyzeWithPkg(cwd, {
@@ -54,16 +51,13 @@ describe('"input" option', () => {
       },
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    expect(analyzed.main!.input).toBe(api);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    expect(analyzed.module!.input).toBe(api);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    expect(analyzed.browser!.input).toBe(api);
+    expect(analyzed.main?.input).toBe(api);
+    expect(analyzed.module?.input).toBe(api);
+    expect(analyzed.browser?.input).toBe(api);
 
   });
 
-  test('Should read binary input option from object', async () => {
+  test(colorizeMessage('Should read binary input option from object'), async () => {
 
     const bin = 'src/main.ts';
     const analyzed = await mockAnalyzeWithPkg(cwd, {
@@ -73,12 +67,11 @@ describe('"input" option', () => {
       },
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    expect(analyzed.bin!.input).toBe(bin);
+    expect(analyzed.bin?.input).toBe(bin);
 
   });
 
-  test('Should read binary input option over legacy bin option', async () => {
+  test(colorizeMessage('Should read binary input option over legacy bin option'), async () => {
 
     const bin = 'src/bin/main.ts';
     const analyzed = await mockAnalyzeWithPkg(cwd, {

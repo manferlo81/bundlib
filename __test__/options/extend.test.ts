@@ -1,6 +1,7 @@
+import { colorizeMessage } from '../tools/colors';
 import { mockAnalyzeWithPkg } from '../tools/mock-fs';
 
-describe('"extend" option', () => {
+describe(colorizeMessage('"extend" option'), () => {
 
   const cwd = process.cwd();
 
@@ -9,7 +10,7 @@ describe('"extend" option', () => {
     bundlib: { extend },
   });
 
-  test('Should allow any truthy value as "extend" option value', async () => {
+  test(colorizeMessage('Should allow any truthy value as "extend" option value'), async () => {
     const truthyExtendValues = [
       1,
       Infinity,
@@ -25,7 +26,7 @@ describe('"extend" option', () => {
     }
   });
 
-  test('Should allow any falsy value as "extend" option value', async () => {
+  test(colorizeMessage('Should allow any falsy value as "extend" option value'), async () => {
     const falsyExtendValues = [
       0,
       NaN,

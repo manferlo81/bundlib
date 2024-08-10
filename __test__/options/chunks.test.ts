@@ -1,7 +1,8 @@
 import { type AllowNullish, type Dictionary } from '../../src/api/types/helper-types';
+import { colorizeMessage } from '../tools/colors';
 import { mockAnalyzeWithPkg } from '../tools/mock-fs';
 
-describe('"chunks" option', () => {
+describe(colorizeMessage('"chunks" option'), () => {
 
   const cwd = process.cwd();
 
@@ -9,7 +10,7 @@ describe('"chunks" option', () => {
     return mockAnalyzeWithPkg(cwd, { bundlib: { chunks } });
   };
 
-  test('Should throw on invalid "chunks" option', () => {
+  test(colorizeMessage('Should throw on invalid "chunks" option'), () => {
 
     const invalidChunksOptionValues = [
       10,
@@ -22,7 +23,7 @@ describe('"chunks" option', () => {
 
   });
 
-  test('Should read empty "chunks" option', async () => {
+  test(colorizeMessage('Should read empty "chunks" option'), async () => {
 
     const chunks = {};
     const { chunks: result } = await analyzeWithChunksOption(chunks);
@@ -31,7 +32,7 @@ describe('"chunks" option', () => {
 
   });
 
-  test('Should read "chunks" option', async () => {
+  test(colorizeMessage('Should read "chunks" option'), async () => {
 
     const chunks = { 'src/input.ts': 'dist/output.js' };
     const { chunks: result } = await analyzeWithChunksOption(chunks);

@@ -1,11 +1,11 @@
-import { packageFieldColor } from '../tools/colors';
+import { colorizeMessage } from '../tools/colors';
 import { mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs';
 
-describe(`package.json ${packageFieldColor('"peerDependencies"')} field`, () => {
+describe(colorizeMessage('package.json "peerDependencies" field'), () => {
 
   const cwd = process.cwd();
 
-  test('Should throw on invalid "peerDependencies" field', () => {
+  test(colorizeMessage('Should throw on invalid "peerDependencies" field'), () => {
 
     const invalidFieldValues = [
       100,
@@ -21,7 +21,7 @@ describe(`package.json ${packageFieldColor('"peerDependencies"')} field`, () => 
 
   });
 
-  test('Should read "peerDependencies" field', async () => {
+  test(colorizeMessage('Should read "peerDependencies" field'), async () => {
 
     const peerDependencies = { 'bundlib-dep': '1.2.3' };
 

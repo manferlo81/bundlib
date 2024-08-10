@@ -1,7 +1,8 @@
 import { type BrowserBuildFormat } from '../../src/api';
+import { colorizeMessage } from '../tools/colors';
 import { mockAnalyzeWithPkg } from '../tools/mock-fs';
 
-describe('"format" option', () => {
+describe(colorizeMessage('"format" option'), () => {
 
   const cwd = process.cwd();
 
@@ -10,7 +11,7 @@ describe('"format" option', () => {
     bundlib: { format },
   });
 
-  test('Should throw on invalid "format" option', () => {
+  test(colorizeMessage('Should throw on invalid "format" option'), () => {
 
     const invalidBrowserFormats = [
       1,
@@ -23,25 +24,25 @@ describe('"format" option', () => {
 
   });
 
-  test('Should set browser format to "iife"', async () => {
+  test(colorizeMessage('Should set browser format to "iife"'), async () => {
     const format = 'iife';
     const { browser } = await analyzeWithFormatOption(format);
     expect(browser?.format).toBe(format);
   });
 
-  test('Should set browser format to "amd"', async () => {
+  test(colorizeMessage('Should set browser format to "amd"'), async () => {
     const format = 'amd';
     const { browser } = await analyzeWithFormatOption(format);
     expect(browser?.format).toBe(format);
   });
 
-  test('Should set browser format to "umd"', async () => {
+  test(colorizeMessage('Should set browser format to "umd"'), async () => {
     const format = 'umd';
     const { browser } = await analyzeWithFormatOption(format);
     expect(browser?.format).toBe(format);
   });
 
-  test('Should default to "umd" in no "format" option present', async () => {
+  test(colorizeMessage('Should default to "umd" in no "format" option present'), async () => {
     const { browser } = await mockAnalyzeWithPkg(cwd, {
       browser: 'browser.js',
     });

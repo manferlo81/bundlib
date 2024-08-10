@@ -1,8 +1,9 @@
 import type { BuildType, SelectiveInteropOption } from '../../src/api/types/bundlib-options';
 import type { PkgAnalyzed } from '../../src/api/types/pkg-analyzed';
+import { colorizeMessage } from '../tools/colors';
 import { mockAnalyzeWithPkg } from '../tools/mock-fs';
 
-describe('"interop" option', () => {
+describe(colorizeMessage('"interop" option'), () => {
 
   const cwd = process.cwd();
 
@@ -26,7 +27,7 @@ describe('"interop" option', () => {
     );
   };
 
-  test('Should throw on invalid "interop" option', () => {
+  test(colorizeMessage('Should throw on invalid "interop" option'), () => {
 
     const invalid = [
       1,
@@ -43,7 +44,7 @@ describe('"interop" option', () => {
 
   });
 
-  test('Should read string as "interop" option', () => {
+  test(colorizeMessage('Should read string as "interop" option'), () => {
 
     const values = ['main', 'browser', 'bin'] as const;
 
@@ -57,7 +58,7 @@ describe('"interop" option', () => {
 
   });
 
-  test('Should read array as "interop" option', () => {
+  test(colorizeMessage('Should read array as "interop" option'), () => {
     const values: BuildType[][] = [
       ['main'],
       ['browser'],
@@ -74,7 +75,7 @@ describe('"interop" option', () => {
     });
   });
 
-  test('Should read boolean as "interop" option', () => {
+  test(colorizeMessage('Should read boolean as "interop" option'), () => {
     [true, false].forEach((value) => {
       void expect(analyzeWithInterop(value)).resolves.toEqual({
         main: value,
@@ -84,7 +85,7 @@ describe('"interop" option', () => {
     });
   });
 
-  test('Should read interop string as "interop" option', () => {
+  test(colorizeMessage('Should read interop string as "interop" option'), () => {
     const interopStrings = [
       'auto',
       'compat',
@@ -101,7 +102,7 @@ describe('"interop" option', () => {
     });
   });
 
-  test('Should default to false if "interop" option not present', async () => {
+  test(colorizeMessage('Should default to false if "interop" option not present'), async () => {
 
     const result = createResult(
       await mockAnalyzeWithPkg(cwd, {

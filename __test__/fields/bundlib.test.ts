@@ -1,12 +1,12 @@
 import { DirectoryItems } from 'mock-fs/lib/filesystem';
 import { mockAnalyzeWithPkg, mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs';
-import { filenameColor, javascriptValueColor, packageFieldColor } from '../tools/colors';
+import { colorizeMessage } from '../tools/colors';
 
-describe(`${filenameColor('package.json')} ${packageFieldColor('"bundlib"')} field`, () => {
+describe(colorizeMessage('package.json "bundlib" field'), () => {
 
   const cwd = process.cwd();
 
-  test(`Should ${javascriptValueColor('throw')} on invalid ${packageFieldColor('"bundlib"')} field`, () => {
+  test(colorizeMessage('Should throw on invalid "bundlib" field'), () => {
 
     const invalidBundlibConfig = [
       1,
@@ -19,7 +19,7 @@ describe(`${filenameColor('package.json')} ${packageFieldColor('"bundlib"')} fie
 
   });
 
-  test(`Should use ${packageFieldColor('"bundlib"')} field as config path`, async () => {
+  test(colorizeMessage('Should use "bundlib" field as config path'), async () => {
 
     const name = 'library';
     const configPath = 'bundlib.json';
@@ -41,7 +41,7 @@ describe(`${filenameColor('package.json')} ${packageFieldColor('"bundlib"')} fie
 
   });
 
-  test(`Should use ${packageFieldColor('"bundlib"')} field as config`, async () => {
+  test(colorizeMessage('Should use "bundlib" field as config'), async () => {
 
     const name = 'library';
     const config = { name };

@@ -1,7 +1,8 @@
 import { RollupSourcemap } from '../../src/api';
+import { colorizeMessage } from '../tools/colors';
 import { mockAnalyzeWithPkg } from '../tools/mock-fs';
 
-describe('"sourcemap" option', () => {
+describe(colorizeMessage('"sourcemap" option'), () => {
 
   const cwd = process.cwd();
 
@@ -13,7 +14,7 @@ describe('"sourcemap" option', () => {
     bundlib: { sourcemap },
   });
 
-  test('Should throw on invalid "sourcemap" option', () => {
+  test(colorizeMessage('Should throw on invalid "sourcemap" option'), () => {
 
     const invalidSourcemaps = [
       100,
@@ -26,7 +27,7 @@ describe('"sourcemap" option', () => {
 
   });
 
-  test('Should read "sourcemap" option', async () => {
+  test(colorizeMessage('Should read "sourcemap" option'), async () => {
 
     const { main, module: esnext, browser, bin } = await analyzeWithSourcemap(false);
 
@@ -37,7 +38,7 @@ describe('"sourcemap" option', () => {
 
   });
 
-  test('Should read "inline" as "sourcemap" option', async () => {
+  test(colorizeMessage('Should read "inline" as "sourcemap" option'), async () => {
 
     const sourcemap = 'inline';
     const { main, module: moduleOut, browser, bin } = await analyzeWithSourcemap(sourcemap);
@@ -49,7 +50,7 @@ describe('"sourcemap" option', () => {
 
   });
 
-  test('Should read "hidden" as "sourcemap" option', async () => {
+  test(colorizeMessage('Should read "hidden" as "sourcemap" option'), async () => {
 
     const sourcemap = 'hidden';
     const { main, module: moduleOut, browser, bin } = await analyzeWithSourcemap(sourcemap);
@@ -61,7 +62,7 @@ describe('"sourcemap" option', () => {
 
   });
 
-  test('Should default to true if no "sourcemap" option present', async () => {
+  test(colorizeMessage('Should default to true if no "sourcemap" option present'), async () => {
 
     const { main, module: moduleOut, browser, bin } = await mockAnalyzeWithPkg(cwd, {
       main: 'out/lib.cjs.js',

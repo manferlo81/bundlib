@@ -1,7 +1,8 @@
 import { type AllowNullish } from '../../src/api/types/helper-types';
+import { colorizeMessage } from '../tools/colors';
 import { mockAnalyzeWithPkg, mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs';
 
-describe('"cache" option', () => {
+describe(colorizeMessage('"cache" option'), () => {
 
   const cwd = process.cwd();
 
@@ -9,7 +10,7 @@ describe('"cache" option', () => {
     bundlib: { cache },
   });
 
-  test('Should throw on invalid "cache" option', () => {
+  test(colorizeMessage('Should throw on invalid "cache" option'), () => {
 
     const invalidCacheOptions = [
       1,
@@ -24,7 +25,7 @@ describe('"cache" option', () => {
 
   });
 
-  test('Should read "cache" option', async () => {
+  test(colorizeMessage('Should read "cache" option'), async () => {
 
     const cacheDir = 'cache-folder';
     const { cache } = await analyzeWithCacheOption(cacheDir);
@@ -33,7 +34,7 @@ describe('"cache" option', () => {
 
   });
 
-  test('Should be null if "cache" option not present', async () => {
+  test(colorizeMessage('Should be null if "cache" option not present'), async () => {
 
     const { cache } = await mockAnalyzeWithPkgEmptyConfig(cwd, {});
 

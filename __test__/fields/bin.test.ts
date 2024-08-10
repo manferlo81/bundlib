@@ -1,7 +1,7 @@
-import { filenameColor, javascriptValueColor, packageFieldColor } from '../tools/colors';
+import { colorizeMessage } from '../tools/colors';
 import { mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs';
 
-describe(`${filenameColor('package.json')} ${packageFieldColor('"bin"')} field`, () => {
+describe(colorizeMessage('package.json "bin" field'), () => {
 
   const cwd = process.cwd();
 
@@ -9,7 +9,7 @@ describe(`${filenameColor('package.json')} ${packageFieldColor('"bin"')} field`,
     return mockAnalyzeWithPkgEmptyConfig(cwd, { bin });
   };
 
-  test(`Should ${javascriptValueColor('throw')} on invalid ${packageFieldColor('"bin"')} field`, () => {
+  test(colorizeMessage('Should throw on invalid "bin" field'), () => {
 
     const invalidBinValues = [
       1,
@@ -22,7 +22,7 @@ describe(`${filenameColor('package.json')} ${packageFieldColor('"bin"')} field`,
 
   });
 
-  test(`Should read ${packageFieldColor('"bin"')} field`, async () => {
+  test(colorizeMessage('Should read "bin" field'), async () => {
 
     const binField = 'binary.js';
     const analyzed = await mockAnalyzeWithBinField(binField);

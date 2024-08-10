@@ -1,4 +1,4 @@
-import { blueBright, green, magentaBright, redBright, yellow } from '../../src/cli/tools/colors';
+import { blueBright, greenBright, magentaBright, redBright, yellow } from '../../src/cli/tools/colors';
 
 export { magentaBright as packageNameColor, greenBright as buildTypeColor, redBright as packageFieldColor, blueBright as javascriptValueColor, yellow as filenameColor } from '../../src/cli/tools/colors';
 
@@ -9,9 +9,11 @@ const functions = [
   'isDictionaryOrNullish',
   'isStringOrNullish',
   'createOneOfLiteral',
+  'composeOneOf',
   'keysCheck',
-  'configsFromPkg',
+  'pkgToConfigs',
   'createConfig',
+  'configsFromPkg',
   'createIsExternal',
 ];
 
@@ -29,6 +31,8 @@ const types = [
   'array',
   'arrays',
   'dictionary',
+  'truthy',
+  'falsy',
 ];
 
 const constants = [
@@ -42,23 +46,45 @@ const filenames = [
   'package.json',
 ];
 
+const quotate = (name: string): string => `"${name}"`;
+
 const fields = [
-  '"main"',
-  '"module"',
-  '"jsnext:main"',
-  '"browser"',
-  '"bin"',
-  '"dependencies"',
-  '"devDependencies"',
-  '"peerDependencies"',
+  'field',
+  'fields',
+  ...[
+    'main',
+    'module',
+    'jsnext:main',
+    'browser',
+    'bin',
+    'types',
+    'typings',
+    '"dependencies',
+    'devDependencies',
+    'peerDependencies',
+    'bundlib',
+  ].map(quotate),
 ];
 
 const options = [
   'option',
   'options',
-  '"input"',
-  '"skip"',
-  '"sourcemap"',
+  ...[
+    'input',
+    'sourcemap',
+    'esModule',
+    'interop',
+    'format',
+    'name',
+    'id',
+    'extend',
+    'globals',
+    'min',
+    'skip',
+    'cache',
+    'project',
+    'chunks',
+  ].map(quotate),
 ];
 
 const modules = [
@@ -66,7 +92,7 @@ const modules = [
 ];
 
 const map = [
-  { words: ['Should', 'should'], style: green },
+  { words: ['Should', 'should'], style: greenBright },
   { words: [...functions, ...constants, ...types, ...keywords], style: blueBright },
   { words: filenames, style: yellow },
   { words: [...fields, ...options], style: redBright },

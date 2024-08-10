@@ -1,6 +1,7 @@
+import { colorizeMessage } from '../tools/colors';
 import { mockAnalyzeWithPkg, mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs';
 
-describe('"name" option', () => {
+describe(colorizeMessage('"name" option'), () => {
 
   const cwd = process.cwd();
 
@@ -12,7 +13,7 @@ describe('"name" option', () => {
     });
   };
 
-  test('Should throw on invalid "name" option', () => {
+  test(colorizeMessage('Should throw on invalid "name" option'), () => {
 
     const invalidNameOptions = [
       1,
@@ -26,13 +27,13 @@ describe('"name" option', () => {
 
   });
 
-  test('Should use "name" option', async () => {
+  test(colorizeMessage('Should use "name" option'), async () => {
     const name = 'pkg-name';
     const { browser } = await analyzeWithNameOption(name);
     expect(browser?.name).toBe(name);
   });
 
-  test('Should default to camel cased, unscoped package.json "name" field if no "name" option present', async () => {
+  test(colorizeMessage('Should default to camel cased, unscoped package.json "name" field if no "name" option present'), async () => {
 
     const pkgName = '@scope/pkg-name';
 
@@ -45,7 +46,7 @@ describe('"name" option', () => {
 
   });
 
-  test('Should default to camel cased directory name no "name" option and no "name" package.json field present', async () => {
+  test(colorizeMessage('Should default to camel cased directory name no "name" option and no "name" package.json field present'), async () => {
 
     const { browser } = await mockAnalyzeWithPkgEmptyConfig('c:/projects/project-one', {
       browser: 'browser.umd.js',
@@ -55,7 +56,7 @@ describe('"name" option', () => {
 
   });
 
-  test('Should set browser name to null if not provided and cant be inferred', async () => {
+  test(colorizeMessage('Should set browser name to null if not provided and can\'t be inferred'), async () => {
 
     const { browser } = await mockAnalyzeWithPkgEmptyConfig('', {
       browser: 'browser.umd.js',

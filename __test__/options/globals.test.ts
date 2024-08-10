@@ -1,6 +1,7 @@
+import { colorizeMessage } from '../tools/colors';
 import { mockAnalyzeWithPkg } from '../tools/mock-fs';
 
-describe('"globals" option', () => {
+describe(colorizeMessage('"globals" option'), () => {
 
   const cwd = process.cwd();
 
@@ -9,7 +10,7 @@ describe('"globals" option', () => {
     bundlib: { globals },
   });
 
-  test('Should throw on invalid "globals" option', () => {
+  test(colorizeMessage('Should throw on invalid "globals" option'), () => {
 
     const invalidGlobalsOptions = [
       1,
@@ -23,7 +24,7 @@ describe('"globals" option', () => {
 
   });
 
-  test('Should work with array as "globals" option', async () => {
+  test(colorizeMessage('Should work with array as "globals" option'), async () => {
 
     const { browser } = await analyzeWithGlobalsOption(['module1', 'module2']);
 
@@ -34,7 +35,7 @@ describe('"globals" option', () => {
 
   });
 
-  test('Should work with object as "globals" option', async () => {
+  test(colorizeMessage('Should work with object as "globals" option'), async () => {
 
     const globals = {
       module1: 'mod1',
@@ -48,7 +49,7 @@ describe('"globals" option', () => {
 
   });
 
-  test('Should set globals to null if "globals" option is null', async () => {
+  test(colorizeMessage('Should set globals to null if "globals" option is null'), async () => {
 
     const { browser } = await analyzeWithGlobalsOption(null);
 
@@ -57,7 +58,7 @@ describe('"globals" option', () => {
 
   });
 
-  test('Should set globals to null if no "globals" option present', async () => {
+  test(colorizeMessage('Should set globals to null if no "globals" option present'), async () => {
 
     const { browser } = await mockAnalyzeWithPkg(cwd, {
       browser: 'browser.js',

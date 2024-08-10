@@ -1,11 +1,11 @@
-import { filenameColor, javascriptValueColor, packageFieldColor } from '../tools/colors';
+import { colorizeMessage } from '../tools/colors';
 import { mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs';
 
-describe(`${filenameColor('package.json')} ${packageFieldColor('"dependencies"')} field`, () => {
+describe(colorizeMessage('package.json "dependencies" field'), () => {
 
   const cwd = process.cwd();
 
-  test(`Should ${javascriptValueColor('throw')} on invalid ${packageFieldColor('"dependencies"')} field`, () => {
+  test(colorizeMessage('Should throw on invalid "dependencies" field'), () => {
 
     const invalidFieldValues = [
       100,
@@ -21,7 +21,7 @@ describe(`${filenameColor('package.json')} ${packageFieldColor('"dependencies"')
 
   });
 
-  test(`Should read ${packageFieldColor('"dependencies"')} field`, async () => {
+  test(colorizeMessage('Should read "dependencies" field'), async () => {
 
     const dependencies = { 'bundlib-dep': '1.2.3' };
 

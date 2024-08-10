@@ -1,7 +1,7 @@
-import { filenameColor, javascriptValueColor, packageFieldColor } from '../tools/colors';
+import { colorizeMessage } from '../tools/colors';
 import { mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs';
 
-describe(`${filenameColor('package.json')} ${packageFieldColor('"types"')} and ${packageFieldColor('"typings"')} fields`, () => {
+describe(colorizeMessage('package.json "types" and "typings" fields'), () => {
 
   const cwd = process.cwd();
 
@@ -9,7 +9,7 @@ describe(`${filenameColor('package.json')} ${packageFieldColor('"types"')} and $
   //   return mockAnalyzeWithPkgEmptyConfig(cwd, { [field]: value });
   // };
 
-  test(`Should set types to ${javascriptValueColor('null')} if no ${packageFieldColor('"types"')} | ${packageFieldColor('"typings"')} field present`, async () => {
+  test(colorizeMessage('Should set types to null if no "types" | "typings" field present'), async () => {
 
     const analyzed = await mockAnalyzeWithPkgEmptyConfig(cwd, {});
     const { types } = analyzed;
@@ -18,7 +18,7 @@ describe(`${filenameColor('package.json')} ${packageFieldColor('"types"')} and $
 
   });
 
-  test(`Should read ${packageFieldColor('"types"')} field`, async () => {
+  test(colorizeMessage('Should read "types" field'), async () => {
 
     const types = 'types.d.ts';
     const analyzed = await mockAnalyzeWithPkgEmptyConfig(cwd, { types });
@@ -31,7 +31,7 @@ describe(`${filenameColor('package.json')} ${packageFieldColor('"types"')} and $
 
   });
 
-  test(`Should read ${packageFieldColor('"typings"')} field`, async () => {
+  test(colorizeMessage('Should read "typings" field'), async () => {
 
     const typings = 'typings.d.ts';
     const analyzed = await mockAnalyzeWithPkgEmptyConfig(cwd, { typings });
@@ -45,7 +45,7 @@ describe(`${filenameColor('package.json')} ${packageFieldColor('"types"')} and $
 
   });
 
-  test(`Should read ${packageFieldColor('"types"')} over ${packageFieldColor('"typings"')} field`, async () => {
+  test(colorizeMessage('Should read "types" over "typings" field'), async () => {
 
     const typesField = 'types.d.ts';
 

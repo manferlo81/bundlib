@@ -3,7 +3,7 @@ import { pkgToConfigs } from '../src/api';
 import { createConfigs } from './tools/create-configs';
 import { mockAnalyzeWithPkg } from './tools/mock-fs';
 
-describe('package to configs', () => {
+describe('pkgToConfigs function', () => {
 
   const cwd = process.cwd();
 

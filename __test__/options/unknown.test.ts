@@ -1,6 +1,7 @@
+import { colorizeMessage } from '../tools/colors';
 import { mockAnalyzeWithPkg } from '../tools/mock-fs';
 
-describe('unknown options', () => {
+describe(colorizeMessage('unknown options'), () => {
 
   const cwd = process.cwd();
 
@@ -11,7 +12,7 @@ describe('unknown options', () => {
     );
   };
 
-  test('Should throw on unknown option', () => {
+  test(colorizeMessage('Should throw on unknown option'), () => {
 
     const invalidOptions = [
       'iife',
