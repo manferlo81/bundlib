@@ -607,7 +607,7 @@ Creates an array of rollup config object, based on the content of `package.json`
 ```typescript
 async function configsFromPkg(
   cwd: string,
-  options?: BundlibAPIOptions | null | undefined | false,
+  options?: BundlibAPIOptions | null | undefined,
   pkg: PkgJson = read(cwd + '/package.json'),
 ): Promise<Array<rollup.RollupOptions>>;
 ```
@@ -619,6 +619,40 @@ async function configsFromPkg(
 * `return`: A `Promise` which resolves to information and tools, useful to configure rollup.
 
 If `pkg` not provided it will be read from the current working directory `cwd`.
+
+### function config
+
+A function that returns it's only argument. It helps to have code completion and type check when using javascript config file.  See example.
+
+```typescript
+function config(config: BundlibConfig): BundlibConfig;
+```
+
+* *Example*
+
+First the "normal" way...
+
+```javascript
+// bundlib.config.js
+
+export default {
+  input: 'src/index.js',
+  interop: true,
+  // ... the rest of your config here
+};
+```
+
+... You can improve your experience by using this helper function... when using vscode, for example, it will type check and autocomplete your config file while you type.
+
+```javascript
+import { config } from 'bundlib';
+
+export default config({
+  input: 'src/index.js',
+  interop: true,
+  // ... the rest of your config here
+});
+```
 
 ## Types
 
