@@ -25,7 +25,7 @@
   "types": "./dist/types/index.d.ts",
   "typings": "./dist/types/index.d.ts",
   "scripts": {
-    "clean:cache": "rimraf node_modules/.cache/{bundlib,jest}",
+    "clean:cache": "rimraf --glob node_modules/.cache/{bundlib,jest}",
     "clean:build": "rimraf bin dist coverage",
     "clean": "run-p clean:*",
     "lint:src": "eslint src",
