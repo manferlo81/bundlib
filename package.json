@@ -37,7 +37,9 @@
     "help": "npm run bundlib -- -h",
     "dev": "npm run bundlib -- -dw",
     "build": "npm run bundlib -- -d",
-    "prerelease": "run-s clean lint test build",
+    "ci-build": "run-s lint test build",
+    "clean-build": "run-s clean ci-build",
+    "prerelease": "run-s clean ci-build",
     "release": "standard-version",
     "prepare": "husky"
   },
