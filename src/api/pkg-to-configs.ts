@@ -9,7 +9,7 @@ import builtinModules from 'builtin-modules';
 import { basename, dirname, join as pathJoin, resolve } from 'path';
 import type { Plugin } from 'rollup';
 import pluginAddShebang from 'rollup-plugin-add-shebang';
-import pluginEquals from 'rollup-plugin-export-equals';
+import { equals as pluginEquals } from 'rollup-plugin-export-equals';
 import { stripShebang as pluginStripShebang } from 'rollup-plugin-strip-shebang';
 import pluginTypescript from 'rollup-plugin-typescript2';
 import { MIN_PREFIX, TS_DEF_PREFIX } from './consts/consts';
