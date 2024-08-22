@@ -863,4 +863,4 @@ See [`SelectiveBoolBasedOption`](#type-selectiveboolbasedoption) and [`BuildType
 
 ## License
 
-[MIT](LICENSE) &copy; 2019 [Manuel Fernández](https://github.com/manferlo81)
+[MIT](LICENSE) &copy; 2019-2024 [Manuel Fernández](https://github.com/manferlo81)
