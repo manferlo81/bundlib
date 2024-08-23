@@ -1,7 +1,7 @@
 import { analyzePkg } from './analyze/analyze';
+import type { BundlibPkgJson } from './package/pkg-json-types';
 import { pkgToConfigs } from './pkg-to-configs';
 import type { AllowNullish } from './types/helper-types';
-import type { BundlibPkgJson } from './types/pkg-json';
 import type { BundlibRollupModuleOutputOptions, BundlibRollupOptions } from './types/rollup';
 import type { BundlibAPIOptions } from './types/types';
 

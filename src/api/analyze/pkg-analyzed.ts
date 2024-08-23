@@ -1,6 +1,6 @@
-import type { AllowNull, Dictionary, IsInstalled } from './helper-types';
-import type { BundlibPkgJson, PkgJsonDependencies } from './pkg-json';
-import type { BrowserBuildFormat, RollupBundlibInterop, RollupEsModule, RollupSourcemap } from './rollup';
+import type { BundlibPkgJson, PkgJsonDependencies } from '../package/pkg-json-types';
+import type { AllowNull, Dictionary, IsInstalled } from '../types/helper-types';
+import type { BrowserBuildFormat, RollupBundlibInterop, RollupEsModule, RollupSourcemap } from '../types/rollup';
 
 export interface ModuleBuildOptions {
   input: AllowNull<string>;

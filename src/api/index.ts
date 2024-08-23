@@ -1,7 +1,28 @@
 export { analyzePkg } from './analyze/analyze';
+export type {
+  BrowserBuildOptions,
+  Dependencies,
+  InstalledModules,
+  ModuleBuildOptions,
+  ModuleInstalled,
+  OptionalModules,
+  PkgAnalyzed,
+  TypesBuildOptions,
+} from './analyze/pkg-analyzed';
 export { bundlib } from './bundlib';
 export { configsFromPkg } from './configs-from-pkg';
 export { config } from './functions/config';
+export type {
+  BundlibPkgJson,
+  PkgJsonDependencies,
+  PkgJsonExports,
+  PkgJsonExportsObject,
+  PkgJsonExportsPath,
+  PkgJsonExportsPathsObject,
+  PkgJsonExportsValue,
+  PkgJsonModuleType,
+  PkgJsonObject,
+} from './package/pkg-json-types';
 export { readPkg } from './package/read-pkg';
 export { pkgToConfigs } from './pkg-to-configs';
 export type {
@@ -29,27 +50,6 @@ export type {
   GlobalsOptions,
   SelectiveSkipBuildType,
 } from './types/deprecated-exports';
-export type {
-  BrowserBuildOptions,
-  Dependencies,
-  InstalledModules,
-  ModuleBuildOptions,
-  ModuleInstalled,
-  OptionalModules,
-  PkgAnalyzed,
-  TypesBuildOptions,
-} from './types/pkg-analyzed';
-export type {
-  BundlibPkgJson,
-  PkgJsonDependencies,
-  PkgJsonExports,
-  PkgJsonExportsObject,
-  PkgJsonExportsPath,
-  PkgJsonExportsPathsObject,
-  PkgJsonExportsValue,
-  PkgJsonModuleType,
-  PkgJsonObject,
-} from './types/pkg-json';
 export type {
   BrowserBuildFormat,
   BundlibBuildFormat,

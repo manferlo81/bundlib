@@ -1,8 +1,8 @@
 import loadJsonFile from 'load-json-file';
-import { join as pathJoin } from 'path';
+import { join as pathJoin } from 'node:path';
 import { error } from '../errors/error';
 import { isDictionary } from '../type-check/basic';
-import { BundlibPkgJson } from '../types/pkg-json';
+import type { BundlibPkgJson } from './pkg-json-types';
 
 export async function readPkg(cwd: string): Promise<BundlibPkgJson> {
 

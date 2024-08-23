@@ -11,14 +11,14 @@ import { normalizeBuildName } from '../options/name';
 import { resolveProjectOption } from '../options/project';
 import { resolveSkipOption } from '../options/skip';
 import { resolveSourcemapOption } from '../options/sourcemap';
+import type { BundlibPkgJson } from '../package/pkg-json-types';
 import { readPkg } from '../package/read-pkg';
 import { createIsInstalled } from '../tools/create-is-installed';
 import { isDictionaryOrNullish, isStringOrNullish } from '../type-check/advanced';
 import { invalidKeys } from '../type-check/keys';
 import type { BundlibConfig } from '../types/bundlib-options';
 import type { AllowNull } from '../types/helper-types';
-import type { BrowserBuildOptions, Dependencies, InstalledModules, ModuleBuildOptions, ModuleInstalled, OptionalModules, PkgAnalyzed, TypesBuildOptions } from '../types/pkg-analyzed';
-import type { BundlibPkgJson } from '../types/pkg-json';
+import type { BrowserBuildOptions, Dependencies, InstalledModules, ModuleBuildOptions, ModuleInstalled, OptionalModules, PkgAnalyzed, TypesBuildOptions } from './pkg-analyzed';
 
 export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<PkgAnalyzed> {
 

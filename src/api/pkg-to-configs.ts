@@ -12,6 +12,7 @@ import pluginAddShebang from 'rollup-plugin-add-shebang';
 import { equals as pluginEquals } from 'rollup-plugin-export-equals';
 import { stripShebang as pluginStripShebang } from 'rollup-plugin-strip-shebang';
 import pluginTypescript from 'rollup-plugin-typescript2';
+import type { PkgAnalyzed } from './analyze/pkg-analyzed';
 import { MIN_PREFIX, TS_DEF_PREFIX } from './consts/consts';
 import { JS_EXTENSIONS, TS_EXTENSIONS, TS_ONLY_EXTENSIONS } from './consts/extensions';
 import { error } from './errors/error';
@@ -24,7 +25,6 @@ import { extensionMatch } from './tools/extension-match';
 import { keys } from './tools/helpers';
 import { renamePre } from './tools/rename-pre';
 import type { AllowNull, AllowNullish, Dictionary, TypeCheckFunction } from './types/helper-types';
-import type { PkgAnalyzed } from './types/pkg-analyzed';
 import type { BundlibRollupBrowseOutputOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupBundlibInterop, RollupInterop, RollupSourcemap } from './types/rollup';
 import type { BundlibAPIOptions } from './types/types';
 

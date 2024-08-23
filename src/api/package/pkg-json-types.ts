@@ -1,4 +1,4 @@
-import type { BundlibConfig } from './bundlib-options';
+import type { BundlibConfig } from '../types/bundlib-options';
 
 export type PkgJsonObject<K extends string, T> = Readonly<Partial<Record<K, T>>>;
 
@@ -20,7 +20,7 @@ export type PkgJsonExports = PkgJsonExportsPathsObject | PkgJsonExportsValue;
 
 export type PkgJsonDependencies = PkgJsonObject<string, string>;
 
-export interface BundlibPkgJson {
+export interface BundlibPkgJson extends PkgJsonObject<string, unknown> {
   readonly name?: string;
   readonly displayName?: string;
   readonly version?: string;

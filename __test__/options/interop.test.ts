@@ -1,5 +1,5 @@
+import type { PkgAnalyzed } from '../../src/api/analyze/pkg-analyzed';
 import type { BuildType, SelectiveInteropOption } from '../../src/api/types/bundlib-options';
-import type { PkgAnalyzed } from '../../src/api/types/pkg-analyzed';
 import { colorizeMessage } from '../tools/colors';
 import { mockAnalyzeWithPkg } from '../tools/mock-fs';
 
