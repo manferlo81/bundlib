@@ -5,19 +5,18 @@ import prettyMs from 'pretty-ms';
 import type { RollupError, WarningHandlerWithDefault } from 'rollup';
 import slash from 'slash';
 import { displayName as bundlibName, version as bundlibVersion } from '../../package.json';
-import type { ModuleInstalled, PkgAnalyzed } from '../api';
+import type { PkgAnalyzed } from '../api';
 import { analyzePkg, pkgToConfigs, readPkg } from '../api';
 import type { ProgramOptions } from './command/options/option-types';
 import { EVENT_BUILD_END, EVENT_END, EVENT_ERROR, EVENT_REBUILD, EVENT_WARN } from './events';
-import type { OptionalModulePlugin } from './optional-modules';
-import { binaryPlugins, optionalPlugins } from './optional-modules';
+import { binaryPlugins, bublePlugin, optionalPlugins } from './optional-modules';
 import { rollupBuild } from './rollup/build';
 import { rollupWatch } from './rollup/watch';
 import { cyan, green, magenta, yellow } from './tools/colors';
 import { consoleTag, formatProjectInfo, logError, logInfo, logWarning } from './tools/console';
 import type { BundlibEventMap } from './types/types';
 
-function getDetections(analyzed: PkgAnalyzed, watchMode?: boolean) {
+function getDetections(analyzed: PkgAnalyzed, watchMode?: boolean): string[] {
 
   const { installed: { babel, eslint, chokidar: chokidarInstalled, typescript }, bin } = analyzed;
 
@@ -25,9 +24,10 @@ function getDetections(analyzed: PkgAnalyzed, watchMode?: boolean) {
   const buildingBinary = bin;
 
   return [
+    !babel && `${green.bold('@babel/core')} not detected, using plugin ${green.bold(bublePlugin)}`,
     ...[babel, eslint, typescript]
-      .filter<Exclude<ModuleInstalled<OptionalModulePlugin>, null>>(Boolean as never)
       .map((installed) => {
+        if (!installed) return;
         const { id } = installed;
         const plugin = optionalPlugins[id];
         return `${green.bold(id)} detected, using plugin ${green.bold(plugin)}`;

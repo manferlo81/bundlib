@@ -9,6 +9,8 @@ export const optionalPlugins: Record<OptionalModulePlugin, string> = {
   typescript: 'rollup-plugin-typescript2',
 };
 
+export const bublePlugin = '@rollup/plugin-buble';
+
 export const binaryPlugins = [
   'rollup-plugin-strip-shebang',
   'rollup-plugin-add-shebang',
