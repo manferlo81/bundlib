@@ -4,8 +4,8 @@ import type { ExtractFrom } from './helper-types';
 /** @deprecated */
 export type BuildTypeForAPI = ExtractFrom<BuildType, 'main' | 'module' | 'browser'>;
 
-/** @deprecated */
+/** @deprecated misspelled, use GlobalsOption */
 export type GlobalsOptions = GlobalsOption;
 
-/** @deprecated */
+/** @deprecated use SelectiveSkipKey */
 export type SelectiveSkipBuildType = SelectiveSkipKey;
