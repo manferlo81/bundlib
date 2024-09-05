@@ -39,7 +39,7 @@ type OptionalModulesKeys =
 
 interface OptionalModulesMap {
   babel: '@babel/core';
-};
+}
 type GetModuleName<K extends string> = K extends keyof OptionalModulesMap ? OptionalModulesMap[K] : K;
 
 export type OptionalModules = GetModuleName<OptionalModulesKeys>;

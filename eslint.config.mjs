@@ -3,51 +3,53 @@ import stylistic from '@stylistic/eslint-plugin';
 import globals from 'globals';
 import { config, configs as typescriptConfigs } from 'typescript-eslint';
 
-const rule = (...options) => ['error', ...options];
-
-const pluginRules = (pluginName, rules) => Object.keys(rules).reduce((output, ruleName) => {
-  const pluginPrefixedRuleName = `${pluginName}/${ruleName}`;
-  const ruleEntry = rules[ruleName];
-  return { ...output, [pluginPrefixedRuleName]: ruleEntry };
-}, {});
-
-const eslintRules = {
-  'no-useless-rename': 'error',
-  'object-shorthand': 'error',
+const normalizeRuleEntry = (entry) => {
+  if (Array.isArray(entry) || ['error', 'warn', 'off'].includes(entry)) return entry;
+  return ['error', entry];
 };
 
-const typescriptRules = pluginRules('@typescript-eslint', {
-  'array-type': rule({
-    default: 'array-simple',
-    readonly: 'array-simple',
+const normalizePluginRuleName = (pluginName, ruleName) => {
+  if (!pluginName) return ruleName;
+  const pluginPrefix = `${pluginName}/`;
+  if (ruleName.startsWith(pluginPrefix)) return ruleName;
+  return `${pluginPrefix}${ruleName}`;
+};
+
+const pluginRules = (pluginName, rules) => Object.fromEntries(
+  Object.entries(rules).map(([ruleName, ruleEntry]) => {
+    return [normalizePluginRuleName(pluginName, ruleName), normalizeRuleEntry(ruleEntry)];
   }),
+);
+
+const eslintRules = pluginRules(null, {
+  'no-useless-rename': 'error',
+  'object-shorthand': 'error',
+  'prefer-template': 'error',
 });
 
 const stylisticRules = pluginRules('@stylistic', {
-  indent: rule(2),
-  'linebreak-style': rule('unix'),
-  quotes: rule('single'),
-  semi: rule('always'),
+  semi: 'always',
+  indent: 2,
+  quotes: 'single',
+  'linebreak-style': 'unix',
 
-  'quote-props': rule('as-needed'),
-  'arrow-parens': rule('always'),
-  'comma-dangle': rule('always-multiline'),
-  'member-delimiter-style': rule({}),
+  'quote-props': 'as-needed',
+  'arrow-parens': 'always',
   'no-extra-parens': 'error',
+  'no-extra-semi': 'error',
   'no-mixed-operators': 'error',
-  'brace-style': rule('1tbs'),
+  'brace-style': '1tbs',
 
-  'no-multiple-empty-lines': rule({
-    max: 1,
-    maxBOF: 0,
-    maxEOF: 0,
-  }),
-
+  'member-delimiter-style': {},
   'padded-blocks': 'off',
-
 });
 
-const rules = { ...eslintRules, ...typescriptRules, ...stylisticRules };
+const typescriptRules = pluginRules('@typescript-eslint', {
+  'array-type': {
+    default: 'array-simple',
+    readonly: 'array-simple',
+  },
+});
 
 const typescriptFlatConfigs = config(
   ...typescriptConfigs.strictTypeChecked,
@@ -59,9 +61,9 @@ const typescriptFlatConfigs = config(
 export default config(
   { ignores: ['bin', 'dist', 'coverage'] },
   { files: ['**/*.{js,mjs,cjs,ts}'] },
-  { languageOptions: { globals: { ...globals.browser, ...globals.node } } },
+  { languageOptions: { globals: { ...globals.node, ...globals.browser } } },
   js.configs.recommended,
-  ...typescriptFlatConfigs,
   stylistic.configs['recommended-flat'],
-  { rules },
+  ...typescriptFlatConfigs,
+  { rules: { ...eslintRules, ...typescriptRules, ...stylisticRules } },
 );

@@ -8,12 +8,12 @@ export function logInfo(...messages: string[]): void {
   messages.forEach((message) => {
     consoleLog(cyan(message));
   });
-};
+}
 
 export function logWarning(message: string): void {
   const warningTag = consoleTag('WARNING', yellow);
   consoleWarn(`${warningTag} ${yellow(message)}`);
-};
+}
 
 export function logError(err: Error | RollupError): void {
   const errorTag = consoleTag('ERROR', red);
