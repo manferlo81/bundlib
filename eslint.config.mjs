@@ -11,8 +11,8 @@ function normalizeRuleEntry(entry) {
 
 function createRuleNameNormalizer(pluginName) {
   if (!pluginName) return (ruleName) => ruleName;
+  const pluginPrefix = `${pluginName}/`;
   return (ruleName) => {
-    const pluginPrefix = `${pluginName}/`;
     if (ruleName.startsWith(pluginPrefix)) return ruleName;
     return `${pluginPrefix}${ruleName}`;
   };
@@ -21,9 +21,9 @@ function createRuleNameNormalizer(pluginName) {
 function rules(pluginName, rules) {
   const normalizeRuleName = createRuleNameNormalizer(pluginName);
   return Object.fromEntries(
-    Object.entries(rules).map(([ruleName, ruleEntry]) => {
-      return [normalizeRuleName(ruleName), normalizeRuleEntry(ruleEntry)];
-    }),
+    Object.entries(rules).map(
+      ([ruleName, ruleEntry]) => [normalizeRuleName(ruleName), normalizeRuleEntry(ruleEntry)],
+    ),
   );
 }
 
@@ -34,19 +34,11 @@ const eslintRules = rules(null, {
 });
 
 const stylisticRules = rules('@stylistic', {
-  semi: 'always',
   indent: 2,
-  quotes: 'single',
   'linebreak-style': 'unix',
-
-  'quote-props': 'as-needed',
-  'arrow-parens': 'always',
   'no-extra-parens': 'error',
   'no-extra-semi': 'error',
   'no-mixed-operators': 'error',
-  'brace-style': '1tbs',
-
-  'member-delimiter-style': {},
   'padded-blocks': 'off',
 });
 
@@ -57,22 +49,26 @@ const typescriptRules = rules('@typescript-eslint', {
   },
 });
 
-const javascriptExtensions = ['js', 'cjs', 'mjs'];
-const javascriptExtString = javascriptExtensions.join(',');
+const stylisticConfig = stylistic.configs.customize({
+  semi: true,
+  quotes: 'single',
+  quoteProps: 'as-needed',
+  arrowParens: true,
+  braceStyle: '1tbs',
+});
 
 const typescriptFlatConfigs = config(
   ...typescriptConfigs.strictTypeChecked,
   ...typescriptConfigs.stylisticTypeChecked,
   { languageOptions: { parserOptions: { projectService: true, tsconfigRootDir: process.cwd() } } },
-  { files: [`**/*.{${javascriptExtString}}`], ...typescriptConfigs.disableTypeChecked },
+  { files: ['**/*.{js,cjs,mjs}'], ...typescriptConfigs.disableTypeChecked },
 );
 
 export default config(
   { ignores: ['bin', 'dist', 'coverage'] },
-  { files: [`**/*.{${javascriptExtString},ts}`] },
   { languageOptions: { globals: { ...globals.node, ...globals.browser } } },
   js.configs.recommended,
-  stylistic.configs['recommended-flat'],
+  stylisticConfig,
   ...typescriptFlatConfigs,
   { rules: { ...eslintRules, ...stylisticRules, ...typescriptRules } },
 );
