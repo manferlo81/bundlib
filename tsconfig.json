@@ -19,19 +19,17 @@
     "importHelpers": true
   },
   "include": [
-    "__mocks__/**/*.ts",
-    "__test__/**/*.ts",
-    "__test__/**/*.js",
-    "src/**/*.ts",
-    "eslint.config.mjs",
+    "__mocks__",
+    "__test__",
+    "src",
     "jest.config.ts",
     "package.json",
     "bundlib.config.ts"
   ],
   "exclude": [
-    "node_modules/**",
-    "dist/**",
-    "bin/**",
-    "coverage/**"
+    "node_modules",
+    "dist",
+    "bin",
+    "coverage"
   ]
 }

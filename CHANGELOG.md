@@ -4,7 +4,6 @@
 
 ## [0.21.0](https://github.com/manferlo81/bundlib/compare/v0.20.0...v0.21.0) (2024-08-23)
 
-
 ### ⚠ BREAKING CHANGES
 
 * **types:** type `SelectiveSkipBuildType` is deprecated in favor of `SelectiveSkipKey`
@@ -14,7 +13,6 @@
 ### Features
 
 * Add `config` helper function ([68a841a](https://github.com/manferlo81/bundlib/commit/68a841a24195a99dc892124cd4452fd69477752b))
-
 
 * **type:** Deprecate wrongly spelled type `GlobalsOptions` in favor of `GlobalsOption` ([2ea3f85](https://github.com/manferlo81/bundlib/commit/2ea3f85360d442992e8438db88b2bddb18a927bb))
 * **types:** type `BuildTypeForAPI` is deprecated ([d075719](https://github.com/manferlo81/bundlib/commit/d075719e917081ddc10bd99c103a3a51226192f0))

@@ -18,7 +18,7 @@ function createRuleNameNormalizer(pluginName) {
   };
 }
 
-function rules(pluginName, rules) {
+function normalizeRules(pluginName, rules) {
   const normalizeRuleName = createRuleNameNormalizer(pluginName);
   return Object.fromEntries(
     Object.entries(rules).map(
@@ -27,13 +27,13 @@ function rules(pluginName, rules) {
   );
 }
 
-const eslintRules = rules(null, {
+const eslintRules = normalizeRules(null, {
   'no-useless-rename': 'error',
   'object-shorthand': 'error',
   'prefer-template': 'error',
 });
 
-const stylisticRules = rules('@stylistic', {
+const stylisticRules = normalizeRules('@stylistic', {
   indent: 2,
   'linebreak-style': 'unix',
   'no-extra-parens': 'error',
@@ -42,7 +42,7 @@ const stylisticRules = rules('@stylistic', {
   'padded-blocks': 'off',
 });
 
-const typescriptRules = rules('@typescript-eslint', {
+const typescriptRules = normalizeRules('@typescript-eslint', {
   'array-type': {
     default: 'array-simple',
     readonly: 'array-simple',
