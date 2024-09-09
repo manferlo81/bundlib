@@ -15,10 +15,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "removeComments": true,
-    "outDir": "dist",
     "declaration": true,
     "declarationMap": true,
-    "importHelpers": true,
     "newLine": "lf"
   },
   "include": [
