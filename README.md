@@ -74,6 +74,9 @@ An automatic library bundler powered by [Rollup.js](https://github.com/rollup/ro
     * [type `SelectiveInteropOption`](#type-selectiveinteropoption)
     * [type `SelectiveMinOption`](#type-selectiveminoption)
     * [type `SelectiveSkipOption`](#type-selectiveskipoption)
+* [Plugin Notes](#plugin-notes)
+  * [`@rollup/plugin-eslint`](#plugin-rollupplugin-eslint)
+  * [`rollup-plugin-typescript2`](#plugin-rollup-plugin-typescript2)
 * [Features](#features)
 
 ## Install
@@ -833,6 +836,41 @@ type SelectiveSkipOption = SelectiveBoolBasedOption<SelectiveSkipBuildType, neve
 ```
 
 See [`SelectiveBoolBasedOption`](#type-selectiveboolbasedoption) and [`BuildType`](#type-buildtype)
+
+## Plugin Notes
+
+### plugin `@rollup/plugin-eslint`
+
+Because `@rollup/plugin-eslint` uses it's own version of eslint (maybe not the same version you are using in your project), you may need to use the `"overrides"` property of your `package.json` to ensure `@rollup/plugin-eslint` uses the same version you are using inside your project.
+
+```json
+// package.json
+
+{
+  "devDependencies": {
+    "eslint": "^9.10.0"
+  },
+  "overrides": {
+    "eslint": "^9.10.0"
+  }
+}
+```
+
+### plugin `rollup-plugin-typescript2`
+
+Some values from your `tsconfig.json` file will be overridden by `Bundlib`.
+
+#### `compilerOptions.module`
+
+`"module"` option will be set to `'ESNext'`.
+
+#### `compilerOptions.sourceMap`
+
+`"sourceMap"` option will be set according to your [`sourcemap` option](#option-sourcemap) or it's default value.
+
+#### `compilerOptions.declaration`, `compilerOptions.declarationDir` and `compilerOptions.declarationMap`
+
+`"declaration"` and `"declarationDir"` will be set according to your settings, trying to ensure it follows your `package.json` and configuration. `"declarationMap"` will be set to `true` if your declaration files are being emitted.
 
 ## Features
 

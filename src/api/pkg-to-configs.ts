@@ -119,6 +119,7 @@ export function pkgToConfigs(
     }
 
     const declarationDir = typesExpectedFilename && dirname(typesExpectedFilename);
+    const resolvedProject = project && resolve(cwd, project);
 
     let shebang: string | undefined;
 
@@ -170,7 +171,7 @@ export function pkgToConfigs(
             ...declarationDir ? { declarationDir } : { declarationMap: false },
           },
         },
-        ...project && { tsconfig: resolve(cwd, project) },
+        ...resolvedProject && { tsconfig: resolvedProject },
       }),
 
       pluginJSON({ preferConst: true }),
