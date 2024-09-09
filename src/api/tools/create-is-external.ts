@@ -38,7 +38,7 @@ export function createIsExternal(...args: Array<AllowNullish<readonly string[]>>
   const cache: Dictionary<boolean> = {};
 
   // return IsExternal function
-  return (source, importer, isResolved) => {
+  return (source, _importer, isResolved) => {
 
     // if it's resolved or is local file, return false (not external)
     if (isResolved || source.startsWith('.')) {
