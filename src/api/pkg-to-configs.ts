@@ -164,6 +164,7 @@ export function pkgToConfigs(
         },
         tsconfigOverride: {
           compilerOptions: {
+            module: 'ESNext',
             sourceMap: sourcemap,
             declaration: !!declarationDir,
             ...declarationDir ? { declarationDir } : { declarationMap: false },
