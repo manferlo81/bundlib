@@ -1,8 +1,6 @@
-import type { Config as JestConfig } from 'jest';
+import type { Config } from 'jest';
 
-const config: JestConfig = {
-
-  testEnvironment: 'node',
+const config: Config = {
   cacheDirectory: 'node_modules/.cache/jest',
   preset: 'ts-jest',
 
@@ -24,7 +22,6 @@ const config: JestConfig = {
   ],
 
   verbose: true,
-
 };
 
 export default config;
