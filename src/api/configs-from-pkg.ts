@@ -1,4 +1,4 @@
-import { analyzePkg } from './analyze/analyze';
+import { compatibilityAnalyzePkg } from './analyze/analyze';
 import type { BundlibPkgJson } from './package/pkg-json-types';
 import { pkgToConfigs } from './pkg-to-configs';
 import type { AllowNullish } from './types/helper-types';
@@ -10,6 +10,6 @@ export async function configsFromPkg(
   options?: AllowNullish<BundlibAPIOptions | false>,
   pkgJson?: BundlibPkgJson,
 ): Promise<Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>> {
-  const analyzed = await analyzePkg(cwd, pkgJson);
+  const analyzed = await compatibilityAnalyzePkg(cwd, pkgJson);
   return pkgToConfigs(analyzed, options === false ? null : options);
 }

@@ -20,7 +20,7 @@ import type { BundlibConfig } from '../types/bundlib-options';
 import type { AllowNull } from '../types/helper-types';
 import type { BrowserBuildOptions, Dependencies, InstalledModules, ModuleBuildOptions, ModuleInstalled, OptionalModules, PkgAnalyzed, TypesBuildOptions } from './pkg-analyzed';
 
-export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<PkgAnalyzed> {
+export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgAnalyzed> {
 
   const {
     name: pkgName,
@@ -259,11 +259,18 @@ export async function analyzePkg2(cwd: string, pkg: BundlibPkgJson): Promise<Pkg
 
 }
 
-export async function analyzePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAnalyzed> {
-  if (inputPkg) {
-    return analyzePkg2(cwd, inputPkg);
-  }
+// this function is here for compatibility reasons
+// to warn the user about the new function signature
+// the second argument is now REQUIRED
+// TODO: In the future this function will be removed and it will be replaced by analyzePkg function
+export async function compatibilityAnalyzePkg(cwd: string, inputPkg?: BundlibPkgJson): Promise<PkgAnalyzed> {
+  // call new function if second argument provided
+  if (inputPkg) return analyzePkg(cwd, inputPkg);
+
+  // warn the user about package.json content not being passed
   console.warn('Function analyzePkg should receive package.json content. Please use readPkg to get it and pass it to analyzePkg. We will do it for you this time. This warning will become an error in the future.');
+
+  // read package.json and call the the new function
   const pkg = await readPkg(cwd);
-  return analyzePkg2(cwd, pkg);
+  return analyzePkg(cwd, pkg);
 }

@@ -1,4 +1,4 @@
-export { analyzePkg } from './analyze/analyze';
+export { compatibilityAnalyzePkg as analyzePkg } from './analyze/analyze';
 export type {
   BrowserBuildOptions,
   Dependencies,

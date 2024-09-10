@@ -1,4 +1,4 @@
-import { analyzePkg2 } from './analyze/analyze';
+import { analyzePkg } from './analyze/analyze';
 import { readPkg } from './package/read-pkg';
 import { pkgToConfigs } from './pkg-to-configs';
 import type { AllowNullish } from './types/helper-types';
@@ -14,7 +14,7 @@ export async function bundlib(
   const pkgJson = await readPkg(cwd);
 
   // analyze package.json content
-  const analyzed = await analyzePkg2(cwd, pkgJson);
+  const analyzed = await analyzePkg(cwd, pkgJson);
 
   // create configs
   return pkgToConfigs(analyzed, options);

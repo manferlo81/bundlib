@@ -1,6 +1,6 @@
-import * as pkgToConfigsModule from '../../src/api/pkg-to-configs';
-import * as readPkgModule from '../../src/api/package/read-pkg';
 import * as analyzePkgModule from '../../src/api/analyze/analyze';
+import * as readPkgModule from '../../src/api/package/read-pkg';
+import * as pkgToConfigsModule from '../../src/api/pkg-to-configs';
 
 type UnknownFunction = (...args: never[]) => unknown;
 type SpyOnMethodCallback<F extends UnknownFunction, R> = (mock: jest.SpyInstance<ReturnType<F>, Parameters<F>>) => R;
@@ -24,10 +24,10 @@ export function spyOnReadPkg<R>(callback: SpyOnMethodCallback<typeof readPkgModu
   );
 }
 
-export function spyOnAnalyzePkg<R>(callback: SpyOnMethodCallback<typeof analyzePkgModule.analyzePkg2, R>): R {
+export function spyOnAnalyzePkg<R>(callback: SpyOnMethodCallback<typeof analyzePkgModule.analyzePkg, R>): R {
   return spyOnMethod(
     analyzePkgModule,
-    'analyzePkg2',
+    'analyzePkg',
     callback,
   );
 }
