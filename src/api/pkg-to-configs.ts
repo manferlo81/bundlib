@@ -13,9 +13,8 @@ import { equals as pluginEquals } from 'rollup-plugin-export-equals';
 import { stripShebang as pluginStripShebang } from 'rollup-plugin-strip-shebang';
 import pluginTypescript from 'rollup-plugin-typescript2';
 import type { PkgAnalyzed } from './analyze/pkg-analyzed';
-import { MIN_PREFIX, TS_DEF_PREFIX } from './consts/consts';
-import { JS_EXTENSIONS, TS_EXTENSIONS, TS_ONLY_EXTENSIONS } from './consts/extensions';
-import { DEFAULT_SHEBANG } from './consts/shebang';
+import { JS_EXTENSIONS, MIN_EXT_PREFIX, TS_DEF_EXT_PREFIX, TS_EXTENSIONS, TS_ONLY_EXTENSIONS } from './constants/extensions';
+import { DEFAULT_NODEJS_SHEBANG } from './constants/shebang';
 import { error } from './errors/error';
 import { inputNotFoundMessage } from './errors/error-messages';
 import { normalizeRollupInterop } from './options/interop';
@@ -108,7 +107,7 @@ export function pkgToConfigs(
       extensionMatch(typesBuild.output, ['.ts']) ? typesBuild.output : pathJoin(typesBuild.output, 'index.d.ts'),
     );
 
-    const typesGeneratedFilename = renamePre(basename(inputFile), TS_DEF_PREFIX);
+    const typesGeneratedFilename = renamePre(basename(inputFile), TS_DEF_EXT_PREFIX);
 
     if (typesExpectedFilename && basename(typesExpectedFilename) !== typesGeneratedFilename) {
       throw error('Input filename and types filename have to match.');
@@ -188,7 +187,7 @@ export function pkgToConfigs(
 
       isBinaryBuild && pluginAddShebang({
         include: outputFile,
-        shebang: () => shebang ?? DEFAULT_SHEBANG,
+        shebang: () => shebang ?? DEFAULT_NODEJS_SHEBANG,
       }),
 
       minifyOutput && pluginTerser({
@@ -250,7 +249,7 @@ export function pkgToConfigs(
 
     if (min) {
 
-      const minOutputFile = renamePre(outputFile, MIN_PREFIX);
+      const minOutputFile = renamePre(outputFile, MIN_EXT_PREFIX);
       const minOutputOptions = { ...outputOptions, file: minOutputFile };
 
       configs.push(
@@ -350,7 +349,7 @@ export function pkgToConfigs(
 
     if (min) {
 
-      const minOutputFile = renamePre(outputFile, MIN_PREFIX);
+      const minOutputFile = renamePre(outputFile, MIN_EXT_PREFIX);
       const minOutputOptions = { ...outputOptions, file: minOutputFile };
 
       configs.push(
@@ -435,7 +434,7 @@ export function pkgToConfigs(
 
     if (min) {
 
-      const minOutputFile = renamePre(browserOutputFile, MIN_PREFIX);
+      const minOutputFile = renamePre(browserOutputFile, MIN_EXT_PREFIX);
       const minOutputOptions = { ...outputOptions, file: minOutputFile };
 
       configs.push(
@@ -505,7 +504,7 @@ export function pkgToConfigs(
 
     if (min) {
 
-      const minOutputFile = renamePre(outputFile, MIN_PREFIX);
+      const minOutputFile = renamePre(outputFile, MIN_EXT_PREFIX);
       const minOutputOptions = { ...outputOptions, file: minOutputFile };
 
       configs.push(

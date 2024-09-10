@@ -1,6 +1,6 @@
 import { cosmiconfig } from 'cosmiconfig';
 import { resolve } from 'path';
-import { PRODUCT_NAME } from '../consts/consts';
+import { PRODUCT_NAME } from '../constants/product';
 import type { AllowNullish } from '../types/helper-types';
 import type { BundlibCosmiconfigResult } from './load-config-types';
 

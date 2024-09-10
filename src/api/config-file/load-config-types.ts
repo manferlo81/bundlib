@@ -1,14 +1,12 @@
-import type { CosmiconfigResult as CosmiconfigOriginalResult } from 'cosmiconfig';
+import type { CosmiconfigResult as OriginalCosmiconfigResult } from 'cosmiconfig';
 import type { BundlibConfig } from '../types/bundlib-options';
-import type { Dictionary } from '../types/helper-types';
 
-type ObjectOnly<T> = T extends Dictionary<unknown> ? T : never;
-type CosmiconfigConfigResult = ObjectOnly<CosmiconfigOriginalResult>;
+type CosmiconfigResultObject = Extract<OriginalCosmiconfigResult, object>;
 
-type CosmiconfigTypedResult<T> = {
-  [K in keyof CosmiconfigConfigResult]: K extends 'config' ? T : CosmiconfigConfigResult[K]
+type CosmiconfigTypedResultObject<T> = {
+  [K in keyof CosmiconfigResultObject]: K extends 'config' ? T : CosmiconfigResultObject[K]
 };
 
-type CosmiconfigResult<T> = CosmiconfigTypedResult<T> | null;
+type CosmiconfigResult<T> = CosmiconfigTypedResultObject<T> | null;
 
 export type BundlibCosmiconfigResult = CosmiconfigResult<BundlibConfig>;
