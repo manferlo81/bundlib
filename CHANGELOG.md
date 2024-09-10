@@ -2,6 +2,13 @@
 
 ## Version History
 
+### [0.21.1](https://github.com/manferlo81/bundlib/compare/v0.21.0...v0.21.1) (2024-09-10)
+
+
+### Features
+
+* Override typescript module type ([1f5ecfa](https://github.com/manferlo81/bundlib/commit/1f5ecfab85493bd498bfb39aabef41dba6182ed4))
+
 ## [0.21.0](https://github.com/manferlo81/bundlib/compare/v0.20.0...v0.21.0) (2024-08-23)
 
 ### ⚠ BREAKING CHANGES
