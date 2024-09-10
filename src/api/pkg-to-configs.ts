@@ -13,7 +13,7 @@ import { equals as pluginEquals } from 'rollup-plugin-export-equals';
 import { stripShebang as pluginStripShebang } from 'rollup-plugin-strip-shebang';
 import pluginTypescript from 'rollup-plugin-typescript2';
 import type { PkgAnalyzed } from './analyze/pkg-analyzed';
-import { JS_EXTENSIONS, MIN_EXT_PREFIX, TS_DEF_EXT_PREFIX, TS_EXTENSIONS, TS_ONLY_EXTENSIONS } from './constants/extensions';
+import { JS_EXTENSIONS, MIN_EXT_PREFIX, TS_DEF_EXT_PREFIX, TS_EXTENSIONS } from './constants/extensions';
 import { DEFAULT_NODEJS_SHEBANG } from './constants/shebang';
 import { error } from './errors/error';
 import { inputNotFoundMessage } from './errors/error-messages';
@@ -22,8 +22,9 @@ import { pluginChunks } from './plugins/chunks';
 import { createConfig } from './tools/create-config';
 import { createIsExternal } from './tools/create-is-external';
 import { createResolveInput } from './tools/create-resolve-input';
-import { extensionMatch } from './tools/extension-match';
+import { fileIsTypescript } from './tools/extension-match';
 import { keys } from './tools/helpers';
+import { normalizeExpectedTypesFilename } from './tools/normalize-types-filename';
 import { renamePre } from './tools/rename-pre';
 import type { AllowNull, AllowNullish, Dictionary, TypeCheckFunction } from './types/helper-types';
 import type { BundlibRollupBrowseOutputOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types/rollup';
@@ -90,7 +91,7 @@ export function pkgToConfigs(
 
     const sourcemap = rollupSourcemap !== false;
 
-    const inputIsTypescript = extensionMatch(inputFile, TS_ONLY_EXTENSIONS);
+    const inputIsTypescript = fileIsTypescript(inputFile);
 
     if (inputIsTypescript && !useTypescript) {
       throw error('Can\'t use typescript input file if typescript is not installed');
@@ -102,9 +103,9 @@ export function pkgToConfigs(
       throw error('Can\'t generate types from a non typescript file.');
     }
 
-    const typesExpectedFilename = generateTypes && resolve(
+    const typesExpectedFilename = generateTypes && normalizeExpectedTypesFilename(
       cwd,
-      extensionMatch(typesBuild.output, ['.ts']) ? typesBuild.output : pathJoin(typesBuild.output, 'index.d.ts'),
+      typesBuild.output,
     );
 
     const typesGeneratedFilename = renamePre(basename(inputFile), TS_DEF_EXT_PREFIX);
