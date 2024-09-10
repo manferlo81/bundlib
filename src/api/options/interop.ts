@@ -29,3 +29,9 @@ export function resolveInteropOption(value: SelectiveInteropOption): Resolved<Bu
     'interop',
   );
 }
+
+export function normalizeRollupInterop(interopBool: RollupBundlibInterop): RollupInterop {
+  if (interopBool === true) return 'compat';
+  if (interopBool === false) return 'default';
+  return interopBool;
+}

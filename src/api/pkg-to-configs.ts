@@ -17,6 +17,7 @@ import { MIN_PREFIX, TS_DEF_PREFIX } from './consts/consts';
 import { JS_EXTENSIONS, TS_EXTENSIONS, TS_ONLY_EXTENSIONS } from './consts/extensions';
 import { error } from './errors/error';
 import { inputNotFoundMessage } from './errors/error-messages';
+import { normalizeRollupInterop } from './options/interop';
 import { pluginChunks } from './plugins/chunks';
 import { createConfig } from './tools/create-config';
 import { createIsExternal } from './tools/create-is-external';
@@ -25,14 +26,8 @@ import { extensionMatch } from './tools/extension-match';
 import { keys } from './tools/helpers';
 import { renamePre } from './tools/rename-pre';
 import type { AllowNull, AllowNullish, Dictionary, TypeCheckFunction } from './types/helper-types';
-import type { BundlibRollupBrowseOutputOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupBundlibInterop, RollupInterop, RollupSourcemap } from './types/rollup';
+import type { BundlibRollupBrowseOutputOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types/rollup';
 import type { BundlibAPIOptions } from './types/types';
-
-function convertInterop(interopBool: RollupBundlibInterop): RollupInterop {
-  if (interopBool === true) return 'compat';
-  if (interopBool === false) return 'default';
-  return interopBool;
-}
 
 export function pkgToConfigs(
   analyzed: PkgAnalyzed,
@@ -219,7 +214,7 @@ export function pkgToConfigs(
     }
 
     const outputFile = resolve(cwd, output);
-    const interop = convertInterop(interopBool);
+    const interop = normalizeRollupInterop(interopBool);
 
     const outputOptions: BundlibRollupModuleOutputOptions = {
       file: outputFile,
@@ -322,7 +317,7 @@ export function pkgToConfigs(
     }
 
     const outputFile = resolve(cwd, output);
-    const interop = convertInterop(interopBool);
+    const interop = normalizeRollupInterop(interopBool);
 
     const outputOptions: BundlibRollupModuleOutputOptions = {
       file: outputFile,
@@ -391,7 +386,7 @@ export function pkgToConfigs(
     }
 
     const browserOutputFile = resolve(cwd, output);
-    const interop = convertInterop(interopBool);
+    const interop = normalizeRollupInterop(interopBool);
     const globals = inputGlobals ?? {};
 
     let outputOptions: BundlibRollupBrowseOutputOptions = {
@@ -476,7 +471,7 @@ export function pkgToConfigs(
     }
 
     const outputFile = resolve(cwd, output);
-    const interop = convertInterop(interopBool);
+    const interop = normalizeRollupInterop(interopBool);
 
     const outputOptions: BundlibRollupModuleOutputOptions = {
       file: outputFile,
