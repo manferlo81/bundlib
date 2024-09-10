@@ -15,6 +15,7 @@ import pluginTypescript from 'rollup-plugin-typescript2';
 import type { PkgAnalyzed } from './analyze/pkg-analyzed';
 import { MIN_PREFIX, TS_DEF_PREFIX } from './consts/consts';
 import { JS_EXTENSIONS, TS_EXTENSIONS, TS_ONLY_EXTENSIONS } from './consts/extensions';
+import { DEFAULT_SHEBANG } from './consts/shebang';
 import { error } from './errors/error';
 import { inputNotFoundMessage } from './errors/error-messages';
 import { normalizeRollupInterop } from './options/interop';
@@ -187,7 +188,7 @@ export function pkgToConfigs(
 
       isBinaryBuild && pluginAddShebang({
         include: outputFile,
-        shebang: () => shebang ?? '#!/usr/bin/env node',
+        shebang: () => shebang ?? DEFAULT_SHEBANG,
       }),
 
       minifyOutput && pluginTerser({
