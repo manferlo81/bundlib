@@ -4,7 +4,7 @@ import type { AllowNullish, AllowVoid, Dictionary } from '../types/helper-types'
 
 type FindInputFunction = (input: AllowNullish<string>) => AllowVoid<AllowNullish<string>>;
 
-export function createResolveInput(cwd: string, extensions: string[]): FindInputFunction {
+export function createResolveInput(cwd: string, extensions: readonly string[]): FindInputFunction {
 
   const searchFiles = extensions.map((ext) => resolve(cwd, 'src', `index${ext}`));
   const cache: Partial<Dictionary<string>> = {};

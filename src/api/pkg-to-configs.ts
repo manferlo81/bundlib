@@ -177,7 +177,7 @@ export function pkgToConfigs(
 
       useBabel
         ? pluginBabel({
-          extensions,
+          extensions: extensions as unknown as string[],
           exclude,
           babelHelpers: 'bundled',
         })
