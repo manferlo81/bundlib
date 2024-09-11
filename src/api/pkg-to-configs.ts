@@ -154,10 +154,10 @@ export function pkgToConfigs(
 
       useTypescript && inputIsTypescript && pluginTypescript({
         cwd,
+        include,
         cacheRoot: typescriptCachePath,
         useTsconfigDeclarationDir: true,
         tsconfigDefaults: {
-          exclude: [],
           include: [
             relative(cwd, dirname(inputFile)),
           ],
