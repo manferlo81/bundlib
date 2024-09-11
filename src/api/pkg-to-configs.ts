@@ -6,7 +6,7 @@ import pluginJSON from '@rollup/plugin-json';
 import pluginNodeResolve from '@rollup/plugin-node-resolve';
 import pluginTerser from '@rollup/plugin-terser';
 import builtinModules from 'builtin-modules';
-import { basename, dirname, join as pathJoin, resolve } from 'path';
+import { basename, dirname, join as pathJoin, relative, resolve } from 'node:path';
 import type { Plugin } from 'rollup';
 import pluginAddShebang from 'rollup-plugin-add-shebang';
 import { equals as pluginEquals } from 'rollup-plugin-export-equals';
@@ -158,6 +158,9 @@ export function pkgToConfigs(
         useTsconfigDeclarationDir: true,
         tsconfigDefaults: {
           exclude: [],
+          include: [
+            relative(cwd, dirname(inputFile)),
+          ],
         },
         tsconfigOverride: {
           compilerOptions: {
