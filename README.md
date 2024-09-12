@@ -220,7 +220,9 @@ See [`SelectiveStringOption`](#type-selectivestringoption).
 
 ### option `sourcemap`
 
-Whether or not to generate source maps, see [Rollup documentation](https://rollupjs.org/guide/en/#outputsourcemap) for more information. If not specified or set to `null` it will default to `true`. This option supports [value based](#value-based-selective-format) and [boolean based](#boolean-based-selective-format) selective format.
+Whether or not to generate source maps. Valid values are `boolean`, `"inline"` and `"hidden"`. The default value is `true` if you don't provide this option. See [Rollup documentation](https://rollupjs.org/guide/en/#outputsourcemap) for more information.
+
+This option supports [value based](#value-based-selective-format) and [boolean based](#boolean-based-selective-format) selective format.
 
 ```typescript
 sourcemap: SelectiveSourcemapOption;
@@ -232,7 +234,9 @@ See [`SelectiveSourcemapOption`](#type-selectivesourcemapoption).
 
 ### option `esModule`
 
-Whether or not to add a `__esModule: true` property to your module. This option supports [value based](#value-based-selective-format) and [boolean based](#boolean-based-selective-format) selective format.
+Whether or not to add a `__esModule: true` property to your module. Valid values are `boolean` and `"if-default-prop"`. The default value is `false` if you don't provide this option.
+
+This option supports [value based](#value-based-selective-format) and [boolean based](#boolean-based-selective-format) selective format.
 
 ```typescript
 esModule: SelectiveEsModuleOption;
@@ -244,12 +248,14 @@ See [`SelectiveEsModuleOption`](#type-selectiveesmoduleoption).
 
 ### option `interop`
 
-Whether or not to add an interop block. This option supports [value based](#value-based-selective-format) and [boolean based](#boolean-based-selective-format) selective format.
+Whether or not to add an interop block. Valid values are `boolean`, `"default"`, `"esModule"`, `"compat"`, `"auto"` and `"defaultOnly"`. Rollup doesn't support `interop` option as a `boolean` anymore, we still support it by turning `true` into `"compat"` and `false` into `"default"` before we pass it to Rollup. The default value is `"default"` if you don't provide this option.
+
+This option supports [value based](#value-based-selective-format) and [boolean based](#boolean-based-selective-format) selective format.
 
 ```typescript
 interop: SelectiveInteropOption;
 
-default false;
+default "default";
 ```
 
 See [`SelectiveInteropOption`](#type-selectiveinteropoption).
