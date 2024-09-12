@@ -15,7 +15,7 @@ export function logWarning(message: string): void {
   consoleWarn(`${warningTag} ${yellow(message)}`);
 }
 
-export function logError(err: Error | RollupError): void {
+export function logError(err: RollupError | Error): void {
   const errorTag = consoleTag('ERROR', red);
   consoleError(`${errorTag} ${red(err.message || err)}`);
   consoleLog('');

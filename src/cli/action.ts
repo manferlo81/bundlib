@@ -40,16 +40,13 @@ function getDetections(analyzed: PkgAnalyzed, watchMode?: boolean): string[] {
 
 export async function action(options: ProgramOptions): Promise<void> {
 
-  const { dev: developmentMode, watch: watchMode, silent: silentMode } = options;
-
-  const cwd = process.cwd();
-  const pkg = await readPkg(cwd);
-
-  const logErrorAndExit = (err: Error | RollupError) => {
+  // create FATAL error handler
+  const logErrorAndExit = (err: RollupError | Error) => {
     logError(err);
     process.exit(1);
   };
 
+  // get NodeJS version
   const nodeVersion = process.versions.node;
   const [nodeMajorVersion] = nodeVersion.split('.');
 
@@ -58,40 +55,56 @@ export async function action(options: ProgramOptions): Promise<void> {
     logErrorAndExit(new Error(`You are running NodeJS v${nodeVersion}. This version is not supported. Please install NodeJS v18 or greater.`));
   }
 
-  const showError = watchMode
+  // get current working directory
+  const cwd = process.cwd();
+
+  // read package.json content
+  const pkg = await readPkg(cwd);
+
+  // analyze package.json content
+  const analyzed = await analyzePkg(cwd, pkg);
+
+  const { dev: developmentMode, watch: watchMode, silent: silentMode } = options;
+
+  const handleError = watchMode
     ? logError
     : logErrorAndExit;
 
+  // create event emitter
   const emitter = new EventEmitter<BundlibEventMap>();
-  emitter.on(EVENT_ERROR, showError);
 
-  // analyze package.json
-  const analyzed = await analyzePkg(cwd, pkg);
+  // declare error handler (even in silent mode)
+  emitter.on(EVENT_ERROR, handleError);
 
-  //
+  // if not in silent mode...
   if (!silentMode) {
 
-    // Show Bundlib version
+    // show Bundlib version
     logInfo(formatProjectInfo(bundlibName, bundlibVersion));
 
-    // Show NodeJS version
+    // show NodeJS version
     logInfo(formatProjectInfo('NodeJS', nodeVersion), '');
 
     const { name: projectName, displayName, version: projectVersion } = pkg;
     const projectDisplayName = displayName ?? projectName;
 
+    // show current project info
     if (projectDisplayName && projectVersion) {
       logInfo(`building: ${formatProjectInfo(projectDisplayName, projectVersion)}`, '');
     }
 
+    // get detections
     const detections = getDetections(analyzed, watchMode);
 
+    // show detections
     detections.forEach((message) => {
       logInfo(message);
     });
 
+    // log an empty line if any detection found
     if (detections.length > 0) logInfo('');
 
+    // create file size formatter
     const formatFileSize = createFormatter({
       unit: 'B',
       round: 2,
@@ -105,6 +118,8 @@ export async function action(options: ProgramOptions): Promise<void> {
       },
     });
 
+    // declare "build end" handler
+    // to show filename, size and duration of the build process
     emitter.on(EVENT_BUILD_END, (filename, size, duration) => {
       const builtTag = consoleTag('BUILT', green);
 
@@ -120,6 +135,7 @@ export async function action(options: ProgramOptions): Promise<void> {
       logInfo(`${builtTag} ${path} ${info}`);
     });
 
+    // declare "warning" handler
     emitter.on(EVENT_WARN, (warning) => {
 
       const { plugin, message } = warning;
@@ -132,12 +148,15 @@ export async function action(options: ProgramOptions): Promise<void> {
 
     });
 
+    // if in watch mode...
     if (watchMode) {
 
+      // show "waiting" message after every build process is finished
       emitter.on(EVENT_END, () => {
         logInfo('', 'waiting for changes...');
       });
 
+      // show "rebuilding" message when a file changed
       emitter.on(EVENT_REBUILD, () => {
         logInfo('rebuilding...', '');
       });
@@ -148,21 +167,27 @@ export async function action(options: ProgramOptions): Promise<void> {
 
   try {
 
+    // create config list from analyzed package.json
     const configs = pkgToConfigs(analyzed, { dev: developmentMode, watch: watchMode });
 
+    // create warning handler
     const onwarn: WarningHandlerWithDefault = (warning) => {
       emitter.emit(EVENT_WARN, warning);
     };
 
+    // attach warning handler to every config object
     const rollupConfigs = configs.map((config) => {
       return { ...config, onwarn };
     });
 
-    const method = watchMode ? rollupWatchBuild : rollupBuild;
-    method(rollupConfigs, emitter);
+    // get build method and build files
+    const buildMethod = watchMode ? rollupWatchBuild : rollupBuild;
+    buildMethod(rollupConfigs, emitter);
 
   } catch (err) {
-    showError(err as RollupError);
+
+    // handler error if any
+    handleError(err as RollupError | Error);
   }
 
 }
