@@ -1,5 +1,5 @@
 import camelCase from 'camelcase';
-import { basename } from 'path';
+import { basename } from 'node:path';
 import type { AllowNull, AllowNullish } from '../types/helper-types';
 
 export function normalizeBuildName(

@@ -1,4 +1,4 @@
-import { dirname, join, relative, resolve } from 'path';
+import { dirname, join, relative, resolve } from 'node:path';
 import type { Plugin } from 'rollup';
 import slash from 'slash';
 import { keys } from '../tools/helpers';

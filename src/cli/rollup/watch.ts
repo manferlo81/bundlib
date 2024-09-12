@@ -1,26 +1,23 @@
-import type { EventEmitter } from 'events';
-import { statSync } from 'fs';
+import type { EventEmitter } from 'node:events';
+import { statSync } from 'node:fs';
 import type { RollupOptions, RollupWatcher, RollupWatcherEvent } from 'rollup';
 import { watch } from 'rollup';
 import { EVENT_BUILD_END, EVENT_END, EVENT_ERROR, EVENT_REBUILD } from '../events';
 import type { BundlibEventMap } from '../types/types';
 
-export function rollupWatch(
-  configs: RollupOptions[],
-  emitter: EventEmitter<BundlibEventMap>,
-): RollupWatcher {
+function createWatchHandlers(emitter: EventEmitter<BundlibEventMap>) {
 
-  type WatcherHandlerMap = {
-    [K in RollupWatcherEvent['code']]?: (event: Extract<RollupWatcherEvent, { code: K }>) => void;
+  // create restart handler
+  const handleRestart = (): void => {
+    emitter.emit(EVENT_REBUILD);
   };
 
-  const handlers: WatcherHandlerMap = {
-
-    END() {
+  // create event handler
+  const handleEvent = (event: RollupWatcherEvent): void => {
+    const { code } = event;
+    if (code === 'END') {
       emitter.emit(EVENT_END);
-    },
-
-    BUNDLE_END(event) {
+    } else if (code === 'BUNDLE_END') {
       const { output, duration } = event;
       for (const filename of output) {
         const { size } = statSync(filename);
@@ -31,24 +28,26 @@ export function rollupWatch(
           duration,
         );
       }
-    },
-
-    ERROR(event) {
+    } else if (code === 'ERROR') {
       const { error } = event;
       emitter.emit(EVENT_ERROR, error);
-    },
-
+    }
   };
 
-  return watch(configs)
-    .on('restart', () => {
-      emitter.emit(EVENT_REBUILD);
-    })
-    .on('event', (event) => {
-      const handleEvent = handlers[event.code];
-      if (handleEvent) {
-        handleEvent(event as never);
-      }
-    });
+  // return handlers
+  return [handleRestart, handleEvent] as const;
+}
 
+export function rollupWatchBuild(
+  configs: RollupOptions[],
+  emitter: EventEmitter<BundlibEventMap>,
+): RollupWatcher {
+
+  // create watch handlers
+  const [handleRestart, handleEvent] = createWatchHandlers(emitter);
+
+  // watch build
+  return watch(configs)
+    .on('restart', handleRestart)
+    .on('event', handleEvent);
 }

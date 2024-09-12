@@ -1,5 +1,5 @@
-import type { EventEmitter } from 'events';
-import { statSync } from 'fs';
+import type { EventEmitter } from 'node:events';
+import { statSync } from 'node:fs';
 import type { RollupCache, RollupError } from 'rollup';
 import { rollup } from 'rollup';
 import type { BundlibRollupModuleOutputOptions, BundlibRollupOptions } from '../../api/types/rollup';
@@ -12,7 +12,7 @@ export function rollupBuild(
   emitter: EventEmitter<BundlibEventMap>,
 ): void {
 
-  const cache: Partial<Record<string, RollupCache>> = {};
+  const cacheObject: Partial<Record<string, RollupCache>> = {};
 
   oneByOne(
     configs,
@@ -22,20 +22,22 @@ export function rollupBuild(
       const { file: outputFile, format } = output;
 
       const cacheKey = `${format}:${input}`;
-      config.cache = cache[cacheKey];
+      const storedCache = cacheObject[cacheKey];
+      const configWithCache = { ...config, cache: storedCache };
 
       try {
 
-        const currentTime = Date.now();
+        const buildStartTime = Date.now();
 
-        const buildResult = await rollup(config);
-        config.cache = cache[cacheKey] = buildResult.cache;
-        await buildResult.write(output);
+        const { cache: buildCache, write } = await rollup(configWithCache);
+        cacheObject[cacheKey] = buildCache;
 
+        await write(output);
+
+        const duration = Date.now() - buildStartTime;
         const { size } = statSync(outputFile);
-        const totalTime = Date.now() - currentTime;
 
-        emitter.emit(EVENT_BUILD_END, outputFile, size, totalTime);
+        emitter.emit(EVENT_BUILD_END, outputFile, size, duration);
 
         next();
 

@@ -25,7 +25,7 @@ import { createResolveInput } from './tools/create-resolve-input';
 import { fileIsTypescript } from './tools/extension-match';
 import { keys } from './tools/helpers';
 import { normalizeExpectedTypesFilename } from './tools/normalize-types-filename';
-import { renamePre } from './tools/rename-pre';
+import { renamePrefixExtension } from './tools/rename-prefix';
 import type { AllowNull, AllowNullish, Dictionary, TypeCheckFunction } from './types/helper-types';
 import type { BundlibRollupBrowseOutputOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types/rollup';
 import type { BundlibAPIOptions } from './types/types';
@@ -108,7 +108,7 @@ export function pkgToConfigs(
       typesBuild.output,
     );
 
-    const typesGeneratedFilename = renamePre(basename(inputFile), TS_DEF_EXT_PREFIX);
+    const typesGeneratedFilename = renamePrefixExtension(basename(inputFile), TS_DEF_EXT_PREFIX);
 
     if (typesExpectedFilename && basename(typesExpectedFilename) !== typesGeneratedFilename) {
       throw error('Input filename and types filename have to match.');
@@ -253,7 +253,7 @@ export function pkgToConfigs(
 
     if (min) {
 
-      const minOutputFile = renamePre(outputFile, MIN_EXT_PREFIX);
+      const minOutputFile = renamePrefixExtension(outputFile, MIN_EXT_PREFIX);
       const minOutputOptions = { ...outputOptions, file: minOutputFile };
 
       configs.push(
@@ -353,7 +353,7 @@ export function pkgToConfigs(
 
     if (min) {
 
-      const minOutputFile = renamePre(outputFile, MIN_EXT_PREFIX);
+      const minOutputFile = renamePrefixExtension(outputFile, MIN_EXT_PREFIX);
       const minOutputOptions = { ...outputOptions, file: minOutputFile };
 
       configs.push(
@@ -438,7 +438,7 @@ export function pkgToConfigs(
 
     if (min) {
 
-      const minOutputFile = renamePre(browserOutputFile, MIN_EXT_PREFIX);
+      const minOutputFile = renamePrefixExtension(browserOutputFile, MIN_EXT_PREFIX);
       const minOutputOptions = { ...outputOptions, file: minOutputFile };
 
       configs.push(
@@ -508,7 +508,7 @@ export function pkgToConfigs(
 
     if (min) {
 
-      const minOutputFile = renamePre(outputFile, MIN_EXT_PREFIX);
+      const minOutputFile = renamePrefixExtension(outputFile, MIN_EXT_PREFIX);
       const minOutputOptions = { ...outputOptions, file: minOutputFile };
 
       configs.push(

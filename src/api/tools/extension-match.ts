@@ -1,4 +1,4 @@
-import { extname } from 'path';
+import { extname } from 'node:path';
 import { TS_ONLY_EXTENSIONS } from '../constants/extensions';
 
 type Extension<E extends string> = `.${E}`;

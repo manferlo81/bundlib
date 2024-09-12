@@ -1,6 +1,6 @@
-import { EventEmitter } from 'events';
 import { createFormatter } from 'gen-unit';
-import { parse as pathParse, relative } from 'path';
+import { EventEmitter } from 'node:events';
+import { parse as parsePath, relative } from 'node:path';
 import prettyMs from 'pretty-ms';
 import type { RollupError, WarningHandlerWithDefault } from 'rollup';
 import slash from 'slash';
@@ -11,7 +11,7 @@ import type { ProgramOptions } from './command/options/option-types';
 import { EVENT_BUILD_END, EVENT_END, EVENT_ERROR, EVENT_REBUILD, EVENT_WARN } from './events';
 import { binaryPlugins, bublePlugin, optionalPlugins } from './optional-modules';
 import { rollupBuild } from './rollup/build';
-import { rollupWatch } from './rollup/watch';
+import { rollupWatchBuild } from './rollup/watch';
 import { cyan, green, magenta, yellow } from './tools/colors';
 import { consoleTag, formatProjectInfo, logError, logInfo, logWarning } from './tools/console';
 import type { BundlibEventMap } from './types/types';
@@ -108,7 +108,7 @@ export async function action(options: ProgramOptions): Promise<void> {
     emitter.on(EVENT_BUILD_END, (filename, size, duration) => {
       const builtTag = consoleTag('BUILT', green);
 
-      const { dir, base } = pathParse(filename);
+      const { dir, base } = parsePath(filename);
       const coloredDir = yellow(`./${slash(relative(cwd, dir))}/`);
       const coloredFilename = yellow.bold(base);
       const path = `${coloredDir}${coloredFilename}`;
@@ -158,7 +158,7 @@ export async function action(options: ProgramOptions): Promise<void> {
       return { ...config, onwarn };
     });
 
-    const method = watchMode ? rollupWatch : rollupBuild;
+    const method = watchMode ? rollupWatchBuild : rollupBuild;
     method(rollupConfigs, emitter);
 
   } catch (err) {
