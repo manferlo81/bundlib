@@ -3,5 +3,23 @@
     "bundlib",
     "jsnext",
     "onwarn"
-  ]
+  ],
+  "files.associations": {
+    ".bundlibrc": "yaml"
+  },
+  "json.schemas": [
+    {
+      "fileMatch": [
+        ".bundlibrc",
+        ".bundlibrc.json"
+      ],
+      "url": "./bundlibrc-schema.json"
+    }
+  ],
+  "yaml.schemas": {
+    "./bundlibrc-schema.json": [
+      ".bundlibrc",
+      ".bundlibrc.{yml,yaml}"
+    ]
+  }
 }

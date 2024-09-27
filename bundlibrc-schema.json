@@ -1,0 +1,380 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Bundlib configuration file",
+  "definitions": {
+    "javascriptId": {
+      "type": "string"
+    },
+    "filePath": {
+      "type": "string"
+    },
+    "selectiveType": {
+      "enum": [
+        "main",
+        "module",
+        "browser",
+        "bin",
+        "api"
+      ]
+    },
+    "selectivePolarType": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/selectiveType"
+        },
+        {
+          "enum": [
+            "!main",
+            "!module",
+            "!browser",
+            "!bin",
+            "!api",
+            "+main",
+            "+module",
+            "+browser",
+            "+bin",
+            "+api",
+            "-main",
+            "-module",
+            "-browser",
+            "-bin",
+            "-api"
+          ]
+        }
+      ]
+    },
+    "selectiveBuildTypeSet": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/selectivePolarType"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/selectivePolarType"
+          }
+        }
+      ]
+    },
+    "selectiveKey": {
+      "enum": [
+        "default",
+        "main",
+        "module",
+        "browser",
+        "bin",
+        "api"
+      ]
+    },
+    "selectiveFilePath": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/filePath"
+        },
+        {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/definitions/selectiveKey"
+          },
+          "patternProperties": {
+            ".": {
+              "$ref": "#/definitions/filePath"
+            }
+          }
+        }
+      ]
+    },
+    "sourcemapLiteralValue": {
+      "enum": [
+        "inline",
+        "hidden"
+      ]
+    },
+    "sourcemapValue": {
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "$ref": "#/definitions/sourcemapLiteralValue"
+        }
+      ]
+    },
+    "selectiveSourcemap": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/sourcemapValue"
+        },
+        {
+          "$ref": "#/definitions/selectiveBuildTypeSet"
+        },
+        {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/definitions/selectiveKey"
+          },
+          "patternProperties": {
+            ".": {
+              "$ref": "#/definitions/sourcemapValue"
+            }
+          }
+        }
+      ]
+    },
+    "esModuleLiteralValue": {
+      "const": "if-default-prop"
+    },
+    "esModuleValue": {
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "$ref": "#/definitions/esModuleLiteralValue"
+        }
+      ]
+    },
+    "selectiveEsModule": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/esModuleValue"
+        },
+        {
+          "$ref": "#/definitions/selectiveBuildTypeSet"
+        },
+        {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/definitions/selectiveKey"
+          },
+          "patternProperties": {
+            ".": {
+              "$ref": "#/definitions/esModuleValue"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "interopValue": {
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "enum": [
+            "default",
+            "esModule",
+            "compat",
+            "auto",
+            "defaultOnly"
+          ]
+        }
+      ]
+    },
+    "selectiveInterop": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/interopValue"
+        },
+        {
+          "$ref": "#/definitions/selectiveBuildTypeSet"
+        },
+        {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/definitions/selectiveKey"
+          },
+          "patternProperties": {
+            ".": {
+              "$ref": "#/definitions/interopValue"
+            }
+          }
+        }
+      ]
+    },
+    "globalsOption": {
+      "oneOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "type": "object",
+          "patternProperties": {
+            ".": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "selectiveMin": {
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "$ref": "#/definitions/selectiveBuildTypeSet"
+        },
+        {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/definitions/selectiveKey"
+          },
+          "patternProperties": {
+            ".": {
+              "type": "boolean"
+            }
+          }
+        }
+      ]
+    },
+    "selectiveSkip": {
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "$ref": "#/definitions/selectivePolarType"
+        },
+        {
+          "enum": [
+            "types",
+            "!types",
+            "+types",
+            "-types"
+          ]
+        },
+        {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "$ref": "#/definitions/selectivePolarType"
+              },
+              {
+                "enum": [
+                  "types",
+                  "!types",
+                  "+types",
+                  "-types"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "type": "object",
+          "propertyNames": {
+            "enum": [
+              "default",
+              "main",
+              "module",
+              "browser",
+              "bin",
+              "types",
+              "api"
+            ]
+          },
+          "patternProperties": {
+            ".": {
+              "type": "boolean"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "type": "object",
+  "properties": {
+    "input": {
+      "$comment": "https://github.com/manferlo81/bundlib?tab=readme-ov-file#option-input",
+      "description": "The path to the files to be used as entry points for each of your builds.",
+      "$ref": "#/definitions/selectiveFilePath"
+    },
+    "sourcemap": {
+      "$comment": "https://github.com/manferlo81/bundlib?tab=readme-ov-file#option-sourcemap",
+      "description": "Whether or not to generate source maps.",
+      "$ref": "#/definitions/selectiveSourcemap"
+    },
+    "esModule": {
+      "$comment": "https://github.com/manferlo81/bundlib?tab=readme-ov-file#option-esmodule",
+      "description": "Whether or not to add a __esModule: true property to your module.",
+      "$ref": "#/definitions/selectiveEsModule"
+    },
+    "interop": {
+      "$comment": "https://github.com/manferlo81/bundlib?tab=readme-ov-file#option-interop",
+      "description": "Whether or not to add an interop block.",
+      "$ref": "#/definitions/selectiveInterop"
+    },
+    "chunks": {
+      "$comment": "https://github.com/manferlo81/bundlib?tab=readme-ov-file#option-chunks",
+      "description": "A map of chunks to be built as CommonJS modules.",
+      "type": "object",
+      "patternProperties": {
+        ".": {
+          "$ref": "#/definitions/filePath"
+        }
+      },
+      "additionalProperties": false
+    },
+    "format": {
+      "$comment": "https://github.com/manferlo81/bundlib?tab=readme-ov-file#option-format",
+      "description": "Defines the format to be used for the Browser build.",
+      "enum": [
+        "iife",
+        "amd",
+        "umd"
+      ]
+    },
+    "name": {
+      "$comment": "https://github.com/manferlo81/bundlib?tab=readme-ov-file#option-name",
+      "description": "The name to be used to expose your library to the global scope in a IIFE or UMD browser build.",
+      "$ref": "#/definitions/javascriptId"
+    },
+    "id": {
+      "$comment": "https://github.com/manferlo81/bundlib?tab=readme-ov-file#option-id",
+      "description": "Optional amd id for AMD or UMD build.",
+      "$ref": "#/definitions/javascriptId"
+    },
+    "extend": {
+      "$comment": "https://github.com/manferlo81/bundlib?tab=readme-ov-file#option-extend",
+      "description": "Whether or not to extend the globally exposed name on a IIFE or UMD build.",
+      "type": "boolean"
+    },
+    "globals": {
+      "$comment": "https://github.com/manferlo81/bundlib?tab=readme-ov-file#option-globals",
+      "description": "Object or array to map names to globals in Browser build.",
+      "$ref": "#/definitions/globalsOption"
+    },
+    "min": {
+      "$comment": "https://github.com/manferlo81/bundlib?tab=readme-ov-file#option-min",
+      "description": "Defines which files should be used to build an additional minified version.",
+      "$ref": "#/definitions/selectiveMin"
+    },
+    "equals": {
+      "$comment": "https://github.com/manferlo81/bundlib?tab=readme-ov-file#option-equals",
+      "description": "Transforms type export for CommonJS module using export = ... instead of export default ...",
+      "type": "boolean"
+    },
+    "cache": {
+      "$comment": "https://github.com/manferlo81/bundlib?tab=readme-ov-file#option-cache",
+      "description": "Defines the directory to be used for cache, relative to the project root.",
+      "$ref": "#/definitions/filePath"
+    },
+    "project": {
+      "$comment": "https://github.com/manferlo81/bundlib?tab=readme-ov-file#option-project",
+      "description": "Defines the location of typescript tsconfig.json file, relative to the project root.",
+      "$ref": "#/definitions/selectiveFilePath"
+    },
+    "skip": {
+      "$comment": "https://github.com/manferlo81/bundlib?tab=readme-ov-file#option-skip",
+      "description": "Defined which build Bundlib should skip.",
+      "$ref": "#/definitions/selectiveSkip"
+    }
+  },
+  "additionalProperties": false
+}
