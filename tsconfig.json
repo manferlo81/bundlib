@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "CommonJS",
+    "target": "ES2021",
+    "module": "ES2020",
     "moduleResolution": "Node10",
     "lib": [],
     "esModuleInterop": true,
@@ -19,12 +19,19 @@
     "declarationMap": true,
     "newLine": "lf"
   },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS"
+    },
+    "transpileOnly": true,
+    "preferTsExts": false
+  },
   "include": [
     "__mocks__",
     "__test__",
     "src",
-    "jest.config.ts",
     "package.json",
+    "jest.config.ts",
     "bundlib.config.ts"
   ],
   "exclude": [

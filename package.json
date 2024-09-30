@@ -33,7 +33,7 @@
     "lint": "run-p lint:*",
     "test": "jest --color -w 3",
     "test:watch": "npm test -- --watch-all",
-    "bundlib": "ts-node -T -P tsconfig-ts-node.json src/cli",
+    "bundlib": "ts-node src/cli",
     "help": "npm run bundlib -- -h",
     "dev": "npm run bundlib -- -dw",
     "build": "npm run bundlib -- -d",
