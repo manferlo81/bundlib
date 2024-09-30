@@ -3,14 +3,7 @@ name: Create GitHub Release
 on:
   push:
     tags:
-      - v*
-
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: Release tag name
-        type: string
-        required: true
+      - v*.*.*
 
 jobs:
   release:
@@ -38,4 +31,3 @@ jobs:
         with:
           generate_release_notes: true
           files: bundlib-*.tgz
-          tag_name: ${{ github.ref_type == 'tag' && github.ref_name || inputs.tag }}
