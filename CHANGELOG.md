@@ -2,6 +2,13 @@
 
 ## Version History
 
+### [0.21.2](https://github.com/manferlo81/bundlib/compare/v0.21.1...v0.21.2) (2024-09-30)
+
+
+### Features
+
+* Warn instead of throwing on unsupported NodeJS version ([bbd6804](https://github.com/manferlo81/bundlib/commit/bbd6804a3bdc6f5ae0a7f587f6799c476d3235f3))
+
 ### [0.21.1](https://github.com/manferlo81/bundlib/compare/v0.21.0...v0.21.1) (2024-09-10)
 
 
