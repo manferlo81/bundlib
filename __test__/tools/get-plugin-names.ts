@@ -4,7 +4,7 @@ import { createConfigs } from './create-configs';
 export async function getAllPluginNames(cwd: string, dev: boolean, pkg: BundlibPkgJson = {}): Promise<string[][]> {
   const configs = await createConfigs(cwd, dev, pkg);
   return configs.map((config) => {
-    return config.plugins.map((({ name }) => name));
+    return config.plugins.map(({ name }) => name);
   });
 }
 
