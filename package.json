@@ -48,7 +48,7 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@babel/core": "^7.25.2",
+    "@babel/core": "^7.25.7",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-buble": "^1.0.3",
     "@rollup/plugin-commonjs": "^28.0.0",
@@ -73,7 +73,7 @@
     "slash": "^3.0.0"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.25.4",
+    "@babel/preset-env": "^7.25.7",
     "@eslint/js": "^9.12.0",
     "@stylistic/eslint-plugin": "^2.9.0",
     "@types/babel__core": "^7.20.5",
@@ -103,6 +103,7 @@
     "name": "Manuel Fernández",
     "email": "manferlo81@gmail.com"
   },
+  "homepage": "https://github.com/manferlo81/bundlib#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/manferlo81/bundlib.git"
@@ -110,6 +111,5 @@
   "bugs": {
     "url": "https://github.com/manferlo81/bundlib/issues"
   },
-  "homepage": "https://github.com/manferlo81/bundlib#readme",
   "license": "MIT"
 }
