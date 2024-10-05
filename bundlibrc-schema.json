@@ -76,10 +76,8 @@
           "propertyNames": {
             "$ref": "#/definitions/selectiveKey"
           },
-          "patternProperties": {
-            ".": {
-              "$ref": "#/definitions/filePath"
-            }
+          "additionalProperties": {
+            "$ref": "#/definitions/filePath"
           }
         }
       ]
@@ -113,10 +111,8 @@
           "propertyNames": {
             "$ref": "#/definitions/selectiveKey"
           },
-          "patternProperties": {
-            ".": {
-              "$ref": "#/definitions/sourcemapValue"
-            }
+          "additionalProperties": {
+            "$ref": "#/definitions/sourcemapValue"
           }
         }
       ]
@@ -147,12 +143,9 @@
           "propertyNames": {
             "$ref": "#/definitions/selectiveKey"
           },
-          "patternProperties": {
-            ".": {
-              "$ref": "#/definitions/esModuleValue"
-            }
-          },
-          "additionalProperties": false
+          "additionalProperties": {
+            "$ref": "#/definitions/esModuleValue"
+          }
         }
       ]
     },
@@ -185,10 +178,8 @@
           "propertyNames": {
             "$ref": "#/definitions/selectiveKey"
           },
-          "patternProperties": {
-            ".": {
-              "$ref": "#/definitions/interopValue"
-            }
+          "additionalProperties": {
+            "$ref": "#/definitions/interopValue"
           }
         }
       ]
@@ -203,10 +194,8 @@
         },
         {
           "type": "object",
-          "patternProperties": {
-            ".": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "type": "string"
           }
         }
       ]
@@ -224,10 +213,8 @@
           "propertyNames": {
             "$ref": "#/definitions/selectiveKey"
           },
-          "patternProperties": {
-            ".": {
-              "type": "boolean"
-            }
+          "additionalProperties": {
+            "type": "boolean"
           }
         }
       ]
@@ -279,10 +266,8 @@
               "api"
             ]
           },
-          "patternProperties": {
-            ".": {
-              "type": "boolean"
-            }
+          "additionalProperties": {
+            "type": "boolean"
           }
         }
       ]
@@ -314,12 +299,9 @@
       "$comment": "https://github.com/manferlo81/bundlib?tab=readme-ov-file#option-chunks",
       "description": "A map of chunks to be built as CommonJS modules.",
       "type": "object",
-      "patternProperties": {
-        ".": {
-          "$ref": "#/definitions/filePath"
-        }
-      },
-      "additionalProperties": false
+      "additionalProperties": {
+        "$ref": "#/definitions/filePath"
+      }
     },
     "format": {
       "$comment": "https://github.com/manferlo81/bundlib?tab=readme-ov-file#option-format",
