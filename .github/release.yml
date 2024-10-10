@@ -1,0 +1,29 @@
+changelog:
+  exclude:
+    authors:
+      - dependabot
+      - dependabot-bot
+      - app/dependabot
+    labels:
+      - ignore-for-release
+
+  categories:
+    - title: Features
+      labels:
+        - feature
+        - feat
+
+    - title: Bug Fixes
+      labels:
+        - bug
+        - fix
+
+    - title: Other Changes
+      labels:
+        - "*"
+      exclude:
+        labels:
+          - feature
+          - feat
+          - bug
+          - fix
