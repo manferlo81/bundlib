@@ -2,6 +2,13 @@
 
 ## Version History
 
+### [0.21.4](https://github.com/manferlo81/bundlib/compare/v0.21.3...v0.21.4) (2024-10-10)
+
+
+### Bug Fixes
+
+* Fix issue with browser build after upgrading `@rollup/plugin-commonjs` ([ee617e4](https://github.com/manferlo81/bundlib/commit/ee617e4a39be503abfd20a10a45b10c3cb2f4b05))
+
 ### [0.21.3](https://github.com/manferlo81/bundlib/compare/v0.21.2...v0.21.3) (2024-09-30)
 
 ### [0.21.2](https://github.com/manferlo81/bundlib/compare/v0.21.1...v0.21.2) (2024-09-30)
