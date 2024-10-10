@@ -61,7 +61,7 @@
     "chalk": "^4.1.2",
     "commander": "^12.1.0",
     "cosmiconfig": "^9.0.0",
-    "gen-unit": "0.1.0",
+    "gen-unit": "0.2.0",
     "load-json-file": "^6.2.0",
     "pretty-ms": "^7.0.1",
     "rollup": "^4.24.0",
