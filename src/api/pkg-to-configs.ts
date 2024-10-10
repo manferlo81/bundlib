@@ -150,6 +150,7 @@ export function pkgToConfigs(
         sourceMap: sourcemap,
         defaultIsModuleExports: true,
         requireReturnsDefault: true,
+        strictRequires: 'auto',
       }),
 
       useTypescript && inputIsTypescript && pluginTypescript({
