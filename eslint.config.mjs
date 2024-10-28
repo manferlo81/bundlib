@@ -9,25 +9,29 @@ function normalizeRuleEntry(entry) {
   return ['error', entry];
 }
 
-function createRuleNameNormalizer(pluginName) {
-  if (!pluginName) return (ruleName) => ruleName;
+function normalizeRuleEntries(rules, pluginName) {
+  const entries = Object.entries(rules).map(
+    ([ruleName, ruleEntry]) => [ruleName, normalizeRuleEntry(ruleEntry)],
+  );
+  if (!pluginName) return Object.fromEntries(entries);
   const pluginPrefix = `${pluginName}/`;
-  return (ruleName) => {
+  const normalizeRuleName = (ruleName) => {
     if (ruleName.startsWith(pluginPrefix)) return ruleName;
     return `${pluginPrefix}${ruleName}`;
   };
-}
-
-function normalizeRules(pluginName, rules) {
-  const normalizeRuleName = createRuleNameNormalizer(pluginName);
   return Object.fromEntries(
-    Object.entries(rules).map(
-      ([ruleName, ruleEntry]) => [normalizeRuleName(ruleName), normalizeRuleEntry(ruleEntry)],
+    entries.map(
+      ([ruleName, normalizedRuleEntry]) => [normalizeRuleName(ruleName), normalizedRuleEntry],
     ),
   );
 }
 
-const eslintRules = normalizeRules(null, {
+function normalizeRules(pluginOrRules, rules) {
+  if (typeof pluginOrRules !== 'string') return normalizeRuleEntries(pluginOrRules);
+  return normalizeRuleEntries(rules, pluginOrRules);
+}
+
+const eslintRules = normalizeRules({
   'no-useless-rename': 'error',
   'object-shorthand': 'error',
   'prefer-template': 'error',
@@ -51,6 +55,7 @@ const typescriptRules = normalizeRules('@typescript-eslint', {
 
 const stylisticConfig = stylistic.configs.customize({
   semi: true,
+  indent: 2,
   quotes: 'single',
   quoteProps: 'as-needed',
   arrowParens: true,
