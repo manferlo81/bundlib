@@ -79,7 +79,7 @@
     "@types/eslint__js": "^8.42.3",
     "@types/jest": "^29.5.14",
     "@types/mock-fs": "^4.13.4",
-    "@types/node": "^22.8.1",
+    "@types/node": "^22.8.4",
     "chokidar": "^4.0.1",
     "core-js": "^3.38.1",
     "eslint": "^9.13.0",
