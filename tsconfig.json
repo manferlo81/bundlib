@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
-    "target": "ES2021",
-    "module": "ES2020",
+    "target": "ESNext",
+    "module": "CommonJS",
     "moduleResolution": "Node10",
-    "lib": [],
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
+    "lib": [],
     "strict": true,
     "noImplicitAny": true,
     "noImplicitOverride": true,

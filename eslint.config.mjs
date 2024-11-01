@@ -3,34 +3,6 @@ import stylistic from '@stylistic/eslint-plugin';
 import globals from 'globals';
 import { config, configs as typescriptConfigs } from 'typescript-eslint';
 
-function normalizeRuleEntry(entry) {
-  if (Array.isArray(entry)) return entry;
-  if (['error', 'warn', 'off'].includes(entry)) return entry;
-  return ['error', entry];
-}
-
-function normalizeRuleEntries(rules, pluginName) {
-  const entries = Object.entries(rules).map(
-    ([ruleName, ruleEntry]) => [ruleName, normalizeRuleEntry(ruleEntry)],
-  );
-  if (!pluginName) return Object.fromEntries(entries);
-  const pluginPrefix = `${pluginName}/`;
-  const normalizeRuleName = (ruleName) => {
-    if (ruleName.startsWith(pluginPrefix)) return ruleName;
-    return `${pluginPrefix}${ruleName}`;
-  };
-  return Object.fromEntries(
-    entries.map(
-      ([ruleName, normalizedRuleEntry]) => [normalizeRuleName(ruleName), normalizedRuleEntry],
-    ),
-  );
-}
-
-function normalizeRules(pluginOrRules, rules) {
-  if (typeof pluginOrRules !== 'string') return normalizeRuleEntries(pluginOrRules);
-  return normalizeRuleEntries(rules, pluginOrRules);
-}
-
 const eslintRules = normalizeRules({
   'no-useless-rename': 'error',
   'object-shorthand': 'error',
@@ -38,7 +10,6 @@ const eslintRules = normalizeRules({
 });
 
 const stylisticRules = normalizeRules('@stylistic', {
-  indent: 2,
   'linebreak-style': 'unix',
   'no-extra-parens': 'error',
   'no-extra-semi': 'error',
@@ -54,11 +25,11 @@ const typescriptRules = normalizeRules('@typescript-eslint', {
 });
 
 const stylisticConfig = stylistic.configs.customize({
-  semi: true,
   indent: 2,
+  semi: true,
+  arrowParens: true,
   quotes: 'single',
   quoteProps: 'as-needed',
-  arrowParens: true,
   braceStyle: '1tbs',
 });
 
@@ -70,6 +41,7 @@ const typescriptFlatConfigs = config(
 );
 
 export default config(
+  { files: ['**/*.{ts,js,cjs,mjs}'] },
   { ignores: ['bin', 'dist', 'coverage'] },
   { languageOptions: { globals: { ...globals.node, ...globals.browser } } },
   js.configs.recommended,
@@ -77,3 +49,38 @@ export default config(
   ...typescriptFlatConfigs,
   { rules: { ...eslintRules, ...stylisticRules, ...typescriptRules } },
 );
+
+function normalizeRuleEntry(entry) {
+  if (Array.isArray(entry)) return entry;
+  if (['error', 'warn', 'off'].includes(entry)) return entry;
+  return ['error', entry];
+}
+
+function createNormalizeCallback(normalizeRuleName) {
+  if (!normalizeRuleName) return ([ruleName, ruleEntry]) => [ruleName, normalizeRuleEntry(ruleEntry)];
+  return ([ruleName, ruleEntry]) => [normalizeRuleName(ruleName), normalizeRuleEntry(ruleEntry)];
+}
+
+function createNormalizeRuleName(pluginName) {
+  if (!pluginName) return;
+  const pluginPrefix = `${pluginName}/`;
+  return (ruleName) => {
+    if (ruleName.startsWith(pluginPrefix)) return ruleName;
+    return `${pluginPrefix}${ruleName}`;
+  };
+}
+
+function normalizeRuleEntries(rules, pluginName) {
+  return Object.fromEntries(
+    Object.entries(rules).map(
+      createNormalizeCallback(
+        createNormalizeRuleName(pluginName),
+      ),
+    ),
+  );
+}
+
+function normalizeRules(pluginOrRules, rules) {
+  if (typeof pluginOrRules !== 'string') return normalizeRuleEntries(pluginOrRules);
+  return normalizeRuleEntries(rules, pluginOrRules);
+}

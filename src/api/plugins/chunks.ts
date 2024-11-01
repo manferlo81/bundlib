@@ -17,9 +17,9 @@ export function pluginChunks(cwd: string, outputDir: string, extensions: readonl
       );
       return value
         ? {
-          ...resolvedMap,
-          [resolve(cwd, source)]: value.startsWith('.') ? value : `./${value}`,
-        }
+            ...resolvedMap,
+            [resolve(cwd, source)]: value.startsWith('.') ? value : `./${value}`,
+          }
         : resolvedMap;
     },
     {},
