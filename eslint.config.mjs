@@ -11,6 +11,7 @@ const eslintRules = normalizeRules({
 });
 
 const stylisticRules = normalizeRules('@stylistic', {
+  quotes: 'single',
   'linebreak-style': 'unix',
   'no-extra-parens': 'error',
   'no-extra-semi': 'error',
@@ -29,7 +30,6 @@ const stylisticConfig = stylistic.configs.customize({
   indent: 2,
   semi: true,
   arrowParens: true,
-  quotes: 'single',
   quoteProps: 'as-needed',
   braceStyle: '1tbs',
 });

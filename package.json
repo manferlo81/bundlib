@@ -30,6 +30,7 @@
     "clean": "run-p clean:*",
     "lint:src": "eslint src",
     "lint:test": "eslint __test__",
+    "lint:config": "eslint *.config.{mjs,ts}",
     "lint": "run-p lint:*",
     "test": "jest --color -w 3",
     "test:watch": "npm test -- --watch-all",
