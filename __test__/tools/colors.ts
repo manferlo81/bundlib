@@ -1,6 +1,6 @@
 import { blueBright, greenBright, magentaBright, redBright, yellow } from '../../src/cli/tools/colors';
 
-export { magentaBright as packageNameColor, greenBright as buildTypeColor, redBright as packageFieldColor, blueBright as javascriptValueColor, yellow as filenameColor } from '../../src/cli/tools/colors';
+export { greenBright as buildTypeColor, yellow as filenameColor, blueBright as javascriptValueColor, redBright as packageFieldColor, magentaBright as packageNameColor } from '../../src/cli/tools/colors';
 
 const functions = [
   'isNullish',
@@ -46,52 +46,63 @@ const filenames = [
   'package.json',
 ];
 
-const quotate = (name: string): string => `"${name}"`;
+const addQuotes = (name: string): string => `"${name}"`;
+
+const pkgFields = [
+  'main',
+  'module',
+  'jsnext:main',
+  'browser',
+  'bin',
+  'types',
+  'typings',
+  'dependencies',
+  'devDependencies',
+  'peerDependencies',
+  'bundlib',
+].map(addQuotes);
 
 const fields = [
   'field',
   'fields',
-  ...[
-    'main',
-    'module',
-    'jsnext:main',
-    'browser',
-    'bin',
-    'types',
-    'typings',
-    '"dependencies',
-    'devDependencies',
-    'peerDependencies',
-    'bundlib',
-  ].map(quotate),
+  ...pkgFields,
 ];
+
+const bundlibOptions = [
+  'input',
+  'sourcemap',
+  'esModule',
+  'interop',
+  'format',
+  'name',
+  'id',
+  'extend',
+  'globals',
+  'min',
+  'skip',
+  'cache',
+  'project',
+  'chunks',
+].map(addQuotes);
 
 const options = [
   'option',
   'options',
-  ...[
-    'input',
-    'sourcemap',
-    'esModule',
-    'interop',
-    'format',
-    'name',
-    'id',
-    'extend',
-    'globals',
-    'min',
-    'skip',
-    'cache',
-    'project',
-    'chunks',
-  ].map(quotate),
+  ...bundlibOptions,
 ];
 
 const modules = [
   'chokidar',
 ];
 
-const map = [
+type ColorizeText = (text: string) => string;
+
+interface ColorizeList {
+  words: string[];
+  style: ColorizeText;
+}
+
+const colorizeMap: ColorizeList[] = [
   { words: ['Should', 'should'], style: greenBright },
   { words: [...functions, ...constants, ...types, ...keywords], style: blueBright },
   { words: filenames, style: yellow },
@@ -99,14 +110,19 @@ const map = [
   { words: modules, style: magentaBright },
 ];
 
+const colorizeDictionary: Partial<Record<string, ColorizeText>> = colorizeMap.reduce((output, { words, style }) => {
+  return words.reduce((wordsOutput, word) => {
+    return { ...wordsOutput, [word]: style };
+  }, output);
+}, {});
+
 export function colorizeMessage(message: string) {
-  return message.split(' ').map((word) => {
+  const messageWords = message.split(' ');
+  const colorizedWords = messageWords.map((word) => {
     if (!word) return word;
-    for (const { words, style } of map) {
-      if (words.includes(word)) {
-        return style(word);
-      }
-    }
-    return word;
-  }).join(' ');
+    const colorize = colorizeDictionary[word];
+    if (!colorize) return word;
+    return colorize(word);
+  });
+  return colorizedWords.join(' ');
 }
