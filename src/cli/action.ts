@@ -44,7 +44,7 @@ export async function action(options: ProgramOptions): Promise<void> {
   const nodeVersion = process.versions.node;
   const [nodeMajorVersion] = nodeVersion.split('.');
 
-  // throw Error if NodeJS version is lower than 18
+  // log warning if NodeJS version is lower than 18
   if (+nodeMajorVersion < 18) {
     logWarning(`You are running NodeJS v${nodeVersion}. This version is not officially supported. If you experience any issue, please install NodeJS 18 or greater.`);
     logInfo('');
