@@ -1,4 +1,4 @@
-export type BooleanOptionNameOrder = ['dev', 'watch', 'silent'];
+export type BooleanOptionNameOrder = ['dev', 'silent', 'watch'];
 export type BooleanOptionNames = BooleanOptionNameOrder[number];
 export type BooleanProgramOptions = Partial<Record<BooleanOptionNames, boolean>>;
 

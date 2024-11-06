@@ -487,7 +487,7 @@ const value: SelectiveBoolBasedOption<BuildType, 'text'> = { default: false, mai
 ## Using the CLI tool
 
 ```bash
-bundlib [options]
+bundlib [options] [command]
 ```
 
 ### CLI Options
@@ -497,10 +497,6 @@ Combine options according to your needs. Run `bundlib --help` or `bundlib -h` fo
 #### `--dev`, `-d`
 
 Create development, not minified builds. Builds affected by the [`min`](#option-min) option will ignore this option.
-
-#### `--watch`, `-w`
-
-Run **Bundlib** in watch mode.
 
 #### `--silent`, `-s`
 
@@ -513,6 +509,16 @@ Show **Bundlib** version.
 #### `--help`, `-h`
 
 Show detailed help about the CLI tool.
+
+### CLI Commands
+
+#### `build`
+
+Build your library for production
+
+#### `watch`
+
+Runs Bundlib in watch mode
 
 ## Using Bundlib programmatically
 
