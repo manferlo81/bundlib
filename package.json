@@ -65,7 +65,7 @@
     "gen-unit": "0.2.0",
     "load-json-file": "^6.2.0",
     "pretty-ms": "^7.0.1",
-    "rollup": "^4.24.3",
+    "rollup": "^4.24.4",
     "rollup-plugin-add-shebang": "^0.3.1",
     "rollup-plugin-export-equals": "^0.4.0",
     "rollup-plugin-strip-shebang": "^2.0.0",
@@ -80,11 +80,11 @@
     "@types/eslint__js": "^8.42.3",
     "@types/jest": "^29.5.14",
     "@types/mock-fs": "^4.13.4",
-    "@types/node": "^22.8.7",
+    "@types/node": "^22.9.0",
     "chokidar": "^4.0.1",
     "core-js": "^3.39.0",
     "eslint": "^9.14.0",
-    "globals": "^15.11.0",
+    "globals": "^15.12.0",
     "husky": "^9.1.6",
     "jest": "^29.7.0",
     "mock-fs": "^5.4.1",
@@ -94,7 +94,7 @@
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3",
-    "typescript-eslint": "^8.12.2"
+    "typescript-eslint": "^8.13.0"
   },
   "overrides": {
     "@rollup/plugin-eslint": {
@@ -103,7 +103,8 @@
   },
   "author": {
     "name": "Manuel Fernández",
-    "email": "manferlo81@gmail.com"
+    "email": "manferlo81@gmail.com",
+    "url": "https://github.com/manferlo81"
   },
   "homepage": "https://github.com/manferlo81/bundlib#readme",
   "repository": {
