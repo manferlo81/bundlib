@@ -1,13 +1,14 @@
 changelog:
   exclude:
-    authors:
-      - dependabot
-      - dependabot-bot
-      - app/dependabot
     labels:
-      - ignore-for-release
+      - exclude from release
 
   categories:
+    - title: Breaking Changes
+      labels:
+        - breaking
+        - breaking change
+
     - title: Features
       labels:
         - feature
@@ -15,15 +16,9 @@ changelog:
 
     - title: Bug Fixes
       labels:
-        - bug
+        - bug fix
         - fix
 
     - title: Other Changes
       labels:
-        - "*"
-      exclude:
-        labels:
-          - feature
-          - feat
-          - bug
-          - fix
+        - change
