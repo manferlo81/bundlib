@@ -6,8 +6,8 @@ changelog:
   categories:
     - title: Breaking Changes
       labels:
-        - breaking
         - breaking change
+        - breaking
 
     - title: Features
       labels:
