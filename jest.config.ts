@@ -6,7 +6,7 @@ const config: Config = {
 
   clearMocks: true,
 
-  collectCoverage: !process.env.SKIP_COVERAGE,
+  collectCoverage: process.env.COVERAGE !== 'SKIP',
   collectCoverageFrom: [
     'src/api/**/*.ts',
     '!src/api/**/*.d.ts',

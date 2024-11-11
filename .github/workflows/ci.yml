@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - v*.*.*
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  job_lint_test_build:
+    name: Lint, Test and Build
+    uses: ./.github/workflows/lint-test-build.yml
+
+  job_upload_coverage:
+    name: Upload Coverage
+
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref_type == 'branch'
+    needs: job_lint_test_build
+
+    steps:
+      - run: echo ""
+
+  job_create_release:
+    name: Create GitHub Release
+
+    runs-on: ubuntu-latest
+    if: github.ref_type == 'tag'
+    needs: job_lint_test_build
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout, Setup Node.js v20.x and Install dependencies
+        uses: manferlo81/action-checkout-node-install@v0
+        with:
+          node-version: 20.x
+
+      - name: Build
+        run: npm run build
+
+      - name: Create Tarball
+        run: npm pack
+
+      - name: Create Release
+        uses: manferlo81/action-auto-release@v0
+        with:
+          files: bundlib-*.tgz
+
+  job_publish_to_npm:
+    name: Publish Package to npm Registry
+
+    runs-on: ubuntu-latest
+    if: github.ref_type == 'tag'
+    needs: job_lint_test_build
+
+    steps:
+      - run: echo ""
