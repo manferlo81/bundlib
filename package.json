@@ -29,6 +29,7 @@
     "clean:build": "rimraf bin dist coverage",
     "clean": "run-p clean:*",
     "lint:src": "eslint src",
+    "lint:mocks": "eslint __mocks__",
     "lint:test": "eslint __test__",
     "lint:config": "eslint *.config.{mjs,ts}",
     "lint": "run-p lint:*",
