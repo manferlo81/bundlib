@@ -62,15 +62,6 @@ commands:
       - attach_workspace:
           at: ~/bundlib
 
-  command_npm_publish:
-    steps:
-      - run:
-          name: Login to npm
-          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
-      - run:
-          name: Publish to npm
-          command: npm publish
-
 jobs:
   job_lint:
     executor: executor_node_20
@@ -109,12 +100,6 @@ jobs:
       - command_prepare:
           cache_key: v1-node-22-deps-bundlib
       - command_ci
-
-  job_publish_to_npm:
-    executor: executor_node_20
-    steps:
-      - command_restore_workspace
-      - command_npm_publish
 
 workflows:
   workflow_ci:
@@ -161,16 +146,3 @@ workflows:
               only: /.*/
             branches:
               only: /.*/
-
-      - job_publish_to_npm:
-          context: npm
-          requires:
-            - job_node_18_ci
-            - job_node_20_ci
-            - job_node_21_ci
-            - job_node_22_ci
-          filters:
-            tags:
-              only: /^v\d+\.\d+\.\d+$/
-            branches:
-              ignore: /.*/

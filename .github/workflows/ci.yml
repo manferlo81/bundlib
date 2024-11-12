@@ -62,10 +62,12 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout, Setup Node.js v20.x and Install dependencies
+      - name: Checkout, Setup Node.js v${{ env.NODE_VERSION }} and Install dependencies
         uses: manferlo81/action-checkout-node-install@v0
         with:
-          node-version: 20.x
+          node-version: ${{ env.NODE_VERSION }}
+        env:
+          NODE_VERSION: 20.x
 
       - name: Build
         run: npm run build
@@ -86,4 +88,18 @@ jobs:
     needs: job_lint_test_build
 
     steps:
-      - run: echo ""
+      - name: Checkout, Setup Node.js v${{ env.NODE_VERSION }} and Install dependencies
+        uses: manferlo81/action-checkout-node-install@v0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: https://registry.npmjs.org
+        env:
+          NODE_VERSION: 20.x
+
+      - name: Build
+        run: npm run build
+
+      - name: Publish Package
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
