@@ -1,6 +1,8 @@
 import type { Config } from 'jest';
 
 const { COVERAGE: COVERAGE_ENV } = process.env;
+const collectCoverage = COVERAGE_ENV !== 'SKIP';
+const coverageOnCI = COVERAGE_ENV === 'CI';
 
 const config: Config = {
   cacheDirectory: 'node_modules/.cache/jest',
@@ -8,13 +10,13 @@ const config: Config = {
 
   clearMocks: true,
 
-  collectCoverage: COVERAGE_ENV !== 'SKIP',
+  collectCoverage,
   collectCoverageFrom: [
     'src/api/**/*.ts',
     '!src/api/**/*.d.ts',
   ],
   coverageDirectory: 'coverage',
-  coverageReporters: COVERAGE_ENV === 'CI'
+  coverageReporters: coverageOnCI
     ? ['json', 'clover', 'cobertura']
     : ['html', 'text'],
 
