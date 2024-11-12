@@ -1,9 +1,11 @@
 import type { TypeCheckFunction } from '../types/helper-types';
 import { isDictionary, isNullish, isString } from './basic';
 
-export function createOneOfLiteral<V>(...values: V[]): TypeCheckFunction<V> {
-  return (value): value is V => {
-    return values.includes(value as never);
+export function createOneOfLiteral<A extends readonly unknown[]>(...values: A): TypeCheckFunction<A[number]>;
+export function createOneOfLiteral<V>(...values: readonly V[]): TypeCheckFunction<V>;
+export function createOneOfLiteral(...values: readonly unknown[]): TypeCheckFunction<unknown> {
+  return (value): value is unknown => {
+    return values.includes(value);
   };
 }
 
