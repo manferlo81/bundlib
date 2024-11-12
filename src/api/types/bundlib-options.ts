@@ -11,8 +11,8 @@ export type SelectiveKey<K extends string> = K | SelectiveSpecialKey;
 export type OverrideKey = 'default';
 export type SelectiveObjectKey<K extends string> = SelectiveKey<K> | OverrideKey;
 
-export type SelectiveValueBasedOption<K extends string, V> = ValueBasedSelectiveOption<SelectiveObjectKey<K>, V>;
-export type SelectiveBoolBasedOption<K extends string, V> = BoolBasedSelectiveOption<SelectiveKey<K>, V, OverrideKey>;
+export type SelectiveValueBasedOption<K extends string, V> = ValueBasedSelectiveOption<K, SelectiveSpecialKey | OverrideKey, V>;
+export type SelectiveBoolBasedOption<K extends string, V> = BoolBasedSelectiveOption<K, SelectiveSpecialKey, V, OverrideKey>;
 
 export type SelectiveSkipKey = BuildType | 'types';
 

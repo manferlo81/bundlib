@@ -1,24 +1,22 @@
-import type { NonArrayObject, Nullish, TypeCheckFunction } from '../types/helper-types';
+import type { TypeCheckFunction } from '../types/helper-types';
 import { isDictionary, isNullish, isString } from './basic';
 
-export function createOneOfLiteral<A extends unknown[]>(...values: A): TypeCheckFunction<A extends Array<infer T> ? T : never>;
-export function createOneOfLiteral<M>(...values: M[]): TypeCheckFunction<M>;
-export function createOneOfLiteral<M>(...values: M[]): TypeCheckFunction<M> {
-  return (value): value is M => {
-    return values.includes(value);
+export function createOneOfLiteral<V>(...values: V[]): TypeCheckFunction<V> {
+  return (value): value is V => {
+    return values.includes(value as never);
   };
 }
 
 export function composeOneOf<A extends Array<TypeCheckFunction<unknown>>>(...checks: A): TypeCheckFunction<A extends Array<TypeCheckFunction<infer T>> ? T : never>;
-export function composeOneOf<A extends TypeCheckFunction<unknown>>(...checks: A[]): TypeCheckFunction<A extends TypeCheckFunction<infer T> ? T : never>;
-export function composeOneOf<M>(...checks: Array<TypeCheckFunction<M>>): TypeCheckFunction<M>;
-export function composeOneOf<M>(...checks: Array<TypeCheckFunction<M>>): TypeCheckFunction<M> {
-  return (value): value is M => {
+export function composeOneOf<F extends TypeCheckFunction<unknown>>(...checks: F[]): TypeCheckFunction<F extends TypeCheckFunction<infer T> ? T : never>;
+export function composeOneOf<T>(...checks: Array<TypeCheckFunction<T>>): TypeCheckFunction<T>;
+export function composeOneOf<T>(...checks: Array<TypeCheckFunction<T>>): TypeCheckFunction<T> {
+  return (value): value is T => {
     return checks.some(
       (check) => check(value),
     );
   };
 }
 
-export const isStringOrNullish = composeOneOf<string | Nullish>(isNullish, isString);
-export const isDictionaryOrNullish = composeOneOf<Readonly<NonArrayObject<unknown>> | Nullish>(isNullish, isDictionary);
+export const isStringOrNullish = composeOneOf(isNullish, isString);
+export const isDictionaryOrNullish = composeOneOf(isNullish, isDictionary);

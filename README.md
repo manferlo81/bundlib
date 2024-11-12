@@ -779,8 +779,7 @@ export interface BundlibAPIOptions {
 ### type `SelectiveValueBasedOption`
 
 ```typescript
-type SelectiveObjectKey<K extends string> = K | 'api' | 'default';
-type SelectiveValueBasedOption<K extends string, V> = ValueBasedSelectiveOption<SelectiveObjectKey<K>, V>;
+type SelectiveValueBasedOption<K extends string, V> = ValueBasedSelectiveOption<K, 'api' | 'default', V>;
 ```
 
 See [`ValueBasedSelectiveOption`](https://github.com/manferlo81/selective-option?tab=readme-ov-file#type-valuebasedselectiveoption) on [selective-option](https://github.com/manferlo81/selective-option) module.
@@ -788,8 +787,7 @@ See [`ValueBasedSelectiveOption`](https://github.com/manferlo81/selective-option
 ### type `SelectiveBoolBasedOption`
 
 ```typescript
-type SelectiveKey<K extends string> = K | 'api';
-type SelectiveBoolBasedOption<K extends string, V = never> = BoolBasedSelectiveOption<SelectiveKey<K>, V, 'default'>;
+type SelectiveBoolBasedOption<K extends string, V> = BoolBasedSelectiveOption<K, 'api', V, 'default'>;
 ```
 
 See [`BoolBasedSelectiveOption`](https://github.com/manferlo81/selective-option?tab=readme-ov-file#type-boolbasedselectiveoption) on [selective-option](https://github.com/manferlo81/selective-option) module.
