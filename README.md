@@ -22,25 +22,26 @@ An automatic library bundler powered by [Rollup.js](https://github.com/rollup/ro
   * [Automatic Configuration](#automatic-configuration)
   * [Advanced Configuration](#advanced-configuration)
 * [Options](#options)
-  * [input](#option-input)
-  * [sourcemap](#option-sourcemap)
-  * [esModule](#option-esmodule)
-  * [interop](#option-interop)
-  * [chunks](#option-chunks)
-  * [format](#option-format)
-  * [name](#option-name)
-  * [id](#option-id)
-  * [extend](#option-extend)
-  * [globals](#option-globals)
-  * [min](#option-min)
-  * [equals](#option-equals)
-  * [cache](#option-cache)
-  * [project](#option-project)
-  * [skip](#option-skip)
+  * [`input`](#option-input)
+  * [`sourcemap`](#option-sourcemap)
+  * [`esModule`](#option-esmodule)
+  * [`interop`](#option-interop)
+  * [`chunks`](#option-chunks)
+  * [`format`](#option-format)
+  * [`name`](#option-name)
+  * [`id`](#option-id)
+  * [`extend`](#option-extend)
+  * [`globals`](#option-globals)
+  * [`min`](#option-min)
+  * [`equals`](#option-equals)
+  * [`cache`](#option-cache)
+  * [`project`](#option-project)
+  * [`skip`](#option-skip)
 * [Selective Options](#selective-options)
   * [Value based selective format](#value-based-selective-format)
     * [As value](#as-value)
     * [As nullish](#as-nullish)
+    * [As function returning valid value or nullish](#as-function-returning-valid-value-or-nullish)
     * [As object](#as-object)
       * [The special `default` property](#the-special-default-property)
       * [The special `api` property](#the-special-api-property)
@@ -108,39 +109,39 @@ For `IIFE`, `AMD` or `UMD` builds, add a `"browser"` field to your `package.json
 
 **Bundlib** will configure [**Rollup**](https://github.com/rollup/rollup) according to you `package.json` data, see [Advanced Configuration](#advanced-configuration) for more information.
 
-#### "main"
+#### `"main"`
 
 The `"main"` field will be used as your **CommonJS module** output, if not present, **CommonJS Module** build will be skipped. You can skip the build manually using the [`skip`](#option-skip) option.
 
-#### "module" or "jsnext:main"
+#### `"module"` or `"jsnext:main"`
 
 The `"module"` field will be used as your **ES Module** output, if not present, **ES Module** build will be skipped. You can skip the build manually using the [`skip`](#option-skip) option. `"jsnext:main"` field will also be honored if `"module"` field is not present, but it is recommended to use the `"module"` field.
 
-#### "browser"
+#### `"browser"`
 
 The `"browser"` field will be used as your **Browser** build output, if not present, **Browser** build will be skipped. You can skip the build manually using the [`skip`](#option-skip) option. **Bundlib** only supports `string` type `"browser"` field, it will **throw** otherwise.
 
-#### "bin"
+#### `"bin"`
 
 The `"bin"` field will be used as your **Binary** build output, if not present, **Binary** build will be skipped. You can skip the build manually using the [`skip`](#option-skip) option. **Bundlib** only supports `string` type `"bin"` field, it will **throw** otherwise.
 
-#### "types" or "typings"
+#### `"types"` or `"typings"`
 
 The `"types"` field will be used as your **Types** output if you are using `typescript`. You can skip types generation using the [`skip`](#option-skip) option. `"typings"` field will also be honored if `"types"` field is not present.
 
-#### "dependencies"
+#### `"dependencies"`
 
 The `"dependencies"` field will be used to detect installed packages, it will also be used to set external dependencies for your **CommonJS module**, **ES module**, and **Binary** builds, for **Browser** build dependencies will be bundled into the output file unless otherwise specified using the [`globals`](#option-globals) option.
 
-#### "devDependencies"
+#### `"devDependencies"`
 
 The `"devDependencies"` field will be used to detect installed packages.
 
-#### "peerDependencies"
+#### `"peerDependencies"`
 
 The `"peerDependencies"` field will be used as external dependencies for your **CommonJS module,**, **ES module**, and **Binary** builds.
 
-#### "bundlib"
+#### `"bundlib"`
 
 The `"bundlib"` field can be used for advanced configuration, see [Advanced Configuration](#advanced-configuration) for more information.
 
@@ -392,7 +393,8 @@ The `value` based selective format allows you to enter a `value` or an `object` 
 #### As value
 
 ```typescript
-const value: SelectiveValueBasedOption<BuildType, string> = 'string';
+const value: SelectiveValueBasedOption<BuildType, string> = 'some-string';
+const value: SelectiveValueBasedOption<BuildType, string> = 'some-other-string';
 ```
 
 #### As nullish
@@ -402,11 +404,20 @@ const value: SelectiveValueBasedOption<BuildType, string> = null;
 const value: SelectiveValueBasedOption<BuildType, string> = undefined;
 ```
 
+#### As function returning valid value or nullish
+
+```typescript
+const value: SelectiveValueBasedOption<BuildType, string> = () => 'some-string';
+const value: SelectiveValueBasedOption<BuildType, string> = (key) => {
+  return key === 'module' ? 'module-value' : 'other-value';
+};
+```
+
 #### As object
 
 ```typescript
-const value: SelectiveValueBasedOption<BuildType, string> = { main: 'string' };
-const value: SelectiveValueBasedOption<BuildType, string> = { module: 'module' };
+const value: SelectiveValueBasedOption<BuildType, string> = { main: 'main-value' };
+const value: SelectiveValueBasedOption<BuildType, string> = { module: 'module-value' };
 ```
 
 #### The special `default` property
