@@ -12,16 +12,63 @@ on:
       - main
 
 jobs:
-  job_lint_test_build:
-    name: Lint, Test and Build
-    uses: ./.github/workflows/lint-test-build.yml
+  Lint:
+    name: Lint
 
-  job_upload_coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout, Setup Node.js v${{ env.NODE_VERSION }} and Install dependencies
+        uses: manferlo81/action-checkout-node-install@v0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+        env:
+          NODE_VERSION: 20.x
+
+      - name: Lint
+        run: npm run lint
+
+  Test_and_Build:
+    strategy:
+      matrix:
+        os:
+          - name: Windows
+            image: windows-latest
+          - name: Ubuntu
+            image: ubuntu-latest
+          - name: macOS
+            image: macos-latest
+        node-version:
+          - 18.x
+          - 20.x
+          - 21.x
+          - 22.x
+
+    name: Test and Build, ${{ matrix.os.name }}, Node.js v${{ matrix.node-version }}
+
+    runs-on: ${{ matrix.os.image }}
+    needs: Lint
+
+    steps:
+      - name: Checkout, Setup Node.js v${{ matrix.node-version }} and Install dependencies
+        uses: manferlo81/action-checkout-node-install@v0
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Test
+        run: npm test
+        env:
+          COVERAGE: SKIP
+
+      - name: Build
+        run: npm run build
+
+  Upload_Coverage:
     name: Upload Coverage Report to Codecov
 
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref_type == 'branch'
-    needs: job_lint_test_build
+    needs: Test_and_Build
 
     steps:
       - name: Checkout, Setup Node.js v${{ env.NODE_VERSION }} and Install dependencies
@@ -51,12 +98,12 @@ jobs:
         env:
           REPORT_URL: https://app.codecov.io/github/${{ github.repository }}/commit/${{ github.sha }}
 
-  job_create_release:
+  Create_Release:
     name: Create GitHub Release
 
     runs-on: ubuntu-latest
     if: github.ref_type == 'tag'
-    needs: job_lint_test_build
+    needs: Test_and_Build
 
     permissions:
       contents: write
@@ -80,12 +127,12 @@ jobs:
         with:
           files: bundlib-*.tgz
 
-  job_publish_to_npm:
+  Publish_to_npm:
     name: Publish Package to npm Registry
 
     runs-on: ubuntu-latest
     if: github.ref_type == 'tag'
-    needs: job_lint_test_build
+    needs: Test_and_Build
 
     steps:
       - name: Checkout, Setup Node.js v${{ env.NODE_VERSION }} and Install dependencies
