@@ -182,13 +182,13 @@ export function pkgToConfigs(
 
       useBabel
         ? pluginBabel({
-          extensions: extensions as unknown as string[],
-          exclude,
-          babelHelpers: 'bundled',
-        })
+            extensions: extensions as unknown as string[],
+            exclude,
+            babelHelpers: 'bundled',
+          })
         : pluginBuble({
-          transforms: { dangerousForOf: true },
-        }),
+            transforms: { dangerousForOf: true },
+          }),
 
       isBinaryBuild && pluginAddShebang({
         include: outputFile,
