@@ -60,7 +60,7 @@
     "builtin-modules": "^3.3.0",
     "camelcase": "^6.3.0",
     "chalk": "^4.1.2",
-    "commander": "^12.1.0",
+    "commander": "^13.1.0",
     "cosmiconfig": "^9.0.0",
     "gen-unit": "0.2.0",
     "load-json-file": "^6.2.0",
