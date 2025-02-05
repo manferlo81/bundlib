@@ -33,29 +33,28 @@ const stylisticPluginConfig = config({
   }),
 });
 
-const typescriptPluginConfigs = config(
-  {
-    extends: [
-      typescriptConfigs.strictTypeChecked,
-      typescriptConfigs.stylisticTypeChecked,
-    ],
-    languageOptions: { parserOptions: { projectService: true, tsconfigRootDir: process.cwd() } },
-    rules: normalizeRules('@typescript-eslint', {
-      'array-type': { default: 'array-simple', readonly: 'array-simple' },
-    }),
-  },
-  {
-    files: ['**/*.{js,cjs,mjs}'],
-    extends: [typescriptConfigs.disableTypeChecked],
-  },
-);
+const typescriptPluginConfigs = config({
+  files: ['**/*.ts'],
+  extends: [
+    typescriptConfigs.strictTypeChecked,
+    typescriptConfigs.stylisticTypeChecked,
+  ],
+  languageOptions: { parserOptions: { projectService: true, tsconfigRootDir: process.cwd() } },
+  rules: normalizeRules('@typescript-eslint', {
+    'array-type': { default: 'array-simple', readonly: 'array-simple' },
+  }),
+});
 
 export default config(
-  { files: ['**/*.{ts,js,cjs,mjs}'] },
-  { ignores: ['bin', 'dist', 'coverage'] },
-  { languageOptions: { globals: { ...globals.node, ...globals.browser } } },
-  javascriptPluginConfig,
-  stylisticPluginConfig,
+  {
+    files: ['**/*.{ts,js,cjs,mjs}'],
+    extends: [
+      javascriptPluginConfig,
+      stylisticPluginConfig,
+    ],
+    ignores: ['bin', 'dist', 'coverage'],
+    languageOptions: { globals: { ...globals.node, ...globals.browser } },
+  },
   typescriptPluginConfigs,
 );
 
