@@ -14,6 +14,7 @@ import { stripShebang as pluginStripShebang } from 'rollup-plugin-strip-shebang'
 import pluginTypescript from 'rollup-plugin-typescript2';
 import type { PkgAnalyzed } from './analyze/pkg-analyzed';
 import { JS_EXTENSIONS, MIN_EXT_PREFIX, TS_DEF_EXT_PREFIX, TS_EXTENSIONS } from './constants/extensions';
+import { DEFAULT_CACHE_PATH } from './constants/paths';
 import { DEFAULT_NODEJS_SHEBANG } from './constants/shebang';
 import { error } from './errors/error';
 import { inputNotFoundMessage } from './errors/error-messages';
@@ -52,7 +53,7 @@ export function pkgToConfigs(
 
   const { runtime: runtimeDependencies, peer: peerDependencies } = dependencies;
 
-  const bundlibCachePath = resolve(cwd, cache ?? 'node_modules/.cache/bundlib');
+  const bundlibCachePath = resolve(cwd, cache ?? DEFAULT_CACHE_PATH);
   const typescriptCachePath = pathJoin(bundlibCachePath, 'rpt2');
 
   const isNodeJSExternal = createIsExternal(
