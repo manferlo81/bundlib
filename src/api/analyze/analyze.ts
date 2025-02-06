@@ -152,11 +152,12 @@ export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgA
 
   const typesOutputFile = pkgTypesField ?? pkgTypingsField;
 
-  const mainOutput: AllowNull<ModuleBuildOptions> = (skipBuild.main || !pkgMainField)
+  const filenameCommonJSModule = !skipBuild.main && pkgMainField;
+  const mainOutput: AllowNull<ModuleBuildOptions> = !filenameCommonJSModule
     ? null
     : {
         input: mainInput,
-        output: pkgMainField,
+        output: filenameCommonJSModule,
         sourcemap: perBuildSourcemap.main,
         esModule: perBuildESModule.main,
         interop: perBuildInterop.main,
@@ -164,11 +165,12 @@ export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgA
         project: perBuildProject.main,
       };
 
-  const moduleOutput: AllowNull<ModuleBuildOptions> = (skipBuild.module || !moduleOutputFile)
+  const filenameESModule = !skipBuild.module && moduleOutputFile;
+  const moduleOutput: AllowNull<ModuleBuildOptions> = !filenameESModule
     ? null
     : {
         input: moduleInput,
-        output: moduleOutputFile,
+        output: filenameESModule,
         sourcemap: perBuildSourcemap.module,
         esModule: perBuildESModule.module,
         interop: perBuildInterop.module,
@@ -176,11 +178,12 @@ export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgA
         project: perBuildProject.module,
       };
 
-  const browserOutput: AllowNull<BrowserBuildOptions> = (skipBuild.browser || !pkgBrowserField)
+  const filenameBrowserModule = !skipBuild.browser && pkgBrowserField;
+  const browserOutput: AllowNull<BrowserBuildOptions> = !filenameBrowserModule
     ? null
     : {
         input: browserInput,
-        output: pkgBrowserField,
+        output: filenameBrowserModule,
         sourcemap: perBuildSourcemap.browser,
         esModule: perBuildESModule.browser,
         interop: perBuildInterop.browser,
@@ -197,11 +200,12 @@ export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgA
         project: perBuildProject.browser,
       };
 
-  const binaryOutput: AllowNull<ModuleBuildOptions> = (skipBuild.bin || !pkgBinField)
+  const filenameBinaryModule = !skipBuild.bin && pkgBinField;
+  const binaryOutput: AllowNull<ModuleBuildOptions> = !filenameBinaryModule
     ? null
     : {
         input: binInput,
-        output: pkgBinField,
+        output: filenameBinaryModule,
         sourcemap: perBuildSourcemap.bin,
         esModule: perBuildESModule.bin,
         interop: perBuildInterop.bin,
@@ -209,10 +213,11 @@ export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgA
         project: perBuildProject.bin,
       };
 
-  const typesOutput: AllowNull<TypesBuildOptions> = (skipBuild.types || !typesOutputFile)
+  const filenameTypes = !skipBuild.types && typesOutputFile;
+  const typesOutput: AllowNull<TypesBuildOptions> = !filenameTypes
     ? null
     : {
-        output: typesOutputFile,
+        output: filenameTypes,
         equals: !!equals,
       };
 

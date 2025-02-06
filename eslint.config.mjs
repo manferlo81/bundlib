@@ -9,8 +9,8 @@ const javascriptPluginConfig = config(
     rules: normalizeRules({
       'no-useless-rename': 'error',
       'object-shorthand': 'error',
-      'no-useless-concat': 'error',
       'prefer-template': 'error',
+      'no-useless-concat': 'error',
     }),
   },
 );
@@ -27,7 +27,7 @@ const stylisticPluginConfig = config(
   {
     rules: normalizeRules('@stylistic', {
       'linebreak-style': 'unix',
-      'no-extra-parens': 'error',
+      'no-extra-parens': 'all',
       'no-extra-semi': 'error',
       'no-mixed-operators': 'error',
       'padded-blocks': 'off',
@@ -45,14 +45,14 @@ const typescriptPluginConfigs = config(
     }),
   },
   {
-    files: ['**/*.{js,cjs,mjs}'],
+    files: ['**/*.{js,mjs,cjs}'],
     ...typescriptConfigs.disableTypeChecked,
   },
 );
 
 export default config(
-  { files: ['**/*.{js,mjs,cjs,ts}'] },
   { ignores: ['bin', 'dist', 'coverage'] },
+  { files: ['**/*.{js,mjs,cjs,ts}'] },
   { languageOptions: { globals: globals.node } },
   javascriptPluginConfig,
   stylisticPluginConfig,
@@ -61,7 +61,7 @@ export default config(
 
 function normalizeRuleEntry(entry) {
   if (Array.isArray(entry)) return entry;
-  if (['error', 'warn', 'off'].includes(entry)) return entry;
+  if (['error', 'off', 'warn'].includes(entry)) return entry;
   return ['error', entry];
 }
 
@@ -81,7 +81,6 @@ function createEntriesNormalizer(pluginName) {
 
 function normalizeRules(pluginName, rules) {
   if (!rules && pluginName) return normalizeRules(null, pluginName);
-  const entries = Object.entries(rules);
   const normalizeEntry = createEntriesNormalizer(pluginName);
-  return Object.fromEntries(entries.map(normalizeEntry));
+  return Object.fromEntries(Object.entries(rules).map(normalizeEntry));
 }
