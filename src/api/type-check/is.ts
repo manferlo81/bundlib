@@ -1,5 +1,8 @@
-export function is(value: unknown, type: 'string'): value is string;
-export function is(value: unknown, type: 'object'): value is object;
-export function is(value: unknown, type: string): boolean {
+interface TypeOfMap {
+  string: string;
+  object: object | null;
+}
+
+export function is<K extends keyof TypeOfMap>(value: unknown, type: K): value is TypeOfMap[K] {
   return typeof value === type;
 }

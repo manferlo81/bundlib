@@ -59,7 +59,7 @@ describe(colorizeMessage('resolve "input" option'), () => {
       })),
       {
         value: { default: null, main: 'main.js' },
-        expected: createResult((key) => key == 'main' ? 'main.js' : null),
+        expected: createResult((key) => key === 'main' ? 'main.js' : null),
       },
       {
         value: { default: 'default.js', api: 'api.js', browser: 'browser.js' },
