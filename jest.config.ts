@@ -1,10 +1,10 @@
-import type { Config } from 'jest';
+import type { JestConfigWithTsJest } from 'ts-jest';
 
 const { COVERAGE: COVERAGE_ENV } = process.env;
 const collectCoverage = COVERAGE_ENV !== 'SKIP';
 const coverageOnCI = COVERAGE_ENV === 'CI';
 
-const config: Config = {
+const config: JestConfigWithTsJest = {
   cacheDirectory: 'node_modules/.cache/jest',
   preset: 'ts-jest',
 
@@ -17,8 +17,8 @@ const config: Config = {
   ],
   coverageDirectory: 'coverage',
   coverageReporters: coverageOnCI
-    ? ['json', 'clover', 'cobertura']
-    : ['html', 'text'],
+    ? ['text', 'json', 'clover', 'cobertura']
+    : ['text', 'html'],
 
   testMatch: [
     '**/__test__/**/*.test.ts',
