@@ -1,11 +1,12 @@
 import { keys } from '../tools/helpers';
-import type { Dictionary, AllowNull, TypeCheckFunction } from '../types/helper-types';
+import type { AllowNull, Dictionary, TypeCheckFunction } from '../types/helper-types';
 
 interface InvalidKeyList extends Array<string> {
   0: string;
   [K: number]: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
 export function invalidKeys<K extends string>(object: Dictionary<unknown>, validKeys: K[]): AllowNull<InvalidKeyList>;
 export function invalidKeys(object: Dictionary<unknown>, validKeys: string[]): AllowNull<string[]> {
   const invalid = keys(object).filter(

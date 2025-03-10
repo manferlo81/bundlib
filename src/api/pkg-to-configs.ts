@@ -31,6 +31,10 @@ import type { AllowNull, AllowNullish, Dictionary, TypeCheckFunction } from './t
 import type { BundlibRollupBrowseOutputOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types/rollup';
 import type { BundlibAPIOptions } from './types/types';
 
+// TODO: make this function asynchronous
+// to allow importing only the necessary modules
+// using await import('module')
+// REASON: some plugins are not needed every time
 export function pkgToConfigs(
   analyzed: PkgAnalyzed,
   options?: AllowNullish<BundlibAPIOptions>,
