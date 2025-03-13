@@ -40,8 +40,8 @@ const typescriptPluginConfigs = config(
     'array-type': { default: 'array-simple', readonly: 'array-simple' },
   }),
   {
-    files: ['**/*.{js,mjs,cjs}'],
     ...typescriptConfigs.disableTypeChecked,
+    files: ['**/*.{js,mjs,cjs}'],
   },
 );
 
@@ -78,5 +78,6 @@ function normalizeRulesConfig(pluginName, rules) {
   if (!rules && pluginName) return normalizeRulesConfig(null, pluginName);
   const normalizeEntry = createEntriesNormalizer(pluginName);
   const entries = Object.entries(rules).map(normalizeEntry);
-  return { rules: Object.fromEntries(entries) };
+  const rulesNormalized = Object.fromEntries(entries);
+  return { rules: rulesNormalized };
 }
