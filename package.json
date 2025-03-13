@@ -24,15 +24,19 @@
   "bin": "./bin/bundlib.cjs",
   "types": "./dist/types/index.d.ts",
   "typings": "./dist/types/index.d.ts",
+  "files": [
+    "dist",
+    "bin"
+  ],
   "scripts": {
     "clean:cache": "rimraf --glob node_modules/.cache/{bundlib,jest}",
     "clean:build": "rimraf bin dist coverage",
     "clean": "run-p clean:*",
-    "lint": "eslint .",
     "lint:src": "eslint src",
     "lint:mocks": "eslint __mocks__",
     "lint:test": "eslint __test__",
     "lint:config": "eslint *.config.{mjs,ts}",
+    "lint": "eslint .",
     "test": "jest --color -w 3",
     "test-watch": "jest --color -w 3 --watch-all",
     "help": "ts-node src/cli -h",
@@ -49,13 +53,13 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@babel/core": "^7.26.9",
+    "@babel/core": "^7.26.10",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-buble": "^1.0.3",
     "@rollup/plugin-commonjs": "^28.0.3",
     "@rollup/plugin-eslint": "^9.0.5",
     "@rollup/plugin-json": "^6.1.0",
-    "@rollup/plugin-node-resolve": "^16.0.0",
+    "@rollup/plugin-node-resolve": "^16.0.1",
     "@rollup/plugin-terser": "^0.4.4",
     "builtin-modules": "^3.3.0",
     "camelcase": "^6.3.0",
