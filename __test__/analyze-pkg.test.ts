@@ -1,10 +1,11 @@
+import { colorizeMessage } from './tools/colors';
 import { mockAnalyzeWithPkg } from './tools/mock-fs';
 
 describe('analyze', () => {
 
   const cwd = process.cwd();
 
-  test('Should analyze provided package.json', async () => {
+  test(colorizeMessage('Should analyze provided package.json'), async () => {
 
     const pkg = { name: 'lib' };
     const analyzed = await mockAnalyzeWithPkg(cwd, pkg);
@@ -13,7 +14,7 @@ describe('analyze', () => {
 
   });
 
-  test('Should return analyzed package.json', async () => {
+  test(colorizeMessage('Should return analyzed package.json'), async () => {
 
     const pkg = { name: 'lib' };
     const analyzed = await mockAnalyzeWithPkg(cwd, pkg);

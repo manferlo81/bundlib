@@ -1,9 +1,9 @@
-import { buildTypeColor, packageNameColor } from '../tools/colors';
+import { buildTypeColor, colorizeMessage } from '../tools/colors';
 import { mockGetPluginNames } from '../tools/mock-fs';
 
-const pluginPackageName = packageNameColor('rollup-plugin-strip-shebang');
+const pluginPackageName = 'rollup-plugin-strip-shebang';
 
-describe(`${pluginPackageName} plugin`, () => {
+describe(colorizeMessage(`${pluginPackageName} plugin`), () => {
 
   const cwd = process.cwd();
   const pluginName = 'strip-shebang';
@@ -15,12 +15,12 @@ describe(`${pluginPackageName} plugin`, () => {
   ];
 
   outputFields.forEach(({ field, text }) => {
-    test(`Should not use ${pluginPackageName} on ${buildTypeColor(text)}`, () => {
+    test(colorizeMessage(`Should not use ${pluginPackageName} on ${buildTypeColor(text)}`), () => {
       return expect(mockGetPluginNames(cwd, { [field]: 'output.js' })).resolves.not.toContain(pluginName);
     });
   });
 
-  test(`Should use ${pluginPackageName} on ${buildTypeColor('Binary build')}`, () => {
+  test(colorizeMessage(`Should use ${pluginPackageName} on ${buildTypeColor('Binary build')}`), () => {
     return expect(mockGetPluginNames(cwd, { bin: 'output.js' })).resolves.toContain(pluginName);
   });
 

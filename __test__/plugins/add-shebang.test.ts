@@ -1,9 +1,9 @@
-import { buildTypeColor, packageNameColor } from '../tools/colors';
+import { buildTypeColor, colorizeMessage } from '../tools/colors';
 import { mockGetPluginNames } from '../tools/mock-fs';
 
-const pluginPackageName = packageNameColor('rollup-plugin-add-shebang');
+const pluginPackageName = 'rollup-plugin-add-shebang';
 
-describe(`${pluginPackageName} plugin`, () => {
+describe(colorizeMessage(`${pluginPackageName} plugin`), () => {
 
   const cwd = process.cwd();
   const pluginName = 'shebang';
@@ -15,13 +15,13 @@ describe(`${pluginPackageName} plugin`, () => {
   ];
 
   outputFields.forEach(({ field, text }) => {
-    test(`Should not use ${pluginPackageName} on ${buildTypeColor(text)}`, () => {
+    test(colorizeMessage(`Should not use ${pluginPackageName} on ${buildTypeColor(text)}`), () => {
       const promise = mockGetPluginNames(cwd, { [field]: 'output.js' });
       return expect(promise).resolves.not.toContain(pluginName);
     });
   });
 
-  test(`Should use ${pluginPackageName} on ${buildTypeColor('Binary build')}`, () => {
+  test(colorizeMessage(`Should use ${pluginPackageName} on ${buildTypeColor('Binary build')}`), () => {
     const promise = mockGetPluginNames(cwd, { bin: 'output.js' });
     return expect(promise).resolves.toContain(pluginName);
   });

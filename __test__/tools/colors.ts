@@ -1,4 +1,4 @@
-import { blueBright, greenBright, magentaBright, redBright, yellow } from '../../src/cli/tools/colors';
+import { blueBright, cyanBright, greenBright, magentaBright, yellow } from '../../src/cli/tools/colors';
 
 export { greenBright as buildTypeColor, yellow as filenameColor, blueBright as javascriptValueColor, redBright as packageFieldColor, magentaBright as packageNameColor } from '../../src/cli/tools/colors';
 
@@ -92,7 +92,11 @@ const options = [
 ];
 
 const modules = [
+  '@babel/core',
   'chokidar',
+  '@rollup/plugin-babel',
+  'rollup-plugin-strip-shebang',
+  'rollup-plugin-add-shebang',
 ];
 
 type ColorizeText = (text: string) => string;
@@ -106,7 +110,7 @@ const colorizeMap: ColorizeList[] = [
   { words: ['Should', 'should'], style: greenBright },
   { words: [...functions, ...constants, ...types, ...keywords], style: blueBright },
   { words: filenames, style: yellow },
-  { words: [...fields, ...options], style: redBright },
+  { words: [...fields, ...options], style: cyanBright },
   { words: modules, style: magentaBright },
 ];
 

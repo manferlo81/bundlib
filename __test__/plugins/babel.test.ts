@@ -1,17 +1,15 @@
-import { buildTypeColor, packageFieldColor, packageNameColor } from '../tools/colors';
+import { buildTypeColor, colorizeMessage } from '../tools/colors';
 import { mockGetPluginNames } from '../tools/mock-fs';
 
-const babelPackageDepName = '@babel/core';
+const babelPackageName = '@babel/core';
+const pluginPackageName = '@rollup/plugin-babel';
 
-const pluginPackageName = packageNameColor('@rollup/plugin-babel');
-const babelPackageName = packageNameColor(babelPackageDepName);
-
-describe(`${pluginPackageName} plugin`, () => {
+describe(colorizeMessage(`${pluginPackageName} plugin`), () => {
 
   const cwd = process.cwd();
   const pluginName = 'babel';
 
-  const deps = { [babelPackageDepName]: '*' };
+  const deps = { [babelPackageName]: '*' };
 
   const outputFields = [
     { field: 'main', text: 'CommonJS Module' },
@@ -23,7 +21,7 @@ describe(`${pluginPackageName} plugin`, () => {
   const dependenciesFields = ['dependencies', 'devDependencies'];
 
   outputFields.forEach(({ field, text }) => {
-    test(`Should not use ${pluginPackageName} on ${buildTypeColor(text)} if ${babelPackageName} not installed`, async () => {
+    test(colorizeMessage(`Should not use ${pluginPackageName} on ${buildTypeColor(text)} if ${babelPackageName} not installed`), async () => {
       const names = await mockGetPluginNames(cwd, {
         [field]: 'output.js',
         bundlib: { input: 'index.js' },
@@ -34,7 +32,7 @@ describe(`${pluginPackageName} plugin`, () => {
 
   dependenciesFields.forEach((depField) => {
     outputFields.forEach(({ field, text }) => {
-      test(`Should use ${pluginPackageName} on ${buildTypeColor(text)} if ${babelPackageName} installed as ${packageFieldColor(`"${depField}"`)}`, async () => {
+      test(colorizeMessage(`Should use ${pluginPackageName} on ${buildTypeColor(text)} if ${babelPackageName} installed as "${depField}"`), async () => {
         const names = await mockGetPluginNames(cwd, {
           [field]: 'output.js',
           [depField]: deps,
