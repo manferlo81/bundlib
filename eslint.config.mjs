@@ -1,7 +1,7 @@
 import pluginJavascript from '@eslint/js';
 import pluginStylistic from '@stylistic/eslint-plugin';
 import globals from 'globals';
-import { config, configs as typescriptConfigs } from 'typescript-eslint';
+import { config, configs as pluginTypescriptConfigs } from 'typescript-eslint';
 
 const javascriptPluginConfig = config(
   pluginJavascript.configs.recommended,
@@ -33,14 +33,14 @@ const stylisticPluginConfig = config(
 );
 
 const typescriptPluginConfigs = config(
-  typescriptConfigs.strictTypeChecked,
-  typescriptConfigs.stylisticTypeChecked,
+  pluginTypescriptConfigs.strictTypeChecked,
+  pluginTypescriptConfigs.stylisticTypeChecked,
   { languageOptions: { parserOptions: { projectService: true, tsconfigRootDir: process.cwd() } } },
   normalizeRulesConfig('@typescript-eslint', {
     'array-type': { default: 'array-simple', readonly: 'array-simple' },
   }),
   {
-    ...typescriptConfigs.disableTypeChecked,
+    ...pluginTypescriptConfigs.disableTypeChecked,
     files: ['**/*.{js,mjs,cjs}'],
   },
 );
