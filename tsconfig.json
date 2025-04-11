@@ -1,43 +1,18 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "module": "CommonJS",
-    "moduleResolution": "Node10",
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true,
-    "lib": [],
-    "strict": true,
-    "noImplicitAny": true,
-    "noImplicitOverride": true,
-    "noImplicitReturns": true,
-    "noImplicitThis": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "removeComments": true,
-    "declaration": true,
-    "declarationMap": true,
-    "newLine": "lf"
-  },
+  "extends": "./tsconfig-base.json",
+  "include": [
+    "__test__",
+    "__mocks__",
+    "src",
+    "package.json",
+    "jest.config.ts",
+    "bundlib.config.ts"
+  ],
   "ts-node": {
     "compilerOptions": {
       "module": "CommonJS"
     },
     "transpileOnly": true,
     "preferTsExts": false
-  },
-  "include": [
-    "__mocks__",
-    "__test__",
-    "src",
-    "package.json",
-    "jest.config.ts",
-    "bundlib.config.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "bin",
-    "coverage"
-  ]
+  }
 }

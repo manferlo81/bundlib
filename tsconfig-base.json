@@ -1,0 +1,28 @@
+{
+  "exclude": [
+    "dist",
+    "bin",
+    "coverage"
+  ],
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "CommonJS",
+    "moduleResolution": "Node10",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "lib": [],
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "removeComments": true,
+    "declaration": true,
+    "declarationMap": true,
+    "noEmit": true,
+    "newLine": "lf"
+  }
+}
