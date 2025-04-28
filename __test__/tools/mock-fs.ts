@@ -1,6 +1,7 @@
-import mock from 'mock-fs';
+import mock, { restore as restoreMock } from 'mock-fs';
 import { DirectoryItems } from 'mock-fs/lib/filesystem';
 import { BundlibPkgJson, analyzePkg } from '../../src/api';
+// eslint-disable-next-line import-x/no-cycle
 import { getPluginNames } from './get-plugin-names';
 
 type MockFSCallback<R> = () => R | Promise<R>;
@@ -10,7 +11,7 @@ export const mockFS2 = async <R>(callback: MockFSCallback<R>, structure: Directo
   try {
     return await callback();
   } finally {
-    mock.restore();
+    restoreMock();
   }
 };
 

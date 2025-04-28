@@ -1,4 +1,4 @@
-import { type AllowNullish, type Dictionary } from '../../src/api/types/helper-types';
+import type { AllowNullish, Dictionary } from '../../src/api/types/helper-types';
 import { colorizeMessage } from '../tools/colors';
 import { mockAnalyzeWithPkg } from '../tools/mock-fs';
 

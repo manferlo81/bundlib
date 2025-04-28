@@ -1,4 +1,4 @@
-import { type BrowserBuildFormat } from '../../src/api';
+import type { BrowserBuildFormat } from '../../src/api';
 import { colorizeMessage } from '../tools/colors';
 import { mockAnalyzeWithPkg } from '../tools/mock-fs';
 

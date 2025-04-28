@@ -1,5 +1,7 @@
 import pluginJavascript from '@eslint/js';
 import pluginStylistic from '@stylistic/eslint-plugin';
+import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescript';
+import { flatConfigs as pluginImportConfigs } from 'eslint-plugin-import-x';
 import globals from 'globals';
 import { config, configs as pluginTypescriptConfigs } from 'typescript-eslint';
 
@@ -14,7 +16,21 @@ const javascriptPluginConfig = config(
   }),
 );
 
+const importPluginConfig = config(
+  pluginImportConfigs.recommended,
+  pluginImportConfigs.typescript,
+  { settings: { 'import-x/resolver-next': [createTypeScriptImportResolver()] } },
+  normalizeRulesConfig('import-x', {
+    'consistent-type-specifier-style': 'error',
+    'no-useless-path-segments': 'error',
+    'no-absolute-path': 'error',
+    'no-cycle': 'error',
+  }),
+);
+
 const stylisticPluginConfig = config(
+  // Disable rule until @stylistic/eslint-plugin fix their types
+  // eslint-disable-next-line import-x/no-named-as-default-member
   pluginStylistic.configs.customize({
     indent: 2,
     semi: true,
@@ -50,14 +66,23 @@ export default config(
   { languageOptions: { globals: globals.node } },
   { files: ['**/*.{js,mjs,cjs,ts}'] },
   javascriptPluginConfig,
+  importPluginConfig,
   stylisticPluginConfig,
   typescriptPluginConfigs,
 );
 
-function normalizeRuleEntry(entry) {
-  if (Array.isArray(entry)) return entry;
-  if (['error', 'off', 'warn'].includes(entry)) return entry;
-  return ['error', entry];
+function normalizeRulesConfig(pluginName, rules) {
+  if (!rules && pluginName) return normalizeRulesConfig(null, pluginName);
+  const normalizeEntry = createEntriesNormalizer(pluginName);
+  const entries = Object.entries(rules).map(normalizeEntry);
+  const rulesNormalized = Object.fromEntries(entries);
+  return { rules: rulesNormalized };
+}
+
+function createEntriesNormalizer(pluginName) {
+  if (!pluginName) return ([ruleName, ruleEntry]) => [ruleName, normalizeRuleEntry(ruleEntry)];
+  const normalizeRuleName = createPluginRuleNameNormalizer(pluginName);
+  return ([ruleName, ruleEntry]) => [normalizeRuleName(ruleName), normalizeRuleEntry(ruleEntry)];
 }
 
 function createPluginRuleNameNormalizer(pluginName) {
@@ -68,16 +93,8 @@ function createPluginRuleNameNormalizer(pluginName) {
   };
 }
 
-function createEntriesNormalizer(pluginName) {
-  if (!pluginName) return ([ruleName, ruleEntry]) => [ruleName, normalizeRuleEntry(ruleEntry)];
-  const normalizeRuleName = createPluginRuleNameNormalizer(pluginName);
-  return ([ruleName, ruleEntry]) => [normalizeRuleName(ruleName), normalizeRuleEntry(ruleEntry)];
-}
-
-function normalizeRulesConfig(pluginName, rules) {
-  if (!rules && pluginName) return normalizeRulesConfig(null, pluginName);
-  const normalizeEntry = createEntriesNormalizer(pluginName);
-  const entries = Object.entries(rules).map(normalizeEntry);
-  const rulesNormalized = Object.fromEntries(entries);
-  return { rules: rulesNormalized };
+function normalizeRuleEntry(entry) {
+  if (Array.isArray(entry)) return entry;
+  if (['error', 'off', 'warn'].includes(entry)) return entry;
+  return ['error', entry];
 }
