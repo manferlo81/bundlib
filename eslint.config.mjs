@@ -1,6 +1,5 @@
 import pluginJavascript from '@eslint/js';
 import pluginStylistic from '@stylistic/eslint-plugin';
-import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescript';
 import { flatConfigs as pluginImportConfigs } from 'eslint-plugin-import-x';
 import globals from 'globals';
 import { config, configs as pluginTypescriptConfigs } from 'typescript-eslint';
@@ -19,7 +18,6 @@ const javascriptPluginConfig = config(
 const importPluginConfig = config(
   pluginImportConfigs.recommended,
   pluginImportConfigs.typescript,
-  { settings: { 'import-x/resolver-next': [createTypeScriptImportResolver()] } },
   normalizeRulesConfig('import-x', {
     'consistent-type-specifier-style': 'error',
     'no-useless-path-segments': 'error',
@@ -81,15 +79,15 @@ function normalizeRulesConfig(pluginName, rules) {
 
 function createEntriesNormalizer(pluginName) {
   if (!pluginName) return ([ruleName, ruleEntry]) => [ruleName, normalizeRuleEntry(ruleEntry)];
-  const normalizeRuleName = createPluginRuleNameNormalizer(pluginName);
+  const normalizeRuleName = createPluginKeyNormalizer(pluginName);
   return ([ruleName, ruleEntry]) => [normalizeRuleName(ruleName), normalizeRuleEntry(ruleEntry)];
 }
 
-function createPluginRuleNameNormalizer(pluginName) {
+function createPluginKeyNormalizer(pluginName) {
   const pluginPrefix = `${pluginName}/`;
-  return (ruleName) => {
-    if (ruleName.startsWith(pluginPrefix)) return ruleName;
-    return `${pluginPrefix}${ruleName}`;
+  return (key) => {
+    if (key.startsWith(pluginPrefix)) return key;
+    return `${pluginPrefix}${key}`;
   };
 }
 
