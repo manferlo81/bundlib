@@ -6,7 +6,7 @@ const collectCoverage = COVERAGE_ENV !== 'SKIP';
 const coverageOnCI = COVERAGE_ENV === 'CI';
 
 const typescriptJestPreset = createDefaultPreset({
-  tsconfig: './tsconfig-test.json',
+  tsconfig: './tsconfig.test.json',
 });
 
 const config: JestConfigWithTsJest = {

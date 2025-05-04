@@ -4,7 +4,6 @@
 
 ### [0.21.4](https://github.com/manferlo81/bundlib/compare/v0.21.3...v0.21.4) (2024-10-10)
 
-
 ### Bug Fixes
 
 * Fix issue with browser build after upgrading `@rollup/plugin-commonjs` ([ee617e4](https://github.com/manferlo81/bundlib/commit/ee617e4a39be503abfd20a10a45b10c3cb2f4b05))
@@ -13,13 +12,11 @@
 
 ### [0.21.2](https://github.com/manferlo81/bundlib/compare/v0.21.1...v0.21.2) (2024-09-30)
 
-
 ### Features
 
 * Warn instead of throwing on unsupported NodeJS version ([bbd6804](https://github.com/manferlo81/bundlib/commit/bbd6804a3bdc6f5ae0a7f587f6799c476d3235f3))
 
 ### [0.21.1](https://github.com/manferlo81/bundlib/compare/v0.21.0...v0.21.1) (2024-09-10)
-
 
 ### Features
 

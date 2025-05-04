@@ -27,7 +27,7 @@ const importPluginConfig = config(
 );
 
 const stylisticPluginConfig = config(
-  // Disable rule until @stylistic/eslint-plugin fix their types
+  // Disable rule until @stylistic/eslint-plugin types get fixed
   // eslint-disable-next-line import-x/no-named-as-default-member
   pluginStylistic.configs.customize({
     indent: 2,
@@ -47,9 +47,9 @@ const stylisticPluginConfig = config(
 );
 
 const typescriptPluginConfigs = config(
+  { languageOptions: { parserOptions: { projectService: true, tsconfigRootDir: process.cwd() } } },
   pluginTypescriptConfigs.strictTypeChecked,
   pluginTypescriptConfigs.stylisticTypeChecked,
-  { languageOptions: { parserOptions: { projectService: true, tsconfigRootDir: process.cwd() } } },
   normalizeRulesConfig('@typescript-eslint', {
     'array-type': { default: 'array-simple', readonly: 'array-simple' },
   }),

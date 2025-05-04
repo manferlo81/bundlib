@@ -7,7 +7,7 @@ const config: BundlibConfig = {
   },
   esModule: true,
   interop: true,
-  project: './tsconfig-build.json',
+  project: './tsconfig.build.json',
 };
 
 export default config;
