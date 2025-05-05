@@ -53,7 +53,7 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@babel/core": "^7.26.10",
+    "@babel/core": "^7.27.1",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-buble": "^1.0.3",
     "@rollup/plugin-commonjs": "^28.0.3",
@@ -78,16 +78,16 @@
     "slash": "^3.0.0"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.26.9",
-    "@eslint/js": "^9.25.1",
+    "@babel/preset-env": "^7.27.1",
+    "@eslint/js": "^9.26.0",
     "@stylistic/eslint-plugin": "^4.2.0",
     "@types/babel__core": "^7.20.5",
     "@types/jest": "^29.5.14",
     "@types/mock-fs": "^4.13.4",
-    "@types/node": "^22.15.2",
+    "@types/node": "^22.15.3",
     "chokidar": "^4.0.3",
-    "core-js": "^3.41.0",
-    "eslint": "^9.25.1",
+    "core-js": "^3.42.0",
+    "eslint": "^9.26.0",
     "eslint-import-resolver-typescript": "^4.3.4",
     "eslint-plugin-import-x": "^4.11.0",
     "globals": "^16.0.0",
@@ -100,7 +100,7 @@
     "ts-jest": "^29.3.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.31.0"
+    "typescript-eslint": "^8.31.1"
   },
   "overrides": {
     "@rollup/plugin-eslint": {
