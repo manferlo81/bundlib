@@ -78,7 +78,7 @@
     "slash": "^3.0.0"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.27.1",
+    "@babel/preset-env": "^7.27.2",
     "@eslint/js": "^9.26.0",
     "@stylistic/eslint-plugin": "^4.2.0",
     "@types/babel__core": "^7.20.5",
