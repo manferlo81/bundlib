@@ -84,7 +84,7 @@
     "@types/babel__core": "^7.20.5",
     "@types/jest": "^29.5.14",
     "@types/mock-fs": "^4.13.4",
-    "@types/node": "^22.15.21",
+    "@types/node": "^24.0.10",
     "chokidar": "^4.0.3",
     "core-js": "^3.42.0",
     "eslint": "^9.27.0",
