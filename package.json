@@ -80,7 +80,7 @@
   "devDependencies": {
     "@babel/preset-env": "^7.27.2",
     "@eslint/js": "^9.27.0",
-    "@stylistic/eslint-plugin": "^4.2.0",
+    "@stylistic/eslint-plugin": "^5.3.1",
     "@types/babel__core": "^7.20.5",
     "@types/jest": "^29.5.14",
     "@types/mock-fs": "^4.13.4",
