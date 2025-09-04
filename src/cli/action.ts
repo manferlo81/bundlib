@@ -112,9 +112,9 @@ export async function action(options: ProgramOptions): Promise<void> {
       find: {
         base: 1024,
         find: [
-          { pre: '', exp: 0 },
-          { pre: 'K', exp: 1 },
-          { pre: 'M', exp: 2 },
+          { exp: 0, pre: '' },
+          { exp: 1, pre: 'K' },
+          { exp: 2, pre: 'M' },
         ],
       },
     });
