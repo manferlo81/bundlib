@@ -6,14 +6,6 @@ import { booleanOptions } from './options/boolean';
 import { createFlags } from './options/flags';
 import type { ProgramOptions } from './options/option-types';
 
-const logWatchOptionsWarning = (r: string) => {
-  logWarning(`Using the ${greenBright('--watch, -w')} option is deprecated. ${r}.`);
-};
-
-const logDoubleWatchOptionsWarning = () => {
-  logWarning(`You should not use the ${greenBright('--watch, -w')} option on the ${greenBright('watch')} command. In the future this will fail.`);
-};
-
 export function handleCLI(action: (options: ProgramOptions) => void | Promise<void>): void {
 
   const program = createCommand();
@@ -37,7 +29,7 @@ export function handleCLI(action: (options: ProgramOptions) => void | Promise<vo
 
     // warn if `watch` options is being used
     if (opts.watch) {
-      logWatchOptionsWarning(`Please use the ${greenBright('watch')} command to run in watch mode`);
+      logWarning(`Using the ${greenBright('--watch, -w')} option is deprecated. Please use the ${greenBright('watch')} command to run in watch mode.`);
       logInfo('');
     }
 
@@ -53,7 +45,7 @@ export function handleCLI(action: (options: ProgramOptions) => void | Promise<vo
 
     // warn if `watch` options is being used
     if (opts.watch) {
-      logDoubleWatchOptionsWarning();
+      logWarning(`You are using the deprecated ${greenBright('--watch, -w')} option on the ${greenBright('watch')} command. We'll ignore it this time but this will fail in the future.`);
       logInfo('');
     }
 
