@@ -1,5 +1,5 @@
 import type { BundlibConfig } from '../types/bundlib-options';
 
-export function config(config: BundlibConfig): BundlibConfig {
+export function defineConfig(config: BundlibConfig): BundlibConfig {
   return config;
 }

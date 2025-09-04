@@ -59,6 +59,7 @@ An automatic library bundler powered by [Rollup.js](https://github.com/rollup/ro
     * [function `analyzePkg`](#function-analyzepkg)
     * [function `pkgToConfigs`](#function-pkgtoconfigs)
     * [function `configsFromPkg`](#function-configsfrompkg)
+    * [function `defineConfig`](#function-defineconfig-alias-config)
   * [Types](#types)
     * [type `BundlibConfig`](#type-bundlibconfig)
     * [type `PkgAnalyzed`](#type-pkganalyzed)
@@ -647,12 +648,12 @@ async function configsFromPkg(
 
 If `pkg` not provided it will be read from the current working directory `cwd`.
 
-### function config
+### function `defineConfig` ( alias: `config` )
 
 A function that returns it's only argument. It helps to have code completion and type check when using javascript config file.  See example.
 
 ```typescript
-function config(config: BundlibConfig): BundlibConfig;
+function defineConfig(config: BundlibConfig): BundlibConfig;
 ```
 
 * *Example*
@@ -672,9 +673,11 @@ export default {
 ... You can improve your experience by using this helper function... when using vscode, for example, it will type check and autocomplete your config file while you type.
 
 ```javascript
-import { config } from 'bundlib';
+// bundlib.config.js
 
-export default config({
+import { defineConfig } from 'bundlib';
+
+export default defineConfig({
   input: 'src/index.js',
   interop: true,
   // ... the rest of your config here
