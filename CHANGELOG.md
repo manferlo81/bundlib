@@ -2,6 +2,13 @@
 
 ## Version History
 
+### [0.21.6](https://github.com/manferlo81/bundlib/compare/v0.21.5...v0.21.6) (2025-09-04)
+
+
+### Bug Fixes
+
+* **cli:** Fix bug where `build` command doesn't respect `--watch` option ([#1657](https://github.com/manferlo81/bundlib/issues/1657)) ([75cde62](https://github.com/manferlo81/bundlib/commit/75cde6247cabeeb25f0d77d4da4e07847906f88f))
+
 ### [0.21.5](https://github.com/manferlo81/bundlib/compare/v0.21.4...v0.21.5) (2025-09-04)
 
 
