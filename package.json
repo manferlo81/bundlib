@@ -55,7 +55,7 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@babel/core": "^7.27.1",
+    "@babel/core": "^7.28.3",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-buble": "^1.0.3",
     "@rollup/plugin-commonjs": "^28.0.3",
@@ -80,7 +80,7 @@
     "slash": "^3.0.0"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.27.2",
+    "@babel/preset-env": "^7.28.3",
     "@eslint/js": "^9.34.0",
     "@stylistic/eslint-plugin": "^5.3.1",
     "@types/babel__core": "^7.20.5",
@@ -88,7 +88,7 @@
     "@types/mock-fs": "^4.13.4",
     "@types/node": "^24.3.1",
     "chokidar": "^4.0.3",
-    "core-js": "^3.42.0",
+    "core-js": "^3.45.1",
     "eslint": "^9.34.0",
     "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-import-x": "^4.16.1",
