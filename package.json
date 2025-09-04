@@ -46,8 +46,7 @@
     "clean-build": "run-s clean ci-build",
     "prerelease": "run-s clean-build",
     "release": "standard-version",
-    "prerelease-dry": "run-s clean-build",
-    "release-dry": "standard-version --dry-run",
+    "dry-release": "standard-version --dry-run",
     "prepare": "husky"
   },
   "bundlib": "./bundlib.config.ts",
