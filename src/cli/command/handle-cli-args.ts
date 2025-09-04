@@ -22,7 +22,7 @@ export function handleCLI(action: (options: ProgramOptions) => void | Promise<vo
     },
   );
 
-  const buildAction = async () => {
+  const buildAction = async (useWatchOption: boolean) => {
 
     // get all options
     const opts = program.opts<ProgramOptions>();
@@ -33,8 +33,11 @@ export function handleCLI(action: (options: ProgramOptions) => void | Promise<vo
       logInfo('');
     }
 
+    // remove `watch` option if necessary
+    const buildOptions: ProgramOptions = useWatchOption ? opts : { ...opts, watch: false };
+
     // call action
-    await action(opts);
+    await action(buildOptions);
 
   };
 
@@ -49,25 +52,30 @@ export function handleCLI(action: (options: ProgramOptions) => void | Promise<vo
       logInfo('');
     }
 
-    // force `dev` and `watch` options
-    const devOptions: ProgramOptions = { dev: true, ...opts, watch: true };
+    // force `watch` option
+    const devOptions: ProgramOptions = { ...opts, watch: true };
 
     // call action
     await action(devOptions);
   };
 
+  // build action
   program
     .command('build')
     .description('Build your library for production')
-    .action(buildAction);
+    .action(() => buildAction(false));
 
+  // watch action
   program
     .command('watch')
     .description('Starts Bundlib in watch mode')
     .action(watchAction);
 
-  program.action(buildAction);
+  // Default action (build)
+  program
+    .action(() => buildAction(true));
 
+  // parse args
   void program.parseAsync(process.argv, { from: 'node' });
 
 }

@@ -41,7 +41,7 @@
     "test-watch": "jest --color -w 3 --watch-all",
     "help": "ts-node src/cli -h",
     "build": "ts-node src/cli build -d",
-    "dev": "ts-node src/cli watch",
+    "dev": "ts-node src/cli watch -d",
     "ci-build": "run-s lint test build",
     "clean-build": "run-s clean ci-build",
     "prerelease": "run-s clean-build",
