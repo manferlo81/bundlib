@@ -2,6 +2,15 @@
 
 ## Version History
 
+### [0.21.5](https://github.com/manferlo81/bundlib/compare/v0.21.4...v0.21.5) (2025-09-04)
+
+
+### Features
+
+* export `defineConfig` function ([#1655](https://github.com/manferlo81/bundlib/issues/1655)) ([25eede7](https://github.com/manferlo81/bundlib/commit/25eede7d93efd9109f361ad3d9e065fd664c77ac))
+* Implement `build` and `watch` cli commands ([#1443](https://github.com/manferlo81/bundlib/issues/1443)) ([4377b15](https://github.com/manferlo81/bundlib/commit/4377b15ccb482798c6ef4b0a2eb690873ca713d9))
+* Resolve selective options as function ([83beb2e](https://github.com/manferlo81/bundlib/commit/83beb2e53666521922c19dfe06a826049a038776))
+
 ### [0.21.4](https://github.com/manferlo81/bundlib/compare/v0.21.3...v0.21.4) (2024-10-10)
 
 ### Bug Fixes

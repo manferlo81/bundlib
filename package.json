@@ -1,7 +1,7 @@
 {
   "name": "bundlib",
   "displayName": "Bundlib",
-  "version": "0.21.4",
+  "version": "0.21.5",
   "description": "An automatic library bundler powered by Rollup.js.",
   "keywords": [
     "library",
