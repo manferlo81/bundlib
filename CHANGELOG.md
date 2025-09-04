@@ -2,6 +2,13 @@
 
 ## Version History
 
+### [0.21.7](https://github.com/manferlo81/bundlib/compare/v0.21.6...v0.21.7) (2025-09-04)
+
+
+### Bug Fixes
+
+* Don't watch on build command ([#1658](https://github.com/manferlo81/bundlib/issues/1658)) ([6e66095](https://github.com/manferlo81/bundlib/commit/6e66095566fbbd13104b9b7dfa80c4c4c6f817bf))
+
 ### [0.21.6](https://github.com/manferlo81/bundlib/compare/v0.21.5...v0.21.6) (2025-09-04)
 
 
