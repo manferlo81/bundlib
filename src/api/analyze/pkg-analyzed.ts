@@ -31,11 +31,11 @@ export interface Dependencies {
   peer: AllowNull<PkgJsonDependencies>;
 }
 
-type OptionalModulesKeys =
-  | 'babel'
-  | 'eslint'
-  | 'chokidar'
-  | 'typescript';
+type OptionalModulesKeys
+  = | 'babel'
+    | 'eslint'
+    | 'chokidar'
+    | 'typescript';
 
 interface OptionalModulesMap {
   babel: '@babel/core';
