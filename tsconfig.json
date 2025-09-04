@@ -5,7 +5,6 @@
     "__mocks__",
     "src",
     "package.json",
-    "jest.config.ts",
     "bundlib.config.ts"
   ],
   "ts-node": {

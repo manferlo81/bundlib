@@ -1,4 +1,3 @@
-import type { JestConfigWithTsJest } from 'ts-jest';
 import { createDefaultPreset } from 'ts-jest';
 
 const { COVERAGE: COVERAGE_ENV } = process.env;
@@ -9,7 +8,8 @@ const typescriptJestPreset = createDefaultPreset({
   tsconfig: './tsconfig.test.json',
 });
 
-const config: JestConfigWithTsJest = {
+/** @type { import('ts-jest').JestConfigWithTsJest } */
+const config = {
   ...typescriptJestPreset,
 
   clearMocks: true,
