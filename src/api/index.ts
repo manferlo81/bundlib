@@ -11,7 +11,7 @@ export type {
 } from './analyze/pkg-analyzed';
 export { bundlib } from './bundlib';
 export { configsFromPkg } from './configs-from-pkg';
-export { config } from './functions/config';
+export { defineConfig as config, defineConfig } from './functions/define-config';
 export type {
   BundlibPkgJson,
   PkgJsonDependencies,

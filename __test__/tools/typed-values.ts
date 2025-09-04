@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-type-conversion */
+
 export const falsyNumbers = [
   0,
   NaN,

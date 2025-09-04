@@ -3,7 +3,9 @@ import { colorizeMessage } from '../tools/colors';
 
 describe(colorizeMessage('keysCheck function'), () => {
 
-  const check = (obj: Record<string, unknown>) => keysCheck(obj, (key): key is ('pizza' | 'tea') => {
+  type ValidFood = 'pizza' | 'tea';
+
+  const check = (obj: Record<string, unknown>) => keysCheck(obj, (key): key is ValidFood => {
     return key === 'pizza' || key === 'tea';
   });
 
