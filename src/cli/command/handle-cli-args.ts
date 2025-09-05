@@ -6,7 +6,7 @@ import { booleanOptions } from './options/boolean';
 import { createFlags } from './options/flags';
 import type { ProgramOptions } from './options/option-types';
 
-export function handleCLI(action: (options: ProgramOptions) => void | Promise<void>): void {
+function createProgram() {
 
   const program = createCommand();
 
@@ -21,6 +21,14 @@ export function handleCLI(action: (options: ProgramOptions) => void | Promise<vo
       program.option(createFlags(flag), desc);
     },
   );
+
+  return program;
+
+}
+
+export function handleCLI(action: (options: ProgramOptions) => void | Promise<void>): void {
+
+  const program = createProgram();
 
   const buildAction = async (useWatchOption: boolean) => {
 
@@ -59,11 +67,14 @@ export function handleCLI(action: (options: ProgramOptions) => void | Promise<vo
     await action(devOptions);
   };
 
+  const buildActionIgnoreWatchOption = () => buildAction(false);
+  const buildActionUseWatchOption = () => buildAction(true);
+
   // build action
   program
     .command('build')
     .description('Build your library for production')
-    .action(() => buildAction(false));
+    .action(buildActionIgnoreWatchOption);
 
   // watch action
   program
@@ -73,9 +84,10 @@ export function handleCLI(action: (options: ProgramOptions) => void | Promise<vo
 
   // Default action (build)
   program
-    .action(() => buildAction(true));
+    .action(buildActionUseWatchOption);
 
   // parse args
-  void program.parseAsync(process.argv, { from: 'node' });
+  const argv = process.argv.slice(2);
+  void program.parseAsync(argv, { from: 'user' });
 
 }
