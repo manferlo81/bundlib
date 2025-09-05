@@ -1,39 +1,13 @@
-import { createCommand } from 'commander';
-import { name as bundlibCommandName, description, version } from '../../../package.json';
 import { greenBright } from '../tools/colors';
 import { logInfo, logWarning } from '../tools/console';
-import { booleanOptions } from './options/boolean';
-import { createFlags } from './options/flags';
-import type { ProgramOptions } from './options/option-types';
+import type { ActionWithOptions, ProgramOptions } from './options/option-types';
+import { createProgram, registerCommand, setCommandAction } from './program';
 
-function createProgram() {
-
-  const program = createCommand();
-
-  program
-    .name(bundlibCommandName)
-    .description(description)
-    .version(version, createFlags('version'))
-    .helpOption(createFlags('help'), 'display this help screen');
-
-  booleanOptions.forEach(
-    ({ flag, desc }) => {
-      program.option(createFlags(flag), desc);
-    },
-  );
-
-  return program;
-
-}
-
-export function handleCLI(action: (options: ProgramOptions) => void | Promise<void>): void {
+export async function handleCLI(argv: string[], action: ActionWithOptions) {
 
   const program = createProgram();
 
-  const buildAction = async (useWatchOption: boolean) => {
-
-    // get all options
-    const opts = program.opts<ProgramOptions>();
+  const buildAction = async (opts: ProgramOptions, useWatchOption: boolean) => {
 
     // warn if `watch` options is being used
     if (opts.watch) {
@@ -41,18 +15,15 @@ export function handleCLI(action: (options: ProgramOptions) => void | Promise<vo
       logInfo('');
     }
 
-    // remove `watch` option if necessary
-    const buildOptions: ProgramOptions = useWatchOption ? opts : { ...opts, watch: false };
+    // force `watch` option to false
+    const options: ProgramOptions = useWatchOption ? opts : { ...opts, watch: false };
 
     // call action
-    await action(buildOptions);
+    await action(options);
 
   };
 
-  const watchAction = async () => {
-
-    // get all options
-    const opts = program.opts<ProgramOptions>();
+  const watchAction: ActionWithOptions = async (opts) => {
 
     // warn if `watch` options is being used
     if (opts.watch) {
@@ -61,33 +32,40 @@ export function handleCLI(action: (options: ProgramOptions) => void | Promise<vo
     }
 
     // force `watch` option
-    const devOptions: ProgramOptions = { ...opts, watch: true };
+    const options: ProgramOptions = { ...opts, watch: true };
 
     // call action
-    await action(devOptions);
+    await action(options);
   };
 
-  const buildActionIgnoreWatchOption = () => buildAction(false);
-  const buildActionUseWatchOption = () => buildAction(true);
+  const buildActionIgnoreWatchOption: ActionWithOptions = (opts) => buildAction(opts, false);
+  const buildActionUseWatchOption: ActionWithOptions = (opts) => buildAction(opts, true);
 
   // build action
-  program
-    .command('build')
-    .description('Build your library for production')
-    .action(buildActionIgnoreWatchOption);
+  registerCommand(
+    program,
+    'build',
+    'Build your library for production',
+    buildActionIgnoreWatchOption,
+  );
 
   // watch action
-  program
-    .command('watch')
-    .description('Starts Bundlib in watch mode')
-    .action(watchAction);
+  registerCommand(
+    program,
+    'watch',
+    'Starts Bundlib in watch mode',
+    watchAction,
+  );
 
   // Default action (build)
-  program
-    .action(buildActionUseWatchOption);
+  setCommandAction(
+    program,
+    buildActionUseWatchOption,
+    program,
+  );
 
   // parse args
-  const argv = process.argv.slice(2);
-  void program.parseAsync(argv, { from: 'user' });
+  // const argv = process.argv.slice(2);
+  return await program.parseAsync(argv, { from: 'user' });
 
 }
