@@ -1,9 +1,10 @@
 import { greenBright } from '../tools/colors';
-import { logInfo, logWarning } from '../tools/console';
+import type { LogFunction } from '../tools/console';
+import { consoleLog as defaultConsoleLog, consoleWarn as defaultConsoleWarn, logInfo, logWarning } from '../tools/console';
 import type { ActionWithOptions, ProgramOptions } from './options/option-types';
 import { createProgram, registerCommand, setCommandAction } from './program';
 
-export async function handleCLI(argv: string[], action: ActionWithOptions) {
+export async function handleCLI(argv: string[], action: ActionWithOptions, consoleLog: LogFunction = defaultConsoleLog, consoleWarn: LogFunction = defaultConsoleWarn) {
 
   const program = createProgram();
 
@@ -11,8 +12,8 @@ export async function handleCLI(argv: string[], action: ActionWithOptions) {
 
     // warn if `watch` options is being used
     if (opts.watch) {
-      logWarning(`Using the ${greenBright('--watch, -w')} option is deprecated. Please use the ${greenBright('watch')} command to run in watch mode.`);
-      logInfo('');
+      logWarning(consoleWarn, `Using the ${greenBright('--watch, -w')} option is deprecated. Please use the ${greenBright('watch')} command to run in watch mode.`);
+      logInfo(consoleLog, '');
     }
 
     // force `watch` option to false
@@ -27,8 +28,8 @@ export async function handleCLI(argv: string[], action: ActionWithOptions) {
 
     // warn if `watch` options is being used
     if (opts.watch) {
-      logWarning(`You are using the deprecated ${greenBright('--watch, -w')} option on the ${greenBright('watch')} command. We'll ignore it this time but this will fail in the future.`);
-      logInfo('');
+      logWarning(consoleWarn, `You are using the deprecated ${greenBright('--watch, -w')} option on the ${greenBright('watch')} command. We'll ignore it this time but this will fail in the future.`);
+      logInfo(consoleLog, '');
     }
 
     // force `watch` option

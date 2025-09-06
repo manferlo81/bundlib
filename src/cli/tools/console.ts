@@ -2,26 +2,29 @@ import type { RollupError } from 'rollup';
 import type { Chalk } from './colors';
 import { cyan, green, red, yellow } from './colors';
 
-const { log: consoleLog, warn: consoleWarn, error: consoleError } = console as unknown as Record<string, (msg: string) => void>;
+export type LogFunction = (mgs: string) => void;
 
-export function logInfo(...messages: string[]): void {
+type SimpleConsole = Record<Extract<keyof Console, 'log' | 'warn' | 'error'>, LogFunction>;
+export const { log: consoleLog, warn: consoleWarn, error: consoleError } = console as SimpleConsole;
+
+export function logInfo(fn: LogFunction, ...messages: string[]): void {
   messages.forEach((message) => {
-    consoleLog(cyan(message));
+    fn(cyan(message));
   });
 }
 
-export function logWarning(message: string): void {
+export function logWarning(fn: LogFunction, message: string): void {
   const warningTag = consoleTag('WARNING', yellow);
-  consoleWarn(`${warningTag} ${yellow(message)}`);
+  fn(`${warningTag} ${yellow(message)}`);
 }
 
-export function logError(err: RollupError | Error): void {
+export function logError(fn: LogFunction, err: RollupError | Error): void {
   const errorTag = consoleTag('ERROR', red);
-  consoleError(`${errorTag} ${red(err.message || err)}`);
-  consoleLog('');
+  fn(`${errorTag} ${red(err.message || err)}`);
+  fn('');
   if (err.stack) {
-    consoleError(err.stack);
-    consoleLog('');
+    fn(err.stack);
+    fn('');
   }
 }
 

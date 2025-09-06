@@ -13,7 +13,8 @@ import { binaryPlugins, bublePlugin, optionalPlugins } from './optional-modules'
 import { rollupBuild } from './rollup/build';
 import { rollupWatchBuild } from './rollup/watch';
 import { cyan, green, magenta, yellow } from './tools/colors';
-import { consoleTag, formatProjectInfo, logError, logInfo, logWarning } from './tools/console';
+import type { LogFunction } from './tools/console';
+import { consoleError, consoleLog, consoleTag, consoleWarn, formatProjectInfo, logError, logInfo, logWarning } from './tools/console';
 import type { BundlibEventMap } from './types/types';
 
 function getDetections(analyzed: PkgAnalyzed, watchMode?: boolean): string[] {
@@ -46,8 +47,8 @@ export async function action(options: ProgramOptions): Promise<void> {
 
   // log warning if NodeJS version is lower than 18
   if (+nodeMajorVersion < 18) {
-    logWarning(`You are running NodeJS v${nodeVersion}. This version is not officially supported. If you experience any issue, please install NodeJS 18 or greater.`);
-    logInfo('');
+    logWarning(consoleWarn, `You are running NodeJS v${nodeVersion}. This version is not officially supported. If you experience any issue, please install NodeJS 18 or greater.`);
+    logInfo(consoleLog, '');
   }
 
   // get current working directory
@@ -62,14 +63,14 @@ export async function action(options: ProgramOptions): Promise<void> {
   const { dev: developmentMode, watch: watchMode, silent: silentMode } = options;
 
   // create FATAL error handler
-  const logErrorAndExit = (err: RollupError | Error) => {
-    logError(err);
+  const logErrorAndExit = (fn: LogFunction, err: RollupError | Error) => {
+    logError(fn, err);
     process.exit(1);
   };
 
   const handleError = watchMode
-    ? logError
-    : logErrorAndExit;
+    ? (err: RollupError | Error) => { logError(consoleError, err); }
+    : (err: RollupError | Error) => logErrorAndExit(consoleError, err);
 
   // create event emitter
   const emitter = new EventEmitter<BundlibEventMap>();
@@ -81,17 +82,17 @@ export async function action(options: ProgramOptions): Promise<void> {
   if (!silentMode) {
 
     // show Bundlib version
-    logInfo(formatProjectInfo(bundlibName, bundlibVersion));
+    logInfo(consoleLog, formatProjectInfo(bundlibName, bundlibVersion));
 
     // show NodeJS version
-    logInfo(formatProjectInfo('NodeJS', nodeVersion), '');
+    logInfo(consoleLog, formatProjectInfo('NodeJS', nodeVersion), '');
 
     const { name: projectName, displayName, version: projectVersion } = pkg;
     const projectDisplayName = displayName ?? projectName;
 
     // show current project info
     if (projectDisplayName && projectVersion) {
-      logInfo(`building: ${formatProjectInfo(projectDisplayName, projectVersion)}`, '');
+      logInfo(consoleLog, `building: ${formatProjectInfo(projectDisplayName, projectVersion)}`, '');
     }
 
     // get detections
@@ -99,11 +100,11 @@ export async function action(options: ProgramOptions): Promise<void> {
 
     // show detections
     detections.forEach((message) => {
-      logInfo(message);
+      logInfo(consoleLog, message);
     });
 
     // log an empty line if any detection found
-    if (detections.length > 0) logInfo('');
+    if (detections.length > 0) logInfo(consoleLog, '');
 
     // create file size formatter
     const formatFileSize = createFormatter({
@@ -133,7 +134,7 @@ export async function action(options: ProgramOptions): Promise<void> {
       const coloredDuration = magenta.bold(prettyMs(duration, { secondsDecimalDigits: 2 }));
       const info = `( ${coloredSize} in ${coloredDuration} )`;
 
-      logInfo(`${builtTag} ${path} ${info}`);
+      logInfo(consoleLog, `${builtTag} ${path} ${info}`);
     });
 
     // declare "warning" handler
@@ -145,7 +146,7 @@ export async function action(options: ProgramOptions): Promise<void> {
         ? `[ ${cyan('plugin')}: ${magenta.bold(plugin)} ] `
         : '';
 
-      logWarning(`${pluginInfo}${message}`);
+      logWarning(consoleWarn, `${pluginInfo}${message}`);
 
     });
 
@@ -154,12 +155,12 @@ export async function action(options: ProgramOptions): Promise<void> {
 
       // show "waiting" message after every build process is finished
       emitter.on(EVENT_END, () => {
-        logInfo('', 'waiting for changes...');
+        logInfo(consoleLog, '', 'waiting for changes...');
       });
 
       // show "rebuilding" message when a file changed
       emitter.on(EVENT_REBUILD, () => {
-        logInfo('rebuilding...', '');
+        logInfo(consoleLog, 'rebuilding...', '');
       });
 
     }

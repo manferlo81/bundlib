@@ -24,14 +24,34 @@ describe('handleCLI function', () => {
 
     test('should pass watch if -w options set', async () => {
       const action = jest.fn();
-      await handleCLI(['-w'], action);
+      const consoleLog = jest.fn();
+      const consoleWarn = jest.fn();
+
+      await handleCLI(['-w'], action, consoleLog, consoleWarn);
+
       expect(action).toHaveBeenCalledWith({ watch: true });
+
+      expect(consoleWarn).toHaveBeenCalledTimes(1);
+      expect(consoleWarn).toHaveBeenCalledWith(expect.stringContaining('WARNING'));
+
+      expect(consoleLog).toHaveBeenCalledTimes(1);
+      expect(consoleLog).toHaveBeenCalledWith('');
     });
 
     test('should pass watch if --watch options set', async () => {
       const action = jest.fn();
-      await handleCLI(['--watch'], action);
+      const consoleLog = jest.fn();
+      const consoleWarn = jest.fn();
+
+      await handleCLI(['--watch'], action, consoleLog, consoleWarn);
+
       expect(action).toHaveBeenCalledWith({ watch: true });
+
+      expect(consoleWarn).toHaveBeenCalledTimes(1);
+      expect(consoleWarn).toHaveBeenCalledWith(expect.stringContaining('WARNING'));
+
+      expect(consoleLog).toHaveBeenCalledTimes(1);
+      expect(consoleLog).toHaveBeenCalledWith('');
     });
 
     test('should pass watch if -s options set', async () => {
@@ -70,14 +90,34 @@ describe('handleCLI function', () => {
 
     test('should force watch option to false even if -w options set', async () => {
       const action = jest.fn();
-      await handleCLI(['build', '-w'], action);
+      const consoleLog = jest.fn();
+      const consoleWarn = jest.fn();
+
+      await handleCLI(['build', '-w'], action, consoleLog, consoleWarn);
+
       expect(action).toHaveBeenCalledWith({ watch: false });
+
+      expect(consoleWarn).toHaveBeenCalledTimes(1);
+      expect(consoleWarn).toHaveBeenCalledWith(expect.stringContaining('WARNING'));
+
+      expect(consoleLog).toHaveBeenCalledTimes(1);
+      expect(consoleLog).toHaveBeenCalledWith('');
     });
 
     test('should force watch option to false even if --watch options set', async () => {
       const action = jest.fn();
-      await handleCLI(['build', '--watch'], action);
+      const consoleLog = jest.fn();
+      const consoleWarn = jest.fn();
+
+      await handleCLI(['build', '--watch'], action, consoleLog, consoleWarn);
+
       expect(action).toHaveBeenCalledWith({ watch: false });
+
+      expect(consoleWarn).toHaveBeenCalledTimes(1);
+      expect(consoleWarn).toHaveBeenCalledWith(expect.stringContaining('WARNING'));
+
+      expect(consoleLog).toHaveBeenCalledTimes(1);
+      expect(consoleLog).toHaveBeenCalledWith('');
     });
 
     test('should force watch option to false even if -s options set', async () => {
@@ -116,14 +156,34 @@ describe('handleCLI function', () => {
 
     test('should pass watch option even if -w options set', async () => {
       const action = jest.fn();
-      await handleCLI(['watch', '-w'], action);
+      const consoleLog = jest.fn();
+      const consoleWarn = jest.fn();
+
+      await handleCLI(['watch', '-w'], action, consoleLog, consoleWarn);
+
       expect(action).toHaveBeenCalledWith({ watch: true });
+
+      expect(consoleWarn).toHaveBeenCalledTimes(1);
+      expect(consoleWarn).toHaveBeenCalledWith(expect.stringContaining('WARNING'));
+
+      expect(consoleLog).toHaveBeenCalledTimes(1);
+      expect(consoleLog).toHaveBeenCalledWith('');
     });
 
     test('should pass watch option even if --watch options set', async () => {
       const action = jest.fn();
-      await handleCLI(['watch', '--watch'], action);
+      const consoleLog = jest.fn();
+      const consoleWarn = jest.fn();
+
+      await handleCLI(['watch', '--watch'], action, consoleLog, consoleWarn);
+
       expect(action).toHaveBeenCalledWith({ watch: true });
+
+      expect(consoleWarn).toHaveBeenCalledTimes(1);
+      expect(consoleWarn).toHaveBeenCalledWith(expect.stringContaining('WARNING'));
+
+      expect(consoleLog).toHaveBeenCalledTimes(1);
+      expect(consoleLog).toHaveBeenCalledWith('');
     });
 
     test('should pass watch option even if -s options set', async () => {
