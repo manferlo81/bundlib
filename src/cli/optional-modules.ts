@@ -1,7 +1,7 @@
 import type { OptionalModules } from '../api';
-import type { ExcludeFrom } from '../api/types/helper-types';
+import type { ExcludeStrict } from '../api/types/helper-types';
 
-export type OptionalModulePlugin = ExcludeFrom<OptionalModules, 'chokidar'>;
+export type OptionalModulePlugin = ExcludeStrict<OptionalModules, 'chokidar'>;
 
 export const optionalPlugins: Record<OptionalModulePlugin, string> = {
   '@babel/core': '@rollup/plugin-babel',

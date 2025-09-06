@@ -1,5 +1,5 @@
-import { createIsExternal } from '../src/api/tools/create-is-external';
-import { colorizeMessage } from './tools/colors';
+import { createIsExternal } from '../../src/api/tools/create-is-external';
+import { colorizeMessage } from '../tools/colors';
 
 describe(colorizeMessage('createIsExternal function'), () => {
 
