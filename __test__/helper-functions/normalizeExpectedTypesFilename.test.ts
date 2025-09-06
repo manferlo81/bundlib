@@ -4,7 +4,7 @@ import { normalizeExpectedTypesFilename } from '../../src/api/tools/normalize-ty
 describe('normalizeExpectedTypesFilename function', () => {
 
   test('Should return normalized file name from file path', () => {
-    const cwd = 'c:/directory/project';
+    const cwd = process.cwd();
     const paths = [
       'types/index.d.ts',
       'types/types.d.ts',
@@ -18,7 +18,7 @@ describe('normalizeExpectedTypesFilename function', () => {
   });
 
   test('Should return normalized file name from directory path', () => {
-    const cwd = 'c:/directory/project';
+    const cwd = process.cwd();
     const paths = [
       'types',
       './types',

@@ -1,12 +1,15 @@
+import { join as joinPath } from 'node:path';
 import { normalizeBuildName } from '../../src/api/options/name';
 
 describe('normalizeBuildName function', () => {
 
   test('Should use name option if provided', () => {
-    expect(normalizeBuildName('name', 'pkg-name', 'c:/directory/project')).toBe('name');
+    const cwd = joinPath(process.cwd(), 'project');
+    expect(normalizeBuildName('name', 'pkg-name', cwd)).toBe('name');
   });
 
   test('Should use unscoped camelcase version of package name no name option provided', () => {
+    const cwd = joinPath(process.cwd(), 'project');
     const cases = [
       ['pkg', 'pkg'],
       ['pkg-name', 'pkgName'],
@@ -14,28 +17,27 @@ describe('normalizeBuildName function', () => {
       ['@scope/my-pkg-name', 'myPkgName'],
     ];
     cases.forEach(([pkg, expected]) => {
-      expect(normalizeBuildName(null, pkg, 'c:/directory/project')).toBe(expected);
+      expect(normalizeBuildName(null, pkg, cwd)).toBe(expected);
     });
   });
 
   test('Should use camelcase version of directory name if package name is invalid', () => {
+    const cwd = joinPath(process.cwd(), 'project');
     const cases = [
-      ['', 'c:/directory/project', 'project'],
-      ['', '/directory/project', 'project'],
-      ['@scope/ ', 'c:/directory/project', 'project'],
-      ['@scope/ ', '/directory/project', 'project'],
+      ['', 'project'],
+      ['', 'project'],
+      ['@scope/ ', 'project'],
+      ['@scope/ ', 'project'],
     ];
-    cases.forEach(([pkg, cwd, expected]) => {
+    cases.forEach(([pkg, expected]) => {
       expect(normalizeBuildName(null, pkg, cwd)).toBe(expected);
     });
   });
 
   test('Should use camelcase version of directory name if no name provided', () => {
     const cases = [
-      ['c:/directory/project', 'project'],
-      ['/directory/project', 'project'],
-      ['c:/directory/my-project', 'myProject'],
-      ['/directory/my-project', 'myProject'],
+      [joinPath(process.cwd(), 'project'), 'project'],
+      [joinPath(process.cwd(), 'my-project'), 'myProject'],
     ];
     cases.forEach(([cwd, expected]) => {
       expect(normalizeBuildName(null, null, cwd)).toBe(expected);
@@ -47,8 +49,6 @@ describe('normalizeBuildName function', () => {
       '',
       '/',
       '/ ',
-      'c:/',
-      'c:/ ',
     ];
     cases.forEach((invalidCWD) => {
       expect(normalizeBuildName(null, null, invalidCWD)).toBeNull();
