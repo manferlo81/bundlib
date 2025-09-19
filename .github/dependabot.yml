@@ -13,3 +13,38 @@ updates:
 
     assignees:
       - manferlo81
+
+    groups:
+      eslint:
+        dependency-type: development
+        patterns:
+          - eslint
+          - "@eslint/*"
+          - eslint-plugin-*
+          - "@*/eslint-plugin"
+          - typescript-eslint
+          - globals
+
+      test:
+        dependency-type: development
+        patterns:
+          - jest
+          - ts-jest
+
+      babel:
+        patterns:
+          - "@babel/*"
+          - core-js
+
+      types:
+        dependency-type: development
+        patterns:
+          - "@types/*"
+
+      others:
+        dependency-type: development
+        patterns:
+          - husky
+          - npm-run-all
+          - rimraf
+          - chokidar
