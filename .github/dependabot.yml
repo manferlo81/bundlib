@@ -15,6 +15,13 @@ updates:
       - manferlo81
 
     groups:
+      rollup:
+        dependency-type: production
+        patterns:
+          - rollup
+          - "@rollup/plugin-*"
+          - rollup-plugin-*
+
       eslint:
         dependency-type: development
         patterns:
