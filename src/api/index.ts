@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-deprecated */
 export { compatibilityAnalyzePkg as analyzePkg } from './analyze/analyze';
 export type {
   BrowserBuildOptions,
