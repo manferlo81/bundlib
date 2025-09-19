@@ -170,7 +170,7 @@ export function pkgToConfigs(
         },
         tsconfigOverride: {
           compilerOptions: {
-            module: 'ESNext',
+            module: 'esnext',
             sourceMap: sourcemap,
             declaration: !!declarationDir,
             ...declarationDir ? { declarationDir } : { declarationMap: false },
@@ -192,8 +192,52 @@ export function pkgToConfigs(
             babelHelpers: 'bundled',
           })
         : pluginBuble({
+            include,
+            exclude,
             objectAssign: true,
-            transforms: { dangerousForOf: true },
+            transforms: {
+              arrow: true,
+              classes: true,
+              computedProperty: true,
+              conciseMethodProperty: true,
+              defaultParameter: true,
+              destructuring: true,
+              letConst: true,
+              numericLiteral: true,
+              parameterDestructuring: true,
+              reservedProperties: true,
+              spreadRest: true,
+              unicodeRegExp: true,
+
+              // For of
+              forOf: true,
+              dangerousForOf: true,
+
+              // Template string
+              templateString: true,
+              dangerousTaggedTemplateString: true,
+
+              // Following transforms are in the types but NOT implemented yet by buble
+              // ...so we disable them...
+              generator: false,
+              stickyRegExp: false,
+
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-expect-error
+
+              // Following transforms are implemented but not added to the types yet
+              // ...so we force them into the config...
+              exponentiation: true,
+              trailingFunctionCommas: true,
+              objectRestSpread: true,
+
+              // Following transforms are neither implemented nor added to the types
+              // ...so we explicitly disable them...
+              asyncAwait: false,
+              getterSetter: false,
+              moduleImport: false,
+              moduleExport: false,
+            },
           }),
 
       isBinaryBuild && pluginAddShebang({
