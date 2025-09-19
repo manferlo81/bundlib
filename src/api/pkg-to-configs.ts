@@ -192,6 +192,7 @@ export function pkgToConfigs(
             babelHelpers: 'bundled',
           })
         : pluginBuble({
+            objectAssign: true,
             transforms: { dangerousForOf: true },
           }),
 
