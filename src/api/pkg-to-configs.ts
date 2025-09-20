@@ -1,25 +1,18 @@
-import pluginBabel from '@rollup/plugin-babel';
-import pluginBuble from '@rollup/plugin-buble';
-import pluginCommonJS from '@rollup/plugin-commonjs';
-import pluginESLint from '@rollup/plugin-eslint';
-import pluginJSON from '@rollup/plugin-json';
-import pluginNodeResolve from '@rollup/plugin-node-resolve';
-import pluginTerser from '@rollup/plugin-terser';
-import builtinModules from 'builtin-modules';
-import { basename, dirname, join as pathJoin, relative, resolve } from 'node:path';
-import type { Plugin } from 'rollup';
-import pluginAddShebang from 'rollup-plugin-add-shebang';
-import { equals as pluginEquals } from 'rollup-plugin-export-equals';
-import { stripShebang as pluginStripShebang } from 'rollup-plugin-strip-shebang';
-import pluginTypescript from 'rollup-plugin-typescript2';
-import type { PkgAnalyzed } from './analyze/pkg-analyzed';
 import { JS_EXTENSIONS, MIN_EXT_PREFIX, TS_DEF_EXT_PREFIX, TS_EXTENSIONS } from './constants/extensions';
 import { DEFAULT_CACHE_PATH } from './constants/paths';
 import { DEFAULT_NODEJS_SHEBANG } from './constants/shebang';
+
+import type { Plugin } from 'rollup';
+import type { PkgAnalyzed } from './analyze/pkg-analyzed';
+import type { AllowNull, AllowNullish, Dictionary, TypeCheckFunction } from './types/helper-types';
+import type { BundlibRollupBrowseOutputOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types/rollup';
+import type { BundlibAPIOptions } from './types/types';
+
+import builtinModules from 'builtin-modules';
+import { basename, dirname, join as pathJoin, relative, resolve } from 'node:path';
 import { error } from './errors/error';
 import { inputNotFoundMessage } from './errors/error-messages';
 import { normalizeRollupInterop } from './options/interop';
-import { pluginChunks } from './plugins/chunks';
 import { createConfig } from './tools/create-config';
 import { createIsExternal } from './tools/create-is-external';
 import { createResolveInput } from './tools/create-resolve-input';
@@ -27,9 +20,19 @@ import { fileIsTypescript } from './tools/extension-match';
 import { keys } from './tools/helpers';
 import { normalizeExpectedTypesFilename } from './tools/normalize-types-filename';
 import { renamePrefixExtension } from './tools/rename-prefix';
-import type { AllowNull, AllowNullish, Dictionary, TypeCheckFunction } from './types/helper-types';
-import type { BundlibRollupBrowseOutputOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types/rollup';
-import type { BundlibAPIOptions } from './types/types';
+
+import pluginBabel from '@rollup/plugin-babel';
+import pluginBuble from '@rollup/plugin-buble';
+import pluginCommonJS from '@rollup/plugin-commonjs';
+import pluginESLint from '@rollup/plugin-eslint';
+import pluginJSON from '@rollup/plugin-json';
+import pluginNodeResolve from '@rollup/plugin-node-resolve';
+import pluginTerser from '@rollup/plugin-terser';
+import pluginAddShebang from 'rollup-plugin-add-shebang';
+import { equals as pluginEquals } from 'rollup-plugin-export-equals';
+import { stripShebang as pluginStripShebang } from 'rollup-plugin-strip-shebang';
+import pluginTypescript from 'rollup-plugin-typescript2';
+import { pluginChunks } from './plugins/chunks';
 
 // TODO: make this function asynchronous
 // to allow importing only the necessary modules
