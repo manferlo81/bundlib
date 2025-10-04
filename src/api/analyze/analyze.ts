@@ -156,70 +156,70 @@ export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgA
   const mainOutput: AllowNull<ModuleBuildOptions> = !filenameCommonJSModule
     ? null
     : {
-        input: mainInput,
-        output: filenameCommonJSModule,
-        sourcemap: perBuildSourcemap.main,
-        esModule: perBuildESModule.main,
-        interop: perBuildInterop.main,
-        min: perBuildMin.main,
-        project: perBuildProject.main,
-      };
+      input: mainInput,
+      output: filenameCommonJSModule,
+      sourcemap: perBuildSourcemap.main,
+      esModule: perBuildESModule.main,
+      interop: perBuildInterop.main,
+      min: perBuildMin.main,
+      project: perBuildProject.main,
+    };
 
   const filenameESModule = !skipBuild.module && moduleOutputFile;
   const moduleOutput: AllowNull<ModuleBuildOptions> = !filenameESModule
     ? null
     : {
-        input: moduleInput,
-        output: filenameESModule,
-        sourcemap: perBuildSourcemap.module,
-        esModule: perBuildESModule.module,
-        interop: perBuildInterop.module,
-        min: perBuildMin.module,
-        project: perBuildProject.module,
-      };
+      input: moduleInput,
+      output: filenameESModule,
+      sourcemap: perBuildSourcemap.module,
+      esModule: perBuildESModule.module,
+      interop: perBuildInterop.module,
+      min: perBuildMin.module,
+      project: perBuildProject.module,
+    };
 
   const filenameBrowserModule = !skipBuild.browser && pkgBrowserField;
   const browserOutput: AllowNull<BrowserBuildOptions> = !filenameBrowserModule
     ? null
     : {
-        input: browserInput,
-        output: filenameBrowserModule,
-        sourcemap: perBuildSourcemap.browser,
-        esModule: perBuildESModule.browser,
-        interop: perBuildInterop.browser,
-        min: perBuildMin.browser,
-        format: browserFormat ?? 'umd',
-        name: normalizeBuildName(
-          browserName,
-          pkgName,
-          cwd,
-        ),
-        id: amdId ?? null,
-        globals: normalizeGlobals(browserGlobals),
-        extend: !!extend,
-        project: perBuildProject.browser,
-      };
+      input: browserInput,
+      output: filenameBrowserModule,
+      sourcemap: perBuildSourcemap.browser,
+      esModule: perBuildESModule.browser,
+      interop: perBuildInterop.browser,
+      min: perBuildMin.browser,
+      format: browserFormat ?? 'umd',
+      name: normalizeBuildName(
+        browserName,
+        pkgName,
+        cwd,
+      ),
+      id: amdId ?? null,
+      globals: normalizeGlobals(browserGlobals),
+      extend: !!extend,
+      project: perBuildProject.browser,
+    };
 
   const filenameBinaryModule = !skipBuild.bin && pkgBinField;
   const binaryOutput: AllowNull<ModuleBuildOptions> = !filenameBinaryModule
     ? null
     : {
-        input: binInput,
-        output: filenameBinaryModule,
-        sourcemap: perBuildSourcemap.bin,
-        esModule: perBuildESModule.bin,
-        interop: perBuildInterop.bin,
-        min: perBuildMin.bin,
-        project: perBuildProject.bin,
-      };
+      input: binInput,
+      output: filenameBinaryModule,
+      sourcemap: perBuildSourcemap.bin,
+      esModule: perBuildESModule.bin,
+      interop: perBuildInterop.bin,
+      min: perBuildMin.bin,
+      project: perBuildProject.bin,
+    };
 
   const filenameTypes = !skipBuild.types && typesOutputFile;
   const typesOutput: AllowNull<TypesBuildOptions> = !filenameTypes
     ? null
     : {
-        output: filenameTypes,
-        equals: !!equals,
-      };
+      output: filenameTypes,
+      equals: !!equals,
+    };
 
   const dependencies: Dependencies = {
     runtime: pkgRuntimeDependencies ?? null,

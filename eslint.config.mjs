@@ -1,13 +1,22 @@
+import { defineConfig, globalIgnores } from 'eslint/config';
 import globals from 'globals';
 
 import pluginJavascript from '@eslint/js';
 import pluginStylistic from '@stylistic/eslint-plugin';
 import { flatConfigs as pluginImportConfigs } from 'eslint-plugin-import-x';
-import { config as defineConfig, configs as pluginTypescriptConfigs } from 'typescript-eslint';
+import { configs as pluginTypescriptConfigs } from 'typescript-eslint';
+
+// Constants
+
+const PATTERN_JS = '**/*.{js,mjs,cjs}';
+const PATTERN_TS = '**/*.{ts,mts,cts}';
+
+const FILES_TS = [PATTERN_TS];
+const FILES_ALL = [PATTERN_JS, PATTERN_TS];
 
 // Javascript Plugin
 
-const rulesPluginJavascript = normalizeRules(null, {
+const rulesPluginJavascript = ruleNormalizer()({
   'no-useless-rename': 'on',
   'object-shorthand': 'on',
   'prefer-template': 'on',
@@ -15,29 +24,52 @@ const rulesPluginJavascript = normalizeRules(null, {
   eqeqeq: 'smart',
 });
 
-const configPluginJavascript = defineConfig(
-  pluginJavascript.configs.recommended,
-  { rules: rulesPluginJavascript },
-);
+const configPluginJavascript = defineConfig({
+  files: FILES_ALL,
+  rules: rulesPluginJavascript,
+  extends: [
+    pluginJavascript.configs.recommended,
+  ],
+});
+
+// Typescript Plugin
+
+const rulesPluginTypescript = ruleNormalizer({ plugin: '@typescript-eslint' })({
+  'array-type': { default: 'array-simple', readonly: 'array-simple' },
+});
+
+const configPluginTypescript = defineConfig({
+  files: FILES_TS,
+  languageOptions: { parserOptions: { projectService: true, tsconfigRootDir: import.meta.dirname } },
+  extends: [
+    pluginTypescriptConfigs.strictTypeChecked,
+    pluginTypescriptConfigs.stylisticTypeChecked,
+  ],
+  rules: rulesPluginTypescript,
+});
 
 // Import Plugin
 
-const rulesPluginImport = normalizeRules('import-x', {
+const rulesPluginImport = ruleNormalizer({ plugin: 'import-x' })({
   'consistent-type-specifier-style': 'on',
   'no-useless-path-segments': 'on',
   'no-absolute-path': 'on',
   'no-cycle': 'on',
 });
 
-const configPluginImport = defineConfig(
-  pluginImportConfigs.recommended,
-  pluginImportConfigs.typescript,
-  { rules: rulesPluginImport },
-);
+const configPluginImport = defineConfig({
+  files: FILES_ALL,
+  extends: [
+    pluginImportConfigs.recommended,
+    pluginImportConfigs.typescript,
+  ],
+  rules: rulesPluginImport,
+});
 
 // Stylistic Plugin
 
-const rulesPluginStylistic = normalizeRules('@stylistic', {
+const rulesPluginStylistic = ruleNormalizer({ plugin: '@stylistic' })({
+  indent: ['on', 2],
   quotes: 'single',
   'linebreak-style': 'unix',
   'no-extra-parens': 'all',
@@ -46,88 +78,93 @@ const rulesPluginStylistic = normalizeRules('@stylistic', {
   'padded-blocks': 'off',
 });
 
-const configPluginStylistic = defineConfig(
-  pluginStylistic.configs.customize({
-    quotes: 'single',
-    indent: 2,
-    semi: true,
-    arrowParens: true,
-    quoteProps: 'as-needed',
-    braceStyle: '1tbs',
-    commaDangle: 'always-multiline',
-    jsx: false,
-  }),
-  { rules: rulesPluginStylistic },
-);
-
-// Typescript Plugin
-
-const rulesPluginTypescript = normalizeRules('@typescript-eslint', {
-  'array-type': { default: 'array-simple', readonly: 'array-simple' },
-});
-
-const configPluginTypescript = defineConfig(
-  { languageOptions: { parserOptions: { projectService: true, tsconfigRootDir: process.cwd() } } },
-  pluginTypescriptConfigs.strictTypeChecked,
-  pluginTypescriptConfigs.stylisticTypeChecked,
-  { rules: rulesPluginTypescript },
-);
-
-const configDisableJavascriptTypeCheck = defineConfig({
-  ...pluginTypescriptConfigs.disableTypeChecked,
-  files: ['**/*.{js,mjs,cjs}'],
+const configPluginStylistic = defineConfig({
+  files: FILES_ALL,
+  extends: [
+    pluginStylistic.configs.customize({
+      semi: true,
+      arrowParens: true,
+      quoteProps: 'as-needed',
+      braceStyle: '1tbs',
+      jsx: false,
+    }),
+  ],
+  rules: rulesPluginStylistic,
 });
 
 // Config
 
 export default defineConfig(
-  { ignores: ['bin', 'dist', 'coverage'] },
+  globalIgnores(['bin', 'dist', 'coverage']),
   { languageOptions: { globals: globals.node } },
-  { files: ['**/*.{js,mjs,cjs,ts,mts,cts}'] },
   configPluginJavascript,
+  configPluginTypescript,
   configPluginImport,
   configPluginStylistic,
-  configPluginTypescript,
-  configDisableJavascriptTypeCheck,
 );
 
 // Helpers
 
-function normalizeRules(pluginName, rules) {
-  const normalizeEntry = createEntriesNormalizer(pluginName);
-  const entries = Object.entries(rules);
-  const entriesNormalized = entries.map(normalizeEntry);
-  return Object.fromEntries(entriesNormalized);
-}
+function ruleNormalizer({ severity: defaultSeverity = 'error', plugin: pluginName } = {}) {
 
-function createEntriesNormalizer(pluginName) {
-  if (!pluginName) return ([ruleName, ruleEntry]) => [ruleName, normalizeRuleEntry(ruleEntry)];
-  const normalizeRuleName = createPluginKeyNormalizer(pluginName);
-  return ([ruleName, ruleEntry]) => [normalizeRuleName(ruleName), normalizeRuleEntry(ruleEntry)];
-}
+  const isDefaultSeverity = (entry) => ['error', 'warn'].includes(entry);
 
-function createPluginKeyNormalizer(pluginName) {
-  const pluginPrefix = `${pluginName}/`;
-  return (key) => {
-    if (key.startsWith(pluginPrefix)) return key;
-    return `${pluginPrefix}${key}`;
+  if (!isDefaultSeverity(defaultSeverity)) throw new TypeError(`${defaultSeverity} is not a valid default severity`);
+
+  const resolveSeverity = (entry) => {
+    if (entry === 'on' || entry === true) return [true, defaultSeverity];
+    if (entry === false) return [true, 'off'];
+    return [entry === 'off' || entry === 0 || isDefaultSeverity(entry), entry];
   };
-}
 
-function normalizeRuleEntry(entry) {
-  if (entry === 'on' || entry === true) return 'error';
-  if (entry === false) return 'off';
+  function normalizeRuleEntry(entry) {
 
-  if (Array.isArray(entry)) {
-    if (isSeverityString(entry[0])) return entry;
-    return ['error', ...entry];
+    const [isSeverity, severity] = resolveSeverity(entry);
+    if (isSeverity) return severity;
+
+    if (Array.isArray(entry)) {
+      // Return default severity if array is empty
+      if (!entry.length) return defaultSeverity;
+
+      const [first, ...rest] = entry;
+
+      const [isSeverity, severity] = resolveSeverity(first);
+      if (isSeverity) return [severity, ...rest];
+
+      return [defaultSeverity, ...entry];
+    }
+
+    return [defaultSeverity, entry];
   }
 
-  if (isSeverityString(entry)) return entry;
+  function createRuleNormalizer(normalizeObjectEntry) {
+    return (rules) => {
+      const entries = Object.entries(rules);
+      const entriesNormalized = entries.map(normalizeObjectEntry);
+      return Object.fromEntries(entriesNormalized);
+    };
+  }
 
-  return ['error', entry];
-}
+  if (!pluginName) {
+    return createRuleNormalizer(
+      ([ruleName, ruleEntry]) => [
+        ruleName,
+        normalizeRuleEntry(ruleEntry),
+      ],
+    );
+  }
 
-function isSeverityString(entry) {
-  return ['error', 'off', 'warn'].includes(entry);
+  const pluginPrefix = `${pluginName}/`;
+
+  const normalizeRuleName = (ruleName) => {
+    if (ruleName.startsWith(pluginPrefix)) return ruleName;
+    return `${pluginPrefix}${ruleName}`;
+  };
+
+  return createRuleNormalizer(
+    ([ruleName, ruleEntry]) => [
+      normalizeRuleName(ruleName),
+      normalizeRuleEntry(ruleEntry),
+    ],
+  );
 }
