@@ -1,14 +1,16 @@
 import type { RollupError, WarningHandlerWithDefault } from 'rollup';
-import { displayName as bundlibName, version as bundlibVersion } from '../../package.json';
-import type { PkgAnalyzed } from '../api';
-import { analyzePkg, pkgToConfigs, readPkg } from '../api';
-import type { ProgramOptions } from './command/options/option-types';
+import { displayName as bundlibName, version as bundlibVersion } from '../../../package.json';
+import type { PkgAnalyzed } from '../../api';
+import { analyzePkg, pkgToConfigs, readPkg } from '../../api';
+import type { ProgramOptions } from '../command/types/cli-options';
+import { logError, logInfo, logWarning } from '../console/console';
+import { formatProjectInfo } from '../console/format';
+import { rollupBuild } from '../rollup/build';
+import { rollupWatchBuild } from '../rollup/watch';
+import { green } from '../tools/colors';
+import type { ActionContext } from './action-types';
 import { createEmitter } from './emitter';
 import { binaryPlugins, bublePlugin, optionalPlugins } from './optional-modules';
-import { rollupBuild } from './rollup/build';
-import { rollupWatchBuild } from './rollup/watch';
-import { green } from './tools/colors';
-import { consoleError, consoleLog, consoleWarn, formatProjectInfo, logError, logInfo, logWarning } from './tools/console';
 
 function getDetections(analyzed: PkgAnalyzed, watchMode?: boolean): string[] {
 
@@ -32,7 +34,9 @@ function getDetections(analyzed: PkgAnalyzed, watchMode?: boolean): string[] {
 
 }
 
-export async function action(options: ProgramOptions): Promise<void> {
+export async function action(programOptions: ProgramOptions, context: ActionContext): Promise<void> {
+
+  const { consoleLog, consoleWarn, consoleError } = context;
 
   // get NodeJS version
   const nodeVersion = process.versions.node;
@@ -53,7 +57,7 @@ export async function action(options: ProgramOptions): Promise<void> {
   // analyze package.json content
   const analyzed = await analyzePkg(cwd, pkg);
 
-  const { dev: developmentMode, watch: watchMode, silent: silentMode } = options;
+  const { dev: developmentMode, watch: watchMode, silent: silentMode } = programOptions;
 
   // Declare error handler, "log only" on watch mode and "fatal error" otherwise
   const handleError = watchMode
@@ -64,7 +68,7 @@ export async function action(options: ProgramOptions): Promise<void> {
     };
 
   // create event emitter
-  const emitter = createEmitter(cwd, handleError, watchMode, silentMode);
+  const emitter = createEmitter(cwd, programOptions, context, handleError);
 
   // if not in silent mode...
   if (!silentMode) {

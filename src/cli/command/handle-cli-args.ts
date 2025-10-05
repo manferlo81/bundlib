@@ -1,10 +1,14 @@
+import type { Command } from 'commander';
+import type { ActionContext, ActionFunction } from '../actions/action-types';
+import { logInfo, logWarning } from '../console/console';
 import { greenBright } from '../tools/colors';
-import type { LogFunction } from '../tools/console';
-import { consoleLog as defaultConsoleLog, consoleWarn as defaultConsoleWarn, logInfo, logWarning } from '../tools/console';
-import type { ActionWithOptions, ProgramOptions } from './options/option-types';
 import { createProgram, registerCommand, setCommandAction } from './program';
+import type { ProgramOptions } from './types/cli-options';
+import type { ProgramAction } from './types/program';
 
-export async function handleCLI(argv: string[], action: ActionWithOptions, consoleLog: LogFunction = defaultConsoleLog, consoleWarn: LogFunction = defaultConsoleWarn) {
+export function handleCLI(argv: string[], action: ActionFunction, context: ActionContext): Promise<Command> {
+
+  const { consoleLog, consoleWarn } = context;
 
   const program = createProgram();
 
@@ -20,11 +24,11 @@ export async function handleCLI(argv: string[], action: ActionWithOptions, conso
     const options: ProgramOptions = useWatchOption ? opts : { ...opts, watch: false };
 
     // call action
-    await action(options);
+    await action(options, context);
 
   };
 
-  const watchAction: ActionWithOptions = async (opts) => {
+  const watchAction: ProgramAction = async (opts) => {
 
     // warn if `watch` options is being used
     if (opts.watch) {
@@ -36,11 +40,11 @@ export async function handleCLI(argv: string[], action: ActionWithOptions, conso
     const options: ProgramOptions = { ...opts, watch: true };
 
     // call action
-    await action(options);
+    await action(options, context);
   };
 
-  const buildActionIgnoreWatchOption: ActionWithOptions = (opts) => buildAction(opts, false);
-  const buildActionUseWatchOption: ActionWithOptions = (opts) => buildAction(opts, true);
+  const buildActionIgnoreWatchOption: ProgramAction = (opts) => buildAction(opts, false);
+  const buildActionUseWatchOption: ProgramAction = (opts) => buildAction(opts, true);
 
   // build action
   registerCommand(
@@ -66,7 +70,6 @@ export async function handleCLI(argv: string[], action: ActionWithOptions, conso
   );
 
   // parse args
-  // const argv = process.argv.slice(2);
-  return await program.parseAsync(argv, { from: 'user' });
+  return program.parseAsync(argv, { from: 'user' });
 
 }

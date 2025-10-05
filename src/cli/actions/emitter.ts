@@ -1,12 +1,19 @@
 import { EventEmitter } from 'node:events';
 import type { RollupError } from 'rollup';
-import { cyan, green, magenta, yellow } from './tools/colors';
-import { consoleLog, consoleTag, consoleWarn, logInfo, logWarning } from './tools/console';
-import { formatFileSize, formatMS } from './tools/format';
-import { parseFileName } from './tools/parse';
-import type { BundlibEventMap } from './types/types';
+import type { ProgramOptions } from '../command/types/cli-options';
+import { logInfo, logWarning } from '../console/console';
+import { formatTag } from '../console/format';
+import { cyan, green, magenta, yellow } from '../tools/colors';
+import { formatFileSize, formatMS } from '../tools/format';
+import { parseFileName } from '../tools/parse';
+import type { ActionContext } from './action-types';
+import type { BundlibEventEmitter } from './emitter-types';
+import type { BundlibEventMap } from './event-map';
 
-export function createEmitter(cwd: string, handleError: (err: RollupError | Error) => void, watchMode?: boolean, silentMode?: boolean): EventEmitter<BundlibEventMap> {
+export function createEmitter(cwd: string, programOptions: ProgramOptions, context: ActionContext, handleError: (err: RollupError | Error) => void): BundlibEventEmitter {
+
+  const { watch: watchMode, silent: silentMode } = programOptions;
+  const { consoleLog, consoleWarn } = context;
 
   // Create event emitter
   const emitter = new EventEmitter<BundlibEventMap>();
@@ -65,7 +72,7 @@ export function createEmitter(cwd: string, handleError: (err: RollupError | Erro
 
   // Attach handler to show filename, size and duration of every file built
   emitter.on('build-end', (filename, size, duration) => {
-    const builtTag = consoleTag('BUILT', green);
+    const builtTag = formatTag('BUILT', green);
 
     const [dirname, basename] = parseFileName(filename, cwd);
 

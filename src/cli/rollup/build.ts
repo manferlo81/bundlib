@@ -1,14 +1,13 @@
-import type { EventEmitter } from 'node:events';
 import { statSync } from 'node:fs';
 import type { RollupCache, RollupError } from 'rollup';
 import { rollup } from 'rollup';
 import type { BundlibRollupModuleOutputOptions, BundlibRollupOptions } from '../../api/types/rollup';
-import { oneByOne } from '../one-by-one';
-import type { BundlibEventMap } from '../types/types';
+import type { BundlibEventEmitter } from '../actions/emitter-types';
+import { oneByOne } from '../tools/one-by-one';
 
 export function rollupBuild(
   configs: Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>,
-  emitter: EventEmitter<BundlibEventMap>,
+  emitter: BundlibEventEmitter,
 ): void {
 
   const cacheObject: Partial<Record<string, RollupCache>> = {};

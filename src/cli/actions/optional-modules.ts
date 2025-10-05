@@ -1,5 +1,5 @@
-import type { OptionalModules } from '../api';
-import type { ExcludeStrict } from '../api/types/helper-types';
+import type { OptionalModules } from '../../api';
+import type { ExcludeStrict } from '../../api/types/helper-types';
 
 export type OptionalModulePlugin = ExcludeStrict<OptionalModules, 'chokidar'>;
 

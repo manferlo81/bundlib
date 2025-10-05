@@ -1,7 +1,8 @@
-import type { BooleanOptionNameOrder } from './option-types';
+import type { BooleanOptionNameOrder } from '../types/cli-options';
 
 interface FlagDescriptor<F> {
   flag: F;
+  short: string;
   desc: string;
 }
 
@@ -10,7 +11,7 @@ type BooleanOptionArray<A extends readonly unknown[]> = {
 };
 
 export const booleanOptions: BooleanOptionArray<BooleanOptionNameOrder> = [
-  { flag: 'dev', desc: 'create development builds (not minified)' },
-  { flag: 'silent', desc: 'prevent messages from showing in the console' },
-  { flag: 'watch', desc: 'DEPRECATED! (use watch command)' },
+  { flag: 'dev', short: 'd', desc: 'create development builds (not minified)' },
+  { flag: 'silent', short: 's', desc: 'prevent messages from showing in the console' },
+  { flag: 'watch', short: 'w', desc: 'DEPRECATED! (use watch command)' },
 ];

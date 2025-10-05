@@ -1,12 +1,12 @@
-import type { EventEmitter } from 'node:events';
 import { statSync } from 'node:fs';
-import type { RollupOptions, RollupWatcher } from 'rollup';
+import type { RollupWatcher } from 'rollup';
 import { watch } from 'rollup';
-import type { BundlibEventMap } from '../types/types';
+import type { BundlibRollupModuleOutputOptions, BundlibRollupOptions } from '../../api';
+import type { BundlibEventEmitter } from '../actions/emitter-types';
 
 export function rollupWatchBuild(
-  configs: RollupOptions[],
-  emitter: EventEmitter<BundlibEventMap>,
+  configs: Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>,
+  emitter: BundlibEventEmitter,
 ): RollupWatcher {
 
   const watcher = watch(configs);

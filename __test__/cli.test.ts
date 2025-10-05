@@ -1,3 +1,4 @@
+import { createActionContext } from '../src/cli/actions/context';
 import { handleCLI } from '../src/cli/command/handle-cli-args';
 
 describe('handleCLI function', () => {
@@ -6,20 +7,23 @@ describe('handleCLI function', () => {
 
     test('should pass empty object if not options passed', async () => {
       const action = jest.fn();
-      await handleCLI([], action);
-      expect(action).toHaveBeenCalledWith({});
+      const context = createActionContext();
+      await handleCLI([], action, context);
+      expect(action).toHaveBeenCalledWith({}, context);
     });
 
     test('should pass dev if -d options set', async () => {
       const action = jest.fn();
-      await handleCLI(['-d'], action);
-      expect(action).toHaveBeenCalledWith({ dev: true });
+      const context = createActionContext();
+      await handleCLI(['-d'], action, context);
+      expect(action).toHaveBeenCalledWith({ dev: true }, context);
     });
 
     test('should pass dev if --dev options set', async () => {
       const action = jest.fn();
-      await handleCLI(['--dev'], action);
-      expect(action).toHaveBeenCalledWith({ dev: true });
+      const context = createActionContext();
+      await handleCLI(['--dev'], action, context);
+      expect(action).toHaveBeenCalledWith({ dev: true }, context);
     });
 
     test('should pass watch if -w options set', async () => {
@@ -27,9 +31,10 @@ describe('handleCLI function', () => {
       const consoleLog = jest.fn();
       const consoleWarn = jest.fn();
 
-      await handleCLI(['-w'], action, consoleLog, consoleWarn);
+      const context = createActionContext({ consoleLog, consoleWarn });
+      await handleCLI(['-w'], action, context);
 
-      expect(action).toHaveBeenCalledWith({ watch: true });
+      expect(action).toHaveBeenCalledWith({ watch: true }, context);
 
       expect(consoleWarn).toHaveBeenCalledTimes(1);
       expect(consoleWarn).toHaveBeenCalledWith(expect.stringContaining('WARNING'));
@@ -43,9 +48,10 @@ describe('handleCLI function', () => {
       const consoleLog = jest.fn();
       const consoleWarn = jest.fn();
 
-      await handleCLI(['--watch'], action, consoleLog, consoleWarn);
+      const context = createActionContext({ consoleLog, consoleWarn });
+      await handleCLI(['--watch'], action, context);
 
-      expect(action).toHaveBeenCalledWith({ watch: true });
+      expect(action).toHaveBeenCalledWith({ watch: true }, context);
 
       expect(consoleWarn).toHaveBeenCalledTimes(1);
       expect(consoleWarn).toHaveBeenCalledWith(expect.stringContaining('WARNING'));
@@ -56,14 +62,16 @@ describe('handleCLI function', () => {
 
     test('should pass watch if -s options set', async () => {
       const action = jest.fn();
-      await handleCLI(['-s'], action);
-      expect(action).toHaveBeenCalledWith({ silent: true });
+      const context = createActionContext();
+      await handleCLI(['-s'], action, context);
+      expect(action).toHaveBeenCalledWith({ silent: true }, context);
     });
 
     test('should pass watch if --silent options set', async () => {
       const action = jest.fn();
-      await handleCLI(['--silent'], action);
-      expect(action).toHaveBeenCalledWith({ silent: true });
+      const context = createActionContext();
+      await handleCLI(['--silent'], action, context);
+      expect(action).toHaveBeenCalledWith({ silent: true }, context);
     });
 
   });
@@ -72,20 +80,23 @@ describe('handleCLI function', () => {
 
     test('should force watch option if not options passed', async () => {
       const action = jest.fn();
-      await handleCLI(['build'], action);
-      expect(action).toHaveBeenCalledWith({ watch: false });
+      const context = createActionContext();
+      await handleCLI(['build'], action, context);
+      expect(action).toHaveBeenCalledWith({ watch: false }, context);
     });
 
     test('should force watch option to false even if -d options set', async () => {
       const action = jest.fn();
-      await handleCLI(['build', '-d'], action);
-      expect(action).toHaveBeenCalledWith({ watch: false, dev: true });
+      const context = createActionContext();
+      await handleCLI(['build', '-d'], action, context);
+      expect(action).toHaveBeenCalledWith({ watch: false, dev: true }, context);
     });
 
     test('should force watch option to false even if --dev options set', async () => {
       const action = jest.fn();
-      await handleCLI(['build', '--dev'], action);
-      expect(action).toHaveBeenCalledWith({ watch: false, dev: true });
+      const context = createActionContext();
+      await handleCLI(['build', '--dev'], action, context);
+      expect(action).toHaveBeenCalledWith({ watch: false, dev: true }, context);
     });
 
     test('should force watch option to false even if -w options set', async () => {
@@ -93,9 +104,10 @@ describe('handleCLI function', () => {
       const consoleLog = jest.fn();
       const consoleWarn = jest.fn();
 
-      await handleCLI(['build', '-w'], action, consoleLog, consoleWarn);
+      const context = createActionContext({ consoleLog, consoleWarn });
+      await handleCLI(['build', '-w'], action, context);
 
-      expect(action).toHaveBeenCalledWith({ watch: false });
+      expect(action).toHaveBeenCalledWith({ watch: false }, context);
 
       expect(consoleWarn).toHaveBeenCalledTimes(1);
       expect(consoleWarn).toHaveBeenCalledWith(expect.stringContaining('WARNING'));
@@ -109,9 +121,10 @@ describe('handleCLI function', () => {
       const consoleLog = jest.fn();
       const consoleWarn = jest.fn();
 
-      await handleCLI(['build', '--watch'], action, consoleLog, consoleWarn);
+      const context = createActionContext({ consoleLog, consoleWarn });
+      await handleCLI(['build', '--watch'], action, context);
 
-      expect(action).toHaveBeenCalledWith({ watch: false });
+      expect(action).toHaveBeenCalledWith({ watch: false }, context);
 
       expect(consoleWarn).toHaveBeenCalledTimes(1);
       expect(consoleWarn).toHaveBeenCalledWith(expect.stringContaining('WARNING'));
@@ -122,14 +135,16 @@ describe('handleCLI function', () => {
 
     test('should force watch option to false even if -s options set', async () => {
       const action = jest.fn();
-      await handleCLI(['build', '-s'], action);
-      expect(action).toHaveBeenCalledWith({ watch: false, silent: true });
+      const context = createActionContext();
+      await handleCLI(['build', '-s'], action, context);
+      expect(action).toHaveBeenCalledWith({ watch: false, silent: true }, context);
     });
 
     test('should force watch option to false even if --silent options set', async () => {
       const action = jest.fn();
-      await handleCLI(['build', '--silent'], action);
-      expect(action).toHaveBeenCalledWith({ watch: false, silent: true });
+      const context = createActionContext();
+      await handleCLI(['build', '--silent'], action, context);
+      expect(action).toHaveBeenCalledWith({ watch: false, silent: true }, context);
     });
 
   });
@@ -138,20 +153,23 @@ describe('handleCLI function', () => {
 
     test('should pass watch option if not options passed', async () => {
       const action = jest.fn();
-      await handleCLI(['watch'], action);
-      expect(action).toHaveBeenCalledWith({ watch: true });
+      const context = createActionContext();
+      await handleCLI(['watch'], action, context);
+      expect(action).toHaveBeenCalledWith({ watch: true }, context);
     });
 
     test('should pass watch option even if -d options set', async () => {
       const action = jest.fn();
-      await handleCLI(['watch', '-d'], action);
-      expect(action).toHaveBeenCalledWith({ watch: true, dev: true });
+      const context = createActionContext();
+      await handleCLI(['watch', '-d'], action, context);
+      expect(action).toHaveBeenCalledWith({ watch: true, dev: true }, context);
     });
 
     test('should pass watch option even if --dev options set', async () => {
       const action = jest.fn();
-      await handleCLI(['watch', '--dev'], action);
-      expect(action).toHaveBeenCalledWith({ watch: true, dev: true });
+      const context = createActionContext();
+      await handleCLI(['watch', '--dev'], action, context);
+      expect(action).toHaveBeenCalledWith({ watch: true, dev: true }, context);
     });
 
     test('should pass watch option even if -w options set', async () => {
@@ -159,9 +177,10 @@ describe('handleCLI function', () => {
       const consoleLog = jest.fn();
       const consoleWarn = jest.fn();
 
-      await handleCLI(['watch', '-w'], action, consoleLog, consoleWarn);
+      const context = createActionContext({ consoleLog, consoleWarn });
+      await handleCLI(['watch', '-w'], action, context);
 
-      expect(action).toHaveBeenCalledWith({ watch: true });
+      expect(action).toHaveBeenCalledWith({ watch: true }, context);
 
       expect(consoleWarn).toHaveBeenCalledTimes(1);
       expect(consoleWarn).toHaveBeenCalledWith(expect.stringContaining('WARNING'));
@@ -175,9 +194,10 @@ describe('handleCLI function', () => {
       const consoleLog = jest.fn();
       const consoleWarn = jest.fn();
 
-      await handleCLI(['watch', '--watch'], action, consoleLog, consoleWarn);
+      const context = createActionContext({ consoleLog, consoleWarn });
+      await handleCLI(['watch', '--watch'], action, context);
 
-      expect(action).toHaveBeenCalledWith({ watch: true });
+      expect(action).toHaveBeenCalledWith({ watch: true }, context);
 
       expect(consoleWarn).toHaveBeenCalledTimes(1);
       expect(consoleWarn).toHaveBeenCalledWith(expect.stringContaining('WARNING'));
@@ -188,14 +208,16 @@ describe('handleCLI function', () => {
 
     test('should pass watch option even if -s options set', async () => {
       const action = jest.fn();
-      await handleCLI(['watch', '-s'], action);
-      expect(action).toHaveBeenCalledWith({ watch: true, silent: true });
+      const context = createActionContext();
+      await handleCLI(['watch', '-s'], action, context);
+      expect(action).toHaveBeenCalledWith({ watch: true, silent: true }, context);
     });
 
     test('should pass watch option even if --silent options set', async () => {
       const action = jest.fn();
-      await handleCLI(['watch', '--silent'], action);
-      expect(action).toHaveBeenCalledWith({ watch: true, silent: true });
+      const context = createActionContext();
+      await handleCLI(['watch', '--silent'], action, context);
+      expect(action).toHaveBeenCalledWith({ watch: true, silent: true }, context);
     });
 
   });
