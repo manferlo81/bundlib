@@ -11,7 +11,7 @@ import { configs as pluginTypescriptConfigs } from 'typescript-eslint';
 const PATTERN_JS = '**/*.{js,mjs,cjs}';
 const PATTERN_TS = '**/*.{ts,mts,cts}';
 
-const FILES_TS = [PATTERN_TS];
+const FILES_TS_ONLY = [PATTERN_TS];
 const FILES_ALL = [PATTERN_JS, PATTERN_TS];
 
 // Javascript Plugin
@@ -39,7 +39,7 @@ const rulesPluginTypescript = ruleNormalizer({ plugin: '@typescript-eslint' })({
 });
 
 const configPluginTypescript = defineConfig({
-  files: FILES_TS,
+  files: FILES_TS_ONLY,
   languageOptions: { parserOptions: { projectService: true, tsconfigRootDir: import.meta.dirname } },
   extends: [
     pluginTypescriptConfigs.strictTypeChecked,
@@ -112,29 +112,41 @@ function ruleNormalizer({ severity: defaultSeverity = 'error', plugin: pluginNam
   if (!isDefaultSeverity(defaultSeverity)) throw new TypeError(`${defaultSeverity} is not a valid default severity`);
 
   const resolveSeverity = (entry) => {
+    // Resolve with default severity if entry is "on" or true
     if (entry === 'on' || entry === true) return [true, defaultSeverity];
-    if (entry === false) return [true, 'off'];
+
+    // Resolve to "off" if entry if false or nullish
+    if (entry === false || entry == null) return [true, 'off'];
+
+    // Resolve to entry with wether or not is a valid severity
     return [entry === 'off' || entry === 0 || isDefaultSeverity(entry), entry];
   };
 
   function normalizeRuleEntry(entry) {
 
+    // Return entry if it's a valid severity
     const [isSeverity, severity] = resolveSeverity(entry);
     if (isSeverity) return severity;
 
+    // Process entry if it's an array
     if (Array.isArray(entry)) {
+
       // Return default severity if array is empty
       if (!entry.length) return defaultSeverity;
 
+      // Return rule if first element is a valid severity
       const [first, ...rest] = entry;
-
       const [isSeverity, severity] = resolveSeverity(first);
       if (isSeverity) return [severity, ...rest];
 
+      // Return default severity rule if first element is not a valid severity
       return [defaultSeverity, ...entry];
+
     }
 
+    // Return default severity rule if it's not a valid severity nor an array
     return [defaultSeverity, entry];
+
   }
 
   function createRuleNormalizer(normalizeObjectEntry) {
@@ -167,4 +179,5 @@ function ruleNormalizer({ severity: defaultSeverity = 'error', plugin: pluginNam
       normalizeRuleEntry(ruleEntry),
     ],
   );
+
 }
