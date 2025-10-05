@@ -7,24 +7,24 @@ export type LogFunction = (mgs: string) => void;
 type SimpleConsole = Record<Extract<keyof Console, 'log' | 'warn' | 'error'>, LogFunction>;
 export const { log: consoleLog, warn: consoleWarn, error: consoleError } = console as SimpleConsole;
 
-export function logInfo(fn: LogFunction, ...messages: string[]): void {
+export function logInfo(logFunction: LogFunction, ...messages: string[]): void {
   messages.forEach((message) => {
-    fn(cyan(message));
+    logFunction(cyan(message));
   });
 }
 
-export function logWarning(fn: LogFunction, message: string): void {
+export function logWarning(logFunction: LogFunction, message: string): void {
   const warningTag = consoleTag('WARNING', yellow);
-  fn(`${warningTag} ${yellow(message)}`);
+  logFunction(`${warningTag} ${yellow(message)}`);
 }
 
-export function logError(fn: LogFunction, err: RollupError | Error): void {
+export function logError(logFunction: LogFunction, err: RollupError | Error): void {
   const errorTag = consoleTag('ERROR', red);
-  fn(`${errorTag} ${red(err.message || err)}`);
-  fn('');
+  logFunction(`${errorTag} ${red(err.message || err)}`);
+  logFunction('');
   if (err.stack) {
-    fn(err.stack);
-    fn('');
+    logFunction(err.stack);
+    logFunction('');
   }
 }
 

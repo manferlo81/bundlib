@@ -1,18 +1,14 @@
-import { EventEmitter } from 'node:events';
 import type { RollupError, WarningHandlerWithDefault } from 'rollup';
 import { displayName as bundlibName, version as bundlibVersion } from '../../package.json';
 import type { PkgAnalyzed } from '../api';
 import { analyzePkg, pkgToConfigs, readPkg } from '../api';
 import type { ProgramOptions } from './command/options/option-types';
+import { createEmitter } from './emitter';
 import { binaryPlugins, bublePlugin, optionalPlugins } from './optional-modules';
 import { rollupBuild } from './rollup/build';
 import { rollupWatchBuild } from './rollup/watch';
-import { cyan, green, magenta, yellow } from './tools/colors';
-import type { LogFunction } from './tools/console';
-import { consoleError, consoleLog, consoleTag, consoleWarn, formatProjectInfo, logError, logInfo, logWarning } from './tools/console';
-import { formatFileSize, formatMS } from './tools/format';
-import { parseFileName } from './tools/parse';
-import type { BundlibEventMap } from './types/types';
+import { green } from './tools/colors';
+import { consoleError, consoleLog, consoleWarn, formatProjectInfo, logError, logInfo, logWarning } from './tools/console';
 
 function getDetections(analyzed: PkgAnalyzed, watchMode?: boolean): string[] {
 
@@ -42,7 +38,7 @@ export async function action(options: ProgramOptions): Promise<void> {
   const nodeVersion = process.versions.node;
   const [nodeMajorVersion] = nodeVersion.split('.');
 
-  // log warning if NodeJS version is lower than 18
+  // log warning if NodeJS version is lower than 18 (even in silent mode)
   if (+nodeMajorVersion < 18) {
     logWarning(consoleWarn, `You are running NodeJS v${nodeVersion}. This version is not officially supported. If you experience any issue, please install NodeJS 18 or greater.`);
     logInfo(consoleLog, '');
@@ -59,21 +55,16 @@ export async function action(options: ProgramOptions): Promise<void> {
 
   const { dev: developmentMode, watch: watchMode, silent: silentMode } = options;
 
-  // create FATAL error handler
-  const logErrorAndExit = (fn: LogFunction, err: RollupError | Error) => {
-    logError(fn, err);
-    process.exit(1);
-  };
-
+  // Declare error handler, "log only" on watch mode and "fatal error" otherwise
   const handleError = watchMode
-    ? (err: RollupError | Error) => { logError(consoleError, err); }
-    : (err: RollupError | Error) => logErrorAndExit(consoleError, err);
+    ? (err: RollupError | Error): void => logError(consoleError, err)
+    : (err: RollupError | Error): void => {
+      logError(consoleError, err);
+      process.exit(1);
+    };
 
   // create event emitter
-  const emitter = new EventEmitter<BundlibEventMap>();
-
-  // declare error handler (even in silent mode)
-  emitter.on('error', handleError);
+  const emitter = createEmitter(cwd, handleError, watchMode, silentMode);
 
   // if not in silent mode...
   if (!silentMode) {
@@ -103,81 +94,6 @@ export async function action(options: ProgramOptions): Promise<void> {
     // log an empty line if any detection found
     if (detections.length > 0) logInfo(consoleLog, '');
 
-    let buildCount = 0;
-    let buildDuration = 0;
-    let startedAt = 0;
-
-    emitter.on('start', () => {
-      buildCount = 0;
-      buildDuration = 0;
-      startedAt = Date.now();
-    });
-
-    emitter.on('end', () => {
-      const endedAt = Date.now();
-      const totalDuration = endedAt - startedAt;
-      const additionalDuration = totalDuration - buildDuration;
-      const significantAdditionalDuration = additionalDuration >= 1000 ? additionalDuration : 0;
-
-      const coloredCount = yellow(`${buildCount} files`);
-      const coloredDuration = magenta.bold(formatMS(buildDuration));
-
-      const additionalDurationSection = significantAdditionalDuration
-        ? ` + ${magenta.bold(formatMS(significantAdditionalDuration))}`
-        : '';
-
-      logInfo(consoleLog, '', `Built ${coloredCount} in ${coloredDuration}${additionalDurationSection}`);
-    });
-
-    // declare "build end" handler
-    // to show filename, size and duration of the build process
-    emitter.on('build-end', (filename, size, duration) => {
-      const builtTag = consoleTag('BUILT', green);
-
-      const [dirname, basename] = parseFileName(filename, cwd);
-
-      const coloredDir = yellow(`${dirname}/`);
-      const coloredFilename = yellow.bold(basename);
-      const path = `${coloredDir}${coloredFilename}`;
-
-      const coloredSize = magenta.bold(formatFileSize(size));
-      const coloredDuration = magenta.bold(formatMS(duration));
-      const info = `( ${coloredSize} in ${coloredDuration} )`;
-
-      logInfo(consoleLog, `${builtTag} ${path} ${info}`);
-
-      buildCount++;
-      buildDuration += duration;
-    });
-
-    // declare "warning" handler
-    emitter.on('warn', (warning) => {
-
-      const { plugin, message } = warning;
-
-      const pluginInfo = plugin
-        ? `[ ${cyan('plugin')}: ${magenta.bold(plugin)} ] `
-        : '';
-
-      logWarning(consoleWarn, `${pluginInfo}${message}`);
-
-    });
-
-    // if in watch mode...
-    if (watchMode) {
-
-      // show "waiting" message after every build process is finished
-      emitter.on('end', () => {
-        logInfo(consoleLog, '', 'waiting for changes...');
-      });
-
-      // show "rebuilding" message when a file changed
-      emitter.on('rebuild', () => {
-        logInfo(consoleLog, 'rebuilding...', '');
-      });
-
-    }
-
   }
 
   try {
@@ -195,9 +111,9 @@ export async function action(options: ProgramOptions): Promise<void> {
       return { ...config, onwarn };
     });
 
-    // get build method and build files
-    const buildMethod = watchMode ? rollupWatchBuild : rollupBuild;
-    buildMethod(rollupConfigs, emitter);
+    if (watchMode) return void rollupWatchBuild(rollupConfigs, emitter);
+
+    rollupBuild(rollupConfigs, emitter);
 
   } catch (err) {
 

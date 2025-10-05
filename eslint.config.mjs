@@ -43,7 +43,7 @@ const rulesPluginTypescript = ruleNormalizer({ plugin: '@typescript-eslint' })({
   'array-type': { default: 'array-simple', readonly: 'array-simple' },
   'no-meaningless-void-operator': 'on',
   'no-confusing-void-expression': {
-    ignoreArrowShorthand: false,
+    ignoreArrowShorthand: true,
     ignoreVoidOperator: false,
     ignoreVoidReturningFunctions: true,
   },
