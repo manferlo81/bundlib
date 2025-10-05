@@ -13,7 +13,7 @@ export const formatFileSize = createFormatter({
   },
 });
 
-export const formatSeconds = createFormatter({
+const formatSeconds = createFormatter({
   unit: 's',
   round: 2,
   find: [
@@ -31,6 +31,7 @@ function formatMinutes(minutes: number) {
 }
 
 export function formatMS(milliseconds: number): string {
-  if (milliseconds < 60000) return formatSeconds(milliseconds / 1000);
-  return formatMinutes(milliseconds / 60000);
+  const seconds = milliseconds / 1000;
+  if (seconds < 60) return formatSeconds(seconds);
+  return formatMinutes(seconds / 60);
 }

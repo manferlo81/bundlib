@@ -18,6 +18,7 @@ const config = {
   collectCoverageFrom: [
     'src/api/**/*.ts',
     'src/cli/command/**/*.ts',
+    'src/cli/tools/format.ts',
   ],
   coverageDirectory: 'coverage',
   coverageReporters: coverageOnCI
