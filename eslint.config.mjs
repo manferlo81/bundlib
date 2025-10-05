@@ -17,10 +17,15 @@ const FILES_ALL = [PATTERN_JS, PATTERN_TS];
 // Javascript Plugin
 
 const rulesPluginJavascript = ruleNormalizer()({
-  'no-useless-rename': 'on',
+  // Avoid useless code
   'object-shorthand': 'on',
-  'prefer-template': 'on',
+  'no-useless-rename': 'on',
   'no-useless-concat': 'on',
+  'no-else-return': { allowElseIf: false },
+  'no-useless-return': 'on',
+  // Style
+  'prefer-template': 'on',
+  // Strict
   eqeqeq: 'smart',
 });
 
@@ -36,6 +41,12 @@ const configPluginJavascript = defineConfig({
 
 const rulesPluginTypescript = ruleNormalizer({ plugin: '@typescript-eslint' })({
   'array-type': { default: 'array-simple', readonly: 'array-simple' },
+  'no-meaningless-void-operator': 'on',
+  'no-confusing-void-expression': {
+    ignoreArrowShorthand: false,
+    ignoreVoidOperator: false,
+    ignoreVoidReturningFunctions: true,
+  },
 });
 
 const configPluginTypescript = defineConfig({

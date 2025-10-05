@@ -9,12 +9,10 @@ export function oneByOne<T>(arr: ArrayLike<T>, callback: OneByOneCallback<T>, do
   const next: OneByOneNext = (error) => {
 
     if (error) {
-      // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
       return done(error);
     }
 
     if (index >= len) {
-      // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
       return done();
     }
 
