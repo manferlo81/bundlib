@@ -1,59 +1,82 @@
 import { statSync } from 'node:fs';
-import type { RollupCache, RollupError } from 'rollup';
+import type { RollupCache } from 'rollup';
 import { rollup } from 'rollup';
 import type { BundlibRollupModuleOutputOptions, BundlibRollupOptions } from '../../api/types/rollup';
 import type { BundlibEventEmitter } from '../actions/emitter-types';
 import { oneByOne } from '../tools/one-by-one';
 
-export function rollupBuild(
+export async function rollupBuild(
   configs: Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>,
   emitter: BundlibEventEmitter,
-): void {
+): Promise<void> {
 
   const cacheObject: Partial<Record<string, RollupCache>> = {};
 
+  // Group configs by cache key
+  const byCacheKey = configs.reduce<Partial<Record<string, Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>>>>((output_, config) => {
+
+    const { input, output: { format } } = config;
+    const cacheKey = `${format}:${input}`;
+
+    const list = output_[cacheKey];
+
+    return {
+      ...output_,
+      [cacheKey]: list ? [...list, config] : [config],
+    };
+
+  }, {});
+
   emitter.emit('start');
 
-  oneByOne(
-    configs,
-    async (config, next) => {
+  const promises = Object.entries(byCacheKey).map(([cacheKey, configs]) => {
 
-      const { input, output } = config;
-      const { file: outputFile, format } = output;
+    return new Promise<void>((resolve, reject) => {
 
-      const cacheKey = `${format}:${input}`;
-      const storedCache = cacheObject[cacheKey];
-      const configWithCache = { ...config, cache: storedCache };
+      oneByOne(
+        configs as unknown as NonNullable<typeof configs>,
+        async (config, next) => {
 
-      try {
+          const { output } = config;
+          const { file: outputFile } = output;
 
-        const buildStartTime = Date.now();
+          const storedCache = cacheObject[cacheKey];
+          const configWithCache = { ...config, cache: storedCache };
 
-        const { cache: buildCache, write } = await rollup(configWithCache);
-        cacheObject[cacheKey] = buildCache;
+          try {
 
-        await write(output);
+            const buildStartTime = Date.now();
 
-        const duration = Date.now() - buildStartTime;
-        const { size } = statSync(outputFile);
+            const { cache: buildCache, write } = await rollup(configWithCache);
+            cacheObject[cacheKey] = buildCache;
 
-        emitter.emit('build-end', outputFile, size, duration);
+            await write(output);
 
-        next();
+            const duration = Date.now() - buildStartTime;
+            const { size } = statSync(outputFile);
 
-      } catch (err) {
-        next(err);
-        throw err;
-      }
+            emitter.emit('build-end', outputFile, size, duration);
 
-    },
-    (error) => {
-      if (error) {
-        emitter.emit('error', error as RollupError);
-      } else {
-        emitter.emit('end');
-      }
-    },
-  );
+            next();
+
+          } catch (err) {
+            next(err);
+            throw err;
+          }
+
+        },
+        (error) => {
+          // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+          if (error) return reject(error);
+          resolve();
+        },
+      );
+
+    });
+
+  });
+
+  await Promise.all(promises);
+  emitter.emit('end');
 
 }

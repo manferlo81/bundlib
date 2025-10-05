@@ -13,7 +13,7 @@ import type { BundlibEventMap } from './event-map';
 export function createEmitter(cwd: string, programOptions: ProgramOptions, context: ActionContext, handleError: (err: RollupError | Error) => void): BundlibEventEmitter {
 
   const { watch: watchMode, silent: silentMode } = programOptions;
-  const { consoleLog, consoleWarn } = context;
+  const { consoleLog, consoleInfo, consoleWarn } = context;
 
   // Create event emitter
   const emitter = new EventEmitter<BundlibEventMap>();
@@ -26,33 +26,26 @@ export function createEmitter(cwd: string, programOptions: ProgramOptions, conte
 
   // Declare count and duration variables
   let buildCount = 0;
-  let buildDuration = 0;
   let startedAt = 0;
 
   const initializeVariables = () => {
+    logInfo(consoleInfo, 'Build started...', '');
+
     buildCount = 0;
-    buildDuration = 0;
     startedAt = Date.now();
   };
 
   const showFinalStatus = () => {
 
-    // Compute additional duration
-    const additionalDuration = Date.now() - startedAt - buildDuration;
-
-    // Determine if additional duration is significant enough to be shown (> 1s)
-    const significantAdditionalDuration = additionalDuration >= 1000 ? additionalDuration : 0;
+    // Compute build duration
+    const buildDuration = Date.now() - startedAt;
 
     // format build count and build duration
     const coloredCount = yellow(`${buildCount} files`);
     const coloredDuration = magenta.bold(formatMS(buildDuration));
 
-    const additionalDurationSection = significantAdditionalDuration
-      ? ` + ${magenta.bold(formatMS(significantAdditionalDuration))}`
-      : '';
-
     // Show build count and duration message
-    logInfo(consoleLog, '', `Built ${coloredCount} in ${coloredDuration}${additionalDurationSection}`);
+    logInfo(consoleLog, '', `Built ${coloredCount} in ${coloredDuration}`);
 
   };
 
@@ -87,7 +80,6 @@ export function createEmitter(cwd: string, programOptions: ProgramOptions, conte
     logInfo(consoleLog, `${builtTag} ${path} ${info}`);
 
     buildCount++;
-    buildDuration += duration;
   });
 
   // Attach warning handler

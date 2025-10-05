@@ -93,7 +93,7 @@ export async function action(programOptions: ProgramOptions, context: ActionCont
 
     if (watchMode) return void rollupWatchBuild(rollupConfigs, emitter);
 
-    rollupBuild(rollupConfigs, emitter);
+    await rollupBuild(rollupConfigs, emitter);
 
   } catch (err) {
 
