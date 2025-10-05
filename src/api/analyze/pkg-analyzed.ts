@@ -31,25 +31,40 @@ export interface Dependencies {
   peer: AllowNull<PkgJsonDependencies>;
 }
 
-type OptionalModulesKeys
+type OptionalModuleKeys
   = | 'babel'
     | 'eslint'
     | 'chokidar'
     | 'typescript';
 
-interface OptionalModulesMap {
+interface OptionalModuleMap {
   babel: '@babel/core';
 }
-type GetModuleName<K extends string> = K extends keyof OptionalModulesMap ? OptionalModulesMap[K] : K;
 
-export type OptionalModules = GetModuleName<OptionalModulesKeys>;
+type GetModuleName<K extends OptionalModuleKeys> = K extends keyof OptionalModuleMap ? OptionalModuleMap[K] : K;
+
+export type OptionalModules = GetModuleName<OptionalModuleKeys>;
+
 export interface ModuleInstalled<I extends OptionalModules> {
   id: I;
   version: string;
 }
 
 export type InstalledModules = {
-  [K in OptionalModulesKeys]: ModuleInstalled<GetModuleName<K>> | null;
+  [K in OptionalModuleKeys]: ModuleInstalled<GetModuleName<K>> | null;
+};
+
+interface InstalledModuleInfo {
+  version: string;
+}
+
+export interface DetectedModuleItem<K> {
+  id: K;
+  installed: InstalledModuleInfo | null;
+}
+
+export type DetectedModules = {
+  [K in OptionalModuleKeys]: DetectedModuleItem<GetModuleName<K>>
 };
 
 export interface PkgAnalyzed {
@@ -65,4 +80,5 @@ export interface PkgAnalyzed {
   cache: AllowNull<string>;
   isInstalled: IsInstalled;
   installed: InstalledModules;
+  detected: DetectedModules;
 }

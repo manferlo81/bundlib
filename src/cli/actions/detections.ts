@@ -1,6 +1,6 @@
 import type { PkgAnalyzed } from '../../api';
 import { green } from '../tools/colors';
-import { binaryPlugins, bublePlugin, optionalPlugins } from './optional-modules';
+import { alternativePlugins, binaryPlugins, optionalPlugins } from './optional-modules';
 
 function createDetectionMessage(what: string, detected: boolean, using: string) {
   const detectedString = detected ? 'detected' : 'not detected';
@@ -15,23 +15,28 @@ function createPluginDetectionMessage(moduleName: string, detected: boolean, plu
 
 export function getDetections(analyzed: PkgAnalyzed, watchMode?: boolean): string[] {
 
-  const { installed: { babel, eslint, chokidar: chokidarInstalled, typescript }, bin: buildingBinary } = analyzed;
+  const {
+    // installed: { babel, eslint, chokidar: chokidarInstalled, typescript },
+    detected: { babel, eslint, chokidar: chokidarInstalled, typescript },
+    bin: buildingBinary,
+  } = analyzed;
+
   const usingChokidar = watchMode && chokidarInstalled;
 
-  const bublePluginMessage = !babel && createPluginDetectionMessage('@babel/core', false, bublePlugin);
-
-  const pluginMessages = [babel, eslint, typescript].map((installed) => {
-    if (!installed) return;
-    const { id } = installed;
-    const plugin = optionalPlugins[id];
-    return createPluginDetectionMessage(id, true, plugin);
+  const pluginMessages = [babel, eslint, typescript].map(({ id, installed }) => {
+    if (installed) {
+      const plugin = optionalPlugins[id];
+      return createPluginDetectionMessage(id, true, plugin);
+    }
+    const plugin = alternativePlugins[id];
+    if (!plugin) return;
+    return createPluginDetectionMessage(id, false, plugin);
   });
 
   const binaryPluginsMessage = buildingBinary && createDetectionMessage(`${green.bold('Binary')} build`, true, `plugin ${binaryPlugins.map((name) => green.bold(name)).join(' and ')}`);
-  const chokidarMessage = usingChokidar && createDetectionMessage(green.bold(usingChokidar.id), true, 'it to watch for file change');
+  const chokidarMessage = usingChokidar && usingChokidar.installed && createDetectionMessage(green.bold(usingChokidar.id), true, 'it to watch for file change');
 
   const detections = [
-    bublePluginMessage,
     ...pluginMessages,
     binaryPluginsMessage,
     chokidarMessage,

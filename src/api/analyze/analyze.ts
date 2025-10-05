@@ -18,7 +18,7 @@ import { isDictionaryOrNullish, isStringOrNullish } from '../type-check/advanced
 import { invalidKeys } from '../type-check/keys';
 import type { BundlibConfig } from '../types/bundlib-options';
 import type { AllowNull } from '../types/helper-types';
-import type { BrowserBuildOptions, Dependencies, InstalledModules, ModuleBuildOptions, ModuleInstalled, OptionalModules, PkgAnalyzed, TypesBuildOptions } from './pkg-analyzed';
+import type { BrowserBuildOptions, Dependencies, DetectedModuleItem, DetectedModules, InstalledModules, ModuleBuildOptions, ModuleInstalled, OptionalModules, PkgAnalyzed, TypesBuildOptions } from './pkg-analyzed';
 
 export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgAnalyzed> {
 
@@ -247,6 +247,22 @@ export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgA
     typescript: checkInstalled('typescript'),
   };
 
+  const checkDetected = <I extends OptionalModules>(id: I): DetectedModuleItem<I> => {
+    const installed = isInstalled(id);
+    if (!installed) return { id, installed: null };
+    return {
+      id,
+      installed: { version: installed },
+    };
+  };
+
+  const detected: DetectedModules = {
+    babel: checkDetected('@babel/core'),
+    eslint: checkDetected('eslint'),
+    chokidar: checkDetected('chokidar'),
+    typescript: checkDetected('typescript'),
+  };
+
   return {
     cwd,
     pkg,
@@ -260,6 +276,7 @@ export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgA
     cache,
     isInstalled,
     installed,
+    detected,
   };
 
 }
