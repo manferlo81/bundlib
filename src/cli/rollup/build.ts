@@ -3,7 +3,6 @@ import { statSync } from 'node:fs';
 import type { RollupCache, RollupError } from 'rollup';
 import { rollup } from 'rollup';
 import type { BundlibRollupModuleOutputOptions, BundlibRollupOptions } from '../../api/types/rollup';
-import { EVENT_BUILD_END, EVENT_END, EVENT_ERROR } from '../events';
 import { oneByOne } from '../one-by-one';
 import type { BundlibEventMap } from '../types/types';
 
@@ -13,6 +12,8 @@ export function rollupBuild(
 ): void {
 
   const cacheObject: Partial<Record<string, RollupCache>> = {};
+
+  emitter.emit('start');
 
   oneByOne(
     configs,
@@ -37,7 +38,7 @@ export function rollupBuild(
         const duration = Date.now() - buildStartTime;
         const { size } = statSync(outputFile);
 
-        emitter.emit(EVENT_BUILD_END, outputFile, size, duration);
+        emitter.emit('build-end', outputFile, size, duration);
 
         next();
 
@@ -49,9 +50,9 @@ export function rollupBuild(
     },
     (error) => {
       if (error) {
-        emitter.emit(EVENT_ERROR, error as RollupError);
+        emitter.emit('error', error as RollupError);
       } else {
-        emitter.emit(EVENT_END);
+        emitter.emit('end');
       }
     },
   );

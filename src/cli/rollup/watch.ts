@@ -2,7 +2,6 @@ import type { EventEmitter } from 'node:events';
 import { statSync } from 'node:fs';
 import type { RollupOptions, RollupWatcher } from 'rollup';
 import { watch } from 'rollup';
-import { EVENT_BUILD_END, EVENT_END, EVENT_ERROR, EVENT_REBUILD } from '../events';
 import type { BundlibEventMap } from '../types/types';
 
 export function rollupWatchBuild(
@@ -13,21 +12,22 @@ export function rollupWatchBuild(
   const watcher = watch(configs);
 
   watcher.on('restart', (): void => {
-    emitter.emit(EVENT_REBUILD);
+    emitter.emit('rebuild');
   });
 
   watcher.on('event', (event): void => {
 
     switch (event.code) {
 
-      case 'END': return void emitter.emit(EVENT_END);
+      case 'START': return void emitter.emit('start');
+      case 'END': return void emitter.emit('end');
 
       case 'BUNDLE_END': {
         const { output, duration } = event;
         return output.forEach((filename) => {
           const { size } = statSync(filename);
           emitter.emit(
-            EVENT_BUILD_END,
+            'build-end',
             filename,
             size,
             duration,
@@ -37,7 +37,7 @@ export function rollupWatchBuild(
 
       case 'ERROR': {
         const { error } = event;
-        emitter.emit(EVENT_ERROR, error);
+        emitter.emit('error', error);
       }
 
     }
