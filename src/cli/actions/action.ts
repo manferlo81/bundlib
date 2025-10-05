@@ -1,42 +1,18 @@
 import type { RollupError, WarningHandlerWithDefault } from 'rollup';
 import { displayName as bundlibName, version as bundlibVersion } from '../../../package.json';
-import type { PkgAnalyzed } from '../../api';
 import { analyzePkg, pkgToConfigs, readPkg } from '../../api';
 import type { ProgramOptions } from '../command/types/cli-options';
 import { logError, logInfo, logWarning } from '../console/console';
 import { formatProjectInfo } from '../console/format';
 import { rollupBuild } from '../rollup/build';
 import { rollupWatchBuild } from '../rollup/watch';
-import { green } from '../tools/colors';
 import type { ActionContext } from './action-types';
+import { getDetections } from './detections';
 import { createEmitter } from './emitter';
-import { binaryPlugins, bublePlugin, optionalPlugins } from './optional-modules';
-
-function getDetections(analyzed: PkgAnalyzed, watchMode?: boolean): string[] {
-
-  const { installed: { babel, eslint, chokidar: chokidarInstalled, typescript }, bin } = analyzed;
-
-  const usingChokidar = watchMode && chokidarInstalled;
-  const buildingBinary = bin;
-
-  return [
-    !babel && `${green.bold('@babel/core')} not detected, using plugin ${green.bold(bublePlugin)}`,
-    ...[babel, eslint, typescript]
-      .map((installed) => {
-        if (!installed) return;
-        const { id } = installed;
-        const plugin = optionalPlugins[id];
-        return `${green.bold(id)} detected, using plugin ${green.bold(plugin)}`;
-      }),
-    buildingBinary && `${green.bold('Binary')} build detected, using plugin ${binaryPlugins.map((name) => green.bold(name)).join(' and ')}`,
-    usingChokidar && `${green.bold(usingChokidar.id)} detected, using it to watch for file change`,
-  ].filter<string>(Boolean as never);
-
-}
 
 export async function action(programOptions: ProgramOptions, context: ActionContext): Promise<void> {
 
-  const { consoleLog, consoleWarn, consoleError } = context;
+  const { consoleLog, consoleInfo, consoleWarn, consoleError } = context;
 
   // get NodeJS version
   const nodeVersion = process.versions.node;
@@ -45,7 +21,7 @@ export async function action(programOptions: ProgramOptions, context: ActionCont
   // log warning if NodeJS version is lower than 18 (even in silent mode)
   if (+nodeMajorVersion < 18) {
     logWarning(consoleWarn, `You are running NodeJS v${nodeVersion}. This version is not officially supported. If you experience any issue, please install NodeJS 18 or greater.`);
-    logInfo(consoleLog, '');
+    logInfo(consoleWarn, '');
   }
 
   // get current working directory
@@ -84,7 +60,7 @@ export async function action(programOptions: ProgramOptions, context: ActionCont
 
     // show current project info
     if (projectDisplayName && projectVersion) {
-      logInfo(consoleLog, `building: ${formatProjectInfo(projectDisplayName, projectVersion)}`, '');
+      logInfo(consoleInfo, `building: ${formatProjectInfo(projectDisplayName, projectVersion)}`, '');
     }
 
     // get detections
@@ -92,11 +68,11 @@ export async function action(programOptions: ProgramOptions, context: ActionCont
 
     // show detections
     detections.forEach((message) => {
-      logInfo(consoleLog, message);
+      logInfo(consoleInfo, message);
     });
 
     // log an empty line if any detection found
-    if (detections.length > 0) logInfo(consoleLog, '');
+    if (detections.length > 0) logInfo(consoleInfo, '');
 
   }
 

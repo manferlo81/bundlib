@@ -28,36 +28,30 @@ describe('handleCLI function', () => {
 
     test('should pass watch if -w options set', async () => {
       const action = jest.fn();
-      const consoleLog = jest.fn();
       const consoleWarn = jest.fn();
 
-      const context = createActionContext({ consoleLog, consoleWarn });
+      const context = createActionContext({ consoleWarn });
       await handleCLI(['-w'], action, context);
 
       expect(action).toHaveBeenCalledWith({ watch: true }, context);
 
-      expect(consoleWarn).toHaveBeenCalledTimes(1);
-      expect(consoleWarn).toHaveBeenCalledWith(expect.stringContaining('WARNING'));
-
-      expect(consoleLog).toHaveBeenCalledTimes(1);
-      expect(consoleLog).toHaveBeenCalledWith('');
+      expect(consoleWarn).toHaveBeenCalledTimes(2);
+      expect(consoleWarn).toHaveBeenNthCalledWith(1, expect.stringContaining('WARNING'));
+      expect(consoleWarn).toHaveBeenNthCalledWith(2, '');
     });
 
     test('should pass watch if --watch options set', async () => {
       const action = jest.fn();
-      const consoleLog = jest.fn();
       const consoleWarn = jest.fn();
 
-      const context = createActionContext({ consoleLog, consoleWarn });
+      const context = createActionContext({ consoleWarn });
       await handleCLI(['--watch'], action, context);
 
       expect(action).toHaveBeenCalledWith({ watch: true }, context);
 
-      expect(consoleWarn).toHaveBeenCalledTimes(1);
-      expect(consoleWarn).toHaveBeenCalledWith(expect.stringContaining('WARNING'));
-
-      expect(consoleLog).toHaveBeenCalledTimes(1);
-      expect(consoleLog).toHaveBeenCalledWith('');
+      expect(consoleWarn).toHaveBeenCalledTimes(2);
+      expect(consoleWarn).toHaveBeenNthCalledWith(1, expect.stringContaining('WARNING'));
+      expect(consoleWarn).toHaveBeenNthCalledWith(2, '');
     });
 
     test('should pass watch if -s options set', async () => {
@@ -101,36 +95,30 @@ describe('handleCLI function', () => {
 
     test('should force watch option to false even if -w options set', async () => {
       const action = jest.fn();
-      const consoleLog = jest.fn();
       const consoleWarn = jest.fn();
 
-      const context = createActionContext({ consoleLog, consoleWarn });
+      const context = createActionContext({ consoleWarn });
       await handleCLI(['build', '-w'], action, context);
 
       expect(action).toHaveBeenCalledWith({ watch: false }, context);
 
-      expect(consoleWarn).toHaveBeenCalledTimes(1);
-      expect(consoleWarn).toHaveBeenCalledWith(expect.stringContaining('WARNING'));
-
-      expect(consoleLog).toHaveBeenCalledTimes(1);
-      expect(consoleLog).toHaveBeenCalledWith('');
+      expect(consoleWarn).toHaveBeenCalledTimes(2);
+      expect(consoleWarn).toHaveBeenNthCalledWith(1, expect.stringContaining('WARNING'));
+      expect(consoleWarn).toHaveBeenNthCalledWith(2, '');
     });
 
     test('should force watch option to false even if --watch options set', async () => {
       const action = jest.fn();
-      const consoleLog = jest.fn();
       const consoleWarn = jest.fn();
 
-      const context = createActionContext({ consoleLog, consoleWarn });
+      const context = createActionContext({ consoleWarn });
       await handleCLI(['build', '--watch'], action, context);
 
       expect(action).toHaveBeenCalledWith({ watch: false }, context);
 
-      expect(consoleWarn).toHaveBeenCalledTimes(1);
-      expect(consoleWarn).toHaveBeenCalledWith(expect.stringContaining('WARNING'));
-
-      expect(consoleLog).toHaveBeenCalledTimes(1);
-      expect(consoleLog).toHaveBeenCalledWith('');
+      expect(consoleWarn).toHaveBeenCalledTimes(2);
+      expect(consoleWarn).toHaveBeenNthCalledWith(1, expect.stringContaining('WARNING'));
+      expect(consoleWarn).toHaveBeenNthCalledWith(2, '');
     });
 
     test('should force watch option to false even if -s options set', async () => {
@@ -174,36 +162,30 @@ describe('handleCLI function', () => {
 
     test('should pass watch option even if -w options set', async () => {
       const action = jest.fn();
-      const consoleLog = jest.fn();
       const consoleWarn = jest.fn();
 
-      const context = createActionContext({ consoleLog, consoleWarn });
+      const context = createActionContext({ consoleWarn });
       await handleCLI(['watch', '-w'], action, context);
 
       expect(action).toHaveBeenCalledWith({ watch: true }, context);
 
-      expect(consoleWarn).toHaveBeenCalledTimes(1);
-      expect(consoleWarn).toHaveBeenCalledWith(expect.stringContaining('WARNING'));
-
-      expect(consoleLog).toHaveBeenCalledTimes(1);
-      expect(consoleLog).toHaveBeenCalledWith('');
+      expect(consoleWarn).toHaveBeenCalledTimes(2);
+      expect(consoleWarn).toHaveBeenNthCalledWith(1, expect.stringContaining('WARNING'));
+      expect(consoleWarn).toHaveBeenNthCalledWith(2, '');
     });
 
     test('should pass watch option even if --watch options set', async () => {
       const action = jest.fn();
-      const consoleLog = jest.fn();
       const consoleWarn = jest.fn();
 
-      const context = createActionContext({ consoleLog, consoleWarn });
+      const context = createActionContext({ consoleWarn });
       await handleCLI(['watch', '--watch'], action, context);
 
       expect(action).toHaveBeenCalledWith({ watch: true }, context);
 
-      expect(consoleWarn).toHaveBeenCalledTimes(1);
-      expect(consoleWarn).toHaveBeenCalledWith(expect.stringContaining('WARNING'));
-
-      expect(consoleLog).toHaveBeenCalledTimes(1);
-      expect(consoleLog).toHaveBeenCalledWith('');
+      expect(consoleWarn).toHaveBeenCalledTimes(2);
+      expect(consoleWarn).toHaveBeenNthCalledWith(1, expect.stringContaining('WARNING'));
+      expect(consoleWarn).toHaveBeenNthCalledWith(2, '');
     });
 
     test('should pass watch option even if -s options set', async () => {

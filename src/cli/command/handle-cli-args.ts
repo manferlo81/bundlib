@@ -8,7 +8,7 @@ import type { ProgramAction } from './types/program';
 
 export function handleCLI(argv: string[], action: ActionFunction, context: ActionContext): Promise<Command> {
 
-  const { consoleLog, consoleWarn } = context;
+  const { consoleWarn } = context;
 
   const program = createProgram();
 
@@ -17,7 +17,7 @@ export function handleCLI(argv: string[], action: ActionFunction, context: Actio
     // warn if `watch` options is being used
     if (opts.watch) {
       logWarning(consoleWarn, `Using the ${greenBright('--watch, -w')} option is deprecated. Please use the ${greenBright('watch')} command to run in watch mode.`);
-      logInfo(consoleLog, '');
+      logInfo(consoleWarn, '');
     }
 
     // force `watch` option to false
@@ -33,7 +33,7 @@ export function handleCLI(argv: string[], action: ActionFunction, context: Actio
     // warn if `watch` options is being used
     if (opts.watch) {
       logWarning(consoleWarn, `You are using the deprecated ${greenBright('--watch, -w')} option on the ${greenBright('watch')} command. We'll ignore it this time but this will fail in the future.`);
-      logInfo(consoleLog, '');
+      logInfo(consoleWarn, '');
     }
 
     // force `watch` option
