@@ -1,4 +1,5 @@
-import { BundlibConfig, config, defineConfig } from '../src/api';
+import { config, defineConfig } from '../src/api';
+import type { BundlibConfig } from '../src/api';
 import { colorizeMessage } from './tools/colors';
 
 describe(colorizeMessage('defineConfig function'), () => {

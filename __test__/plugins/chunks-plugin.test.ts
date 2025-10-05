@@ -1,4 +1,4 @@
-import { PartialResolvedId, ResolveIdHook } from 'rollup';
+import type { PartialResolvedId, ResolveIdHook } from 'rollup';
 import slash from 'slash';
 import { pluginChunks } from '../../src/api/plugins/chunks';
 import { colorizeMessage, filenameColor } from '../tools/colors';

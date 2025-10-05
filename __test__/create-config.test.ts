@@ -1,4 +1,4 @@
-import { Plugin } from 'rollup';
+import type { Plugin } from 'rollup';
 import { createConfig } from '../src/api/tools/create-config';
 import { colorizeMessage, javascriptValueColor } from './tools/colors';
 

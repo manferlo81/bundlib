@@ -1,4 +1,4 @@
-import { RollupSourcemap } from '../../src/api';
+import type { RollupSourcemap } from '../../src/api';
 import { colorizeMessage } from '../tools/colors';
 import { mockAnalyzeWithPkg } from '../tools/mock-fs';
 

@@ -1,9 +1,12 @@
 {
-  "extends": "./tsconfig.base.json",
   "include": [
     "__test__",
     "__mocks__",
     "src",
     "package.json",
-  ]
+  ],
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "verbatimModuleSyntax": false
+  }
 }

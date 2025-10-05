@@ -1,6 +1,6 @@
-import { BuildType } from '../../src/api';
+import type { BuildType } from '../../src/api';
 import { API_BUILD_KEYS } from '../../src/api/selective/constants';
-import { ExtractStrict } from '../../src/api/types/helper-types';
+import type { ExtractStrict } from '../../src/api/types/helper-types';
 
 export type GetSelectiveResultValue<K extends string, V> = (key: K, output: Record<K, V>) => V;
 

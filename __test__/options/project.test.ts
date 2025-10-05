@@ -1,4 +1,4 @@
-import { SelectiveStringOption } from '../../src/api/types/bundlib-options';
+import type { SelectiveStringOption } from '../../src/api/types/bundlib-options';
 import { colorizeMessage } from '../tools/colors';
 import { mockAnalyzeWithPkg } from '../tools/mock-fs';
 

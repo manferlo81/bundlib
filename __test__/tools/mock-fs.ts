@@ -1,6 +1,7 @@
 import mock, { restore as restoreMock } from 'mock-fs';
-import { DirectoryItems } from 'mock-fs/lib/filesystem';
-import { BundlibPkgJson, analyzePkg } from '../../src/api';
+import type { DirectoryItems } from 'mock-fs/lib/filesystem';
+import type { BundlibPkgJson } from '../../src/api';
+import { analyzePkg } from '../../src/api';
 // eslint-disable-next-line import-x/no-cycle
 import { getPluginNames } from './get-plugin-names';
 

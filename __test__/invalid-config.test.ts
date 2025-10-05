@@ -1,8 +1,8 @@
-import { DirectoryItems } from 'mock-fs/lib/filesystem';
-import { mockAnalyzeWithPkg } from './tools/mock-fs';
-import { BundlibConfig } from '../src/api/types/bundlib-options';
-import { expectMultiPromise } from './tools/expect-multi';
+import type { DirectoryItems } from 'mock-fs/lib/filesystem';
+import type { BundlibConfig } from '../src/api/types/bundlib-options';
 import { colorizeMessage, filenameColor } from './tools/colors';
+import { expectMultiPromise } from './tools/expect-multi';
+import { mockAnalyzeWithPkg } from './tools/mock-fs';
 
 describe('Invalid configuration file', () => {
 

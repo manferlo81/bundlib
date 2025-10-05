@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-deprecated */
+
 export { compatibilityAnalyzePkg as analyzePkg } from './analyze/analyze';
+
 export type {
   BrowserBuildOptions,
   Dependencies,
@@ -10,9 +12,11 @@ export type {
   PkgAnalyzed,
   TypesBuildOptions,
 } from './analyze/pkg-analyzed';
+
 export { bundlib } from './bundlib';
 export { configsFromPkg } from './configs-from-pkg';
 export { defineConfig as config, defineConfig } from './functions/define-config';
+
 export type {
   BundlibPkgJson,
   PkgJsonDependencies,
@@ -24,8 +28,10 @@ export type {
   PkgJsonModuleType,
   PkgJsonObject,
 } from './package/pkg-json-types';
+
 export { readPkg } from './package/read-pkg';
 export { pkgToConfigs } from './pkg-to-configs';
+
 export type {
   BooleanOption,
   BuildType,
@@ -46,11 +52,9 @@ export type {
   SelectiveValueBasedOption,
   StringOption,
 } from './types/bundlib-options';
-export type {
-  BuildTypeForAPI,
-  GlobalsOptions,
-  SelectiveSkipBuildType,
-} from './types/deprecated-exports';
+
+export type { BuildTypeForAPI, GlobalsOptions, SelectiveSkipBuildType } from './types/deprecated-exports';
+
 export type {
   BrowserBuildFormat,
   BundlibBuildFormat,
@@ -65,6 +69,5 @@ export type {
   RollupSourcemap,
   RollupSourcemapString,
 } from './types/rollup';
-export type {
-  BundlibAPIOptions,
-} from './types/types';
+
+export type { BundlibAPIOptions } from './types/types';

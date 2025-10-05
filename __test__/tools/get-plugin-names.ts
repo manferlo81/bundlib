@@ -1,4 +1,4 @@
-import { BundlibPkgJson } from '../../src/api';
+import type { BundlibPkgJson } from '../../src/api';
 // eslint-disable-next-line import-x/no-cycle
 import { createConfigs } from './create-configs';
 

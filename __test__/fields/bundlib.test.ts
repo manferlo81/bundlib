@@ -1,6 +1,6 @@
-import { DirectoryItems } from 'mock-fs/lib/filesystem';
-import { mockAnalyzeWithPkg, mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs';
+import type { DirectoryItems } from 'mock-fs/lib/filesystem';
 import { colorizeMessage } from '../tools/colors';
+import { mockAnalyzeWithPkg, mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs';
 
 describe(colorizeMessage('package.json "bundlib" field'), () => {
 

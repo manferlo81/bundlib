@@ -1,6 +1,6 @@
-import { RenderChunkHook, TransformHook } from 'rollup';
-import { createConfigs } from '../tools/create-configs';
 import { resolve } from 'path';
+import type { RenderChunkHook, TransformHook } from 'rollup';
+import { createConfigs } from '../tools/create-configs';
 
 describe('shebang plugins', () => {
 

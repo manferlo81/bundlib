@@ -1,6 +1,7 @@
-import { DirectoryItems } from 'mock-fs/lib/filesystem';
+import type { DirectoryItems } from 'mock-fs/lib/filesystem';
 import { join as pathJoin } from 'path';
-import { BundlibPkgJson, readPkg } from '../src/api';
+import { readPkg } from '../src/api';
+import type { BundlibPkgJson } from '../src/api';
 import { colorizeMessage } from './tools/colors';
 import { mockFS2 } from './tools/mock-fs';
 
