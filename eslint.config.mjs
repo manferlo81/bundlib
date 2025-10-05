@@ -47,6 +47,12 @@ const rulesPluginTypescript = ruleNormalizer({ plugin: '@typescript-eslint' })({
     ignoreVoidOperator: false,
     ignoreVoidReturningFunctions: true,
   },
+  'restrict-template-expressions': {
+    allowBoolean: false,
+    allowRegExp: false,
+    allowAny: false,
+    allowNullish: false,
+  },
 });
 
 const configPluginTypescript = defineConfig({

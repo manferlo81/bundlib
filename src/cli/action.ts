@@ -1,20 +1,17 @@
-import { createFormatter } from 'gen-unit';
 import { EventEmitter } from 'node:events';
-import { parse as parsePath, relative } from 'node:path';
-import prettyMs from 'pretty-ms';
 import type { RollupError, WarningHandlerWithDefault } from 'rollup';
-import slash from 'slash';
 import { displayName as bundlibName, version as bundlibVersion } from '../../package.json';
 import type { PkgAnalyzed } from '../api';
 import { analyzePkg, pkgToConfigs, readPkg } from '../api';
 import type { ProgramOptions } from './command/options/option-types';
-import { EVENT_BUILD_END, EVENT_END, EVENT_ERROR, EVENT_REBUILD, EVENT_WARN } from './events';
 import { binaryPlugins, bublePlugin, optionalPlugins } from './optional-modules';
 import { rollupBuild } from './rollup/build';
 import { rollupWatchBuild } from './rollup/watch';
 import { cyan, green, magenta, yellow } from './tools/colors';
 import type { LogFunction } from './tools/console';
 import { consoleError, consoleLog, consoleTag, consoleWarn, formatProjectInfo, logError, logInfo, logWarning } from './tools/console';
+import { formatFileSize, formatMS } from './tools/format';
+import { parseFileName } from './tools/parse';
 import type { BundlibEventMap } from './types/types';
 
 function getDetections(analyzed: PkgAnalyzed, watchMode?: boolean): string[] {
@@ -76,7 +73,7 @@ export async function action(options: ProgramOptions): Promise<void> {
   const emitter = new EventEmitter<BundlibEventMap>();
 
   // declare error handler (even in silent mode)
-  emitter.on(EVENT_ERROR, handleError);
+  emitter.on('error', handleError);
 
   // if not in silent mode...
   if (!silentMode) {
@@ -106,39 +103,55 @@ export async function action(options: ProgramOptions): Promise<void> {
     // log an empty line if any detection found
     if (detections.length > 0) logInfo(consoleLog, '');
 
-    // create file size formatter
-    const formatFileSize = createFormatter({
-      unit: 'B',
-      round: 2,
-      find: {
-        base: 1024,
-        find: [
-          { exp: 0, pre: '' },
-          { exp: 1, pre: 'K' },
-          { exp: 2, pre: 'M' },
-        ],
-      },
+    let buildCount = 0;
+    let buildDuration = 0;
+    let startedAt = 0;
+
+    emitter.on('start', () => {
+      buildCount = 0;
+      buildDuration = 0;
+      startedAt = Date.now();
+    });
+
+    emitter.on('end', () => {
+      const endedAt = Date.now();
+      const totalDuration = endedAt - startedAt;
+      const additionalDuration = totalDuration - buildDuration;
+      const significantAdditionalDuration = additionalDuration >= 1000 ? additionalDuration : 0;
+
+      const coloredCount = yellow(`${buildCount} files`);
+      const coloredDuration = magenta.bold(formatMS(buildDuration));
+
+      const additionalDurationSection = significantAdditionalDuration
+        ? ` + ${magenta.bold(formatMS(significantAdditionalDuration))}`
+        : '';
+
+      logInfo(consoleLog, '', `Built ${coloredCount} in ${coloredDuration}${additionalDurationSection}`);
     });
 
     // declare "build end" handler
     // to show filename, size and duration of the build process
-    emitter.on(EVENT_BUILD_END, (filename, size, duration) => {
+    emitter.on('build-end', (filename, size, duration) => {
       const builtTag = consoleTag('BUILT', green);
 
-      const { dir, base } = parsePath(filename);
-      const coloredDir = yellow(`./${slash(relative(cwd, dir))}/`);
-      const coloredFilename = yellow.bold(base);
+      const [dirname, basename] = parseFileName(filename, cwd);
+
+      const coloredDir = yellow(`${dirname}/`);
+      const coloredFilename = yellow.bold(basename);
       const path = `${coloredDir}${coloredFilename}`;
 
       const coloredSize = magenta.bold(formatFileSize(size));
-      const coloredDuration = magenta.bold(prettyMs(duration, { secondsDecimalDigits: 2 }));
+      const coloredDuration = magenta.bold(formatMS(duration));
       const info = `( ${coloredSize} in ${coloredDuration} )`;
 
       logInfo(consoleLog, `${builtTag} ${path} ${info}`);
+
+      buildCount++;
+      buildDuration += duration;
     });
 
     // declare "warning" handler
-    emitter.on(EVENT_WARN, (warning) => {
+    emitter.on('warn', (warning) => {
 
       const { plugin, message } = warning;
 
@@ -154,12 +167,12 @@ export async function action(options: ProgramOptions): Promise<void> {
     if (watchMode) {
 
       // show "waiting" message after every build process is finished
-      emitter.on(EVENT_END, () => {
+      emitter.on('end', () => {
         logInfo(consoleLog, '', 'waiting for changes...');
       });
 
       // show "rebuilding" message when a file changed
-      emitter.on(EVENT_REBUILD, () => {
+      emitter.on('rebuild', () => {
         logInfo(consoleLog, 'rebuilding...', '');
       });
 
@@ -174,7 +187,7 @@ export async function action(options: ProgramOptions): Promise<void> {
 
     // create warning handler
     const onwarn: WarningHandlerWithDefault = (warning) => {
-      emitter.emit(EVENT_WARN, warning);
+      emitter.emit('warn', warning);
     };
 
     // attach warning handler to every config object
