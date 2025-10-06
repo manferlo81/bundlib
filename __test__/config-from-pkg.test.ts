@@ -1,7 +1,7 @@
 import { configsFromPkg } from '../src/api';
 import { colorizeMessage } from './tools/colors';
 import { spyOnMethod } from './tools/mock';
-import { mockFS2 } from './tools/mock-fs';
+import { mockFS } from './tools/mock-fs';
 
 describe(colorizeMessage('configsFromPkg function'), () => {
 
@@ -9,7 +9,7 @@ describe(colorizeMessage('configsFromPkg function'), () => {
 
   test(colorizeMessage('Should return configs'), async () => {
 
-    const configs = await mockFS2(() => {
+    const configs = await mockFS(() => {
       return configsFromPkg(cwd, {}, {
         main: 'main.js',
         module: 'module.js',
@@ -38,7 +38,7 @@ describe(colorizeMessage('configsFromPkg function'), () => {
         }),
       };
 
-      const configs = await mockFS2(() => {
+      const configs = await mockFS(() => {
         return configsFromPkg(cwd, {});
       }, structure);
 
@@ -64,7 +64,7 @@ describe(colorizeMessage('configsFromPkg function'), () => {
         }),
       };
 
-      const configs = await mockFS2(async () => {
+      const configs = await mockFS(async () => {
         return configsFromPkg(cwd);
       }, structure);
 
@@ -90,7 +90,7 @@ describe(colorizeMessage('configsFromPkg function'), () => {
         }),
       };
 
-      const configs = await mockFS2(async () => {
+      const configs = await mockFS(async () => {
         return configsFromPkg(cwd, false);
       }, structure);
 
