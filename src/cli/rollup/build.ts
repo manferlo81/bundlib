@@ -38,7 +38,12 @@ export async function rollupBuild(
       async (cache: RollupCache | undefined, config) => {
 
         // Set cache into the config before start the build
+        const { output } = config;
+        const { file: outputFile } = output;
         const configWithCache = { ...config, cache };
+
+        // Emit file start event right before start building
+        emitter.emit('file-start', outputFile);
 
         // Store build start time
         const buildStartTime = Date.now();
@@ -48,18 +53,17 @@ export async function rollupBuild(
         const { write } = rollupBuild;
 
         // Write to files
-        const { output } = config;
         await write(output);
 
-        // Compute duration
-        const duration = Date.now() - buildStartTime;
+        // Compute duration before anything else
+        const buildEndTime = Date.now();
+        const duration = buildEndTime - buildStartTime;
 
         // Get file size
-        const { file: outputFile } = output;
         const { size } = statSync(outputFile);
 
-        // Emit event
-        emitter.emit('build-end', outputFile, size, duration);
+        // Emit file end event
+        emitter.emit('file-end', outputFile, size, duration);
 
         // Return cache for next iteration
         const { cache: buildCache } = rollupBuild;
