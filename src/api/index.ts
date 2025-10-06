@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-deprecated */
-
-export { compatibilityAnalyzePkg as analyzePkg } from './analyze/analyze';
+export { compatibilityAnalyzePkg as analyzePkg } from './analyze/compatibility';
 
 export type {
   BrowserBuildOptions,
@@ -53,6 +51,7 @@ export type {
   StringOption,
 } from './types/bundlib-options';
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 export type { BuildTypeForAPI, GlobalsOptions, SelectiveSkipBuildType } from './types/deprecated-exports';
 
 export type {

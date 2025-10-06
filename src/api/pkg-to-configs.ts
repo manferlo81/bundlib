@@ -5,7 +5,7 @@ import { DEFAULT_NODEJS_SHEBANG } from './constants/shebang';
 import type { Plugin } from 'rollup';
 import type { PkgAnalyzed } from './analyze/pkg-analyzed';
 import type { AllowNull, AllowNullish, Dictionary, TypeCheckFunction } from './types/helper-types';
-import type { BundlibRollupBrowseOutputOptions, BundlibRollupModuleOutputOptions, BundlibRollupOptions, RollupSourcemap } from './types/rollup';
+import type { BundlibRollupBrowseOutputOptions, BundlibRollupConfig, BundlibRollupModuleOutputOptions, RollupSourcemap } from './types/rollup';
 import type { BundlibAPIOptions } from './types/types';
 
 import builtinModules from 'builtin-modules';
@@ -41,7 +41,7 @@ import { pluginChunks } from './plugins/chunks';
 export function pkgToConfigs(
   analyzed: PkgAnalyzed,
   options?: AllowNullish<BundlibAPIOptions>,
-): Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>> {
+): BundlibRollupConfig[] {
 
   const {
     cwd,
@@ -84,7 +84,7 @@ export function pkgToConfigs(
   );
   const exclude = 'node_modules/**';
 
-  const configs: Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>> = [];
+  const configs: BundlibRollupConfig[] = [];
 
   function createPlugins(
     inputFile: string,

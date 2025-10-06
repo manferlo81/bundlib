@@ -10,6 +10,7 @@ export type AllowNullishReturn<T> = AllowVoid<AllowNullish<T>>;
 
 export type ExtractStrict<F, S extends F> = Extract<F, S>;
 export type ExcludeStrict<F, S extends F> = Exclude<F, S>;
+export type OmitStrict<O, K extends keyof O> = Omit<O, K>;
 
 export type NonArrayObject<T> = Record<PropertyKey, T>;
 export type Dictionary<T> = Record<string, T>;

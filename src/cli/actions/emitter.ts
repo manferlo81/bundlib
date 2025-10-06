@@ -13,7 +13,7 @@ import type { BundlibEventMap } from './event-map';
 export function createEmitter(cwd: string, programOptions: ProgramOptions, context: ActionContext, handleError: (err: RollupError | Error) => void): BundlibEventEmitter {
 
   const { watch: watchMode, silent: silentMode } = programOptions;
-  const { consoleLog, consoleWarn } = context;
+  const { consoleLog, consoleInfo, consoleWarn } = context;
 
   // Create event emitter
   const emitter = new EventEmitter<BundlibEventMap>();
@@ -26,41 +26,34 @@ export function createEmitter(cwd: string, programOptions: ProgramOptions, conte
 
   // Declare count and duration variables
   let buildCount = 0;
-  let buildDuration = 0;
   let startedAt = 0;
 
-  const initializeVariables = () => {
+  const handleBuildStart = () => {
+    logInfo(consoleInfo, 'Build started...', '');
+
     buildCount = 0;
-    buildDuration = 0;
     startedAt = Date.now();
   };
 
   const showFinalStatus = () => {
 
-    // Compute additional duration
-    const additionalDuration = Date.now() - startedAt - buildDuration;
-
-    // Determine if additional duration is significant enough to be shown (> 1s)
-    const significantAdditionalDuration = additionalDuration >= 1000 ? additionalDuration : 0;
+    // Compute build duration
+    const buildDuration = Date.now() - startedAt;
 
     // format build count and build duration
     const coloredCount = yellow(`${buildCount} files`);
     const coloredDuration = magenta.bold(formatMS(buildDuration));
 
-    const additionalDurationSection = significantAdditionalDuration
-      ? ` + ${magenta.bold(formatMS(significantAdditionalDuration))}`
-      : '';
-
     // Show build count and duration message
-    logInfo(consoleLog, '', `Built ${coloredCount} in ${coloredDuration}${additionalDurationSection}`);
+    logInfo(consoleLog, '', `Built ${coloredCount} in ${coloredDuration}`);
 
   };
 
   // Attach handler to initialize final count and duration
-  emitter.on('start', initializeVariables);
+  emitter.on('start', handleBuildStart);
 
   // Create end handler
-  const handleEnd = watchMode
+  const handleBuildEnd = watchMode
     ? () => {
       showFinalStatus();
       logInfo(consoleLog, '', 'waiting for changes...');
@@ -68,10 +61,10 @@ export function createEmitter(cwd: string, programOptions: ProgramOptions, conte
     : showFinalStatus;
 
   // Attach handler to show final count and duration
-  emitter.on('end', handleEnd);
+  emitter.on('end', handleBuildEnd);
 
   // Attach handler to show filename, size and duration of every file built
-  emitter.on('build-end', (filename, size, duration) => {
+  emitter.on('file-end', (filename, size, duration) => {
     const builtTag = formatTag('BUILT', green);
 
     const [dirname, basename] = parseFileName(filename, cwd);
@@ -84,10 +77,9 @@ export function createEmitter(cwd: string, programOptions: ProgramOptions, conte
     const coloredDuration = magenta.bold(formatMS(duration));
     const info = `( ${coloredSize} in ${coloredDuration} )`;
 
-    logInfo(consoleLog, `${builtTag} ${path} ${info}`);
+    logInfo(consoleInfo, `${builtTag} ${path} ${info}`);
 
     buildCount++;
-    buildDuration += duration;
   });
 
   // Attach warning handler

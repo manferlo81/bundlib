@@ -1,59 +1,82 @@
 import { statSync } from 'node:fs';
-import type { RollupCache, RollupError } from 'rollup';
+import type { RollupCache } from 'rollup';
 import { rollup } from 'rollup';
-import type { BundlibRollupModuleOutputOptions, BundlibRollupOptions } from '../../api/types/rollup';
+import type { BundlibRollupConfig } from '../../api/types/rollup';
 import type { BundlibEventEmitter } from '../actions/emitter-types';
-import { oneByOne } from '../tools/one-by-one';
+import { promiseReduce } from '../tools/promise-reduce';
 
-export function rollupBuild(
-  configs: Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>,
+export async function rollupBuild(
+  configs: BundlibRollupConfig[],
   emitter: BundlibEventEmitter,
-): void {
+): Promise<void> {
 
-  const cacheObject: Partial<Record<string, RollupCache>> = {};
+  // Group configs to process some of them concurrently
+  const byCacheKey = configs.reduce<Record<string, BundlibRollupConfig[]>>((configsMap, config) => {
 
+    const { input, output: { format } } = config;
+    const configSetKey = `${format}:${input}`;
+
+    const currentConfigList = configsMap[configSetKey] as BundlibRollupConfig[] | undefined;
+    const configList = currentConfigList ? [...currentConfigList, config] : [config];
+
+    return { ...configsMap, [configSetKey]: configList };
+
+  }, {});
+
+  // Get only the configs
+  const configGroups = Object.values(byCacheKey);
+
+  // Emit start event
   emitter.emit('start');
 
-  oneByOne(
-    configs,
-    async (config, next) => {
+  // Start building...
+  const concurrentBuildPromises = configGroups.map((configs) => {
 
-      const { input, output } = config;
-      const { file: outputFile, format } = output;
+    // Process configs one by one
+    return promiseReduce(
+      configs,
+      async (cache: RollupCache | undefined, config) => {
 
-      const cacheKey = `${format}:${input}`;
-      const storedCache = cacheObject[cacheKey];
-      const configWithCache = { ...config, cache: storedCache };
+        // Set cache into the config before start the build
+        const { output } = config;
+        const { file: outputFile } = output;
+        const configWithCache = { ...config, cache };
 
-      try {
+        // Emit file start event right before start building
+        emitter.emit('file-start', outputFile);
 
+        // Store build start time
         const buildStartTime = Date.now();
 
-        const { cache: buildCache, write } = await rollup(configWithCache);
-        cacheObject[cacheKey] = buildCache;
+        // Start the build
+        const rollupBuild = await rollup(configWithCache);
+        const { write } = rollupBuild;
 
+        // Write to files
         await write(output);
 
-        const duration = Date.now() - buildStartTime;
+        // Compute duration before anything else
+        const buildEndTime = Date.now();
+        const duration = buildEndTime - buildStartTime;
+
+        // Get file size
         const { size } = statSync(outputFile);
 
-        emitter.emit('build-end', outputFile, size, duration);
+        // Emit file end event
+        emitter.emit('file-end', outputFile, size, duration);
 
-        next();
+        // Return cache for next iteration
+        const { cache: buildCache } = rollupBuild;
+        return buildCache;
 
-      } catch (err) {
-        next(err);
-        throw err;
-      }
+      },
+    );
+  });
 
-    },
-    (error) => {
-      if (error) {
-        emitter.emit('error', error as RollupError);
-      } else {
-        emitter.emit('end');
-      }
-    },
-  );
+  // Wait for all builds to finish
+  await Promise.all(concurrentBuildPromises);
+
+  // Emit end event
+  emitter.emit('end');
 
 }

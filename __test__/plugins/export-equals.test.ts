@@ -1,6 +1,6 @@
 import { buildTypeColor, filenameColor, javascriptValueColor, packageFieldColor, packageNameColor } from '../tools/colors';
 import { getAllPluginNames } from '../tools/get-plugin-names';
-import { mockFS2, mockGetPluginNames } from '../tools/mock-fs';
+import { mockFS, mockGetPluginNames } from '../tools/mock-fs';
 
 const pluginPackageName = packageNameColor('rollup-plugin-export-equals');
 
@@ -46,7 +46,7 @@ describe(`${pluginPackageName} plugin`, () => {
 
   test(`Should use ${pluginPackageName} only on first build`, async () => {
 
-    const [modulePlugins, mainPlugins, browserPlugins] = await mockFS2(() => {
+    const [modulePlugins, mainPlugins, browserPlugins] = await mockFS(() => {
       return getAllPluginNames(cwd, false, {
         bundlib,
         main: 'output.js',
