@@ -13,6 +13,7 @@ describe(colorizeMessage('createConfig function'), () => {
       sourcemap: 'inline' as const,
       esModule: true,
       interop: 'compat' as const,
+      compact: false,
     };
     const isExternal = () => false;
     const plugins: Plugin[] = [];
@@ -49,6 +50,7 @@ describe(colorizeMessage('createConfig function'), () => {
       sourcemap: 'inline' as const,
       esModule: true,
       interop: 'compat' as const,
+      compact: false,
     };
     const isExternal = () => false;
     const plugins: Plugin[] = [];
@@ -87,6 +89,7 @@ describe(colorizeMessage('createConfig function'), () => {
       sourcemap: 'inline' as const,
       esModule: true,
       interop: 'compat' as const,
+      compact: false,
     };
     const isExternal = () => false;
     const plugins: Plugin[] = [];

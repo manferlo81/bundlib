@@ -21,6 +21,7 @@ export interface BundlibRollupModuleOutputOptions extends RollupOutputOptions {
   sourcemap: RollupSourcemap;
   esModule: RollupEsModule;
   interop: RollupInterop;
+  compact: boolean;
 }
 
 export interface BundlibRollupBrowseOutputOptions extends OmitStrict<BundlibRollupModuleOutputOptions, 'format'> {

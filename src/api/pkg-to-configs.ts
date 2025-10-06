@@ -266,6 +266,7 @@ export function pkgToConfigs(
 
     const { input, output, sourcemap, esModule, interop: interopBool, min, project } = commonjsBuild;
     const inputFile = resolveInput(input);
+    const minifyOutput = isProduction && !min;
 
     if (!inputFile) {
       throw error(inputNotFoundMessage('CommonJS module'));
@@ -281,6 +282,7 @@ export function pkgToConfigs(
       esModule,
       interop,
       exports: 'auto',
+      compact: minifyOutput,
     };
 
     commonjsChunks = { ...chunks, [inputFile]: cwd };
@@ -294,7 +296,7 @@ export function pkgToConfigs(
           inputFile,
           outputFile,
           sourcemap,
-          isProduction && !min,
+          minifyOutput,
           false,
           false,
           commonjsChunks,
@@ -308,7 +310,11 @@ export function pkgToConfigs(
     if (min) {
 
       const minOutputFile = renamePrefixExtension(outputFile, MIN_EXT_PREFIX);
-      const minOutputOptions = { ...outputOptions, file: minOutputFile };
+      const minOutputOptions: BundlibRollupModuleOutputOptions = {
+        ...outputOptions,
+        file: minOutputFile,
+        compact: true,
+      };
 
       configs.push(
         createConfig({
@@ -368,6 +374,7 @@ export function pkgToConfigs(
   if (moduleBuild) {
 
     const { input, output, sourcemap, esModule, interop: interopBool, min, project } = moduleBuild;
+    const minifyOutput = isProduction && !min;
     const inputFile = resolveInput(input);
 
     if (!inputFile) {
@@ -383,6 +390,7 @@ export function pkgToConfigs(
       sourcemap,
       esModule,
       interop,
+      compact: minifyOutput,
     };
 
     configs.push(
@@ -394,7 +402,7 @@ export function pkgToConfigs(
           inputFile,
           outputFile,
           sourcemap,
-          isProduction && !min,
+          minifyOutput,
           false,
           false,
           null,
@@ -408,7 +416,11 @@ export function pkgToConfigs(
     if (min) {
 
       const minOutputFile = renamePrefixExtension(outputFile, MIN_EXT_PREFIX);
-      const minOutputOptions = { ...outputOptions, file: minOutputFile };
+      const minOutputOptions: BundlibRollupModuleOutputOptions = {
+        ...outputOptions,
+        file: minOutputFile,
+        compact: true,
+      };
 
       configs.push(
         createConfig({
@@ -438,6 +450,7 @@ export function pkgToConfigs(
 
     const { input, output, sourcemap, esModule, interop: interopBool, format, name, extend, id, globals: inputGlobals, min, project } = browserBuild;
     const browserInputFile = resolveInput(input);
+    const minifyOutput = isProduction && !min;
 
     if (!browserInputFile) {
       throw error(inputNotFoundMessage('Browser build'));
@@ -455,6 +468,7 @@ export function pkgToConfigs(
       interop,
       extend,
       globals,
+      compact: minifyOutput,
     };
 
     if (format === 'iife' || format === 'umd') {
@@ -479,7 +493,7 @@ export function pkgToConfigs(
           browserInputFile,
           browserOutputFile,
           sourcemap,
-          isProduction && !min,
+          minifyOutput,
           true,
           false,
           null,
@@ -493,7 +507,11 @@ export function pkgToConfigs(
     if (min) {
 
       const minOutputFile = renamePrefixExtension(browserOutputFile, MIN_EXT_PREFIX);
-      const minOutputOptions = { ...outputOptions, file: minOutputFile };
+      const minOutputOptions: BundlibRollupBrowseOutputOptions = {
+        ...outputOptions,
+        file: minOutputFile,
+        compact: true,
+      };
 
       configs.push(
         createConfig({
@@ -523,6 +541,7 @@ export function pkgToConfigs(
 
     const { input, output, sourcemap, esModule, interop: interopBool, min, project } = binaryBuild;
     const inputFile = resolveInput(input);
+    const minifyOutput = isProduction && !min;
 
     if (!inputFile) {
       throw error(inputNotFoundMessage('Binary build'));
@@ -538,6 +557,7 @@ export function pkgToConfigs(
       esModule,
       interop,
       exports: 'auto',
+      compact: minifyOutput,
     };
 
     configs.push(
@@ -549,7 +569,7 @@ export function pkgToConfigs(
           inputFile,
           outputFile,
           sourcemap,
-          isProduction && !min,
+          minifyOutput,
           false,
           true,
           commonjsChunks,
@@ -563,7 +583,11 @@ export function pkgToConfigs(
     if (min) {
 
       const minOutputFile = renamePrefixExtension(outputFile, MIN_EXT_PREFIX);
-      const minOutputOptions = { ...outputOptions, file: minOutputFile };
+      const minOutputOptions: BundlibRollupModuleOutputOptions = {
+        ...outputOptions,
+        file: minOutputFile,
+        compact: true,
+      };
 
       configs.push(
         createConfig({
