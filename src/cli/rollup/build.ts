@@ -1,82 +1,89 @@
 import { statSync } from 'node:fs';
 import type { RollupCache } from 'rollup';
 import { rollup } from 'rollup';
-import type { BundlibRollupModuleOutputOptions, BundlibRollupOptions } from '../../api/types/rollup';
+import type { BundlibRollupConfig } from '../../api/types/rollup';
 import type { BundlibEventEmitter } from '../actions/emitter-types';
-import { oneByOne } from '../tools/one-by-one';
+import { promiseReduce } from '../tools/promise-reduce';
 
 export async function rollupBuild(
-  configs: Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>,
+  configs: BundlibRollupConfig[],
   emitter: BundlibEventEmitter,
 ): Promise<void> {
 
-  const cacheObject: Partial<Record<string, RollupCache>> = {};
+  // Group configs to process some of them concurrently
+  const byCacheKey = configs.reduce(
+    (configsMap, config) => {
 
-  // Group configs by cache key
-  const byCacheKey = configs.reduce<Partial<Record<string, Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>>>>((output_, config) => {
+      const { input, output: { format } } = config;
+      const configSetKey = `${format}:${input}`;
 
-    const { input, output: { format } } = config;
-    const cacheKey = `${format}:${input}`;
+      const configSet = configsMap.get(configSetKey);
 
-    const list = output_[cacheKey];
+      if (configSet) {
+        configSet.add(config);
+        return configsMap;
+      }
 
-    return {
-      ...output_,
-      [cacheKey]: list ? [...list, config] : [config],
-    };
+      const newConfigSet = new Set<BundlibRollupConfig>([config]);
+      return configsMap.set(configSetKey, newConfigSet);
 
-  }, {});
+    },
+    new Map<string, Set<BundlibRollupConfig>>(),
+  );
 
+  // Get only the configs
+  const configGroups = byCacheKey.values();
+
+  // Emit start event
   emitter.emit('start');
 
-  const promises = Object.entries(byCacheKey).map(([cacheKey, configs]) => {
+  // Start building...
+  const promises = configGroups.map((configs) => {
 
-    return new Promise<void>((resolve, reject) => {
+    // Create array of config from config set
+    const configArray = Array.from(configs);
 
-      oneByOne(
-        configs as unknown as NonNullable<typeof configs>,
-        async (config, next) => {
+    // Process configs one by one
+    return promiseReduce(
+      configArray,
+      async (cache: RollupCache | undefined, config) => {
 
-          const { output } = config;
-          const { file: outputFile } = output;
+        // Set cache into the config before start the build
+        const configWithCache = { ...config, cache };
 
-          const storedCache = cacheObject[cacheKey];
-          const configWithCache = { ...config, cache: storedCache };
+        // Store build start time
+        const buildStartTime = Date.now();
 
-          try {
+        // Start the build
+        const rollupBuild = await rollup(configWithCache);
+        const { write } = rollupBuild;
 
-            const buildStartTime = Date.now();
+        // Write to files
+        const { output } = config;
+        await write(output);
 
-            const { cache: buildCache, write } = await rollup(configWithCache);
-            cacheObject[cacheKey] = buildCache;
+        // Compute duration
+        const duration = Date.now() - buildStartTime;
 
-            await write(output);
+        // Get file size
+        const { file: outputFile } = output;
+        const { size } = statSync(outputFile);
 
-            const duration = Date.now() - buildStartTime;
-            const { size } = statSync(outputFile);
+        // Emit event
+        emitter.emit('build-end', outputFile, size, duration);
 
-            emitter.emit('build-end', outputFile, size, duration);
+        // Return cache for next iteration
+        const { cache: buildCache } = rollupBuild;
+        return buildCache;
 
-            next();
-
-          } catch (err) {
-            next(err);
-            throw err;
-          }
-
-        },
-        (error) => {
-          // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
-          if (error) return reject(error);
-          resolve();
-        },
-      );
-
-    });
-
+      },
+    );
   });
 
+  // Wait for all builds to finish
   await Promise.all(promises);
+
+  // Emit end event
   emitter.emit('end');
 
 }

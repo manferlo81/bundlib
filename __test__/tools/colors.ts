@@ -1,6 +1,5 @@
-import { blueBright, cyanBright, greenBright, magentaBright, yellow } from '../../src/cli/tools/colors';
-
-export { greenBright as buildTypeColor, yellow as filenameColor, blueBright as javascriptValueColor, redBright as packageFieldColor, magentaBright as packageNameColor } from '../../src/cli/tools/colors';
+import { blueBright, cyanBright, greenBright, magentaBright, redBright, yellow } from 'chalk';
+export { greenBright as buildTypeColor, yellow as filenameColor, blueBright as javascriptValueColor, redBright as packageFieldColor, magentaBright as packageNameColor };
 
 const functions = [
   'isNullish',

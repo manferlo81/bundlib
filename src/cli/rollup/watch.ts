@@ -1,11 +1,11 @@
 import { statSync } from 'node:fs';
 import type { RollupWatcher } from 'rollup';
 import { watch } from 'rollup';
-import type { BundlibRollupModuleOutputOptions, BundlibRollupOptions } from '../../api';
+import type { BundlibRollupConfig } from '../../api/types/rollup';
 import type { BundlibEventEmitter } from '../actions/emitter-types';
 
 export function rollupWatchBuild(
-  configs: Array<BundlibRollupOptions<BundlibRollupModuleOutputOptions>>,
+  configs: BundlibRollupConfig[],
   emitter: BundlibEventEmitter,
 ): RollupWatcher {
 

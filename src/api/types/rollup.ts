@@ -1,13 +1,13 @@
 import type { IsExternal, ModuleFormat, Plugin, RollupOptions, OutputOptions as RollupOutputOptions, WatcherOptions as RollupWatcherOptions } from 'rollup';
-import type { Dictionary, ExcludeStrict, ExtractStrict } from './helper-types';
+import type { Dictionary, ExcludeStrict, ExtractStrict, OmitStrict } from './helper-types';
 
-export type RollupSourcemap = Extract<RollupOutputOptions['sourcemap'], string | boolean>;
+export type RollupSourcemap = ExtractStrict<RollupOutputOptions['sourcemap'], 'inline' | 'hidden' | boolean>;
 export type RollupSourcemapString = ExcludeStrict<RollupSourcemap, boolean>;
 
-export type RollupEsModule = Extract<RollupOutputOptions['esModule'], string | boolean>;
+export type RollupEsModule = ExtractStrict<RollupOutputOptions['esModule'], 'if-default-prop' | boolean>;
 export type RollupEsModuleString = ExcludeStrict<RollupEsModule, boolean>;
 
-export type RollupInterop = Extract<RollupOutputOptions['interop'], string>;
+export type RollupInterop = ExtractStrict<RollupOutputOptions['interop'], 'auto' | 'compat' | 'default' | 'defaultOnly' | 'esModule'>;
 export type RollupBundlibInterop = RollupInterop | boolean;
 
 export type ModuleBuildFormat = ExtractStrict<ModuleFormat, 'cjs' | 'es'>;
@@ -23,7 +23,7 @@ export interface BundlibRollupModuleOutputOptions extends RollupOutputOptions {
   interop: RollupInterop;
 }
 
-export interface BundlibRollupBrowseOutputOptions extends Omit<BundlibRollupModuleOutputOptions, 'format'> {
+export interface BundlibRollupBrowseOutputOptions extends OmitStrict<BundlibRollupModuleOutputOptions, 'format'> {
   format: BrowserBuildFormat;
   extend: boolean;
   globals: Dictionary<string>;
@@ -39,3 +39,5 @@ export interface BundlibRollupOptions<OutputOptions extends RollupOutputOptions>
   plugins: Plugin[];
   watch: RollupWatcherOptions;
 }
+
+export type BundlibRollupConfig = BundlibRollupOptions<BundlibRollupModuleOutputOptions>;
