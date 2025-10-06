@@ -11,41 +11,30 @@ export async function rollupBuild(
 ): Promise<void> {
 
   // Group configs to process some of them concurrently
-  const byCacheKey = configs.reduce(
-    (configsMap, config) => {
+  const byCacheKey = configs.reduce<Record<string, BundlibRollupConfig[]>>((configsMap, config) => {
 
-      const { input, output: { format } } = config;
-      const configSetKey = `${format}:${input}`;
+    const { input, output: { format } } = config;
+    const configSetKey = `${format}:${input}`;
 
-      const configSet = configsMap.get(configSetKey);
+    const currentConfigList = configsMap[configSetKey] as BundlibRollupConfig[] | undefined;
+    const configList = currentConfigList ? [...currentConfigList, config] : [config];
 
-      if (configSet) {
-        configSet.add(config);
-        return configsMap;
-      }
+    return { ...configsMap, [configSetKey]: configList };
 
-      const newConfigSet = new Set<BundlibRollupConfig>([config]);
-      return configsMap.set(configSetKey, newConfigSet);
-
-    },
-    new Map<string, Set<BundlibRollupConfig>>(),
-  );
+  }, {});
 
   // Get only the configs
-  const configGroups = byCacheKey.values();
+  const configGroups = Object.values(byCacheKey);
 
   // Emit start event
   emitter.emit('start');
 
   // Start building...
-  const promises = configGroups.map((configs) => {
-
-    // Create array of config from config set
-    const configArray = Array.from(configs);
+  const concurrentBuildPromises = configGroups.map((configs) => {
 
     // Process configs one by one
     return promiseReduce(
-      configArray,
+      configs,
       async (cache: RollupCache | undefined, config) => {
 
         // Set cache into the config before start the build
@@ -81,7 +70,7 @@ export async function rollupBuild(
   });
 
   // Wait for all builds to finish
-  await Promise.all(promises);
+  await Promise.all(concurrentBuildPromises);
 
   // Emit end event
   emitter.emit('end');
