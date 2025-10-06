@@ -11,10 +11,11 @@ export async function rollupBuild(
 ): Promise<void> {
 
   // Group configs to process some of them concurrently
-  const byCacheKey = configs.reduce<Record<string, BundlibRollupConfig[]>>((configsMap, config) => {
+  const configGroupsMap = configs.reduce<Record<string, BundlibRollupConfig[]>>((configsMap, config) => {
 
-    const { input, output: { format } } = config;
-    const configSetKey = `${format}:${input}`;
+    // Use input file as group key
+    const { input } = config;
+    const configSetKey = input;
 
     const currentConfigList = configsMap[configSetKey] as BundlibRollupConfig[] | undefined;
     const configList = currentConfigList ? [...currentConfigList, config] : [config];
@@ -24,7 +25,7 @@ export async function rollupBuild(
   }, {});
 
   // Get only the configs
-  const configGroups = Object.values(byCacheKey);
+  const configGroups = Object.values(configGroupsMap);
 
   // Emit start event
   emitter.emit('start');
