@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     // Module
-    "target": "es2023",
+    "target": "esnext",
     "module": "esnext",
     "moduleResolution": "bundler",
     "esModuleInterop": true,
@@ -18,10 +18,6 @@
     "noImplicitThis": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    // Misc
-    "noEmit": true,
-    "declaration": true,
-    "declarationMap": true,
     // Output
     "removeComments": true,
     "newLine": "lf"

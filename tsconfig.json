@@ -8,7 +8,8 @@
   ],
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "tsBuildInfoFile": "node_modules/.tsbuildinfo/ts-check.tsbuildinfo"
+    "tsBuildInfoFile": "node_modules/.tsbuildinfo/ts-check.tsbuildinfo",
+    "noEmit": true
   },
   "ts-node": {
     "compilerOptions": {
