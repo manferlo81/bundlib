@@ -55,7 +55,7 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@babel/core": "^7.28.3",
+    "@babel/core": "^7.28.4",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-buble": "^1.0.3",
     "@rollup/plugin-commonjs": "^28.0.6",
@@ -70,7 +70,7 @@
     "cosmiconfig": "^9.0.0",
     "gen-unit": "^0.2.1",
     "load-json-file": "^6.2.0",
-    "rollup": "^4.41.0",
+    "rollup": "^4.52.4",
     "rollup-plugin-add-shebang": "^0.3.1",
     "rollup-plugin-export-equals": "^0.4.0",
     "rollup-plugin-strip-shebang": "^2.0.0",
