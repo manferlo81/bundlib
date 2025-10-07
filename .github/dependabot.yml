@@ -17,6 +17,9 @@ updates:
     groups:
       rollup:
         dependency-type: production
+        update-types:
+          - minor
+          - patch
         patterns:
           - rollup
           - "@rollup/plugin-*"
@@ -24,34 +27,51 @@ updates:
 
       eslint:
         dependency-type: development
+        update-types:
+          - minor
+          - patch
         patterns:
           - eslint
-          - "@eslint/*"
+          - globals
+          - typescript-eslint
           - eslint-plugin-*
           - "@*/eslint-plugin"
-          - typescript-eslint
-          - globals
+          - "@eslint/*"
+          - eslint-*
 
       test:
         dependency-type: development
+        update-types:
+          - minor
+          - patch
         patterns:
           - jest
           - ts-jest
 
       babel:
+        update-types:
+          - minor
+          - patch
         patterns:
           - "@babel/*"
           - core-js
 
       types:
         dependency-type: development
+        update-types:
+          - minor
+          - patch
         patterns:
           - "@types/*"
 
       others:
         dependency-type: development
+        update-types:
+          - minor
+          - patch
         patterns:
-          - husky
-          - npm-run-all
           - rimraf
+          - husky
           - chokidar
+          - npm-run-all
+          - standard-version
