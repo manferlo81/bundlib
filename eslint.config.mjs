@@ -18,16 +18,40 @@ const FILES_ALL = [PATTERN_JS, PATTERN_TS]
 
 const configPluginJavascript = defineConfig({
   rules: ruleNormalizer()({
-    // Avoid useless code
-    'object-shorthand': 'on',
-    'no-useless-rename': 'on',
-    'no-useless-concat': 'on',
-    'no-else-return': { allowElseIf: false },
-    'no-useless-return': 'on',
-    // Style
-    'prefer-template': 'on',
-    // Strict
+    // Safety
+    'no-eval': 'on',
+    'no-implied-eval': 'on',
+    'no-new-func': 'on',
+    'no-unmodified-loop-condition': 'on',
+    'no-bitwise': { allow: ['~', '^', '>>>'] },
     eqeqeq: 'smart',
+    // Style
+    'no-var': 'on',
+    'prefer-const': 'on',
+    'no-unassigned-vars': 'on',
+    'prefer-template': 'on',
+    'prefer-rest-params': 'on',
+    'prefer-spread': 'on',
+    'no-throw-literal': 'on',
+    'prefer-exponentiation-operator': 'on',
+    curly: ['on', 'multi-line'],
+    'require-await': 'on',
+    'prefer-object-has-own': 'on',
+    'prefer-regex-literals': 'on',
+    'no-array-constructor': 'on',
+    'no-object-constructor': 'on',
+    'no-inner-declarations': ['functions', { blockScopedFunctions: 'disallow' }],
+    // Useless code
+    'no-useless-rename': 'on',
+    'object-shorthand': 'on',
+    'no-unreachable-loop': 'on',
+    'no-useless-concat': 'on',
+    'no-unused-expressions': 'on',
+    'no-useless-computed-key': 'on',
+    'no-useless-constructor': 'on',
+    'no-useless-return': 'on',
+    'no-useless-assignment': 'on',
+    'no-else-return': { allowElseIf: false },
   }),
   files: FILES_ALL,
   extends: [
@@ -46,6 +70,7 @@ const configPluginTypescript = defineConfig({
       allowAny: false,
       allowNullish: false,
     },
+    'unified-signatures': { ignoreDifferentlyNamedParameters: true },
     'consistent-type-imports': 'on',
     'consistent-type-exports': 'on',
     'no-confusing-void-expression': { ignoreArrowShorthand: true, ignoreVoidReturningFunctions: true },

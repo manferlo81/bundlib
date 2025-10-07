@@ -1,19 +1,17 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-type-conversion */
-
 export const falsyNumbers = [
   0,
   NaN,
-  Number(0),
-  Number(NaN),
+  Number('0'),
+  Number('NaN'),
 ]
 
 export const truthyNumbers = [
   1,
   Infinity,
   -Infinity,
-  Number(1),
-  Number(Infinity),
-  Number(-Infinity),
+  Number('1'),
+  Number('Infinity'),
+  Number('-Infinity'),
 ]
 
 export const numbers = [
@@ -23,12 +21,12 @@ export const numbers = [
 
 export const falsyStrings = [
   '',
-  String(''),
+  String({ toString: () => '' }),
 ]
 
 export const truthyStrings = [
   'string',
-  String('string'),
+  String({ toString: () => 'string' }),
 ]
 
 export const strings = [
@@ -38,12 +36,16 @@ export const strings = [
 
 export const falseBooleans = [
   false,
-  Boolean(false),
+  Boolean(0),
+  !true,
+  !1,
 ]
 
 export const trueBooleans = [
   true,
-  Boolean(true),
+  Boolean(1),
+  !false,
+  !0,
 ]
 
 export const booleans = [
@@ -73,9 +75,8 @@ export const arrays: unknown[][] = [
 export const objects: unknown[] = [
   {},
   /reg/,
-  new RegExp(''),
-  new Object(),
-  Object(),
+  new RegExp(`^${1 - 1}+$`),
+  Object({}),
   Object(null),
   Object(undefined),
   Object(''),
@@ -84,6 +85,15 @@ export const objects: unknown[] = [
   Object(1),
   Object(true),
   Object(false),
+  new Object({}),
+  new Object(null),
+  new Object(undefined),
+  new Object(''),
+  new Object('string'),
+  new Object(0),
+  new Object(1),
+  new Object(true),
+  new Object(false),
   new Number(0),
   new String(''),
   new Boolean(false),
