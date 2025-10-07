@@ -16,22 +16,20 @@ const FILES_ALL = [PATTERN_JS, PATTERN_TS];
 
 // Javascript Plugin
 
-const rulesPluginJavascript = ruleNormalizer()({
-  // Avoid useless code
-  'object-shorthand': 'on',
-  'no-useless-rename': 'on',
-  'no-useless-concat': 'on',
-  'no-else-return': { allowElseIf: false },
-  'no-useless-return': 'on',
-  // Style
-  'prefer-template': 'on',
-  // Strict
-  eqeqeq: 'smart',
-});
-
 const configPluginJavascript = defineConfig({
+  rules: ruleNormalizer()({
+    // Avoid useless code
+    'object-shorthand': 'on',
+    'no-useless-rename': 'on',
+    'no-useless-concat': 'on',
+    'no-else-return': { allowElseIf: false },
+    'no-useless-return': 'on',
+    // Style
+    'prefer-template': 'on',
+    // Strict
+    eqeqeq: 'smart',
+  }),
   files: FILES_ALL,
-  rules: rulesPluginJavascript,
   extends: [
     pluginJavascript.configs.recommended,
   ],
@@ -39,65 +37,62 @@ const configPluginJavascript = defineConfig({
 
 // Typescript Plugin
 
-const rulesPluginTypescript = ruleNormalizer({ plugin: '@typescript-eslint' })({
-  'array-type': { default: 'array-simple', readonly: 'array-simple' },
-  'no-meaningless-void-operator': 'on',
-  'no-confusing-void-expression': {
-    ignoreArrowShorthand: true,
-    ignoreVoidOperator: false,
-    ignoreVoidReturningFunctions: true,
-  },
-  'restrict-template-expressions': {
-    allowBoolean: false,
-    allowRegExp: false,
-    allowAny: false,
-    allowNullish: false,
-  },
-});
-
 const configPluginTypescript = defineConfig({
+  rules: ruleNormalizer({ plugin: '@typescript-eslint' })({
+    'array-type': { default: 'array-simple', readonly: 'array-simple' },
+    'no-meaningless-void-operator': 'on',
+    'no-confusing-void-expression': {
+      ignoreArrowShorthand: true,
+      ignoreVoidOperator: false,
+      ignoreVoidReturningFunctions: true,
+    },
+    'restrict-template-expressions': {
+      allowBoolean: false,
+      allowRegExp: false,
+      allowAny: false,
+      allowNullish: false,
+    },
+    'consistent-type-imports': 'on',
+    'consistent-type-exports': 'on',
+  }),
   files: FILES_TS_ONLY,
   languageOptions: { parserOptions: { projectService: true, tsconfigRootDir: import.meta.dirname } },
   extends: [
     pluginTypescriptConfigs.strictTypeChecked,
     pluginTypescriptConfigs.stylisticTypeChecked,
   ],
-  rules: rulesPluginTypescript,
 });
 
 // Import Plugin
 
-const rulesPluginImport = ruleNormalizer({ plugin: 'import' })({
-  'consistent-type-specifier-style': 'on',
-  'no-useless-path-segments': 'on',
-  'no-absolute-path': 'on',
-  'no-cycle': 'on',
-});
-
 const configPluginImport = defineConfig({
+  rules: ruleNormalizer({ plugin: 'import' })({
+    'consistent-type-specifier-style': 'on',
+    'no-useless-path-segments': 'on',
+    'no-absolute-path': 'on',
+    'no-cycle': 'on',
+  }),
   files: FILES_ALL,
   languageOptions: { ecmaVersion: 'latest', sourceType: 'module' },
-  settings: { 'import/resolver': { typescript: true } },
+  settings: { 'import/resolver': { node: true, typescript: true } },
   extends: [
     pluginImportConfigs.recommended,
     pluginImportConfigs.typescript,
   ],
-  rules: rulesPluginImport,
 });
 
 // Stylistic Plugin
 
-const rulesPluginStylistic = ruleNormalizer({ plugin: '@stylistic' })({
-  indent: ['on', 2],
-  quotes: 'single',
-  'linebreak-style': 'unix',
-  'no-extra-parens': 'all',
-  'no-extra-semi': 'on',
-  'no-mixed-operators': 'on',
-  'padded-blocks': 'off',
-});
-
 const configPluginStylistic = defineConfig({
+  rules: ruleNormalizer({ plugin: '@stylistic' })({
+    indent: ['on', 2],
+    quotes: 'single',
+    'linebreak-style': 'unix',
+    'no-extra-parens': 'all',
+    'no-extra-semi': 'on',
+    'no-mixed-operators': 'on',
+    'padded-blocks': 'off',
+  }),
   files: FILES_ALL,
   extends: [
     pluginStylistic.configs.customize({
@@ -108,7 +103,6 @@ const configPluginStylistic = defineConfig({
       jsx: false,
     }),
   ],
-  rules: rulesPluginStylistic,
 });
 
 // Config
@@ -126,11 +120,12 @@ export default defineConfig(
 
 function ruleNormalizer({ severity: defaultSeverity = 'error', plugin: pluginName } = {}) {
 
-  const isDefaultSeverity = (entry) => ['error', 'warn'].includes(entry);
+  const isDefaultSeverity = (entry) => ['error', 'warn', 1, 2].includes(entry);
 
-  if (!isDefaultSeverity(defaultSeverity)) throw new TypeError(`${defaultSeverity} is not a valid default severity`);
+  if (!isDefaultSeverity(defaultSeverity)) throw new TypeError('Invalid default severity');
 
   const resolveSeverity = (entry) => {
+
     // Resolve with default severity if entry is "on" or true
     if (entry === 'on' || entry === true) return [true, defaultSeverity];
 
@@ -141,7 +136,7 @@ function ruleNormalizer({ severity: defaultSeverity = 'error', plugin: pluginNam
     return [entry === 'off' || entry === 0 || isDefaultSeverity(entry), entry];
   };
 
-  function normalizeRuleEntry(entry) {
+  const normalizeRuleEntry = (entry) => {
 
     // Return entry if it's a valid severity
     const [isSeverity, severity] = resolveSeverity(entry);
@@ -166,15 +161,15 @@ function ruleNormalizer({ severity: defaultSeverity = 'error', plugin: pluginNam
     // Return default severity rule if it's not a valid severity nor an array
     return [defaultSeverity, entry];
 
-  }
+  };
 
-  function createRuleNormalizer(normalizeObjectEntry) {
+  const createRuleNormalizer = (normalizeObjectEntry) => {
     return (rules) => {
       const entries = Object.entries(rules);
       const entriesNormalized = entries.map(normalizeObjectEntry);
       return Object.fromEntries(entriesNormalized);
     };
-  }
+  };
 
   if (!pluginName) {
     return createRuleNormalizer(
