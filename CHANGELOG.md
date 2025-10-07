@@ -2,6 +2,16 @@
 
 ## Version History
 
+### [0.21.8](https://github.com/manferlo81/bundlib/compare/v0.21.7...v0.21.8) (2025-10-07)
+
+
+### Features
+
+* Parallel build ([#1683](https://github.com/manferlo81/bundlib/issues/1683)) ([d3f541f](https://github.com/manferlo81/bundlib/commit/d3f541f977ae407740838ac87dcd66835d9ca4cf))
+* Setup `buble` for best support ([#1671](https://github.com/manferlo81/bundlib/issues/1671)) ([6c09e8f](https://github.com/manferlo81/bundlib/commit/6c09e8ff5e9346e837909f393635fe48c8eff87f))
+* Show total number of files built and total duration ([#1682](https://github.com/manferlo81/bundlib/issues/1682)) ([43249d8](https://github.com/manferlo81/bundlib/commit/43249d8044617156b836357bee47fb73f77c6861))
+* Show wether or not the files was built using cache ([#1686](https://github.com/manferlo81/bundlib/issues/1686)) ([7fcac08](https://github.com/manferlo81/bundlib/commit/7fcac0825e8a37d161298663a7fdd70896afcc6b))
+
 ### [0.21.7](https://github.com/manferlo81/bundlib/compare/v0.21.6...v0.21.7) (2025-09-04)
 
 

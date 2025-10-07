@@ -1,7 +1,7 @@
 {
   "name": "bundlib",
   "displayName": "Bundlib",
-  "version": "0.21.7",
+  "version": "0.21.8",
   "description": "An automatic library bundler powered by Rollup.js.",
   "keywords": [
     "library",
@@ -43,7 +43,8 @@
     "help": "ts-node src/cli -h",
     "build": "ts-node src/cli build -d",
     "dev": "ts-node src/cli watch -d",
-    "ci-build": "run-s ts-check lint test build",
+    "check": "run-s ts-check lint",
+    "ci-build": "run-s check test build",
     "clean-build": "run-s clean ci-build",
     "prerelease": "run-s clean-build",
     "release": "standard-version",
