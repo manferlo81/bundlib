@@ -4,6 +4,7 @@ import { rollup } from 'rollup';
 import type { BundlibRollupConfig } from '../../api/types/rollup';
 import type { BundlibEventEmitter } from '../actions/emitter-types';
 import { promiseReduce } from '../tools/promise-reduce';
+import { groupConfigs } from './group-configs';
 
 export async function rollupBuild(
   configs: BundlibRollupConfig[],
@@ -11,21 +12,7 @@ export async function rollupBuild(
 ): Promise<void> {
 
   // Group configs to process some of them concurrently
-  const configGroupsMap = configs.reduce<Record<string, BundlibRollupConfig[]>>((configsMap, config) => {
-
-    // Use input file as group key
-    const { input } = config;
-    const configSetKey = input;
-
-    const currentConfigList = configsMap[configSetKey] as BundlibRollupConfig[] | undefined;
-    const configList = currentConfigList ? [...currentConfigList, config] : [config];
-
-    return { ...configsMap, [configSetKey]: configList };
-
-  }, {});
-
-  // Get only the configs
-  const configGroups = Object.values(configGroupsMap);
+  const configGroups = groupConfigs(configs);
 
   // Emit start event
   emitter.emit('start');
@@ -64,7 +51,7 @@ export async function rollupBuild(
         const { size } = statSync(outputFile);
 
         // Emit file end event
-        emitter.emit('file-end', outputFile, size, duration);
+        emitter.emit('file-end', outputFile, size, duration, !!cache);
 
         // Return cache for next iteration
         const { cache: buildCache } = rollupBuild;

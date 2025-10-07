@@ -64,7 +64,7 @@ export function createEmitter(cwd: string, programOptions: ProgramOptions, conte
   emitter.on('end', handleBuildEnd);
 
   // Attach handler to show filename, size and duration of every file built
-  emitter.on('file-end', (filename, size, duration) => {
+  emitter.on('file-end', (filename, size, duration, cached) => {
     const builtTag = formatTag('BUILT', green);
 
     const [dirname, basename] = parseFileName(filename, cwd);
@@ -75,7 +75,8 @@ export function createEmitter(cwd: string, programOptions: ProgramOptions, conte
 
     const coloredSize = magenta.bold(formatFileSize(size));
     const coloredDuration = magenta.bold(formatMS(duration));
-    const info = `( ${coloredSize} in ${coloredDuration} )`;
+    const cachedInfo = cached ? ` ${green('using cache')}` : '';
+    const info = `( ${coloredSize} in ${coloredDuration}${cachedInfo} )`;
 
     logInfo(consoleInfo, `${builtTag} ${path} ${info}`);
 

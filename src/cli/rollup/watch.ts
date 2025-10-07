@@ -41,6 +41,7 @@ export function rollupWatchBuild(
             filename,
             size,
             duration,
+            false,
           );
         });
       }
