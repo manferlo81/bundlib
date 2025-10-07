@@ -1,38 +1,38 @@
-import { JS_EXTENSIONS, MIN_EXT_PREFIX, TS_DEF_EXT_PREFIX, TS_EXTENSIONS } from './constants/extensions';
-import { DEFAULT_CACHE_PATH } from './constants/paths';
-import { DEFAULT_NODEJS_SHEBANG } from './constants/shebang';
+import { JS_EXTENSIONS, MIN_EXT_PREFIX, TS_DEF_EXT_PREFIX, TS_EXTENSIONS } from './constants/extensions'
+import { DEFAULT_CACHE_PATH } from './constants/paths'
+import { DEFAULT_NODEJS_SHEBANG } from './constants/shebang'
 
-import type { Plugin } from 'rollup';
-import type { PkgAnalyzed } from './analyze/pkg-analyzed';
-import type { AllowNull, AllowNullish, Dictionary, TypeCheckFunction } from './types/helper-types';
-import type { BundlibRollupBrowseOutputOptions, BundlibRollupConfig, BundlibRollupModuleOutputOptions, RollupSourcemap } from './types/rollup';
-import type { BundlibAPIOptions } from './types/types';
+import type { Plugin } from 'rollup'
+import type { PkgAnalyzed } from './analyze/pkg-analyzed'
+import type { AllowNull, AllowNullish, Dictionary, TypeCheckFunction } from './types/helper-types'
+import type { BundlibRollupBrowseOutputOptions, BundlibRollupConfig, BundlibRollupModuleOutputOptions, RollupSourcemap } from './types/rollup'
+import type { BundlibAPIOptions } from './types/types'
 
-import builtinModules from 'builtin-modules';
-import { basename, dirname, join as pathJoin, relative, resolve } from 'node:path';
-import { error } from './errors/error';
-import { inputNotFoundMessage } from './errors/error-messages';
-import { normalizeRollupInterop } from './options/interop';
-import { createConfig } from './tools/create-config';
-import { createIsExternal } from './tools/create-is-external';
-import { createResolveInput } from './tools/create-resolve-input';
-import { fileIsTypescript } from './tools/extension-match';
-import { keys } from './tools/helpers';
-import { normalizeExpectedTypesFilename } from './tools/normalize-types-filename';
-import { renamePrefixExtension } from './tools/rename-prefix';
+import builtinModules from 'builtin-modules'
+import { basename, dirname, join as pathJoin, relative, resolve } from 'node:path'
+import { error } from './errors/error'
+import { inputNotFoundMessage } from './errors/error-messages'
+import { normalizeRollupInterop } from './options/interop'
+import { createConfig } from './tools/create-config'
+import { createIsExternal } from './tools/create-is-external'
+import { createResolveInput } from './tools/create-resolve-input'
+import { fileIsTypescript } from './tools/extension-match'
+import { keys } from './tools/helpers'
+import { normalizeExpectedTypesFilename } from './tools/normalize-types-filename'
+import { renamePrefixExtension } from './tools/rename-prefix'
 
-import pluginBabel from '@rollup/plugin-babel';
-import pluginBuble from '@rollup/plugin-buble';
-import pluginCommonJS from '@rollup/plugin-commonjs';
-import pluginESLint from '@rollup/plugin-eslint';
-import pluginJSON from '@rollup/plugin-json';
-import pluginNodeResolve from '@rollup/plugin-node-resolve';
-import pluginTerser from '@rollup/plugin-terser';
-import pluginAddShebang from 'rollup-plugin-add-shebang';
-import { equals as pluginEquals } from 'rollup-plugin-export-equals';
-import { stripShebang as pluginStripShebang } from 'rollup-plugin-strip-shebang';
-import pluginTypescript from 'rollup-plugin-typescript2';
-import { pluginChunks } from './plugins/chunks';
+import pluginBabel from '@rollup/plugin-babel'
+import pluginBuble from '@rollup/plugin-buble'
+import pluginCommonJS from '@rollup/plugin-commonjs'
+import pluginESLint from '@rollup/plugin-eslint'
+import pluginJSON from '@rollup/plugin-json'
+import pluginNodeResolve from '@rollup/plugin-node-resolve'
+import pluginTerser from '@rollup/plugin-terser'
+import pluginAddShebang from 'rollup-plugin-add-shebang'
+import { equals as pluginEquals } from 'rollup-plugin-export-equals'
+import { stripShebang as pluginStripShebang } from 'rollup-plugin-strip-shebang'
+import pluginTypescript from 'rollup-plugin-typescript2'
+import { pluginChunks } from './plugins/chunks'
 
 // TODO: make this function asynchronous
 // to allow importing only the necessary modules
@@ -54,37 +54,37 @@ export function pkgToConfigs(
     dependencies,
     cache,
     installed,
-  } = analyzed;
+  } = analyzed
 
-  const { dev, watch, onwarn } = options ?? {} as BundlibAPIOptions;
+  const { dev, watch, onwarn } = options ?? {} as BundlibAPIOptions
 
-  const { runtime: runtimeDependencies, peer: peerDependencies } = dependencies;
+  const { runtime: runtimeDependencies, peer: peerDependencies } = dependencies
 
-  const bundlibCachePath = resolve(cwd, cache ?? DEFAULT_CACHE_PATH);
-  const typescriptCachePath = pathJoin(bundlibCachePath, 'rpt2');
+  const bundlibCachePath = resolve(cwd, cache ?? DEFAULT_CACHE_PATH)
+  const typescriptCachePath = pathJoin(bundlibCachePath, 'rpt2')
 
   const isNodeJSExternal = createIsExternal(
     runtimeDependencies ? keys(runtimeDependencies) : null,
     peerDependencies ? keys(peerDependencies) : null,
     builtinModules,
-  );
+  )
 
-  const isProduction = !dev;
+  const isProduction = !dev
 
-  const { eslint: useESLint, babel: useBabel, chokidar: useChokidar, typescript: useTypescript } = installed;
+  const { eslint: useESLint, babel: useBabel, chokidar: useChokidar, typescript: useTypescript } = installed
 
-  const shouldUseChokidar = !!useChokidar && !!watch;
+  const shouldUseChokidar = !!useChokidar && !!watch
 
-  const extensions = useTypescript ? TS_EXTENSIONS : JS_EXTENSIONS;
+  const extensions = useTypescript ? TS_EXTENSIONS : JS_EXTENSIONS
 
-  const resolveInput = createResolveInput(cwd, extensions);
+  const resolveInput = createResolveInput(cwd, extensions)
 
   const include = extensions.map(
     (ext) => resolve(cwd, `**/*${ext}`),
-  );
-  const exclude = 'node_modules/**';
+  )
+  const exclude = 'node_modules/**'
 
-  const configs: BundlibRollupConfig[] = [];
+  const configs: BundlibRollupConfig[] = []
 
   function createPlugins(
     inputFile: string,
@@ -97,35 +97,35 @@ export function pkgToConfigs(
     project: AllowNullish<string>,
   ): Plugin[] {
 
-    const sourcemap = rollupSourcemap !== false;
+    const sourcemap = rollupSourcemap !== false
 
-    const inputIsTypescript = fileIsTypescript(inputFile);
+    const inputIsTypescript = fileIsTypescript(inputFile)
 
     if (inputIsTypescript && !useTypescript) {
-      throw error('Can\'t use typescript input file if typescript is not installed');
+      throw error('Can\'t use typescript input file if typescript is not installed')
     }
 
-    const generateTypes = configs.length === 0 && !isBinaryBuild && typesBuild;
+    const generateTypes = configs.length === 0 && !isBinaryBuild && typesBuild
 
     if (generateTypes && !inputIsTypescript) {
-      throw error('Can\'t generate types from a non typescript file.');
+      throw error('Can\'t generate types from a non typescript file.')
     }
 
     const typesExpectedFilename = generateTypes && normalizeExpectedTypesFilename(
       cwd,
       typesBuild.output,
-    );
+    )
 
-    const typesGeneratedFilename = renamePrefixExtension(basename(inputFile), TS_DEF_EXT_PREFIX);
+    const typesGeneratedFilename = renamePrefixExtension(basename(inputFile), TS_DEF_EXT_PREFIX)
 
     if (typesExpectedFilename && basename(typesExpectedFilename) !== typesGeneratedFilename) {
-      throw error('Input filename and types filename have to match.');
+      throw error('Input filename and types filename have to match.')
     }
 
-    const declarationDir = typesExpectedFilename && dirname(typesExpectedFilename);
-    const resolvedProject = project && resolve(cwd, project);
+    const declarationDir = typesExpectedFilename && dirname(typesExpectedFilename)
+    const resolvedProject = project && resolve(cwd, project)
 
-    let shebang: string | undefined;
+    let shebang: string | undefined
 
     const plugins = [
 
@@ -254,26 +254,26 @@ export function pkgToConfigs(
         compress: { passes: 2 },
       }),
 
-    ];
+    ]
 
-    return plugins.filter<Plugin>(Boolean as unknown as TypeCheckFunction<Plugin>);
+    return plugins.filter<Plugin>(Boolean as unknown as TypeCheckFunction<Plugin>)
 
   }
 
-  let commonjsChunks: AllowNull<Dictionary<string>> = null;
+  let commonjsChunks: AllowNull<Dictionary<string>> = null
 
   if (commonjsBuild) {
 
-    const { input, output, sourcemap, esModule, interop: interopBool, min, project } = commonjsBuild;
-    const inputFile = resolveInput(input);
-    const minifyOutput = isProduction && !min;
+    const { input, output, sourcemap, esModule, interop: interopBool, min, project } = commonjsBuild
+    const inputFile = resolveInput(input)
+    const minifyOutput = isProduction && !min
 
     if (!inputFile) {
-      throw error(inputNotFoundMessage('CommonJS module'));
+      throw error(inputNotFoundMessage('CommonJS module'))
     }
 
-    const outputFile = resolve(cwd, output);
-    const interop = normalizeRollupInterop(interopBool);
+    const outputFile = resolve(cwd, output)
+    const interop = normalizeRollupInterop(interopBool)
 
     const outputOptions: BundlibRollupModuleOutputOptions = {
       file: outputFile,
@@ -283,9 +283,9 @@ export function pkgToConfigs(
       interop,
       exports: 'auto',
       compact: minifyOutput,
-    };
+    }
 
-    commonjsChunks = { ...chunks, [inputFile]: cwd };
+    commonjsChunks = { ...chunks, [inputFile]: cwd }
 
     configs.push(
       createConfig({
@@ -305,16 +305,16 @@ export function pkgToConfigs(
         onwarn,
         useChokidar: shouldUseChokidar,
       }),
-    );
+    )
 
     if (min) {
 
-      const minOutputFile = renamePrefixExtension(outputFile, MIN_EXT_PREFIX);
+      const minOutputFile = renamePrefixExtension(outputFile, MIN_EXT_PREFIX)
       const minOutputOptions: BundlibRollupModuleOutputOptions = {
         ...outputOptions,
         file: minOutputFile,
         compact: true,
-      };
+      }
 
       configs.push(
         createConfig({
@@ -334,17 +334,17 @@ export function pkgToConfigs(
           onwarn,
           useChokidar: shouldUseChokidar,
         }),
-      );
+      )
 
     }
 
     if (chunks) {
       for (const input of keys(chunks)) {
 
-        const inputFile = resolve(cwd, input);
-        const outputFile = resolve(cwd, chunks[input]);
+        const inputFile = resolve(cwd, input)
+        const outputFile = resolve(cwd, chunks[input])
 
-        const chunkOutputOptions = { ...outputOptions, file: outputFile };
+        const chunkOutputOptions = { ...outputOptions, file: outputFile }
 
         configs.push(
           createConfig({
@@ -364,7 +364,7 @@ export function pkgToConfigs(
             onwarn,
             useChokidar: shouldUseChokidar,
           }),
-        );
+        )
 
       }
     }
@@ -373,16 +373,16 @@ export function pkgToConfigs(
 
   if (moduleBuild) {
 
-    const { input, output, sourcemap, esModule, interop: interopBool, min, project } = moduleBuild;
-    const minifyOutput = isProduction && !min;
-    const inputFile = resolveInput(input);
+    const { input, output, sourcemap, esModule, interop: interopBool, min, project } = moduleBuild
+    const minifyOutput = isProduction && !min
+    const inputFile = resolveInput(input)
 
     if (!inputFile) {
-      throw error(inputNotFoundMessage('ES module'));
+      throw error(inputNotFoundMessage('ES module'))
     }
 
-    const outputFile = resolve(cwd, output);
-    const interop = normalizeRollupInterop(interopBool);
+    const outputFile = resolve(cwd, output)
+    const interop = normalizeRollupInterop(interopBool)
 
     const outputOptions: BundlibRollupModuleOutputOptions = {
       file: outputFile,
@@ -391,7 +391,7 @@ export function pkgToConfigs(
       esModule,
       interop,
       compact: minifyOutput,
-    };
+    }
 
     configs.push(
       createConfig({
@@ -411,16 +411,16 @@ export function pkgToConfigs(
         onwarn,
         useChokidar: shouldUseChokidar,
       }),
-    );
+    )
 
     if (min) {
 
-      const minOutputFile = renamePrefixExtension(outputFile, MIN_EXT_PREFIX);
+      const minOutputFile = renamePrefixExtension(outputFile, MIN_EXT_PREFIX)
       const minOutputOptions: BundlibRollupModuleOutputOptions = {
         ...outputOptions,
         file: minOutputFile,
         compact: true,
-      };
+      }
 
       configs.push(
         createConfig({
@@ -440,7 +440,7 @@ export function pkgToConfigs(
           onwarn,
           useChokidar: shouldUseChokidar,
         }),
-      );
+      )
 
     }
 
@@ -448,17 +448,17 @@ export function pkgToConfigs(
 
   if (browserBuild) {
 
-    const { input, output, sourcemap, esModule, interop: interopBool, format, name, extend, id, globals: inputGlobals, min, project } = browserBuild;
-    const browserInputFile = resolveInput(input);
-    const minifyOutput = isProduction && !min;
+    const { input, output, sourcemap, esModule, interop: interopBool, format, name, extend, id, globals: inputGlobals, min, project } = browserBuild
+    const browserInputFile = resolveInput(input)
+    const minifyOutput = isProduction && !min
 
     if (!browserInputFile) {
-      throw error(inputNotFoundMessage('Browser build'));
+      throw error(inputNotFoundMessage('Browser build'))
     }
 
-    const browserOutputFile = resolve(cwd, output);
-    const interop = normalizeRollupInterop(interopBool);
-    const globals = inputGlobals ?? {};
+    const browserOutputFile = resolve(cwd, output)
+    const interop = normalizeRollupInterop(interopBool)
+    const globals = inputGlobals ?? {}
 
     let outputOptions: BundlibRollupBrowseOutputOptions = {
       file: browserOutputFile,
@@ -469,20 +469,20 @@ export function pkgToConfigs(
       extend,
       globals,
       compact: minifyOutput,
-    };
+    }
 
     if (format === 'iife' || format === 'umd') {
       if (!name) {
-        throw error('option "name" is required for IIFE and UMD builds');
+        throw error('option "name" is required for IIFE and UMD builds')
       }
-      outputOptions = { ...outputOptions, name };
+      outputOptions = { ...outputOptions, name }
     }
 
     if (id && (format === 'amd' || format === 'umd')) {
-      outputOptions = { ...outputOptions, amd: { id } };
+      outputOptions = { ...outputOptions, amd: { id } }
     }
 
-    const isBrowserExternal = createIsExternal(inputGlobals ? keys(inputGlobals) : null);
+    const isBrowserExternal = createIsExternal(inputGlobals ? keys(inputGlobals) : null)
 
     configs.push(
       createConfig({
@@ -502,16 +502,16 @@ export function pkgToConfigs(
         onwarn,
         useChokidar: shouldUseChokidar,
       }),
-    );
+    )
 
     if (min) {
 
-      const minOutputFile = renamePrefixExtension(browserOutputFile, MIN_EXT_PREFIX);
+      const minOutputFile = renamePrefixExtension(browserOutputFile, MIN_EXT_PREFIX)
       const minOutputOptions: BundlibRollupBrowseOutputOptions = {
         ...outputOptions,
         file: minOutputFile,
         compact: true,
-      };
+      }
 
       configs.push(
         createConfig({
@@ -531,7 +531,7 @@ export function pkgToConfigs(
           onwarn,
           useChokidar: shouldUseChokidar,
         }),
-      );
+      )
 
     }
 
@@ -539,16 +539,16 @@ export function pkgToConfigs(
 
   if (binaryBuild) {
 
-    const { input, output, sourcemap, esModule, interop: interopBool, min, project } = binaryBuild;
-    const inputFile = resolveInput(input);
-    const minifyOutput = isProduction && !min;
+    const { input, output, sourcemap, esModule, interop: interopBool, min, project } = binaryBuild
+    const inputFile = resolveInput(input)
+    const minifyOutput = isProduction && !min
 
     if (!inputFile) {
-      throw error(inputNotFoundMessage('Binary build'));
+      throw error(inputNotFoundMessage('Binary build'))
     }
 
-    const outputFile = resolve(cwd, output);
-    const interop = normalizeRollupInterop(interopBool);
+    const outputFile = resolve(cwd, output)
+    const interop = normalizeRollupInterop(interopBool)
 
     const outputOptions: BundlibRollupModuleOutputOptions = {
       file: outputFile,
@@ -558,7 +558,7 @@ export function pkgToConfigs(
       interop,
       exports: 'auto',
       compact: minifyOutput,
-    };
+    }
 
     configs.push(
       createConfig({
@@ -578,16 +578,16 @@ export function pkgToConfigs(
         onwarn,
         useChokidar: shouldUseChokidar,
       }),
-    );
+    )
 
     if (min) {
 
-      const minOutputFile = renamePrefixExtension(outputFile, MIN_EXT_PREFIX);
+      const minOutputFile = renamePrefixExtension(outputFile, MIN_EXT_PREFIX)
       const minOutputOptions: BundlibRollupModuleOutputOptions = {
         ...outputOptions,
         file: minOutputFile,
         compact: true,
-      };
+      }
 
       configs.push(
         createConfig({
@@ -607,12 +607,12 @@ export function pkgToConfigs(
           onwarn,
           useChokidar: shouldUseChokidar,
         }),
-      );
+      )
 
     }
 
   }
 
-  return configs;
+  return configs
 
 }

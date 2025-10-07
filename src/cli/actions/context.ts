@@ -1,4 +1,4 @@
-import type { ActionContext } from './action-types';
+import type { ActionContext } from './action-types'
 
 export function createActionContext(extension: Partial<ActionContext> = {}): ActionContext {
   return {
@@ -7,5 +7,5 @@ export function createActionContext(extension: Partial<ActionContext> = {}): Act
     consoleWarn: console.warn,
     consoleError: console.error,
     ...extension,
-  };
+  }
 }

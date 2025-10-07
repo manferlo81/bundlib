@@ -1,9 +1,9 @@
-import { colorizeMessage } from '../tools/colors';
-import { mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs';
+import { colorizeMessage } from '../tools/colors'
+import { mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs'
 
 describe(colorizeMessage('package.json "dependencies" field'), () => {
 
-  const cwd = process.cwd();
+  const cwd = process.cwd()
 
   test(colorizeMessage('Should throw on invalid "dependencies" field'), () => {
 
@@ -13,23 +13,23 @@ describe(colorizeMessage('package.json "dependencies" field'), () => {
       true,
       false,
       [],
-    ];
+    ]
 
     invalidFieldValues.forEach((invalid) => {
-      void expect(mockAnalyzeWithPkgEmptyConfig(cwd, { dependencies: invalid as never })).rejects.toThrow('Invalid package.json "dependencies" field');
-    });
+      void expect(mockAnalyzeWithPkgEmptyConfig(cwd, { dependencies: invalid as never })).rejects.toThrow('Invalid package.json "dependencies" field')
+    })
 
-  });
+  })
 
   test(colorizeMessage('Should read "dependencies" field'), async () => {
 
-    const dependencies = { 'bundlib-dep': '1.2.3' };
+    const dependencies = { 'bundlib-dep': '1.2.3' }
 
-    const analyzed = await mockAnalyzeWithPkgEmptyConfig(cwd, { dependencies });
-    const { dependencies: { runtime: runtimeDeps } } = analyzed;
+    const analyzed = await mockAnalyzeWithPkgEmptyConfig(cwd, { dependencies })
+    const { dependencies: { runtime: runtimeDeps } } = analyzed
 
-    expect(runtimeDeps).toEqual(dependencies);
+    expect(runtimeDeps).toEqual(dependencies)
 
-  });
+  })
 
-});
+})

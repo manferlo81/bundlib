@@ -1,17 +1,17 @@
-import type { SelectiveEsModuleOption } from '../../src/api/types/bundlib-options';
-import { colorizeMessage } from '../tools/colors';
-import { mockAnalyzeWithPkg, mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs';
+import type { SelectiveEsModuleOption } from '../../src/api/types/bundlib-options'
+import { colorizeMessage } from '../tools/colors'
+import { mockAnalyzeWithPkg, mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs'
 
 describe(colorizeMessage('"esModule" option'), () => {
 
-  const cwd = process.cwd();
+  const cwd = process.cwd()
 
   const analyzeWithESModuleOption = (esModule: SelectiveEsModuleOption) => mockAnalyzeWithPkg(cwd, {
     main: 'main.js',
     browser: 'browser.js',
     bin: 'bin.js',
     bundlib: { esModule },
-  });
+  })
 
   test(colorizeMessage('Should throw on invalid "esModule" option'), () => {
 
@@ -22,84 +22,84 @@ describe(colorizeMessage('"esModule" option'), () => {
       'bin-',
       ['main-'],
       ['main', 'browser-'],
-    ];
+    ]
 
     invalid.forEach((esModule) => {
-      void expect(analyzeWithESModuleOption(esModule as never)).rejects.toThrow('Invalid "esModule" option');
-    });
+      void expect(analyzeWithESModuleOption(esModule as never)).rejects.toThrow('Invalid "esModule" option')
+    })
 
-  });
+  })
 
   test(colorizeMessage('Should read string main "esModule" option'), async () => {
 
-    const { main, browser, bin } = await analyzeWithESModuleOption('main');
+    const { main, browser, bin } = await analyzeWithESModuleOption('main')
 
-    expect(main?.esModule).toBe(true);
-    expect(browser?.esModule).toBe(false);
-    expect(bin?.esModule).toBe(false);
+    expect(main?.esModule).toBe(true)
+    expect(browser?.esModule).toBe(false)
+    expect(bin?.esModule).toBe(false)
 
-  });
+  })
 
   test(colorizeMessage('Should read string browser "esModule" option'), async () => {
 
-    const { main, browser, bin } = await analyzeWithESModuleOption('browser');
+    const { main, browser, bin } = await analyzeWithESModuleOption('browser')
 
-    expect(main?.esModule).toBe(false);
-    expect(browser?.esModule).toBe(true);
-    expect(bin?.esModule).toBe(false);
+    expect(main?.esModule).toBe(false)
+    expect(browser?.esModule).toBe(true)
+    expect(bin?.esModule).toBe(false)
 
-  });
+  })
 
   test(colorizeMessage('Should read string bin "esModule" option'), async () => {
 
-    const { main, browser, bin } = await analyzeWithESModuleOption('bin');
+    const { main, browser, bin } = await analyzeWithESModuleOption('bin')
 
-    expect(main?.esModule).toBe(false);
-    expect(browser?.esModule).toBe(false);
-    expect(bin?.esModule).toBe(true);
+    expect(main?.esModule).toBe(false)
+    expect(browser?.esModule).toBe(false)
+    expect(bin?.esModule).toBe(true)
 
-  });
+  })
 
   test(colorizeMessage('Should read array "esModule" option'), async () => {
 
-    const { main, browser, bin } = await analyzeWithESModuleOption(['main', 'bin']);
+    const { main, browser, bin } = await analyzeWithESModuleOption(['main', 'bin'])
 
-    expect(main?.esModule).toBe(true);
-    expect(browser?.esModule).toBe(false);
-    expect(bin?.esModule).toBe(true);
+    expect(main?.esModule).toBe(true)
+    expect(browser?.esModule).toBe(false)
+    expect(bin?.esModule).toBe(true)
 
-  });
+  })
 
   test(colorizeMessage('Should read true as "esModule" option'), async () => {
 
-    const { main, browser, bin } = await analyzeWithESModuleOption(true);
+    const { main, browser, bin } = await analyzeWithESModuleOption(true)
 
-    expect(main?.esModule).toBe(true);
-    expect(browser?.esModule).toBe(true);
-    expect(bin?.esModule).toBe(true);
+    expect(main?.esModule).toBe(true)
+    expect(browser?.esModule).toBe(true)
+    expect(bin?.esModule).toBe(true)
 
-  });
+  })
 
   test(colorizeMessage('Should read false as "esModule" option'), async () => {
 
-    const { main, browser, bin } = await analyzeWithESModuleOption(false);
+    const { main, browser, bin } = await analyzeWithESModuleOption(false)
 
-    expect(main?.esModule).toBe(false);
-    expect(browser?.esModule).toBe(false);
-    expect(bin?.esModule).toBe(false);
+    expect(main?.esModule).toBe(false)
+    expect(browser?.esModule).toBe(false)
+    expect(bin?.esModule).toBe(false)
 
-  });
+  })
 
   test(colorizeMessage('Should read esModule string as "esModule" option'), async () => {
 
-    const value = 'if-default-prop';
-    const { main, browser, bin } = await analyzeWithESModuleOption(value);
+    const value = 'if-default-prop'
+    const { main, browser, bin } = await analyzeWithESModuleOption(value)
 
-    expect(main?.esModule).toBe(value);
-    expect(browser?.esModule).toBe(value);
-    expect(bin?.esModule).toBe(value);
+    expect(main?.esModule).toBe(value)
+    expect(browser?.esModule).toBe(value)
+    expect(bin?.esModule).toBe(value)
 
-  });
+  })
 
   test(colorizeMessage('Should default to false if "esModule" option not present'), async () => {
 
@@ -107,12 +107,12 @@ describe(colorizeMessage('"esModule" option'), () => {
       main: 'out/lib.cjs.js',
       browser: 'out/lib.umd.js',
       bin: 'out/lib.bin.js',
-    });
+    })
 
-    expect(main?.esModule).toBe(false);
-    expect(browser?.esModule).toBe(false);
-    expect(bin?.esModule).toBe(false);
+    expect(main?.esModule).toBe(false)
+    expect(browser?.esModule).toBe(false)
+    expect(bin?.esModule).toBe(false)
 
-  });
+  })
 
-});
+})

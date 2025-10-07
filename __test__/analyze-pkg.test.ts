@@ -1,23 +1,23 @@
-import { colorizeMessage } from './tools/colors';
-import { mockAnalyzeWithPkg } from './tools/mock-fs';
+import { colorizeMessage } from './tools/colors'
+import { mockAnalyzeWithPkg } from './tools/mock-fs'
 
 describe('analyze', () => {
 
-  const cwd = process.cwd();
+  const cwd = process.cwd()
 
   test(colorizeMessage('Should analyze provided package.json'), async () => {
 
-    const pkg = { name: 'lib' };
-    const analyzed = await mockAnalyzeWithPkg(cwd, pkg);
+    const pkg = { name: 'lib' }
+    const analyzed = await mockAnalyzeWithPkg(cwd, pkg)
 
-    expect(analyzed.pkg).toBe(pkg);
+    expect(analyzed.pkg).toBe(pkg)
 
-  });
+  })
 
   test(colorizeMessage('Should return analyzed package.json'), async () => {
 
-    const pkg = { name: 'lib' };
-    const analyzed = await mockAnalyzeWithPkg(cwd, pkg);
+    const pkg = { name: 'lib' }
+    const analyzed = await mockAnalyzeWithPkg(cwd, pkg)
 
     const {
       main,
@@ -27,20 +27,20 @@ describe('analyze', () => {
       types,
       dependencies,
       cache,
-    } = analyzed;
+    } = analyzed
 
-    expect(main).toBeNull();
-    expect(moduleBuild).toBeNull();
-    expect(browser).toBeNull();
-    expect(bin).toBeNull();
-    expect(types).toBeNull();
+    expect(main).toBeNull()
+    expect(moduleBuild).toBeNull()
+    expect(browser).toBeNull()
+    expect(bin).toBeNull()
+    expect(types).toBeNull()
     expect(dependencies).toEqual({
       runtime: null,
       dev: null,
       peer: null,
-    });
-    expect(cache).toBeNull();
+    })
+    expect(cache).toBeNull()
 
-  });
+  })
 
-});
+})

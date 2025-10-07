@@ -1,15 +1,15 @@
-import { resolveInputOption } from '../../src/api/options/input';
-import { MODULE_BUILD_KEYS } from '../../src/api/selective/constants';
-import type { BuildType } from '../../src/api/types/bundlib-options';
-import { colorizeMessage } from '../tools/colors';
-import type { GetSelectiveResultValue } from '../tools/selective-tools';
-import { createSelectiveResult, isApiKey } from '../tools/selective-tools';
+import { resolveInputOption } from '../../src/api/options/input'
+import { MODULE_BUILD_KEYS } from '../../src/api/selective/constants'
+import type { BuildType } from '../../src/api/types/bundlib-options'
+import { colorizeMessage } from '../tools/colors'
+import type { GetSelectiveResultValue } from '../tools/selective-tools'
+import { createSelectiveResult, isApiKey } from '../tools/selective-tools'
 
 describe(colorizeMessage('resolve "input" option'), () => {
 
   const createResult = <V>(getValue: GetSelectiveResultValue<BuildType, V>) => {
-    return createSelectiveResult<BuildType, V>(MODULE_BUILD_KEYS, getValue);
-  };
+    return createSelectiveResult<BuildType, V>(MODULE_BUILD_KEYS, getValue)
+  }
 
   test(colorizeMessage('Should throw on invalid "input" option'), () => {
 
@@ -24,27 +24,27 @@ describe(colorizeMessage('resolve "input" option'), () => {
       { browser: 3 },
       { api: 4 },
       { bin: 5 },
-    ];
+    ]
 
     invalidInputValues.forEach((invalid) => {
-      expect(() => resolveInputOption(invalid as never)).toThrow('Invalid "input" option');
-    });
+      expect(() => resolveInputOption(invalid as never)).toThrow('Invalid "input" option')
+    })
 
-  });
+  })
 
   test(colorizeMessage('Should resolve nullish "input" option'), () => {
     const expected = createResult(() => null);
     [null, undefined].forEach((value) => {
-      expect(resolveInputOption(value)).toEqual(expected);
-    });
-  });
+      expect(resolveInputOption(value)).toEqual(expected)
+    })
+  })
 
   test(colorizeMessage('Should resolve string "input" option'), () => {
     ['input1.ts', 'input2.ts', 'input3.js'].forEach((value) => {
-      const expected = createResult(() => value);
-      expect(resolveInputOption(value)).toEqual(expected);
-    });
-  });
+      const expected = createResult(() => value)
+      expect(resolveInputOption(value)).toEqual(expected)
+    })
+  })
 
   test(colorizeMessage('Should resolve selective object as "input" option'), () => {
 
@@ -65,12 +65,12 @@ describe(colorizeMessage('resolve "input" option'), () => {
         value: { default: 'default.js', api: 'api.js', browser: 'browser.js' },
         expected: createResult((key) => !isApiKey(key) ? 'default.js' : key === 'browser' ? 'browser.js' : 'api.js'),
       },
-    ];
+    ]
 
     values.forEach(({ value, expected }) => {
-      expect(resolveInputOption(value)).toEqual(expected);
-    });
+      expect(resolveInputOption(value)).toEqual(expected)
+    })
 
-  });
+  })
 
-});
+})

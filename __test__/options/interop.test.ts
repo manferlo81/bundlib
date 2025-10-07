@@ -1,20 +1,20 @@
-import type { PkgAnalyzed } from '../../src/api/analyze/pkg-analyzed';
-import type { BuildType, SelectiveInteropOption } from '../../src/api/types/bundlib-options';
-import { colorizeMessage } from '../tools/colors';
-import { mockAnalyzeWithPkg } from '../tools/mock-fs';
+import type { PkgAnalyzed } from '../../src/api/analyze/pkg-analyzed'
+import type { BuildType, SelectiveInteropOption } from '../../src/api/types/bundlib-options'
+import { colorizeMessage } from '../tools/colors'
+import { mockAnalyzeWithPkg } from '../tools/mock-fs'
 
 describe(colorizeMessage('"interop" option'), () => {
 
-  const cwd = process.cwd();
+  const cwd = process.cwd()
 
   const createResult = (analyzed: PkgAnalyzed) => {
-    const { main, browser, bin } = analyzed;
+    const { main, browser, bin } = analyzed
     return {
       main: main?.interop,
       browser: browser?.interop,
       bin: bin?.interop,
-    };
-  };
+    }
+  }
 
   const analyzeWithInterop = async (interop: SelectiveInteropOption) => {
     return createResult(
@@ -24,8 +24,8 @@ describe(colorizeMessage('"interop" option'), () => {
         bin: 'binary.js',
         bundlib: { interop },
       }),
-    );
-  };
+    )
+  }
 
   test(colorizeMessage('Should throw on invalid "interop" option'), () => {
 
@@ -36,27 +36,27 @@ describe(colorizeMessage('"interop" option'), () => {
       'bin-',
       ['main-'],
       ['main', 'browser-'],
-    ];
+    ]
 
     invalid.forEach((interop) => {
-      void expect(analyzeWithInterop(interop as never)).rejects.toThrow('Invalid "interop" option');
-    });
+      void expect(analyzeWithInterop(interop as never)).rejects.toThrow('Invalid "interop" option')
+    })
 
-  });
+  })
 
   test(colorizeMessage('Should read string as "interop" option'), () => {
 
-    const values = ['main', 'browser', 'bin'] as const;
+    const values = ['main', 'browser', 'bin'] as const
 
     values.forEach((value) => {
       void expect(analyzeWithInterop(value)).resolves.toEqual({
         main: 'main' === value,
         browser: 'browser' === value,
         bin: 'bin' === value,
-      });
-    });
+      })
+    })
 
-  });
+  })
 
   test(colorizeMessage('Should read array as "interop" option'), () => {
     const values: BuildType[][] = [
@@ -65,15 +65,15 @@ describe(colorizeMessage('"interop" option'), () => {
       ['bin'],
       ['main', 'bin'],
       ['main', 'browser'],
-    ];
+    ]
     values.forEach((value) => {
       void expect(analyzeWithInterop(value)).resolves.toEqual({
         main: value.includes('main'),
         browser: value.includes('browser'),
         bin: value.includes('bin'),
-      });
-    });
-  });
+      })
+    })
+  })
 
   test(colorizeMessage('Should read boolean as "interop" option'), () => {
     [true, false].forEach((value) => {
@@ -81,9 +81,9 @@ describe(colorizeMessage('"interop" option'), () => {
         main: value,
         browser: value,
         bin: value,
-      });
-    });
-  });
+      })
+    })
+  })
 
   test(colorizeMessage('Should read interop string as "interop" option'), () => {
     const interopStrings = [
@@ -92,15 +92,15 @@ describe(colorizeMessage('"interop" option'), () => {
       'esModule',
       'default',
       'defaultOnly',
-    ] as const;
+    ] as const
     interopStrings.forEach((value) => {
       void expect(analyzeWithInterop(value)).resolves.toEqual({
         main: value,
         browser: value,
         bin: value,
-      });
-    });
-  });
+      })
+    })
+  })
 
   test(colorizeMessage('Should default to false if "interop" option not present'), async () => {
 
@@ -110,14 +110,14 @@ describe(colorizeMessage('"interop" option'), () => {
         browser: 'out/lib.umd.js',
         bin: 'out/lib.bin.js',
       }),
-    );
+    )
 
     expect(result).toEqual({
       main: false,
       browser: false,
       bin: false,
-    });
+    })
 
-  });
+  })
 
-});
+})

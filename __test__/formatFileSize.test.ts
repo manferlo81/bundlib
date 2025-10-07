@@ -1,4 +1,4 @@
-import { formatFileSize } from '../src/cli/tools/format';
+import { formatFileSize } from '../src/cli/tools/format'
 
 describe('formatFileSize function', () => {
 
@@ -11,12 +11,12 @@ describe('formatFileSize function', () => {
       { value: 1.2 * 1024, expected: '1.2 KB' },
       { value: 1.2 * 1024 * 1024, expected: '1.2 MB' },
       { value: 1200 * 1024 * 1024, expected: '1200 MB' },
-    ];
+    ]
     cases.forEach(({ value, expected }) => {
-      const result = formatFileSize(value);
-      expect(result).toBe(expected);
-    });
-  });
+      const result = formatFileSize(value)
+      expect(result).toBe(expected)
+    })
+  })
 
   test('Should round file size to 2 decimal places', () => {
     const cases = [
@@ -28,11 +28,11 @@ describe('formatFileSize function', () => {
       { value: 1.238 * 1024 * 1024, expected: '1.24 MB' },
       { value: 1231.761 * 1024 * 1024, expected: '1231.76 MB' },
       { value: 1231.768 * 1024 * 1024, expected: '1231.77 MB' },
-    ];
+    ]
     cases.forEach(({ value, expected }) => {
-      const result = formatFileSize(value);
-      expect(result).toBe(expected);
-    });
-  });
+      const result = formatFileSize(value)
+      expect(result).toBe(expected)
+    })
+  })
 
-});
+})

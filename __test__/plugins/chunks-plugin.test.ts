@@ -1,19 +1,19 @@
-import type { PartialResolvedId, ResolveIdHook } from 'rollup';
-import slash from 'slash';
-import { pluginChunks } from '../../src/api/plugins/chunks';
-import { colorizeMessage, filenameColor } from '../tools/colors';
+import type { PartialResolvedId, ResolveIdHook } from 'rollup'
+import slash from 'slash'
+import { pluginChunks } from '../../src/api/plugins/chunks'
+import { colorizeMessage, filenameColor } from '../tools/colors'
 
 describe(colorizeMessage('chunks plugin'), () => {
 
-  const cwd = process.cwd();
+  const cwd = process.cwd()
 
   const { resolveId } = pluginChunks(cwd, `${cwd}/out`, ['.ts', '.js'], {
     'src/target.ts': 'root-file.js',
     'src/target-no-ext': 'root-file.js',
     'src/helpers/index.ts': 'out/helpers.js',
     'src/itself/index.ts': 'out',
-  });
-  const resolveIdFunction = resolveId as ResolveIdHook;
+  })
+  const resolveIdFunction = resolveId as ResolveIdHook
 
   test(colorizeMessage('Should return null if module import itself and let rollup deal with it'), () => {
 
@@ -22,16 +22,16 @@ describe(colorizeMessage('chunks plugin'), () => {
       './index',
       `${cwd}/src/itself/index.ts`,
       {} as never,
-    )).toBeNull();
+    )).toBeNull()
 
     expect(resolveIdFunction.call(
       null as never,
       '.',
       `${cwd}/src/itself/index.ts`,
       {} as never,
-    )).toBeNull();
+    )).toBeNull()
 
-  });
+  })
 
   test(colorizeMessage('Should return null if no importer'), () => {
 
@@ -40,11 +40,11 @@ describe(colorizeMessage('chunks plugin'), () => {
       `${cwd}/src/index.ts`,
       undefined,
       {} as never,
-    ) as PartialResolvedId;
+    ) as PartialResolvedId
 
-    expect(resolved).toBeNull();
+    expect(resolved).toBeNull()
 
-  });
+  })
 
   test(colorizeMessage('Should return null if target not found'), () => {
 
@@ -53,11 +53,11 @@ describe(colorizeMessage('chunks plugin'), () => {
       './another-target',
       `${cwd}/src/index.ts`,
       {} as never,
-    ) as PartialResolvedId;
+    ) as PartialResolvedId
 
-    expect(resolved).toBeNull();
+    expect(resolved).toBeNull()
 
-  });
+  })
 
   test(colorizeMessage('Should resolve file from another file'), () => {
 
@@ -66,15 +66,15 @@ describe(colorizeMessage('chunks plugin'), () => {
       './target',
       `${cwd}/src/index.ts`,
       {} as never,
-    ) as PartialResolvedId;
-    resolved.id = slash(resolved.id);
+    ) as PartialResolvedId
+    resolved.id = slash(resolved.id)
 
     expect(resolved).toMatchObject({
       id: slash('../root-file.js'),
       external: true,
-    });
+    })
 
-  });
+  })
 
   test(colorizeMessage('Should resolve file from another file'), () => {
 
@@ -83,15 +83,15 @@ describe(colorizeMessage('chunks plugin'), () => {
       './target-no-ext',
       `${cwd}/src/index.ts`,
       {} as never,
-    ) as PartialResolvedId;
-    resolved.id = slash(resolved.id);
+    ) as PartialResolvedId
+    resolved.id = slash(resolved.id)
 
     expect(resolved).toMatchObject({
       id: slash('../root-file.js'),
       external: true,
-    });
+    })
 
-  });
+  })
 
   test(colorizeMessage(`Should resolve file inferring ${filenameColor('index.js')}`), () => {
 
@@ -100,14 +100,14 @@ describe(colorizeMessage('chunks plugin'), () => {
       './helpers',
       `${cwd}/src/index.ts`,
       {} as never,
-    ) as PartialResolvedId;
-    resolved.id = slash(resolved.id);
+    ) as PartialResolvedId
+    resolved.id = slash(resolved.id)
 
     expect(resolved).toMatchObject({
       id: slash('./helpers.js'),
       external: true,
-    });
+    })
 
-  });
+  })
 
-});
+})

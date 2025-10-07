@@ -1,12 +1,12 @@
-import type { Plugin } from 'rollup';
-import { createConfig } from '../src/api/tools/create-config';
-import { colorizeMessage, javascriptValueColor } from './tools/colors';
+import type { Plugin } from 'rollup'
+import { createConfig } from '../src/api/tools/create-config'
+import { colorizeMessage, javascriptValueColor } from './tools/colors'
 
 describe(colorizeMessage('createConfig function'), () => {
 
   test(colorizeMessage('Should create config'), () => {
 
-    const input = 'src/index.js';
+    const input = 'src/index.js'
     const output = {
       file: 'out/lib.js',
       format: 'cjs' as const,
@@ -14,9 +14,9 @@ describe(colorizeMessage('createConfig function'), () => {
       esModule: true,
       interop: 'compat' as const,
       compact: false,
-    };
-    const isExternal = () => false;
-    const plugins: Plugin[] = [];
+    }
+    const isExternal = () => false
+    const plugins: Plugin[] = []
 
     const config = createConfig({
       input,
@@ -25,7 +25,7 @@ describe(colorizeMessage('createConfig function'), () => {
       plugins,
       onwarn: null,
       useChokidar: false,
-    });
+    })
 
     expect(config).toEqual({
       input,
@@ -37,13 +37,13 @@ describe(colorizeMessage('createConfig function'), () => {
           expect.any(String),
         ]) as never,
       },
-    });
+    })
 
-  });
+  })
 
   test(colorizeMessage(`Should create config with ${javascriptValueColor('onwarn')}`), () => {
 
-    const input = 'src/index.js';
+    const input = 'src/index.js'
     const output = {
       file: 'out/lib.js',
       format: 'cjs' as const,
@@ -51,10 +51,10 @@ describe(colorizeMessage('createConfig function'), () => {
       esModule: true,
       interop: 'compat' as const,
       compact: false,
-    };
-    const isExternal = () => false;
-    const plugins: Plugin[] = [];
-    const onwarn = () => false;
+    }
+    const isExternal = () => false
+    const plugins: Plugin[] = []
+    const onwarn = () => false
 
     const config = createConfig({
       input,
@@ -63,7 +63,7 @@ describe(colorizeMessage('createConfig function'), () => {
       plugins,
       onwarn,
       useChokidar: false,
-    });
+    })
 
     expect(config).toEqual({
       input,
@@ -76,13 +76,13 @@ describe(colorizeMessage('createConfig function'), () => {
           expect.any(String),
         ]) as never,
       },
-    });
+    })
 
-  });
+  })
 
   test(colorizeMessage('Should create config with chokidar as boolean'), () => {
 
-    const input = 'src/index.js';
+    const input = 'src/index.js'
     const output = {
       file: 'out/lib.js',
       format: 'cjs' as const,
@@ -90,9 +90,9 @@ describe(colorizeMessage('createConfig function'), () => {
       esModule: true,
       interop: 'compat' as const,
       compact: false,
-    };
-    const isExternal = () => false;
-    const plugins: Plugin[] = [];
+    }
+    const isExternal = () => false
+    const plugins: Plugin[] = []
 
     const config = createConfig({
       input,
@@ -101,7 +101,7 @@ describe(colorizeMessage('createConfig function'), () => {
       plugins,
       onwarn: null,
       useChokidar: true,
-    });
+    })
 
     expect(config).toEqual({
       input,
@@ -114,8 +114,8 @@ describe(colorizeMessage('createConfig function'), () => {
         ]) as never,
         chokidar: {},
       },
-    });
+    })
 
-  });
+  })
 
-});
+})

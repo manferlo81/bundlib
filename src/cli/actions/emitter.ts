@@ -1,107 +1,107 @@
-import { EventEmitter } from 'node:events';
-import type { RollupError } from 'rollup';
-import type { ProgramOptions } from '../command/types/cli-options';
-import { logInfo, logWarning } from '../console/console';
-import { formatTag } from '../console/format';
-import { cyan, green, magenta, yellow } from '../tools/colors';
-import { formatFileSize, formatMS } from '../tools/format';
-import { parseFileName } from '../tools/parse';
-import type { ActionContext } from './action-types';
-import type { BundlibEventEmitter } from './emitter-types';
-import type { BundlibEventMap } from './event-map';
+import { EventEmitter } from 'node:events'
+import type { RollupError } from 'rollup'
+import type { ProgramOptions } from '../command/types/cli-options'
+import { logInfo, logWarning } from '../console/console'
+import { formatTag } from '../console/format'
+import { cyan, green, magenta, yellow } from '../tools/colors'
+import { formatFileSize, formatMS } from '../tools/format'
+import { parseFileName } from '../tools/parse'
+import type { ActionContext } from './action-types'
+import type { BundlibEventEmitter } from './emitter-types'
+import type { BundlibEventMap } from './event-map'
 
 export function createEmitter(cwd: string, programOptions: ProgramOptions, context: ActionContext, handleError: (err: RollupError | Error) => void): BundlibEventEmitter {
 
-  const { watch: watchMode, silent: silentMode } = programOptions;
-  const { consoleLog, consoleInfo, consoleWarn } = context;
+  const { watch: watchMode, silent: silentMode } = programOptions
+  const { consoleLog, consoleInfo, consoleWarn } = context
 
   // Create event emitter
-  const emitter = new EventEmitter<BundlibEventMap>();
+  const emitter = new EventEmitter<BundlibEventMap>()
 
   // Attach error handler (even in silent mode)
-  emitter.on('error', handleError);
+  emitter.on('error', handleError)
 
   // Return early if silent mode is on
-  if (silentMode) return emitter;
+  if (silentMode) return emitter
 
   // Declare count and duration variables
-  let buildCount = 0;
-  let startedAt = 0;
+  let buildCount = 0
+  let startedAt = 0
 
   const handleBuildStart = () => {
-    logInfo(consoleInfo, 'Build started...', '');
+    logInfo(consoleInfo, 'Build started...', '')
 
-    buildCount = 0;
-    startedAt = Date.now();
-  };
+    buildCount = 0
+    startedAt = Date.now()
+  }
 
   const showFinalStatus = () => {
 
     // Compute build duration
-    const buildDuration = Date.now() - startedAt;
+    const buildDuration = Date.now() - startedAt
 
     // format build count and build duration
-    const coloredCount = yellow(`${buildCount} files`);
-    const coloredDuration = magenta.bold(formatMS(buildDuration));
+    const coloredCount = yellow(`${buildCount} files`)
+    const coloredDuration = magenta.bold(formatMS(buildDuration))
 
     // Show build count and duration message
-    logInfo(consoleLog, '', `Built ${coloredCount} in ${coloredDuration}`);
+    logInfo(consoleLog, '', `Built ${coloredCount} in ${coloredDuration}`)
 
-  };
+  }
 
   // Attach handler to initialize final count and duration
-  emitter.on('start', handleBuildStart);
+  emitter.on('start', handleBuildStart)
 
   // Create end handler
   const handleBuildEnd = watchMode
     ? () => {
-      showFinalStatus();
-      logInfo(consoleLog, '', 'waiting for changes...');
+      showFinalStatus()
+      logInfo(consoleLog, '', 'waiting for changes...')
     }
-    : showFinalStatus;
+    : showFinalStatus
 
   // Attach handler to show final count and duration
-  emitter.on('end', handleBuildEnd);
+  emitter.on('end', handleBuildEnd)
 
   // Attach handler to show filename, size and duration of every file built
   emitter.on('file-end', (filename, size, duration, cached) => {
-    const builtTag = formatTag('BUILT', green);
+    const builtTag = formatTag('BUILT', green)
 
-    const [dirname, basename] = parseFileName(filename, cwd);
+    const [dirname, basename] = parseFileName(filename, cwd)
 
-    const coloredDir = yellow(`${dirname}/`);
-    const coloredFilename = yellow.bold(basename);
-    const path = `${coloredDir}${coloredFilename}`;
+    const coloredDir = yellow(`${dirname}/`)
+    const coloredFilename = yellow.bold(basename)
+    const path = `${coloredDir}${coloredFilename}`
 
-    const coloredSize = magenta.bold(formatFileSize(size));
-    const coloredDuration = magenta.bold(formatMS(duration));
-    const cachedInfo = cached ? ` ${green('using cache')}` : '';
-    const info = `( ${coloredSize} in ${coloredDuration}${cachedInfo} )`;
+    const coloredSize = magenta.bold(formatFileSize(size))
+    const coloredDuration = magenta.bold(formatMS(duration))
+    const cachedInfo = cached ? ` ${green('using cache')}` : ''
+    const info = `( ${coloredSize} in ${coloredDuration}${cachedInfo} )`
 
-    logInfo(consoleInfo, `${builtTag} ${path} ${info}`);
+    logInfo(consoleInfo, `${builtTag} ${path} ${info}`)
 
-    buildCount++;
-  });
+    buildCount++
+  })
 
   // Attach warning handler
   emitter.on('warn', (warning) => {
 
-    const { plugin, message } = warning;
+    const { plugin, message } = warning
 
     const pluginInfo = plugin
       ? `[ ${cyan('plugin')}: ${magenta.bold(plugin)} ] `
-      : '';
+      : ''
 
-    logWarning(consoleWarn, `${pluginInfo}${message}`);
+    logWarning(consoleWarn, `${pluginInfo}${message}`)
 
-  });
+  })
 
   // Return early if watch mode is off
-  if (!watchMode) return emitter;
+  if (!watchMode) return emitter
 
   // Attach handler to show "rebuilding" message on watch mode
   return emitter.on('rebuild', () => {
-    logInfo(consoleLog, 'rebuilding...', '');
-  });
+    logInfo(consoleLog, 'rebuilding...', '')
+  })
 
 }

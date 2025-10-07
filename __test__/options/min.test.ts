@@ -1,10 +1,10 @@
-import type { SelectiveMinOption } from '../../src/api/types/bundlib-options';
-import { colorizeMessage } from '../tools/colors';
-import { mockAnalyzeWithPkg } from '../tools/mock-fs';
+import type { SelectiveMinOption } from '../../src/api/types/bundlib-options'
+import { colorizeMessage } from '../tools/colors'
+import { mockAnalyzeWithPkg } from '../tools/mock-fs'
 
 describe(colorizeMessage('"min" option'), () => {
 
-  const cwd = process.cwd();
+  const cwd = process.cwd()
 
   const analyzeWithMin = (min: SelectiveMinOption) => mockAnalyzeWithPkg(cwd, {
     main: 'main.js',
@@ -12,7 +12,7 @@ describe(colorizeMessage('"min" option'), () => {
     browser: 'browser.js',
     bin: 'bin.js',
     bundlib: { input: 'src/index,js', min },
-  });
+  })
 
   test(colorizeMessage('Should throw on invalid "min" option'), () => {
 
@@ -24,12 +24,12 @@ describe(colorizeMessage('"min" option'), () => {
       'bin-',
       ['main-'],
       ['main', 'browser-'],
-    ];
+    ]
 
     invalidMinOptions.forEach((min) => {
-      void expect(analyzeWithMin(min as never)).rejects.toThrow('Invalid "min" option');
-    });
+      void expect(analyzeWithMin(min as never)).rejects.toThrow('Invalid "min" option')
+    })
 
-  });
+  })
 
-});
+})

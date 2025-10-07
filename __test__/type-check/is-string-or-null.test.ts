@@ -1,6 +1,6 @@
-import { isStringOrNullish } from '../../src/api/type-check/advanced';
-import { colorizeMessage } from '../tools/colors';
-import { arrays, booleans, functions, objects, nullish, numbers, strings } from '../tools/typed-values';
+import { isStringOrNullish } from '../../src/api/type-check/advanced'
+import { colorizeMessage } from '../tools/colors'
+import { arrays, booleans, functions, objects, nullish, numbers, strings } from '../tools/typed-values'
 
 describe(colorizeMessage('isStringOrNullish function'), () => {
 
@@ -12,25 +12,25 @@ describe(colorizeMessage('isStringOrNullish function'), () => {
       ...functions,
       ...arrays,
       ...objects,
-    ];
+    ]
 
     nonObjectValues.forEach((value) => {
-      expect(isStringOrNullish(value)).toBe(false);
-    });
+      expect(isStringOrNullish(value)).toBe(false)
+    })
 
-  });
+  })
 
   test(colorizeMessage('Should return true on string or nullish values'), () => {
 
     const arraysAndObject = [
       ...strings,
       ...nullish,
-    ];
+    ]
 
     arraysAndObject.forEach((value) => {
-      expect(isStringOrNullish(value)).toBe(true);
-    });
+      expect(isStringOrNullish(value)).toBe(true)
+    })
 
-  });
+  })
 
-});
+})

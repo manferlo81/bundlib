@@ -1,18 +1,18 @@
-import { defineConfig, globalIgnores } from 'eslint/config';
-import globals from 'globals';
+import { defineConfig, globalIgnores } from 'eslint/config'
+import globals from 'globals'
 
-import pluginJavascript from '@eslint/js';
-import pluginStylistic from '@stylistic/eslint-plugin';
-import { flatConfigs as pluginImportConfigs } from 'eslint-plugin-import';
-import { configs as pluginTypescriptConfigs } from 'typescript-eslint';
+import pluginJavascript from '@eslint/js'
+import pluginStylistic from '@stylistic/eslint-plugin'
+import { flatConfigs as pluginImportConfigs } from 'eslint-plugin-import'
+import { configs as pluginTypescriptConfigs } from 'typescript-eslint'
 
 // Constants
 
-const PATTERN_JS = '**/*.{js,mjs,cjs}';
-const PATTERN_TS = '**/*.{ts,mts,cts}';
+const PATTERN_JS = '**/*.{js,mjs,cjs}'
+const PATTERN_TS = '**/*.{ts,mts,cts}'
 
-const FILES_TS_ONLY = [PATTERN_TS];
-const FILES_ALL = [PATTERN_JS, PATTERN_TS];
+const FILES_TS_ONLY = [PATTERN_TS]
+const FILES_ALL = [PATTERN_JS, PATTERN_TS]
 
 // Javascript Plugin
 
@@ -33,19 +33,13 @@ const configPluginJavascript = defineConfig({
   extends: [
     pluginJavascript.configs.recommended,
   ],
-});
+})
 
 // Typescript Plugin
 
 const configPluginTypescript = defineConfig({
   rules: ruleNormalizer({ plugin: '@typescript-eslint' })({
     'array-type': { default: 'array-simple', readonly: 'array-simple' },
-    'no-meaningless-void-operator': 'on',
-    'no-confusing-void-expression': {
-      ignoreArrowShorthand: true,
-      ignoreVoidOperator: false,
-      ignoreVoidReturningFunctions: true,
-    },
     'restrict-template-expressions': {
       allowBoolean: false,
       allowRegExp: false,
@@ -54,6 +48,7 @@ const configPluginTypescript = defineConfig({
     },
     'consistent-type-imports': 'on',
     'consistent-type-exports': 'on',
+    'no-confusing-void-expression': { ignoreArrowShorthand: true, ignoreVoidReturningFunctions: true },
   }),
   files: FILES_TS_ONLY,
   languageOptions: { parserOptions: { projectService: true, tsconfigRootDir: import.meta.dirname } },
@@ -61,7 +56,7 @@ const configPluginTypescript = defineConfig({
     pluginTypescriptConfigs.strictTypeChecked,
     pluginTypescriptConfigs.stylisticTypeChecked,
   ],
-});
+})
 
 // Import Plugin
 
@@ -79,7 +74,7 @@ const configPluginImport = defineConfig({
     pluginImportConfigs.recommended,
     pluginImportConfigs.typescript,
   ],
-});
+})
 
 // Stylistic Plugin
 
@@ -96,14 +91,13 @@ const configPluginStylistic = defineConfig({
   files: FILES_ALL,
   extends: [
     pluginStylistic.configs.customize({
-      semi: true,
       arrowParens: true,
       quoteProps: 'as-needed',
       braceStyle: '1tbs',
       jsx: false,
     }),
   ],
-});
+})
 
 // Config
 
@@ -114,84 +108,89 @@ export default defineConfig(
   configPluginTypescript,
   configPluginImport,
   configPluginStylistic,
-);
+)
 
 // Helpers
 
 function ruleNormalizer({ severity: defaultSeverity = 'error', plugin: pluginName } = {}) {
 
-  const isDefaultSeverity = (entry) => ['error', 'warn', 1, 2].includes(entry);
+  // Throw TypeError if default severity is not valid
+  const isDefaultSeverity = (entry) => ['error', 'warn', 1, 2].includes(entry)
+  if (!isDefaultSeverity(defaultSeverity)) throw new TypeError('Invalid default severity.')
 
-  if (!isDefaultSeverity(defaultSeverity)) throw new TypeError('Invalid default severity');
-
+  // User severity resolver
   const resolveSeverity = (entry) => {
 
-    // Resolve with default severity if entry is "on" or true
-    if (entry === 'on' || entry === true) return [true, defaultSeverity];
+    // Resolve to default severity if entry is "on" or true
+    if (entry === 'on' || entry === true) return [true, defaultSeverity]
 
-    // Resolve to "off" if entry if false or nullish
-    if (entry === false || entry == null) return [true, 'off'];
+    // Resolve to "off" if entry is false
+    if (entry === false) return [true, 'off']
 
-    // Resolve to entry with wether or not is a valid severity
-    return [entry === 'off' || entry === 0 || isDefaultSeverity(entry), entry];
-  };
+    // Resolve to entry if it's a valid severity
+    return [entry === 'off' || entry === 0 || isDefaultSeverity(entry), entry]
+  }
 
+  // Rule entry normalizer
   const normalizeRuleEntry = (entry) => {
 
-    // Return entry if it's a valid severity
-    const [isSeverity, severity] = resolveSeverity(entry);
-    if (isSeverity) return severity;
+    // Return severity if it resolves to a valid severity
+    const [isValidSeverity, severity] = resolveSeverity(entry)
+    if (isValidSeverity) return severity
 
-    // Process entry if it's an array
+    // Process entry as array
     if (Array.isArray(entry)) {
 
       // Return default severity if array is empty
-      if (!entry.length) return defaultSeverity;
+      if (!entry.length) return defaultSeverity
 
-      // Return rule if first element is a valid severity
-      const [first, ...rest] = entry;
-      const [isSeverity, severity] = resolveSeverity(first);
-      if (isSeverity) return [severity, ...rest];
+      // Return severity rule first element resolves to a valid severity
+      const [first, ...rest] = entry
+      const [isValidSeverity, severity] = resolveSeverity(first)
+      if (isValidSeverity) return [severity, ...rest]
 
-      // Return default severity rule if first element is not a valid severity
-      return [defaultSeverity, ...entry];
-
+      // Return default severity rule with options
+      return [defaultSeverity, ...entry]
     }
 
-    // Return default severity rule if it's not a valid severity nor an array
-    return [defaultSeverity, entry];
-
-  };
-
-  const createRuleNormalizer = (normalizeObjectEntry) => {
-    return (rules) => {
-      const entries = Object.entries(rules);
-      const entriesNormalized = entries.map(normalizeObjectEntry);
-      return Object.fromEntries(entriesNormalized);
-    };
-  };
-
-  if (!pluginName) {
-    return createRuleNormalizer(
-      ([ruleName, ruleEntry]) => [
-        ruleName,
-        normalizeRuleEntry(ruleEntry),
-      ],
-    );
+    // Return default severity rule with one option
+    return [defaultSeverity, entry]
   }
 
-  const pluginPrefix = `${pluginName}/`;
+  // Rule normalizer factory
+  const createRuleNormalizer = (normalizeObjectEntry) => {
+    return (rules) => {
+      const entries = Object.entries(rules)
+      const entriesNormalized = entries.map(normalizeObjectEntry)
+      return Object.fromEntries(entriesNormalized)
+    }
+  }
 
+  // Return simplified normalizer if no plugin defined
+  if (!pluginName) {
+    return createRuleNormalizer(
+      ([ruleName, entry]) => [
+        ruleName,
+        normalizeRuleEntry(entry),
+      ],
+    )
+  }
+
+  // Declare plugin prefix
+  const pluginPrefix = `${pluginName}/`
+
+  // Rule name normalizer
   const normalizeRuleName = (ruleName) => {
-    if (ruleName.startsWith(pluginPrefix)) return ruleName;
-    return `${pluginPrefix}${ruleName}`;
-  };
+    if (ruleName.startsWith(pluginPrefix)) return ruleName
+    return `${pluginPrefix}${ruleName}`
+  }
 
+  // Return rule normalizer
   return createRuleNormalizer(
-    ([ruleName, ruleEntry]) => [
+    ([ruleName, entry]) => [
       normalizeRuleName(ruleName),
-      normalizeRuleEntry(ruleEntry),
+      normalizeRuleEntry(entry),
     ],
-  );
+  )
 
 }

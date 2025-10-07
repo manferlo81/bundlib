@@ -1,10 +1,10 @@
-import type { DirectoryItems } from 'mock-fs/lib/filesystem';
-import type { BundlibPkgJson } from '../../src/api';
-import { pkgToConfigs } from '../../src/api';
+import type { DirectoryItems } from 'mock-fs/lib/filesystem'
+import type { BundlibPkgJson } from '../../src/api'
+import { pkgToConfigs } from '../../src/api'
 // eslint-disable-next-line import/no-cycle
-import { mockAnalyzeWithPkg } from './mock-fs';
+import { mockAnalyzeWithPkg } from './mock-fs'
 
 export const createConfigs = async (cwd: string, dev: boolean, pkg: BundlibPkgJson, structure: DirectoryItems = {}) => {
-  const analyzed = await mockAnalyzeWithPkg(cwd, pkg, structure);
-  return pkgToConfigs(analyzed, { dev });
-};
+  const analyzed = await mockAnalyzeWithPkg(cwd, pkg, structure)
+  return pkgToConfigs(analyzed, { dev })
+}

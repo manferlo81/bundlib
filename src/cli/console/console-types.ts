@@ -1,1 +1,1 @@
-export type ConsoleLogFunction = Console['log' | 'info' | 'warn' | 'error'];
+export type ConsoleLogFunction = Console['log' | 'info' | 'warn' | 'error']

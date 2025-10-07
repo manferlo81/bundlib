@@ -1,15 +1,15 @@
-import { resolveSkipOption } from '../../src/api/options/skip';
-import { SKIP_OPTION_KEYS } from '../../src/api/selective/constants';
-import type { SelectiveSkipKey } from '../../src/api/types/bundlib-options';
-import { colorizeMessage } from '../tools/colors';
-import type { GetSelectiveResultValue } from '../tools/selective-tools';
-import { createSelectiveResult, isApiKey } from '../tools/selective-tools';
+import { resolveSkipOption } from '../../src/api/options/skip'
+import { SKIP_OPTION_KEYS } from '../../src/api/selective/constants'
+import type { SelectiveSkipKey } from '../../src/api/types/bundlib-options'
+import { colorizeMessage } from '../tools/colors'
+import type { GetSelectiveResultValue } from '../tools/selective-tools'
+import { createSelectiveResult, isApiKey } from '../tools/selective-tools'
 
 describe(colorizeMessage('resolve "skip" option'), () => {
 
   const createResult = <V>(getValue: GetSelectiveResultValue<SelectiveSkipKey, V>) => {
-    return createSelectiveResult<SelectiveSkipKey, V>(SKIP_OPTION_KEYS, getValue);
-  };
+    return createSelectiveResult<SelectiveSkipKey, V>(SKIP_OPTION_KEYS, getValue)
+  }
 
   test(colorizeMessage('Should throw on invalid "skip" option'), () => {
 
@@ -26,27 +26,27 @@ describe(colorizeMessage('resolve "skip" option'), () => {
       { browser: 'invalid' },
       { bin: 'invalid' },
       { types: 'invalid' },
-    ];
+    ]
 
     invalidSkipOptionValues.forEach((invalid) => {
-      expect(() => resolveSkipOption(invalid as never)).toThrow('Invalid "skip" option');
-    });
+      expect(() => resolveSkipOption(invalid as never)).toThrow('Invalid "skip" option')
+    })
 
-  });
+  })
 
   test(colorizeMessage('Should resolve nullish "skip" option'), () => {
     const expected = createResult(() => false);
     [null, undefined].forEach((value) => {
-      expect(resolveSkipOption(value)).toEqual(expected);
-    });
-  });
+      expect(resolveSkipOption(value)).toEqual(expected)
+    })
+  })
 
   test(colorizeMessage('Should resolve boolean "skip" option'), () => {
     [true, false].forEach((value) => {
-      const expected = createResult(() => value);
-      expect(resolveSkipOption(value)).toEqual(expected);
-    });
-  });
+      const expected = createResult(() => value)
+      expect(resolveSkipOption(value)).toEqual(expected)
+    })
+  })
 
   test(colorizeMessage('Should resolve build type "skip" option'), () => {
 
@@ -59,13 +59,13 @@ describe(colorizeMessage('resolve "skip" option'), () => {
         value: 'api' as const,
         expected: createResult(isApiKey),
       },
-    ];
+    ]
 
     values.forEach(({ value, expected }) => {
-      expect(resolveSkipOption(value)).toEqual(expected);
-    });
+      expect(resolveSkipOption(value)).toEqual(expected)
+    })
 
-  });
+  })
 
   test(colorizeMessage('Should resolve array of build type as "skip" option'), () => {
 
@@ -86,13 +86,13 @@ describe(colorizeMessage('resolve "skip" option'), () => {
         value: ['api', 'types'] as ['api', 'types'],
         expected: createResult((key) => isApiKey(key) || key === 'types'),
       },
-    ];
+    ]
 
     values.forEach(({ value: array, expected }) => {
-      expect(resolveSkipOption(array)).toEqual(expected);
-    });
+      expect(resolveSkipOption(array)).toEqual(expected)
+    })
 
-  });
+  })
 
   test(colorizeMessage('Should resolve selective object "skip" option'), () => {
 
@@ -133,12 +133,12 @@ describe(colorizeMessage('resolve "skip" option'), () => {
         value: { main: true, module: null, bin: undefined },
         expected: createResult((key) => key === 'main'),
       },
-    ];
+    ]
 
     values.forEach(({ value, expected }) => {
-      expect(resolveSkipOption(value)).toEqual(expected);
-    });
+      expect(resolveSkipOption(value)).toEqual(expected)
+    })
 
-  });
+  })
 
-});
+})

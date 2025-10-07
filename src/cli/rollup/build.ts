@@ -1,10 +1,10 @@
-import { statSync } from 'node:fs';
-import type { RollupCache } from 'rollup';
-import { rollup } from 'rollup';
-import type { BundlibRollupConfig } from '../../api/types/rollup';
-import type { BundlibEventEmitter } from '../actions/emitter-types';
-import { promiseReduce } from '../tools/promise-reduce';
-import { groupConfigs } from './group-configs';
+import { statSync } from 'node:fs'
+import type { RollupCache } from 'rollup'
+import { rollup } from 'rollup'
+import type { BundlibRollupConfig } from '../../api/types/rollup'
+import type { BundlibEventEmitter } from '../actions/emitter-types'
+import { promiseReduce } from '../tools/promise-reduce'
+import { groupConfigs } from './group-configs'
 
 export async function rollupBuild(
   configs: BundlibRollupConfig[],
@@ -12,10 +12,10 @@ export async function rollupBuild(
 ): Promise<void> {
 
   // Group configs to process some of them concurrently
-  const configGroups = groupConfigs(configs);
+  const configGroups = groupConfigs(configs)
 
   // Emit start event
-  emitter.emit('start');
+  emitter.emit('start')
 
   // Start building...
   const concurrentBuildPromises = configGroups.map((configs) => {
@@ -26,45 +26,45 @@ export async function rollupBuild(
       async (cache: RollupCache | undefined, config) => {
 
         // Set cache into the config before start the build
-        const { output } = config;
-        const { file: outputFile } = output;
-        const configWithCache = { ...config, cache };
+        const { output } = config
+        const { file: outputFile } = output
+        const configWithCache = { ...config, cache }
 
         // Emit file start event right before start building
-        emitter.emit('file-start', outputFile);
+        emitter.emit('file-start', outputFile)
 
         // Store build start time
-        const buildStartTime = Date.now();
+        const buildStartTime = Date.now()
 
         // Start the build
-        const rollupBuild = await rollup(configWithCache);
-        const { write } = rollupBuild;
+        const rollupBuild = await rollup(configWithCache)
+        const { write } = rollupBuild
 
         // Write to files
-        await write(output);
+        await write(output)
 
         // Compute duration before anything else
-        const buildEndTime = Date.now();
-        const duration = buildEndTime - buildStartTime;
+        const buildEndTime = Date.now()
+        const duration = buildEndTime - buildStartTime
 
         // Get file size
-        const { size } = statSync(outputFile);
+        const { size } = statSync(outputFile)
 
         // Emit file end event
-        emitter.emit('file-end', outputFile, size, duration, !!cache);
+        emitter.emit('file-end', outputFile, size, duration, !!cache)
 
         // Return cache for next iteration
-        const { cache: buildCache } = rollupBuild;
-        return buildCache;
+        const { cache: buildCache } = rollupBuild
+        return buildCache
 
       },
-    );
-  });
+    )
+  })
 
   // Wait for all builds to finish
-  await Promise.all(concurrentBuildPromises);
+  await Promise.all(concurrentBuildPromises)
 
   // Emit end event
-  emitter.emit('end');
+  emitter.emit('end')
 
 }

@@ -1,6 +1,6 @@
-import { config, defineConfig } from '../src/api';
-import type { BundlibConfig } from '../src/api';
-import { colorizeMessage } from './tools/colors';
+import { config, defineConfig } from '../src/api'
+import type { BundlibConfig } from '../src/api'
+import { colorizeMessage } from './tools/colors'
 
 describe(colorizeMessage('defineConfig function'), () => {
 
@@ -8,14 +8,14 @@ describe(colorizeMessage('defineConfig function'), () => {
     const configs: BundlibConfig[] = [
       {},
       { input: 'index.ts' },
-    ];
+    ]
     configs.forEach((object) => {
-      expect(defineConfig(object)).toBe(object);
-    });
-  });
+      expect(defineConfig(object)).toBe(object)
+    })
+  })
 
   test(colorizeMessage('Should export defineConfig function as config'), () => {
-    expect(config).toBe(defineConfig);
-  });
+    expect(config).toBe(defineConfig)
+  })
 
-});
+})

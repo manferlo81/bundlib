@@ -1,6 +1,6 @@
-import { isDictionary } from '../../src/api/type-check/basic';
-import { colorizeMessage } from '../tools/colors';
-import { arrays, booleans, functions, objects, nullish, numbers, strings } from '../tools/typed-values';
+import { isDictionary } from '../../src/api/type-check/basic'
+import { colorizeMessage } from '../tools/colors'
+import { arrays, booleans, functions, objects, nullish, numbers, strings } from '../tools/typed-values'
 
 describe(colorizeMessage('isDictionary function'), () => {
 
@@ -13,20 +13,20 @@ describe(colorizeMessage('isDictionary function'), () => {
       ...nullish,
       ...functions,
       ...arrays,
-    ];
+    ]
 
     nonObjectValues.forEach((value) => {
-      expect(isDictionary(value)).toBe(false);
-    });
+      expect(isDictionary(value)).toBe(false)
+    })
 
-  });
+  })
 
   test(colorizeMessage('Should return true on object only'), () => {
 
     objects.forEach((value) => {
-      expect(isDictionary(value)).toBe(true);
-    });
+      expect(isDictionary(value)).toBe(true)
+    })
 
-  });
+  })
 
-});
+})

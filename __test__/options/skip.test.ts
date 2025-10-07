@@ -1,7 +1,7 @@
-import { colorizeMessage } from '../tools/colors';
+import { colorizeMessage } from '../tools/colors'
 
 describe(colorizeMessage('"skip" option'), () => {
 
-  test.todo('implement');
+  test.todo('implement')
 
-});
+})

@@ -1,5 +1,5 @@
-import { blueBright, cyanBright, greenBright, magentaBright, redBright, yellow } from 'chalk';
-export { greenBright as buildTypeColor, yellow as filenameColor, blueBright as javascriptValueColor, redBright as packageFieldColor, magentaBright as packageNameColor };
+import { blueBright, cyanBright, greenBright, magentaBright, redBright, yellow } from 'chalk'
+export { greenBright as buildTypeColor, yellow as filenameColor, blueBright as javascriptValueColor, redBright as packageFieldColor, magentaBright as packageNameColor }
 
 const functions = [
   'isNullish',
@@ -14,12 +14,12 @@ const functions = [
   'createConfig',
   'configsFromPkg',
   'createIsExternal',
-];
+]
 
 const keywords = [
   'throw',
   'return',
-];
+]
 
 const types = [
   'nullish',
@@ -32,20 +32,20 @@ const types = [
   'dictionary',
   'truthy',
   'falsy',
-];
+]
 
 const constants = [
   'true',
   'false',
   'null',
   'undefined',
-];
+]
 
 const filenames = [
   'package.json',
-];
+]
 
-const addQuotes = (name: string): string => `"${name}"`;
+const addQuotes = (name: string): string => `"${name}"`
 
 const pkgFields = [
   'main',
@@ -59,13 +59,13 @@ const pkgFields = [
   'devDependencies',
   'peerDependencies',
   'bundlib',
-].map(addQuotes);
+].map(addQuotes)
 
 const fields = [
   'field',
   'fields',
   ...pkgFields,
-];
+]
 
 const bundlibOptions = [
   'input',
@@ -82,13 +82,13 @@ const bundlibOptions = [
   'cache',
   'project',
   'chunks',
-].map(addQuotes);
+].map(addQuotes)
 
 const options = [
   'option',
   'options',
   ...bundlibOptions,
-];
+]
 
 const modules = [
   '@babel/core',
@@ -96,13 +96,13 @@ const modules = [
   '@rollup/plugin-babel',
   'rollup-plugin-strip-shebang',
   'rollup-plugin-add-shebang',
-];
+]
 
-type ColorizeText = (text: string) => string;
+type ColorizeText = (text: string) => string
 
 interface ColorizeList {
-  words: string[];
-  style: ColorizeText;
+  words: string[]
+  style: ColorizeText
 }
 
 const colorizeMap: ColorizeList[] = [
@@ -111,21 +111,21 @@ const colorizeMap: ColorizeList[] = [
   { words: filenames, style: yellow },
   { words: [...fields, ...options], style: cyanBright },
   { words: modules, style: magentaBright },
-];
+]
 
 const colorizeDictionary: Partial<Record<string, ColorizeText>> = colorizeMap.reduce((output, { words, style }) => {
   return words.reduce((wordsOutput, word) => {
-    return { ...wordsOutput, [word]: style };
-  }, output);
-}, {});
+    return { ...wordsOutput, [word]: style }
+  }, output)
+}, {})
 
 export function colorizeMessage(message: string) {
-  const messageWords = message.split(' ');
+  const messageWords = message.split(' ')
   const colorizedWords = messageWords.map((word) => {
-    if (!word) return word;
-    const colorize = colorizeDictionary[word];
-    if (!colorize) return word;
-    return colorize(word);
-  });
-  return colorizedWords.join(' ');
+    if (!word) return word
+    const colorize = colorizeDictionary[word]
+    if (!colorize) return word
+    return colorize(word)
+  })
+  return colorizedWords.join(' ')
 }

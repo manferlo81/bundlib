@@ -1,1 +1,1 @@
-export const PRODUCT_NAME = 'bundlib';
+export const PRODUCT_NAME = 'bundlib'

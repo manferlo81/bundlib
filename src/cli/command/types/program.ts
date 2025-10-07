@@ -1,3 +1,3 @@
-import type { ProgramOptions } from './cli-options';
+import type { ProgramOptions } from './cli-options'
 
-export type ProgramAction = (opts: ProgramOptions) => void | Promise<void>;
+export type ProgramAction = (opts: ProgramOptions) => void | Promise<void>

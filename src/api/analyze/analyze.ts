@@ -1,23 +1,23 @@
-import { resolveConfig } from '../config-file/resolve-config';
-import { error } from '../errors/error';
-import { invalidOptionMessage, invalidPkgFieldMessage } from '../errors/error-messages';
-import { resolveESModuleOption } from '../options/es-module';
-import { isBrowserFormatOrNullish } from '../options/format';
-import { isValidGlobals, normalizeGlobals } from '../options/globals';
-import { resolveInputOption } from '../options/input';
-import { resolveInteropOption } from '../options/interop';
-import { resolveMinOption } from '../options/min';
-import { normalizeBuildName } from '../options/name';
-import { resolveProjectOption } from '../options/project';
-import { resolveSkipOption } from '../options/skip';
-import { resolveSourcemapOption } from '../options/sourcemap';
-import type { BundlibPkgJson } from '../package/pkg-json-types';
-import { createIsInstalled } from '../tools/create-is-installed';
-import { isDictionaryOrNullish, isStringOrNullish } from '../type-check/advanced';
-import { invalidKeys } from '../type-check/keys';
-import type { BundlibConfig } from '../types/bundlib-options';
-import type { AllowNull } from '../types/helper-types';
-import type { BrowserBuildOptions, Dependencies, DetectedModuleItem, DetectedModules, InstalledModules, ModuleBuildOptions, ModuleInstalled, OptionalModules, PkgAnalyzed, TypesBuildOptions } from './pkg-analyzed';
+import { resolveConfig } from '../config-file/resolve-config'
+import { error } from '../errors/error'
+import { invalidOptionMessage, invalidPkgFieldMessage } from '../errors/error-messages'
+import { resolveESModuleOption } from '../options/es-module'
+import { isBrowserFormatOrNullish } from '../options/format'
+import { isValidGlobals, normalizeGlobals } from '../options/globals'
+import { resolveInputOption } from '../options/input'
+import { resolveInteropOption } from '../options/interop'
+import { resolveMinOption } from '../options/min'
+import { normalizeBuildName } from '../options/name'
+import { resolveProjectOption } from '../options/project'
+import { resolveSkipOption } from '../options/skip'
+import { resolveSourcemapOption } from '../options/sourcemap'
+import type { BundlibPkgJson } from '../package/pkg-json-types'
+import { createIsInstalled } from '../tools/create-is-installed'
+import { isDictionaryOrNullish, isStringOrNullish } from '../type-check/advanced'
+import { invalidKeys } from '../type-check/keys'
+import type { BundlibConfig } from '../types/bundlib-options'
+import type { AllowNull } from '../types/helper-types'
+import type { BrowserBuildOptions, Dependencies, DetectedModuleItem, DetectedModules, InstalledModules, ModuleBuildOptions, ModuleInstalled, OptionalModules, PkgAnalyzed, TypesBuildOptions } from './pkg-analyzed'
 
 export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgAnalyzed> {
 
@@ -34,9 +34,9 @@ export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgA
     devDependencies: pkgDevDependencies,
     peerDependencies: pkgPeerDependencies,
     bundlib: pkgBundlibConfig,
-  } = pkg;
+  } = pkg
 
-  const resolvedBundlibConfig = await resolveConfig(cwd, pkgBundlibConfig);
+  const resolvedBundlibConfig = await resolveConfig(cwd, pkgBundlibConfig)
 
   const invalidOptions = invalidKeys<keyof BundlibConfig>(
     resolvedBundlibConfig as Readonly<Record<keyof BundlibConfig, unknown>>,
@@ -57,11 +57,11 @@ export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgA
       'skip',
       'equals',
     ],
-  );
+  )
 
   if (invalidOptions) {
-    const optionNames = invalidOptions.map((name) => `"${name}"`).join(', ');
-    throw error(`Unknown options found: (${optionNames})`);
+    const optionNames = invalidOptions.map((name) => `"${name}"`).join(', ')
+    throw error(`Unknown options found: (${optionNames})`)
   }
 
   const {
@@ -80,78 +80,78 @@ export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgA
     min: minOption,
     project: projectOption,
     skip: skipOption,
-  } = resolvedBundlibConfig;
+  } = resolvedBundlibConfig
 
   if (!isDictionaryOrNullish(chunks)) {
-    throw error(invalidOptionMessage('chunks'));
+    throw error(invalidOptionMessage('chunks'))
   }
 
   if (!isBrowserFormatOrNullish(browserFormat)) {
-    throw error(invalidOptionMessage('format'));
+    throw error(invalidOptionMessage('format'))
   }
 
   if (!isStringOrNullish(browserName)) {
-    throw error(invalidOptionMessage('name'));
+    throw error(invalidOptionMessage('name'))
   }
 
   if (!isStringOrNullish(amdId)) {
-    throw error(invalidOptionMessage('id'));
+    throw error(invalidOptionMessage('id'))
   }
 
   if (!isValidGlobals(browserGlobals)) {
-    throw error(invalidOptionMessage('globals'));
+    throw error(invalidOptionMessage('globals'))
   }
 
   if (!isStringOrNullish(cacheOption)) {
-    throw error(invalidOptionMessage('cache'));
+    throw error(invalidOptionMessage('cache'))
   }
 
   if (!isStringOrNullish(pkgMainField)) {
-    throw error(invalidPkgFieldMessage('main', 'string'));
+    throw error(invalidPkgFieldMessage('main', 'string'))
   }
 
   if (!isStringOrNullish(pkgModuleField)) {
-    throw error(invalidPkgFieldMessage('module', 'string'));
+    throw error(invalidPkgFieldMessage('module', 'string'))
   }
 
   if (!pkgModuleField && !isStringOrNullish(pkgJSNextField)) {
-    throw error(invalidPkgFieldMessage('jsnext:main', 'string'));
+    throw error(invalidPkgFieldMessage('jsnext:main', 'string'))
   }
 
   if (!isStringOrNullish(pkgBrowserField)) {
-    throw error(invalidPkgFieldMessage('browser', 'string'));
+    throw error(invalidPkgFieldMessage('browser', 'string'))
   }
 
   if (!isStringOrNullish(pkgBinField)) {
-    throw error(invalidPkgFieldMessage('bin', 'string'));
+    throw error(invalidPkgFieldMessage('bin', 'string'))
   }
 
   if (!isDictionaryOrNullish(pkgRuntimeDependencies)) {
-    throw error(invalidPkgFieldMessage('dependencies', 'Object'));
+    throw error(invalidPkgFieldMessage('dependencies', 'Object'))
   }
 
   if (!isDictionaryOrNullish(pkgDevDependencies)) {
-    throw error(invalidPkgFieldMessage('devDependencies', 'Object'));
+    throw error(invalidPkgFieldMessage('devDependencies', 'Object'))
   }
 
   if (!isDictionaryOrNullish(pkgPeerDependencies)) {
-    throw error(invalidPkgFieldMessage('peerDependencies', 'Object'));
+    throw error(invalidPkgFieldMessage('peerDependencies', 'Object'))
   }
 
-  const { main: mainInput, module: moduleInput, browser: browserInput, bin: binInput } = resolveInputOption(inputOption);
-  const perBuildSourcemap = resolveSourcemapOption(sourcemapOption);
-  const perBuildESModule = resolveESModuleOption(esModuleOption);
-  const perBuildInterop = resolveInteropOption(interopOption);
-  const perBuildMin = resolveMinOption(minOption);
+  const { main: mainInput, module: moduleInput, browser: browserInput, bin: binInput } = resolveInputOption(inputOption)
+  const perBuildSourcemap = resolveSourcemapOption(sourcemapOption)
+  const perBuildESModule = resolveESModuleOption(esModuleOption)
+  const perBuildInterop = resolveInteropOption(interopOption)
+  const perBuildMin = resolveMinOption(minOption)
 
-  const perBuildProject = resolveProjectOption(projectOption);
-  const skipBuild = resolveSkipOption(skipOption);
+  const perBuildProject = resolveProjectOption(projectOption)
+  const skipBuild = resolveSkipOption(skipOption)
 
-  const moduleOutputFile = pkgModuleField ?? pkgJSNextField;
+  const moduleOutputFile = pkgModuleField ?? pkgJSNextField
 
-  const typesOutputFile = pkgTypesField ?? pkgTypingsField;
+  const typesOutputFile = pkgTypesField ?? pkgTypingsField
 
-  const filenameCommonJSModule = !skipBuild.main && pkgMainField;
+  const filenameCommonJSModule = !skipBuild.main && pkgMainField
   const mainOutput: AllowNull<ModuleBuildOptions> = !filenameCommonJSModule
     ? null
     : {
@@ -162,9 +162,9 @@ export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgA
       interop: perBuildInterop.main,
       min: perBuildMin.main,
       project: perBuildProject.main,
-    };
+    }
 
-  const filenameESModule = !skipBuild.module && moduleOutputFile;
+  const filenameESModule = !skipBuild.module && moduleOutputFile
   const moduleOutput: AllowNull<ModuleBuildOptions> = !filenameESModule
     ? null
     : {
@@ -175,9 +175,9 @@ export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgA
       interop: perBuildInterop.module,
       min: perBuildMin.module,
       project: perBuildProject.module,
-    };
+    }
 
-  const filenameBrowserModule = !skipBuild.browser && pkgBrowserField;
+  const filenameBrowserModule = !skipBuild.browser && pkgBrowserField
   const browserOutput: AllowNull<BrowserBuildOptions> = !filenameBrowserModule
     ? null
     : {
@@ -197,9 +197,9 @@ export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgA
       globals: normalizeGlobals(browserGlobals),
       extend: !!extend,
       project: perBuildProject.browser,
-    };
+    }
 
-  const filenameBinaryModule = !skipBuild.bin && pkgBinField;
+  const filenameBinaryModule = !skipBuild.bin && pkgBinField
   const binaryOutput: AllowNull<ModuleBuildOptions> = !filenameBinaryModule
     ? null
     : {
@@ -210,57 +210,57 @@ export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgA
       interop: perBuildInterop.bin,
       min: perBuildMin.bin,
       project: perBuildProject.bin,
-    };
+    }
 
-  const filenameTypes = !skipBuild.types && typesOutputFile;
+  const filenameTypes = !skipBuild.types && typesOutputFile
   const typesOutput: AllowNull<TypesBuildOptions> = !filenameTypes
     ? null
     : {
       output: filenameTypes,
       equals: !!equals,
-    };
+    }
 
   const dependencies: Dependencies = {
     runtime: pkgRuntimeDependencies ?? null,
     dev: pkgDevDependencies ?? null,
     peer: pkgPeerDependencies ?? null,
-  };
+  }
 
-  const cache: AllowNull<string> = cacheOption ?? null;
+  const cache: AllowNull<string> = cacheOption ?? null
 
-  const isInstalled = createIsInstalled(pkgRuntimeDependencies, pkgDevDependencies);
+  const isInstalled = createIsInstalled(pkgRuntimeDependencies, pkgDevDependencies)
 
   const checkInstalled = <I extends OptionalModules>(id: I): ModuleInstalled<I> | null => {
-    const installed = isInstalled(id);
-    if (!installed) return null;
+    const installed = isInstalled(id)
+    if (!installed) return null
     return {
       id,
       version: installed,
-    };
-  };
+    }
+  }
 
   const installed: InstalledModules = {
     babel: checkInstalled('@babel/core'),
     eslint: checkInstalled('eslint'),
     chokidar: checkInstalled('chokidar'),
     typescript: checkInstalled('typescript'),
-  };
+  }
 
   const checkDetected = <I extends OptionalModules>(id: I): DetectedModuleItem<I> => {
-    const installed = isInstalled(id);
-    if (!installed) return { id, installed: null };
+    const installed = isInstalled(id)
+    if (!installed) return { id, installed: null }
     return {
       id,
       installed: { version: installed },
-    };
-  };
+    }
+  }
 
   const detected: DetectedModules = {
     babel: checkDetected('@babel/core'),
     eslint: checkDetected('eslint'),
     chokidar: checkDetected('chokidar'),
     typescript: checkDetected('typescript'),
-  };
+  }
 
   return {
     cwd,
@@ -276,6 +276,6 @@ export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgA
     isInstalled,
     installed,
     detected,
-  };
+  }
 
 }

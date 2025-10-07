@@ -1,4 +1,4 @@
-import type { BundlibConfig } from './src/api';
+import type { BundlibConfig } from './src/api'
 
 const config: BundlibConfig = {
   input: {
@@ -8,6 +8,6 @@ const config: BundlibConfig = {
   esModule: true,
   interop: true,
   project: './tsconfig.build.json',
-};
+}
 
-export default config;
+export default config

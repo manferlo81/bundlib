@@ -1,16 +1,16 @@
-import { colorizeMessage } from '../tools/colors';
-import { mockAnalyzeWithPkg } from '../tools/mock-fs';
+import { colorizeMessage } from '../tools/colors'
+import { mockAnalyzeWithPkg } from '../tools/mock-fs'
 
 describe(colorizeMessage('unknown options'), () => {
 
-  const cwd = process.cwd();
+  const cwd = process.cwd()
 
   const analyzeWithUnknownOption = (option: string) => {
     return mockAnalyzeWithPkg(
       cwd,
       { bundlib: { [option]: true } },
-    );
-  };
+    )
+  }
 
   test(colorizeMessage('Should throw on unknown option'), () => {
 
@@ -20,12 +20,12 @@ describe(colorizeMessage('unknown options'), () => {
       'umd',
       'option1',
       'option2',
-    ];
+    ]
 
     invalidOptions.forEach((option) => {
-      void expect(analyzeWithUnknownOption(option)).rejects.toThrow(`Unknown options found: ("${option}")`);
-    });
+      void expect(analyzeWithUnknownOption(option)).rejects.toThrow(`Unknown options found: ("${option}")`)
+    })
 
-  });
+  })
 
-});
+})

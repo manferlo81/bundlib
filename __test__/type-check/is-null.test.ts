@@ -1,6 +1,6 @@
-import { isNullish } from '../../src/api/type-check/basic';
-import { colorizeMessage } from '../tools/colors';
-import { arrays, booleans, functions, objects, nullish, numbers, strings } from '../tools/typed-values';
+import { isNullish } from '../../src/api/type-check/basic'
+import { colorizeMessage } from '../tools/colors'
+import { arrays, booleans, functions, objects, nullish, numbers, strings } from '../tools/typed-values'
 
 describe(colorizeMessage('isNullish function'), () => {
 
@@ -13,20 +13,20 @@ describe(colorizeMessage('isNullish function'), () => {
       ...functions,
       ...arrays,
       ...objects,
-    ];
+    ]
 
     nonObjectValues.forEach((value) => {
-      expect(isNullish(value)).toBe(false);
-    });
+      expect(isNullish(value)).toBe(false)
+    })
 
-  });
+  })
 
   test(colorizeMessage('Should return true on null & undefined values'), () => {
 
     nullish.forEach((value) => {
-      expect(isNullish(value)).toBe(true);
-    });
+      expect(isNullish(value)).toBe(true)
+    })
 
-  });
+  })
 
-});
+})
