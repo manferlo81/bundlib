@@ -124,8 +124,8 @@ function ruleNormalizer({ severity: defaultSeverity = 'error', plugin: pluginNam
     // Resolve to default severity if entry is "on" or true
     if (entry === 'on' || entry === true) return [true, defaultSeverity]
 
-    // Resolve to "off" if entry is false
-    if (entry === false) return [true, 'off']
+    // Resolve to "off" if entry is false or nullish
+    if (entry === false || entry == null) return [true, 'off']
 
     // Resolve to entry if it's a valid severity
     return [entry === 'off' || entry === 0 || isDefaultSeverity(entry), entry]
