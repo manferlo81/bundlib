@@ -42,7 +42,7 @@ jobs:
           - 21.x
           - 22.x
 
-    name: Test and Build, ${{ matrix.os.name }}, Node.js v${{ matrix.node-version }}
+    name: "Test (Node.js v${{ matrix.node-version }} on ${{ matrix.os.name }})"
 
     runs-on: ${{ matrix.os.image }}
     needs: Lint
@@ -83,7 +83,7 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           directory: coverage
-          file: '*.{json,xml}'
+          file: "*.{json,xml}"
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Show Coverage Report URL
