@@ -59,7 +59,7 @@ An automatic library bundler powered by [Rollup.js](https://github.com/rollup/ro
     * [function `analyzePkg`](#function-analyzepkg)
     * [function `pkgToConfigs`](#function-pkgtoconfigs)
     * [function `configsFromPkg`](#function-configsfrompkg)
-    * [function `defineConfig`](#function-defineconfig-alias-config)
+    * [function `defineConfig`](#function-defineconfig)
   * [Types](#types)
     * [type `BundlibConfig`](#type-bundlibconfig)
     * [type `PkgAnalyzed`](#type-pkganalyzed)
@@ -108,7 +108,9 @@ For `IIFE`, `AMD` or `UMD` builds, add a `"browser"` field to your `package.json
 
 ### Automatic Configuration
 
-**Bundlib** will configure [**Rollup**](https://github.com/rollup/rollup) according to you `package.json` data, see [Advanced Configuration](#advanced-configuration) for more information.
+**Bundlib** will configure [**Rollup**](https://github.com/rollup/rollup) according to you `package.json` data (see [`package.json` fields](#packagejson-fields)) and the content of your configuration file (see [Advanced Configuration](#advanced-configuration)).
+
+### `package.json` fields
 
 #### `"main"`
 
@@ -132,7 +134,7 @@ The `"types"` field will be used as your **Types** output if you are using `type
 
 #### `"dependencies"`
 
-The `"dependencies"` field will be used to detect installed packages, it will also be used to set external dependencies for your **CommonJS module**, **ES module**, and **Binary** builds, for **Browser** build dependencies will be bundled into the output file unless otherwise specified using the [`globals`](#option-globals) option.
+The `"dependencies"` field will be used to detect installed packages, it will also be used to set external dependencies (so they won't be bundled) for your **CommonJS module**, **ES module**, and **Binary** builds, for **Browser** build dependencies will be bundled into the output file unless otherwise specified using the [`globals`](#option-globals) option. Note that rollup will warn you if you have dependencies and they have not been declared using the [`globals`](#option-globals) option.
 
 #### `"devDependencies"`
 
@@ -140,11 +142,11 @@ The `"devDependencies"` field will be used to detect installed packages.
 
 #### `"peerDependencies"`
 
-The `"peerDependencies"` field will be used as external dependencies for your **CommonJS module,**, **ES module**, and **Binary** builds.
+The `"peerDependencies"` field will be used as external dependencies for your **CommonJS module,**, **ES module**, and **Binary** builds. Peer dependencies are considered to be available at runtime and therefore won't be bundled.
 
 #### `"bundlib"`
 
-The `"bundlib"` field can be used for advanced configuration, see [Advanced Configuration](#advanced-configuration) for more information.
+The `"bundlib"` field can be used for advanced configuration, see [Configuration in `package.json`](#configuration-in-packagejson) section for more information.
 
 ### Advanced Configuration
 
@@ -648,7 +650,7 @@ async function configsFromPkg(
 
 If `pkg` not provided it will be read from the current working directory `cwd`.
 
-### function `defineConfig` ( alias: `config` )
+### function `defineConfig`
 
 A function that returns it's only argument. It helps to have code completion and type check when using javascript config file.  See example.
 
@@ -924,4 +926,4 @@ Some values from your `tsconfig.json` file `"compilerOptions"` will be ignored o
 
 ## License
 
-[MIT](LICENSE) &copy; 2019-2024 [Manuel Fernández](https://github.com/manferlo81)
+[MIT](LICENSE) &copy; 2019-2025 [Manuel Fernández](https://github.com/manferlo81)
