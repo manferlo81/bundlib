@@ -2,8 +2,14 @@
 
 ## Version History
 
-### [0.21.8](https://github.com/manferlo81/bundlib/compare/v0.21.7...v0.21.8) (2025-10-07)
+### [0.21.9](https://github.com/manferlo81/bundlib/compare/v0.21.8...v0.21.9) (2025-10-08)
 
+
+### Bug Fixes
+
+* Group configs by module types as well as input file ([#1688](https://github.com/manferlo81/bundlib/issues/1688)) ([3b57f64](https://github.com/manferlo81/bundlib/commit/3b57f640e4526ec208215b9523ad0298c2f2799c)), closes [#1687](https://github.com/manferlo81/bundlib/issues/1687)
+
+### [0.21.8](https://github.com/manferlo81/bundlib/compare/v0.21.7...v0.21.8) (2025-10-07)
 
 ### Features
 
@@ -14,20 +20,17 @@
 
 ### [0.21.7](https://github.com/manferlo81/bundlib/compare/v0.21.6...v0.21.7) (2025-09-04)
 
-
 ### Bug Fixes
 
 * Don't watch on build command ([#1658](https://github.com/manferlo81/bundlib/issues/1658)) ([6e66095](https://github.com/manferlo81/bundlib/commit/6e66095566fbbd13104b9b7dfa80c4c4c6f817bf))
 
 ### [0.21.6](https://github.com/manferlo81/bundlib/compare/v0.21.5...v0.21.6) (2025-09-04)
 
-
 ### Bug Fixes
 
 * **cli:** Fix bug where `build` command doesn't respect `--watch` option ([#1657](https://github.com/manferlo81/bundlib/issues/1657)) ([75cde62](https://github.com/manferlo81/bundlib/commit/75cde6247cabeeb25f0d77d4da4e07847906f88f))
 
 ### [0.21.5](https://github.com/manferlo81/bundlib/compare/v0.21.4...v0.21.5) (2025-09-04)
-
 
 ### Features
 
