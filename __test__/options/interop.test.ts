@@ -1,5 +1,4 @@
-import type { PkgAnalyzed } from '../../src/api/analyze/pkg-analyzed'
-import type { BuildType, SelectiveInteropOption } from '../../src/api/types/bundlib-options'
+import type { BuildType, BundlibConfig, PkgAnalyzed } from '../../src/api'
 import { colorizeMessage } from '../tools/colors'
 import { mockAnalyzeWithPkg } from '../tools/mock-fs'
 
@@ -16,7 +15,7 @@ describe(colorizeMessage('"interop" option'), () => {
     }
   }
 
-  const analyzeWithInterop = async (interop: SelectiveInteropOption) => {
+  const analyzeWithInterop = async (interop: BundlibConfig['interop']) => {
     return createResult(
       await mockAnalyzeWithPkg(cwd, {
         main: 'main.js',

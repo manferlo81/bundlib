@@ -3,8 +3,9 @@ import { createValueBasedResolver } from 'selective-option'
 import { API_SPECIAL_KEYS, MODULE_BUILD_KEYS, OVERRIDE_KEY } from '../selective/constants'
 import { resolveOptionOrThrow } from '../selective/resolve-or-throw'
 import { isString } from '../type-check/basic'
-import type { BuildType, SelectiveStringOption } from '../types/bundlib-options'
+import type { SelectiveStringOption } from '../types/bundlib-options'
 import type { MaybeNull } from '../types/helper-types'
+import type { BuildType } from '../types/options/build-type'
 
 const stringOptionResolver = createValueBasedResolver(
   MODULE_BUILD_KEYS,

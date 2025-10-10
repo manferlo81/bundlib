@@ -1,4 +1,4 @@
-import type { RollupSourcemap } from '../../src/api'
+import type { BundlibConfig } from '../../src/api'
 import { colorizeMessage } from '../tools/colors'
 import { mockAnalyzeWithPkg } from '../tools/mock-fs'
 
@@ -6,7 +6,7 @@ describe(colorizeMessage('"sourcemap" option'), () => {
 
   const cwd = process.cwd()
 
-  const analyzeWithSourcemap = (sourcemap: RollupSourcemap) => mockAnalyzeWithPkg(cwd, {
+  const analyzeWithSourcemap = (sourcemap: BundlibConfig['sourcemap']) => mockAnalyzeWithPkg(cwd, {
     main: 'out/lib.cjs.js',
     module: 'out/lib.es.js',
     browser: 'out/lib.umd.js',

@@ -1,6 +1,6 @@
+import type { BuildType } from '../../src/api'
 import { resolveInputOption } from '../../src/api/options/input'
 import { MODULE_BUILD_KEYS } from '../../src/api/selective/constants'
-import type { BuildType } from '../../src/api/types/bundlib-options'
 import { colorizeMessage } from '../tools/colors'
 import type { GetSelectiveResultValue } from '../tools/selective-tools'
 import { createSelectiveResult, isApiKey } from '../tools/selective-tools'

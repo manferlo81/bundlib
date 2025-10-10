@@ -5,7 +5,7 @@ import { DEFAULT_NODEJS_SHEBANG } from './constants/shebang'
 import type { Plugin } from 'rollup'
 import type { PkgAnalyzed } from './analyze/pkg-analyzed'
 import type { Dictionary, MaybeNull, MaybeNullish } from './types/helper-types'
-import type { BundlibRollupBrowseOutputOptions, BundlibRollupConfig, BundlibRollupModuleOutputOptions, RollupSourcemap } from './types/rollup'
+import type { BundlibRollupBrowseOutputOptions, BundlibRollupConfig, BundlibRollupModuleOutputOptions, RollupSupportedSourcemapOption } from './types/rollup'
 import type { BundlibAPIOptions } from './types/types'
 
 import builtinModules from 'builtin-modules'
@@ -90,7 +90,7 @@ export function pkgToConfigs(
   function createPlugins(
     inputFile: string,
     outputFile: string,
-    rollupSourcemap: RollupSourcemap,
+    rollupSourcemap: RollupSupportedSourcemapOption,
     minifyOutput: boolean,
     isBrowserBuild: boolean,
     isBinaryBuild: boolean,

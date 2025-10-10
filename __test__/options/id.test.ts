@@ -1,4 +1,4 @@
-import type { MaybeNullish } from '../../src/api/types/helper-types'
+import type { BundlibConfig } from '../../src/api'
 import { colorizeMessage } from '../tools/colors'
 import { mockAnalyzeWithPkg } from '../tools/mock-fs'
 
@@ -6,7 +6,7 @@ describe(colorizeMessage('"id" option'), () => {
 
   const cwd = process.cwd()
 
-  const analyzeWithIdOption = (id: MaybeNullish<string>) => {
+  const analyzeWithIdOption = (id: BundlibConfig['id']) => {
     return mockAnalyzeWithPkg(cwd, {
       browser: 'browser.js',
       bundlib: { name: 'lib', id },

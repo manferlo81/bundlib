@@ -1,3 +1,4 @@
+import type { BundlibConfig } from '../../src/api'
 import { colorizeMessage } from '../tools/colors'
 import { mockAnalyzeWithPkg } from '../tools/mock-fs'
 
@@ -5,7 +6,7 @@ describe(colorizeMessage('"globals" option'), () => {
 
   const cwd = process.cwd()
 
-  const analyzeWithGlobalsOption = (globals: Record<string, string> | string[] | null) => mockAnalyzeWithPkg(cwd, {
+  const analyzeWithGlobalsOption = (globals: BundlibConfig['globals']) => mockAnalyzeWithPkg(cwd, {
     browser: 'browser.js',
     bundlib: { globals },
   })

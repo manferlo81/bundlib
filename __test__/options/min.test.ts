@@ -1,4 +1,4 @@
-import type { SelectiveMinOption } from '../../src/api/types/bundlib-options'
+import type { BundlibConfig } from '../../src/api'
 import { colorizeMessage } from '../tools/colors'
 import { mockAnalyzeWithPkg } from '../tools/mock-fs'
 
@@ -6,7 +6,7 @@ describe(colorizeMessage('"min" option'), () => {
 
   const cwd = process.cwd()
 
-  const analyzeWithMin = (min: SelectiveMinOption) => mockAnalyzeWithPkg(cwd, {
+  const analyzeWithMin = (min: BundlibConfig['min']) => mockAnalyzeWithPkg(cwd, {
     main: 'main.js',
     module: 'module.js',
     browser: 'browser.js',

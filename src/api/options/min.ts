@@ -2,7 +2,8 @@ import type { Resolved } from 'selective-option'
 import { createBoolBasedResolver } from 'selective-option'
 import { API_SPECIAL_KEYS, MODULE_BUILD_KEYS, OVERRIDE_KEY } from '../selective/constants'
 import { resolveOptionOrThrow } from '../selective/resolve-or-throw'
-import type { BuildType, SelectiveMinOption } from '../types/bundlib-options'
+import type { SelectiveMinOption } from '../types/bundlib-options'
+import type { BuildType } from '../types/options/build-type'
 
 const minOptionResolver = createBoolBasedResolver(
   MODULE_BUILD_KEYS,

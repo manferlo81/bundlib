@@ -1,20 +1,20 @@
 import type { BundlibPkgJson, PkgJsonDependencies } from '../package/pkg-json-types'
 import type { Dictionary, MaybeNull } from '../types/helper-types'
 import type { IsInstalled } from '../types/private-types'
-import type { BrowserBuildFormat, RollupBundlibInterop, RollupEsModule, RollupSourcemap } from '../types/rollup'
+import type { RollupBundlibInterop, RollupSupportedBrowserFormat, RollupSupportedESModuleOption, RollupSupportedSourcemapOption } from '../types/rollup'
 
 export interface ModuleBuildOptions {
   input: MaybeNull<string>
   output: string
-  sourcemap: RollupSourcemap
-  esModule: RollupEsModule
+  sourcemap: RollupSupportedSourcemapOption
+  esModule: RollupSupportedESModuleOption
   interop: RollupBundlibInterop
   min: boolean
   project: MaybeNull<string>
 }
 
 export interface BrowserBuildOptions extends ModuleBuildOptions {
-  format: BrowserBuildFormat
+  format: RollupSupportedBrowserFormat
   name: MaybeNull<string>
   id: MaybeNull<string>
   globals: MaybeNull<Dictionary<string>>

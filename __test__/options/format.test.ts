@@ -1,4 +1,4 @@
-import type { BrowserBuildFormat } from '../../src/api'
+import type { BundlibConfig } from '../../src/api'
 import { colorizeMessage } from '../tools/colors'
 import { mockAnalyzeWithPkg } from '../tools/mock-fs'
 
@@ -6,7 +6,7 @@ describe(colorizeMessage('"format" option'), () => {
 
   const cwd = process.cwd()
 
-  const analyzeWithFormatOption = (format: BrowserBuildFormat) => mockAnalyzeWithPkg(cwd, {
+  const analyzeWithFormatOption = (format: BundlibConfig['format']) => mockAnalyzeWithPkg(cwd, {
     browser: 'browser.js',
     bundlib: { format },
   })

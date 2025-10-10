@@ -3,10 +3,11 @@ import { createBoolBasedResolver } from 'selective-option'
 import { API_SPECIAL_KEYS, MODULE_BUILD_KEYS, OVERRIDE_KEY } from '../selective/constants'
 import { resolveOptionOrThrow } from '../selective/resolve-or-throw'
 import { createOneOfLiteral } from '../type-check/advanced'
-import type { BuildType, SelectiveInteropOption } from '../types/bundlib-options'
-import type { RollupBundlibInterop, RollupInterop } from '../types/rollup'
+import type { SelectiveInteropOption } from '../types/bundlib-options'
+import type { BuildType } from '../types/options/build-type'
+import type { RollupBundlibInterop, RollupSupportedInteropOption } from '../types/rollup'
 
-export const isInteropString = createOneOfLiteral<RollupInterop>(
+export const isInteropString = createOneOfLiteral<RollupSupportedInteropOption>(
   'auto',
   'compat',
   'esModule',
@@ -30,7 +31,7 @@ export function resolveInteropOption(value: SelectiveInteropOption): Resolved<Bu
   )
 }
 
-export function normalizeRollupInterop(interopBool: RollupBundlibInterop): RollupInterop {
+export function normalizeRollupInterop(interopBool: RollupBundlibInterop): RollupSupportedInteropOption {
   if (interopBool === true) return 'compat'
   if (interopBool === false) return 'default'
   return interopBool

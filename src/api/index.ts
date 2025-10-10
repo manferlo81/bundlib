@@ -32,7 +32,6 @@ export { pkgToConfigs } from './pkg-to-configs'
 
 export type {
   BooleanOption,
-  BuildType,
   BundlibConfig,
   GlobalsOption,
   OverrideKey,
@@ -42,7 +41,6 @@ export type {
   SelectiveKey,
   SelectiveMinOption,
   SelectiveObjectKey,
-  SelectiveSkipKey,
   SelectiveSkipOption,
   SelectiveSourcemapOption,
   SelectiveSpecialKey,
@@ -51,22 +49,34 @@ export type {
   StringOption,
 } from './types/bundlib-options'
 
+export type {
+  BuildType,
+  SkippableBuildType as SelectiveSkipKey,
+  SkippableBuildType,
+} from './types/options/build-type'
+
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 export type { BuildTypeForAPI, GlobalsOptions, SelectiveSkipBuildType } from './types/deprecated-exports'
 
 export type {
-  BrowserBuildFormat,
-  BundlibBuildFormat,
+  RollupSupportedBrowserFormat as BrowserBuildFormat,
+  RollupSupportedFormat as BundlibBuildFormat,
   BundlibRollupBrowseOutputOptions,
   BundlibRollupModuleOutputOptions,
   BundlibRollupOptions,
-  ModuleBuildFormat,
+  RollupSupportedModuleFormat as ModuleBuildFormat,
   RollupBundlibInterop,
-  RollupEsModule,
-  RollupEsModuleString,
-  RollupInterop,
-  RollupSourcemap,
-  RollupSourcemapString,
+  RollupSupportedESModuleOption as RollupEsModule,
+  RollupSupportedESModuleString as RollupEsModuleString,
+  RollupSupportedInteropOption as RollupInterop,
+  RollupSupportedSourcemapOption as RollupSourcemap,
+  RollupSupportedSourcemapString as RollupSourcemapString,
+  RollupSupportedBrowserFormat,
+  RollupSupportedESModuleOption,
+  RollupSupportedESModuleString, RollupSupportedFormat, RollupSupportedInteropOption,
+  RollupSupportedModuleFormat,
+  RollupSupportedSourcemapOption,
+  RollupSupportedSourcemapString,
 } from './types/rollup'
 
 export type { BundlibAPIOptions } from './types/types'

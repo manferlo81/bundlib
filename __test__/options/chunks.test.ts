@@ -1,4 +1,4 @@
-import type { Dictionary, MaybeNullish } from '../../src/api/types/helper-types'
+import type { BundlibConfig } from '../../src/api'
 import { colorizeMessage } from '../tools/colors'
 import { mockAnalyzeWithPkg } from '../tools/mock-fs'
 
@@ -6,7 +6,7 @@ describe(colorizeMessage('"chunks" option'), () => {
 
   const cwd = process.cwd()
 
-  const analyzeWithChunksOption = (chunks: MaybeNullish<Dictionary<string>>) => {
+  const analyzeWithChunksOption = (chunks: BundlibConfig['chunks']) => {
     return mockAnalyzeWithPkg(cwd, { bundlib: { chunks } })
   }
 

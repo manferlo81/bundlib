@@ -1,10 +1,9 @@
 import type { BoolBasedSelectiveOption, ValueBasedSelectiveOption } from 'selective-option'
 import type { Dictionary, MaybeNullish } from './helper-types'
-import type { BrowserBuildFormat, RollupEsModuleString, RollupInterop, RollupSourcemapString } from './rollup'
+import type { BuildType, SkippableBuildType } from './options/build-type'
+import type { RollupSupportedBrowserFormat, RollupSupportedESModuleString, RollupSupportedInteropOption, RollupSupportedSourcemapString } from './rollup'
 
-export type BuildType = 'main' | 'module' | 'browser' | 'bin'
-
-export type GlobalsOption = MaybeNullish<Dictionary<string> | string[]>
+// Selective Option Types
 
 export type SelectiveSpecialKey = 'api'
 export type SelectiveKey<K extends string> = K | SelectiveSpecialKey
@@ -14,14 +13,18 @@ export type SelectiveObjectKey<K extends string> = SelectiveKey<K> | OverrideKey
 export type SelectiveValueBasedOption<K extends string, V> = ValueBasedSelectiveOption<K, SelectiveSpecialKey | OverrideKey, V>
 export type SelectiveBoolBasedOption<K extends string, V> = BoolBasedSelectiveOption<K, SelectiveSpecialKey, V, OverrideKey>
 
-export type SelectiveSkipKey = BuildType | 'types'
+// Selective Options
 
 export type SelectiveStringOption = SelectiveValueBasedOption<BuildType, string>
-export type SelectiveSourcemapOption = SelectiveBoolBasedOption<BuildType, RollupSourcemapString>
-export type SelectiveEsModuleOption = SelectiveBoolBasedOption<BuildType, RollupEsModuleString>
-export type SelectiveInteropOption = SelectiveBoolBasedOption<BuildType, RollupInterop>
+export type SelectiveSourcemapOption = SelectiveBoolBasedOption<BuildType, RollupSupportedSourcemapString>
+export type SelectiveEsModuleOption = SelectiveBoolBasedOption<BuildType, RollupSupportedESModuleString>
+export type SelectiveInteropOption = SelectiveBoolBasedOption<BuildType, RollupSupportedInteropOption>
 export type SelectiveMinOption = SelectiveBoolBasedOption<BuildType, never>
-export type SelectiveSkipOption = SelectiveBoolBasedOption<SelectiveSkipKey, never>
+export type SelectiveSkipOption = SelectiveBoolBasedOption<SkippableBuildType, never>
+
+// Bundlib Options
+
+export type GlobalsOption = MaybeNullish<Dictionary<string> | string[]>
 
 export type StringOption = MaybeNullish<string>
 export type BooleanOption = MaybeNullish<boolean>
@@ -40,7 +43,7 @@ export interface BundlibConfig {
   readonly cache?: StringOption
   readonly chunks?: MaybeNullish<Dictionary<string>>
 
-  readonly format?: MaybeNullish<BrowserBuildFormat>
+  readonly format?: MaybeNullish<RollupSupportedBrowserFormat>
   readonly name?: StringOption
   readonly id?: StringOption
   readonly extend?: BooleanOption

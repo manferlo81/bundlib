@@ -1,4 +1,4 @@
-import type { SelectiveStringOption } from '../../src/api/types/bundlib-options'
+import type { BundlibConfig } from '../../src/api'
 import { colorizeMessage } from '../tools/colors'
 import { mockAnalyzeWithPkg } from '../tools/mock-fs'
 
@@ -6,7 +6,7 @@ describe(colorizeMessage('"project" option'), () => {
 
   const cwd = process.cwd()
 
-  const analyzeWithProjectOption = (project: SelectiveStringOption) => mockAnalyzeWithPkg(cwd, {
+  const analyzeWithProjectOption = (project: BundlibConfig['project']) => mockAnalyzeWithPkg(cwd, {
     main: 'main.js',
     module: 'module.js',
     browser: 'browser.js',

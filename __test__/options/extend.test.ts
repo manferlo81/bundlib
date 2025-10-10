@@ -1,3 +1,4 @@
+import type { BundlibConfig } from '../../src/api'
 import { colorizeMessage } from '../tools/colors'
 import { mockAnalyzeWithPkg } from '../tools/mock-fs'
 
@@ -5,7 +6,7 @@ describe(colorizeMessage('"extend" option'), () => {
 
   const cwd = process.cwd()
 
-  const analyzeWithExtendOption = (extend: boolean | null) => mockAnalyzeWithPkg(cwd, {
+  const analyzeWithExtendOption = (extend: BundlibConfig['extend']) => mockAnalyzeWithPkg(cwd, {
     browser: 'browser.js',
     bundlib: { extend },
   })

@@ -1,4 +1,4 @@
-import type { SelectiveEsModuleOption } from '../../src/api/types/bundlib-options'
+import type { BundlibConfig } from '../../src/api'
 import { colorizeMessage } from '../tools/colors'
 import { mockAnalyzeWithPkg, mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs'
 
@@ -6,7 +6,7 @@ describe(colorizeMessage('"esModule" option'), () => {
 
   const cwd = process.cwd()
 
-  const analyzeWithESModuleOption = (esModule: SelectiveEsModuleOption) => mockAnalyzeWithPkg(cwd, {
+  const analyzeWithESModuleOption = (esModule: BundlibConfig['esModule']) => mockAnalyzeWithPkg(cwd, {
     main: 'main.js',
     browser: 'browser.js',
     bin: 'bin.js',

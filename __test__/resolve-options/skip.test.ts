@@ -1,14 +1,14 @@
+import type { SkippableBuildType } from '../../src/api'
 import { resolveSkipOption } from '../../src/api/options/skip'
 import { SKIP_OPTION_KEYS } from '../../src/api/selective/constants'
-import type { SelectiveSkipKey } from '../../src/api/types/bundlib-options'
 import { colorizeMessage } from '../tools/colors'
 import type { GetSelectiveResultValue } from '../tools/selective-tools'
 import { createSelectiveResult, isApiKey } from '../tools/selective-tools'
 
 describe(colorizeMessage('resolve "skip" option'), () => {
 
-  const createResult = <V>(getValue: GetSelectiveResultValue<SelectiveSkipKey, V>) => {
-    return createSelectiveResult<SelectiveSkipKey, V>(SKIP_OPTION_KEYS, getValue)
+  const createResult = <V>(getValue: GetSelectiveResultValue<SkippableBuildType, V>) => {
+    return createSelectiveResult<SkippableBuildType, V>(SKIP_OPTION_KEYS, getValue)
   }
 
   test(colorizeMessage('Should throw on invalid "skip" option'), () => {

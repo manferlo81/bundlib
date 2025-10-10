@@ -1,3 +1,4 @@
+import type { BundlibConfig } from '../../src/api'
 import { colorizeMessage } from '../tools/colors'
 import { mockAnalyzeWithPkg, mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs'
 
@@ -5,7 +6,7 @@ describe(colorizeMessage('"name" option'), () => {
 
   const cwd = process.cwd()
 
-  const analyzeWithNameOption = (name: string) => {
+  const analyzeWithNameOption = (name: BundlibConfig['name']) => {
     return mockAnalyzeWithPkg(cwd, {
       name: 'pkg-name',
       browser: 'browser.js',
