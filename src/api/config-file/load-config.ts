@@ -1,7 +1,7 @@
 import { cosmiconfig } from 'cosmiconfig'
 import { resolve } from 'node:path'
 import { PRODUCT_NAME } from '../constants/product'
-import type { AllowNullish } from '../types/helper-types'
+import type { MaybeNullish } from '../types/helper-types'
 import type { BundlibCosmiconfigResult } from './load-config-types'
 
 /**
@@ -11,7 +11,7 @@ import type { BundlibCosmiconfigResult } from './load-config-types'
  * @param path optional configuration file path relative to cwd
  * @returns cosmiconfig result
  */
-export async function loadConfig(cwd: string, path: AllowNullish<string>): Promise<BundlibCosmiconfigResult> {
+export async function loadConfig(cwd: string, path: MaybeNullish<string>): Promise<BundlibCosmiconfigResult> {
 
   // create search places
   const searchPlaces = [

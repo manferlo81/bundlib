@@ -1,8 +1,10 @@
-import type { TypeCheckFunction } from '../types/helper-types'
+import type { TypeCheckFunction } from '../types/private-types'
 import { isDictionary, isNullish, isString } from './basic'
 
-export function createOneOfLiteral<A extends readonly unknown[]>(...values: A): TypeCheckFunction<A[number]>
+export function createOneOfLiteral<V extends string | number | boolean>(...values: readonly V[]): TypeCheckFunction<V>
+export function createOneOfLiteral<A extends ReadonlyArray<string | number | boolean>>(...values: A): TypeCheckFunction<A[number]>
 export function createOneOfLiteral<V>(...values: readonly V[]): TypeCheckFunction<V>
+export function createOneOfLiteral<A extends readonly unknown[]>(...values: A): TypeCheckFunction<A[number]>
 export function createOneOfLiteral(...values: readonly unknown[]): TypeCheckFunction<unknown> {
   return (value): value is unknown => {
     return values.includes(value)

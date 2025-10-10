@@ -1,22 +1,23 @@
 import type { BundlibPkgJson, PkgJsonDependencies } from '../package/pkg-json-types'
-import type { AllowNull, Dictionary, IsInstalled } from '../types/helper-types'
+import type { Dictionary, MaybeNull } from '../types/helper-types'
+import type { IsInstalled } from '../types/private-types'
 import type { BrowserBuildFormat, RollupBundlibInterop, RollupEsModule, RollupSourcemap } from '../types/rollup'
 
 export interface ModuleBuildOptions {
-  input: AllowNull<string>
+  input: MaybeNull<string>
   output: string
   sourcemap: RollupSourcemap
   esModule: RollupEsModule
   interop: RollupBundlibInterop
   min: boolean
-  project: AllowNull<string>
+  project: MaybeNull<string>
 }
 
 export interface BrowserBuildOptions extends ModuleBuildOptions {
   format: BrowserBuildFormat
-  name: AllowNull<string>
-  id: AllowNull<string>
-  globals: AllowNull<Dictionary<string>>
+  name: MaybeNull<string>
+  id: MaybeNull<string>
+  globals: MaybeNull<Dictionary<string>>
   extend: boolean
 }
 
@@ -26,9 +27,9 @@ export interface TypesBuildOptions {
 }
 
 export interface Dependencies {
-  runtime: AllowNull<PkgJsonDependencies>
-  dev: AllowNull<PkgJsonDependencies>
-  peer: AllowNull<PkgJsonDependencies>
+  runtime: MaybeNull<PkgJsonDependencies>
+  dev: MaybeNull<PkgJsonDependencies>
+  peer: MaybeNull<PkgJsonDependencies>
 }
 
 type OptionalModuleKeys
@@ -70,14 +71,14 @@ export type DetectedModules = {
 export interface PkgAnalyzed {
   cwd: string
   pkg: BundlibPkgJson
-  main: AllowNull<ModuleBuildOptions>
-  module: AllowNull<ModuleBuildOptions>
-  browser: AllowNull<BrowserBuildOptions>
-  bin: AllowNull<ModuleBuildOptions>
-  types: AllowNull<TypesBuildOptions>
-  chunks: AllowNull<Dictionary<string>>
+  main: MaybeNull<ModuleBuildOptions>
+  module: MaybeNull<ModuleBuildOptions>
+  browser: MaybeNull<BrowserBuildOptions>
+  bin: MaybeNull<ModuleBuildOptions>
+  types: MaybeNull<TypesBuildOptions>
+  chunks: MaybeNull<Dictionary<string>>
   dependencies: Dependencies
-  cache: AllowNull<string>
+  cache: MaybeNull<string>
   isInstalled: IsInstalled
   installed: InstalledModules
   detected: DetectedModules

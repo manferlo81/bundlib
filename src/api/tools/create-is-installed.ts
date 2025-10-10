@@ -1,6 +1,7 @@
-import type { AllowNullish, Dictionary, IsInstalled } from '../types/helper-types'
+import type { Dictionary, MaybeNullish } from '../types/helper-types'
+import type { IsInstalled } from '../types/private-types'
 
-export function createIsInstalled(...dependencies: Array<AllowNullish<Partial<Dictionary<string>>>>): IsInstalled {
+export function createIsInstalled(...dependencies: Array<MaybeNullish<Partial<Dictionary<string>>>>): IsInstalled {
 
   const reduced = dependencies.reduce<Partial<Dictionary<string>>>(
     (result, deps) => Object.assign(result, deps),

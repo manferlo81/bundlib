@@ -2,7 +2,7 @@ import { keys } from '../tools/helpers'
 import { isNullish, isObject, isString } from '../type-check/basic'
 import { isArray } from '../type-check/is-array'
 import type { GlobalsOption } from '../types/bundlib-options'
-import type { AllowNull } from '../types/helper-types'
+import type { MaybeNull } from '../types/helper-types'
 
 export function isValidGlobals(value: unknown): value is GlobalsOption {
 
@@ -22,7 +22,7 @@ export function isValidGlobals(value: unknown): value is GlobalsOption {
 
 }
 
-export function normalizeGlobals(globals: GlobalsOption): AllowNull<Record<string, string>> {
+export function normalizeGlobals(globals: GlobalsOption): MaybeNull<Record<string, string>> {
 
   // return null if option is nullish
   if (!globals) return null

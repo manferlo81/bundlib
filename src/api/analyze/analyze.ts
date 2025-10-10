@@ -16,7 +16,7 @@ import { createIsInstalled } from '../tools/create-is-installed'
 import { isDictionaryOrNullish, isStringOrNullish } from '../type-check/advanced'
 import { invalidKeys } from '../type-check/keys'
 import type { BundlibConfig } from '../types/bundlib-options'
-import type { AllowNull } from '../types/helper-types'
+import type { MaybeNull } from '../types/helper-types'
 import type { BrowserBuildOptions, Dependencies, DetectedModuleItem, DetectedModules, InstalledModules, ModuleBuildOptions, ModuleInstalled, OptionalModules, PkgAnalyzed, TypesBuildOptions } from './pkg-analyzed'
 
 export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgAnalyzed> {
@@ -152,7 +152,7 @@ export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgA
   const typesOutputFile = pkgTypesField ?? pkgTypingsField
 
   const filenameCommonJSModule = !skipBuild.main && pkgMainField
-  const mainOutput: AllowNull<ModuleBuildOptions> = !filenameCommonJSModule
+  const mainOutput: MaybeNull<ModuleBuildOptions> = !filenameCommonJSModule
     ? null
     : {
       input: mainInput,
@@ -165,7 +165,7 @@ export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgA
     }
 
   const filenameESModule = !skipBuild.module && moduleOutputFile
-  const moduleOutput: AllowNull<ModuleBuildOptions> = !filenameESModule
+  const moduleOutput: MaybeNull<ModuleBuildOptions> = !filenameESModule
     ? null
     : {
       input: moduleInput,
@@ -178,7 +178,7 @@ export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgA
     }
 
   const filenameBrowserModule = !skipBuild.browser && pkgBrowserField
-  const browserOutput: AllowNull<BrowserBuildOptions> = !filenameBrowserModule
+  const browserOutput: MaybeNull<BrowserBuildOptions> = !filenameBrowserModule
     ? null
     : {
       input: browserInput,
@@ -200,7 +200,7 @@ export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgA
     }
 
   const filenameBinaryModule = !skipBuild.bin && pkgBinField
-  const binaryOutput: AllowNull<ModuleBuildOptions> = !filenameBinaryModule
+  const binaryOutput: MaybeNull<ModuleBuildOptions> = !filenameBinaryModule
     ? null
     : {
       input: binInput,
@@ -213,7 +213,7 @@ export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgA
     }
 
   const filenameTypes = !skipBuild.types && typesOutputFile
-  const typesOutput: AllowNull<TypesBuildOptions> = !filenameTypes
+  const typesOutput: MaybeNull<TypesBuildOptions> = !filenameTypes
     ? null
     : {
       output: filenameTypes,
@@ -226,7 +226,7 @@ export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgA
     peer: pkgPeerDependencies ?? null,
   }
 
-  const cache: AllowNull<string> = cacheOption ?? null
+  const cache: MaybeNull<string> = cacheOption ?? null
 
   const isInstalled = createIsInstalled(pkgRuntimeDependencies, pkgDevDependencies)
 

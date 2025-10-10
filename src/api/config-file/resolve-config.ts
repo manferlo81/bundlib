@@ -3,7 +3,7 @@ import { invalidPkgFieldMessage } from '../errors/error-messages'
 import { isStringOrNullish } from '../type-check/advanced'
 import { isDictionary } from '../type-check/basic'
 import type { BundlibConfig } from '../types/bundlib-options'
-import type { AllowNullish } from '../types/helper-types'
+import type { MaybeNullish } from '../types/helper-types'
 import { loadConfig } from './load-config'
 
 /**
@@ -13,7 +13,7 @@ import { loadConfig } from './load-config'
  * @param pkgBundlibConfig package.json "bundlib" field content
  * @returns resolved Bundlib configuration
  */
-export async function resolveConfig(cwd: string, pkgBundlibConfig: AllowNullish<BundlibConfig | string>): Promise<BundlibConfig> {
+export async function resolveConfig(cwd: string, pkgBundlibConfig: MaybeNullish<BundlibConfig | string>): Promise<BundlibConfig> {
 
   // return if config is and object
   // just check if config is an object, further checks will be performed later

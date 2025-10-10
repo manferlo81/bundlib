@@ -4,7 +4,7 @@ import { DEFAULT_NODEJS_SHEBANG } from './constants/shebang'
 
 import type { Plugin } from 'rollup'
 import type { PkgAnalyzed } from './analyze/pkg-analyzed'
-import type { AllowNull, AllowNullish, Dictionary, TypeCheckFunction } from './types/helper-types'
+import type { Dictionary, MaybeNull, MaybeNullish } from './types/helper-types'
 import type { BundlibRollupBrowseOutputOptions, BundlibRollupConfig, BundlibRollupModuleOutputOptions, RollupSourcemap } from './types/rollup'
 import type { BundlibAPIOptions } from './types/types'
 
@@ -33,6 +33,7 @@ import { equals as pluginEquals } from 'rollup-plugin-export-equals'
 import { stripShebang as pluginStripShebang } from 'rollup-plugin-strip-shebang'
 import pluginTypescript from 'rollup-plugin-typescript2'
 import { pluginChunks } from './plugins/chunks'
+import { isTruthy } from './type-check/basic'
 
 // TODO: make this function asynchronous
 // to allow importing only the necessary modules
@@ -40,7 +41,7 @@ import { pluginChunks } from './plugins/chunks'
 // REASON: some plugins are not needed every time
 export function pkgToConfigs(
   analyzed: PkgAnalyzed,
-  options?: AllowNullish<BundlibAPIOptions>,
+  options?: MaybeNullish<BundlibAPIOptions>,
 ): BundlibRollupConfig[] {
 
   const {
@@ -93,8 +94,8 @@ export function pkgToConfigs(
     minifyOutput: boolean,
     isBrowserBuild: boolean,
     isBinaryBuild: boolean,
-    chunks: AllowNullish<Dictionary<string>>,
-    project: AllowNullish<string>,
+    chunks: MaybeNullish<Dictionary<string>>,
+    project: MaybeNullish<string>,
   ): Plugin[] {
 
     const sourcemap = rollupSourcemap !== false
@@ -256,11 +257,11 @@ export function pkgToConfigs(
 
     ]
 
-    return plugins.filter<Plugin>(Boolean as unknown as TypeCheckFunction<Plugin>)
+    return plugins.filter(isTruthy)
 
   }
 
-  let commonjsChunks: AllowNull<Dictionary<string>> = null
+  let commonjsChunks: MaybeNull<Dictionary<string>> = null
 
   if (commonjsBuild) {
 

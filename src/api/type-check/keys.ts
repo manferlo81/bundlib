@@ -1,5 +1,6 @@
 import { keys } from '../tools/helpers'
-import type { AllowNull, Dictionary, TypeCheckFunction } from '../types/helper-types'
+import type { Dictionary, MaybeNull } from '../types/helper-types'
+import type { TypeCheckFunction } from '../types/private-types'
 
 interface InvalidKeyList extends Array<string> {
   0: string
@@ -7,8 +8,8 @@ interface InvalidKeyList extends Array<string> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
-export function invalidKeys<K extends string>(object: Dictionary<unknown>, validKeys: K[]): AllowNull<InvalidKeyList>
-export function invalidKeys(object: Dictionary<unknown>, validKeys: string[]): AllowNull<string[]> {
+export function invalidKeys<K extends string>(object: Dictionary<unknown>, validKeys: K[]): MaybeNull<InvalidKeyList>
+export function invalidKeys(object: Dictionary<unknown>, validKeys: string[]): MaybeNull<string[]> {
   const invalid = keys(object).filter(
     (key) => !validKeys.includes(key),
   )

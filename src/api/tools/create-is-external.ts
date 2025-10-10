@@ -1,10 +1,10 @@
 import type { IsExternal } from 'rollup'
-import type { Dictionary, AllowNullish } from '../types/helper-types'
+import type { Dictionary, MaybeNullish } from '../types/helper-types'
 import { hasOwn, keys } from './helpers'
 
 const isNotExternal: IsExternal = () => false
 
-export function createIsExternal(...args: Array<AllowNullish<readonly string[]>>): IsExternal {
+export function createIsExternal(...args: Array<MaybeNullish<readonly string[]>>): IsExternal {
 
   // filter arguments for "nullish" dependencies
   const filtered = args.filter((dep): dep is string[] => {

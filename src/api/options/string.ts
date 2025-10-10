@@ -4,7 +4,7 @@ import { API_SPECIAL_KEYS, MODULE_BUILD_KEYS, OVERRIDE_KEY } from '../selective/
 import { resolveOptionOrThrow } from '../selective/resolve-or-throw'
 import { isString } from '../type-check/basic'
 import type { BuildType, SelectiveStringOption } from '../types/bundlib-options'
-import type { AllowNull } from '../types/helper-types'
+import type { MaybeNull } from '../types/helper-types'
 
 const stringOptionResolver = createValueBasedResolver(
   MODULE_BUILD_KEYS,
@@ -14,7 +14,7 @@ const stringOptionResolver = createValueBasedResolver(
   API_SPECIAL_KEYS,
 )
 
-export const resolveStringOption = (value: SelectiveStringOption, optionName: string): Resolved<BuildType, AllowNull<string>> => {
+export const resolveStringOption = (value: SelectiveStringOption, optionName: string): Resolved<BuildType, MaybeNull<string>> => {
   return resolveOptionOrThrow(
     stringOptionResolver,
     value,

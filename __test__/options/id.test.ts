@@ -1,4 +1,4 @@
-import type { AllowNullish } from '../../src/api/types/helper-types'
+import type { MaybeNullish } from '../../src/api/types/helper-types'
 import { colorizeMessage } from '../tools/colors'
 import { mockAnalyzeWithPkg } from '../tools/mock-fs'
 
@@ -6,7 +6,7 @@ describe(colorizeMessage('"id" option'), () => {
 
   const cwd = process.cwd()
 
-  const analyzeWithIdOption = (id: AllowNullish<string>) => {
+  const analyzeWithIdOption = (id: MaybeNullish<string>) => {
     return mockAnalyzeWithPkg(cwd, {
       browser: 'browser.js',
       bundlib: { name: 'lib', id },

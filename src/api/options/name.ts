@@ -1,16 +1,16 @@
 import camelCase from 'camelcase'
 import { basename } from 'node:path'
-import type { AllowNull, AllowNullish } from '../types/helper-types'
+import type { MaybeNull, MaybeNullish } from '../types/helper-types'
 
 function normalizeName(name: string) {
   return camelCase(basename(name))
 }
 
 export function normalizeBuildName(
-  nameOption: AllowNullish<string>,
-  pkgName: AllowNullish<string>,
+  nameOption: MaybeNullish<string>,
+  pkgName: MaybeNullish<string>,
   cwd: string,
-): AllowNull<string> {
+): MaybeNull<string> {
   // Return name option if present
   if (nameOption) return nameOption
 

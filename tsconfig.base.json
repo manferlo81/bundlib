@@ -9,17 +9,18 @@
     "verbatimModuleSyntax": true,
     "resolveJsonModule": true,
     "lib": [],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
     // Strict
     "strict": true,
-    "strictNullChecks": true,
-    "noImplicitAny": true,
-    "noImplicitOverride": true,
     "noImplicitReturns": true,
-    "noImplicitThis": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
     // Output
     "removeComments": true,
+    "pretty": true,
     "newLine": "lf"
   },
   "exclude": [

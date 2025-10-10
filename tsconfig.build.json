@@ -4,6 +4,9 @@
   ],
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "declaration": true,
     "declarationMap": true
   }

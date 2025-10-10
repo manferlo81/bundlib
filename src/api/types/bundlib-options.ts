@@ -1,10 +1,10 @@
 import type { BoolBasedSelectiveOption, ValueBasedSelectiveOption } from 'selective-option'
-import type { AllowNullish, Dictionary } from './helper-types'
+import type { Dictionary, MaybeNullish } from './helper-types'
 import type { BrowserBuildFormat, RollupEsModuleString, RollupInterop, RollupSourcemapString } from './rollup'
 
 export type BuildType = 'main' | 'module' | 'browser' | 'bin'
 
-export type GlobalsOption = AllowNullish<Dictionary<string> | string[]>
+export type GlobalsOption = MaybeNullish<Dictionary<string> | string[]>
 
 export type SelectiveSpecialKey = 'api'
 export type SelectiveKey<K extends string> = K | SelectiveSpecialKey
@@ -23,8 +23,8 @@ export type SelectiveInteropOption = SelectiveBoolBasedOption<BuildType, RollupI
 export type SelectiveMinOption = SelectiveBoolBasedOption<BuildType, never>
 export type SelectiveSkipOption = SelectiveBoolBasedOption<SelectiveSkipKey, never>
 
-export type StringOption = AllowNullish<string>
-export type BooleanOption = AllowNullish<boolean>
+export type StringOption = MaybeNullish<string>
+export type BooleanOption = MaybeNullish<boolean>
 
 export interface BundlibConfig {
 
@@ -38,9 +38,9 @@ export interface BundlibConfig {
   readonly project?: SelectiveStringOption
 
   readonly cache?: StringOption
-  readonly chunks?: AllowNullish<Dictionary<string>>
+  readonly chunks?: MaybeNullish<Dictionary<string>>
 
-  readonly format?: AllowNullish<BrowserBuildFormat>
+  readonly format?: MaybeNullish<BrowserBuildFormat>
   readonly name?: StringOption
   readonly id?: StringOption
   readonly extend?: BooleanOption

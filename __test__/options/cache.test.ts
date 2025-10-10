@@ -1,4 +1,4 @@
-import type { AllowNullish } from '../../src/api/types/helper-types'
+import type { MaybeNullish } from '../../src/api/types/helper-types'
 import { colorizeMessage } from '../tools/colors'
 import { mockAnalyzeWithPkg, mockAnalyzeWithPkgEmptyConfig } from '../tools/mock-fs'
 
@@ -6,7 +6,7 @@ describe(colorizeMessage('"cache" option'), () => {
 
   const cwd = process.cwd()
 
-  const analyzeWithCacheOption = (cache: AllowNullish<string>) => mockAnalyzeWithPkg(cwd, {
+  const analyzeWithCacheOption = (cache: MaybeNullish<string>) => mockAnalyzeWithPkg(cwd, {
     bundlib: { cache },
   })
 
