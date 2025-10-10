@@ -6,6 +6,7 @@ import { formatTag } from '../console/format'
 import { cyan, green, magenta, yellow } from '../tools/colors'
 import { formatFileSize, formatMS } from '../tools/format'
 import { parseFileName } from '../tools/parse'
+import { startTimer } from '../tools/timer'
 import type { ActionContext } from './action-types'
 import type { BundlibEventEmitter } from './emitter-types'
 import type { BundlibEventMap } from './event-map'
@@ -26,19 +27,19 @@ export function createEmitter(cwd: string, programOptions: ProgramOptions, conte
 
   // Declare count and duration variables
   let buildCount = 0
-  let startedAt = 0
+  let stopTimer: ReturnType<typeof startTimer>
 
   const handleBuildStart = () => {
     logInfo(consoleInfo, 'Build started...', '')
 
     buildCount = 0
-    startedAt = Date.now()
+    stopTimer = startTimer()
   }
 
   const showFinalStatus = () => {
 
     // Compute build duration
-    const buildDuration = Date.now() - startedAt
+    const buildDuration = stopTimer()
 
     // format build count and build duration
     const coloredCount = yellow(`${buildCount} files`)

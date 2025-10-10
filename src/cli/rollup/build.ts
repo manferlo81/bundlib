@@ -4,6 +4,7 @@ import { rollup } from 'rollup'
 import type { BundlibRollupConfig } from '../../api/types/rollup'
 import type { BundlibEventEmitter } from '../actions/emitter-types'
 import { promiseReduce } from '../tools/promise-reduce'
+import { startTimer } from '../tools/timer'
 import { groupConfigs } from './group-configs'
 
 export async function rollupBuild(
@@ -33,8 +34,8 @@ export async function rollupBuild(
         // Emit file start event right before start building
         emitter.emit('file-start', outputFile)
 
-        // Store build start time
-        const buildStartTime = Date.now()
+        // Start timer
+        const stopTimer = startTimer()
 
         // Start the build
         const rollupBuild = await rollup(configWithCache)
@@ -43,9 +44,8 @@ export async function rollupBuild(
         // Write to files
         await write(output)
 
-        // Compute duration before anything else
-        const buildEndTime = Date.now()
-        const duration = buildEndTime - buildStartTime
+        // Get duration before anything else
+        const duration = stopTimer()
 
         // Get file size
         const { size } = statSync(outputFile)
