@@ -3,8 +3,8 @@
 export type JsonObject<T extends JsonValue, K extends string = string> = Readonly<Record<K, T>>
 export type JsonPartialObject<T extends JsonValue, K extends string = string> = Partial<JsonObject<T, K>>
 
-export interface JsonUnknownObject {
-  [K: string]: JsonValue
+export type JsonUnknownObject = {
+  readonly [K in string]?: JsonValue
 }
 
 // JSON Array
