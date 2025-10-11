@@ -1,8 +1,8 @@
 import type { IsExternal, Plugin, WarningHandlerWithDefault } from 'rollup'
+import type { BundlibRollupAnyOutputOptions, BundlibRollupOptions } from '../options/types/rollup-options'
 import type { MaybeNullish } from '../types/helper-types'
-import type { BundlibRollupModuleOutputOptions, BundlibRollupOptions } from '../types/rollup'
 
-interface CreateConfigOptions<O extends BundlibRollupModuleOutputOptions> {
+interface CreateConfigOptions<O extends BundlibRollupAnyOutputOptions> {
   input: string
   output: O
   isExternal: IsExternal
@@ -11,7 +11,7 @@ interface CreateConfigOptions<O extends BundlibRollupModuleOutputOptions> {
   useChokidar: boolean
 }
 
-export function createConfig<O extends BundlibRollupModuleOutputOptions>(options: CreateConfigOptions<O>): BundlibRollupOptions<O> {
+export function createConfig<O extends BundlibRollupAnyOutputOptions>(options: CreateConfigOptions<O>): BundlibRollupOptions<O> {
   const { input, output, isExternal: external, plugins, onwarn, useChokidar } = options
   return {
     input,

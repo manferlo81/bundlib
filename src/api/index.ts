@@ -1,4 +1,9 @@
 export { compatibilityAnalyzePkg as analyzePkg } from './analyze/compatibility'
+export { bundlib } from './functions/bundlib'
+export { configsFromPkg } from './functions/configs-from-pkg'
+export { defineConfig as config, defineConfig } from './functions/define-config'
+export { pkgToConfigs } from './functions/pkg-to-configs'
+export { readPkg } from './package/read-pkg'
 
 export type {
   BrowserBuildOptions,
@@ -11,10 +16,6 @@ export type {
   TypesBuildOptions,
 } from './analyze/pkg-analyzed'
 
-export { bundlib } from './bundlib'
-export { configsFromPkg } from './configs-from-pkg'
-export { defineConfig as config, defineConfig } from './functions/define-config'
-
 export type {
   BundlibPkgJson,
   PkgJsonDependencies,
@@ -26,9 +27,6 @@ export type {
   PkgJsonModuleType,
   PkgJsonObject,
 } from './package/pkg-json-types'
-
-export { readPkg } from './package/read-pkg'
-export { pkgToConfigs } from './pkg-to-configs'
 
 export type {
   BooleanOption,
@@ -47,36 +45,40 @@ export type {
   SelectiveStringOption,
   SelectiveValueBasedOption,
   StringOption,
-} from './types/bundlib-options'
+} from './options/types/bundlib'
 
 export type {
   BuildType,
   SkippableBuildType as SelectiveSkipKey,
   SkippableBuildType,
-} from './types/options/build-type'
+} from './options/types/build-type'
+
+export type {
+  BundlibOutputFormat as BrowserBuildFormat,
+  BundlibOutputFormat as BundlibBuildFormat,
+  BundlibInteropOption as RollupBundlibInterop,
+  BundlibESModuleOption as RollupEsModule,
+  BundlibNonBooleanESModuleOption as RollupEsModuleString,
+  BundlibNonBooleanInteropOption as RollupInterop,
+  BundlibSourcemapOption as RollupSourcemap,
+  BundlibNonBooleanSourcemapOption as RollupSourcemapString,
+  BundlibBrowserFormat as RollupSupportedBrowserFormat,
+  BundlibESModuleOption as RollupSupportedESModuleOption,
+  BundlibNonBooleanESModuleOption as RollupSupportedESModuleString,
+  BundlibOutputFormat as RollupSupportedFormat,
+  BundlibInteropOption as RollupSupportedInteropOption,
+  BundlibModuleFormat as RollupSupportedModuleFormat,
+  BundlibSourcemapOption as RollupSupportedSourcemapOption,
+  BundlibNonBooleanSourcemapOption as RollupSupportedSourcemapString,
+} from './options/types/rollup'
+
+export type {
+  BundlibRollupBrowserOutputOptions,
+  BundlibRollupModuleOutputOptions,
+  BundlibRollupOptions,
+} from './options/types/rollup-options'
+
+export type { BundlibAPIOptions } from './types/types'
 
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 export type { BuildTypeForAPI, GlobalsOptions, SelectiveSkipBuildType } from './types/deprecated-exports'
-
-export type {
-  RollupSupportedBrowserFormat as BrowserBuildFormat,
-  RollupSupportedFormat as BundlibBuildFormat,
-  BundlibRollupBrowseOutputOptions,
-  BundlibRollupModuleOutputOptions,
-  BundlibRollupOptions,
-  RollupSupportedModuleFormat as ModuleBuildFormat,
-  RollupBundlibInterop,
-  RollupSupportedESModuleOption as RollupEsModule,
-  RollupSupportedESModuleString as RollupEsModuleString,
-  RollupSupportedInteropOption as RollupInterop,
-  RollupSupportedSourcemapOption as RollupSourcemap,
-  RollupSupportedSourcemapString as RollupSourcemapString,
-  RollupSupportedBrowserFormat,
-  RollupSupportedESModuleOption,
-  RollupSupportedESModuleString, RollupSupportedFormat, RollupSupportedInteropOption,
-  RollupSupportedModuleFormat,
-  RollupSupportedSourcemapOption,
-  RollupSupportedSourcemapString,
-} from './types/rollup'
-
-export type { BundlibAPIOptions } from './types/types'

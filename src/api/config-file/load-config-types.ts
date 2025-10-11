@@ -1,5 +1,5 @@
 import type { CosmiconfigResult as OriginalCosmiconfigResult } from 'cosmiconfig'
-import type { BundlibConfig } from '../types/bundlib-options'
+import type { BundlibConfig } from '../options/types/bundlib'
 
 type CosmiconfigResultObject = Extract<OriginalCosmiconfigResult, object>
 

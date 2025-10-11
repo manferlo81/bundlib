@@ -1,6 +1,6 @@
 import * as analyzePkgModule from '../../src/api/analyze/analyze'
+import * as pkgToConfigsModule from '../../src/api/functions/pkg-to-configs'
 import * as readPkgModule from '../../src/api/package/read-pkg'
-import * as pkgToConfigsModule from '../../src/api/pkg-to-configs'
 
 type UnknownFunction = (...args: never[]) => unknown
 type SpyOnMethodCallback<F extends UnknownFunction, R> = (mock: jest.SpyInstance<ReturnType<F>, Parameters<F>>) => R

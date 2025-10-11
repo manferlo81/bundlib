@@ -1,25 +1,25 @@
-import { JS_EXTENSIONS, MIN_EXT_PREFIX, TS_DEF_EXT_PREFIX, TS_EXTENSIONS } from './constants/extensions'
-import { DEFAULT_CACHE_PATH } from './constants/paths'
-import { DEFAULT_NODEJS_SHEBANG } from './constants/shebang'
+import { JS_EXTENSIONS, MIN_EXT_PREFIX, TS_DEF_EXT_PREFIX, TS_EXTENSIONS } from '../constants/extensions'
+import { DEFAULT_CACHE_PATH } from '../constants/paths'
+import { DEFAULT_NODEJS_SHEBANG } from '../constants/shebang'
 
 import type { Plugin } from 'rollup'
-import type { PkgAnalyzed } from './analyze/pkg-analyzed'
-import type { Dictionary, MaybeNull, MaybeNullish } from './types/helper-types'
-import type { BundlibRollupBrowseOutputOptions, BundlibRollupConfig, BundlibRollupModuleOutputOptions, RollupSupportedSourcemapOption } from './types/rollup'
-import type { BundlibAPIOptions } from './types/types'
+import type { PkgAnalyzed } from '../analyze/pkg-analyzed'
+import type { BundlibSourcemapOption } from '../options/types/rollup'
+import type { Dictionary, MaybeNull, MaybeNullish } from '../types/helper-types'
+import type { BundlibAPIOptions } from '../types/types'
 
 import builtinModules from 'builtin-modules'
 import { basename, dirname, join as pathJoin, relative, resolve } from 'node:path'
-import { error } from './errors/error'
-import { inputNotFoundMessage } from './errors/error-messages'
-import { normalizeRollupInterop } from './options/interop'
-import { createConfig } from './tools/create-config'
-import { createIsExternal } from './tools/create-is-external'
-import { createResolveInput } from './tools/create-resolve-input'
-import { fileIsTypescript } from './tools/extension-match'
-import { keys } from './tools/helpers'
-import { normalizeExpectedTypesFilename } from './tools/normalize-types-filename'
-import { renamePrefixExtension } from './tools/rename-prefix'
+import { error } from '../errors/error'
+import { inputNotFoundMessage } from '../errors/error-messages'
+import { normalizeRollupInterop } from '../options/interop'
+import { createConfig } from '../tools/create-config'
+import { createIsExternal } from '../tools/create-is-external'
+import { createResolveInput } from '../tools/create-resolve-input'
+import { fileIsTypescript } from '../tools/extension-match'
+import { keys } from '../tools/helpers'
+import { normalizeExpectedTypesFilename } from '../tools/normalize-types-filename'
+import { renamePrefixExtension } from '../tools/rename-prefix'
 
 import pluginBabel from '@rollup/plugin-babel'
 import pluginBuble from '@rollup/plugin-buble'
@@ -32,8 +32,9 @@ import pluginAddShebang from 'rollup-plugin-add-shebang'
 import { equals as pluginEquals } from 'rollup-plugin-export-equals'
 import { stripShebang as pluginStripShebang } from 'rollup-plugin-strip-shebang'
 import pluginTypescript from 'rollup-plugin-typescript2'
-import { pluginChunks } from './plugins/chunks'
-import { isTruthy } from './type-check/basic'
+import type { BundlibRollupBrowserOutputOptions, BundlibRollupConfig, BundlibRollupModuleOutputOptions } from '../options/types/rollup-options'
+import { pluginChunks } from '../plugins/chunks'
+import { isTruthy } from '../type-check/basic'
 
 // TODO: make this function asynchronous
 // to allow importing only the necessary modules
@@ -90,7 +91,7 @@ export function pkgToConfigs(
   function createPlugins(
     inputFile: string,
     outputFile: string,
-    rollupSourcemap: RollupSupportedSourcemapOption,
+    rollupSourcemap: BundlibSourcemapOption,
     minifyOutput: boolean,
     isBrowserBuild: boolean,
     isBinaryBuild: boolean,
@@ -461,7 +462,7 @@ export function pkgToConfigs(
     const interop = normalizeRollupInterop(interopBool)
     const globals = inputGlobals ?? {}
 
-    let outputOptions: BundlibRollupBrowseOutputOptions = {
+    let outputOptions: BundlibRollupBrowserOutputOptions = {
       file: browserOutputFile,
       format,
       sourcemap,
@@ -508,7 +509,7 @@ export function pkgToConfigs(
     if (min) {
 
       const minOutputFile = renamePrefixExtension(browserOutputFile, MIN_EXT_PREFIX)
-      const minOutputOptions: BundlibRollupBrowseOutputOptions = {
+      const minOutputOptions: BundlibRollupBrowserOutputOptions = {
         ...outputOptions,
         file: minOutputFile,
         compact: true,

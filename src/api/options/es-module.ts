@@ -2,12 +2,12 @@ import type { Resolved } from 'selective-option'
 import { createBoolBasedResolver } from 'selective-option'
 import { API_SPECIAL_KEYS, MODULE_BUILD_KEYS, OVERRIDE_KEY } from '../selective/constants'
 import { resolveOptionOrThrow } from '../selective/resolve-or-throw'
-import type { SelectiveEsModuleOption } from '../types/bundlib-options'
-import type { BuildType } from '../types/options/build-type'
 import type { TypeCheckFunction } from '../types/private-types'
-import type { RollupSupportedESModuleString } from '../types/rollup'
+import type { BuildType } from './types/build-type'
+import type { SelectiveEsModuleOption } from './types/bundlib'
+import type { BundlibNonBooleanESModuleOption } from './types/rollup'
 
-const isEsModuleString: TypeCheckFunction<RollupSupportedESModuleString> = (value) => {
+const isEsModuleString: TypeCheckFunction<BundlibNonBooleanESModuleOption> = (value) => {
   return value === 'if-default-prop'
 }
 
@@ -19,7 +19,7 @@ const esModuleOptionResolver = createBoolBasedResolver(
   API_SPECIAL_KEYS,
 )
 
-export function resolveESModuleOption(value: SelectiveEsModuleOption): Resolved<BuildType, RollupSupportedESModuleString | boolean> {
+export function resolveESModuleOption(value: SelectiveEsModuleOption): Resolved<BuildType, BundlibNonBooleanESModuleOption | boolean> {
   return resolveOptionOrThrow(
     esModuleOptionResolver,
     value,

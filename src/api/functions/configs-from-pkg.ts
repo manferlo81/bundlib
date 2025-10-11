@@ -1,9 +1,9 @@
-import { compatibilityAnalyzePkg } from './analyze/compatibility'
-import type { BundlibPkgJson } from './package/pkg-json-types'
+import { compatibilityAnalyzePkg } from '../analyze/compatibility'
+import type { BundlibRollupConfig } from '../options/types/rollup-options'
+import type { BundlibPkgJson } from '../package/pkg-json-types'
+import type { MaybeNullish } from '../types/helper-types'
+import type { BundlibAPIOptions } from '../types/types'
 import { pkgToConfigs } from './pkg-to-configs'
-import type { MaybeNullish } from './types/helper-types'
-import type { BundlibRollupConfig } from './types/rollup'
-import type { BundlibAPIOptions } from './types/types'
 
 export async function configsFromPkg(
   cwd: string,

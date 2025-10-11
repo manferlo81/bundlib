@@ -1,7 +1,7 @@
 import { statSync } from 'node:fs'
 import type { RollupCache } from 'rollup'
 import { rollup } from 'rollup'
-import type { BundlibRollupConfig } from '../../api/types/rollup'
+import type { BundlibRollupConfig } from '../../api/options/types/rollup-options'
 import type { BundlibEventEmitter } from '../actions/emitter-types'
 import { promiseReduce } from '../tools/promise-reduce'
 import { startTimer } from '../tools/timer'

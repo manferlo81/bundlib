@@ -11,12 +11,13 @@ import { normalizeBuildName } from '../options/name'
 import { resolveProjectOption } from '../options/project'
 import { resolveSkipOption } from '../options/skip'
 import { resolveSourcemapOption } from '../options/sourcemap'
+import type { BundlibConfig } from '../options/types/bundlib'
 import type { BundlibPkgJson } from '../package/pkg-json-types'
-import { createIsInstalled } from '../tools/create-is-installed'
+import { toolsFromPackage } from '../package/tools'
 import { isDictionaryOrNullish, isStringOrNullish } from '../type-check/advanced'
 import { invalidKeys } from '../type-check/keys'
-import type { BundlibConfig } from '../types/bundlib-options'
 import type { MaybeNull } from '../types/helper-types'
+import type { IsInstalled } from '../types/private-types'
 import type { BrowserBuildOptions, Dependencies, DetectedModuleItem, DetectedModules, InstalledModules, ModuleBuildOptions, ModuleInstalled, OptionalModules, PkgAnalyzed, TypesBuildOptions } from './pkg-analyzed'
 
 export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgAnalyzed> {
@@ -30,9 +31,6 @@ export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgA
     bin: pkgBinField,
     types: pkgTypesField,
     typings: pkgTypingsField,
-    dependencies: pkgRuntimeDependencies,
-    devDependencies: pkgDevDependencies,
-    peerDependencies: pkgPeerDependencies,
     bundlib: pkgBundlibConfig,
   } = pkg
 
@@ -126,17 +124,12 @@ export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgA
     throw error(invalidPkgFieldMessage('bin', 'string'))
   }
 
-  if (!isDictionaryOrNullish(pkgRuntimeDependencies)) {
-    throw error(invalidPkgFieldMessage('dependencies', 'Object'))
-  }
-
-  if (!isDictionaryOrNullish(pkgDevDependencies)) {
-    throw error(invalidPkgFieldMessage('devDependencies', 'Object'))
-  }
-
-  if (!isDictionaryOrNullish(pkgPeerDependencies)) {
-    throw error(invalidPkgFieldMessage('peerDependencies', 'Object'))
-  }
+  const {
+    dependencies: pkgRuntimeDependencies,
+    devDependencies: pkgDevDependencies,
+    peerDependencies: pkgPeerDependencies,
+    getDevPackageVersion,
+  } = toolsFromPackage(pkg)
 
   const { main: mainInput, module: moduleInput, browser: browserInput, bin: binInput } = resolveInputOption(inputOption)
   const perBuildSourcemap = resolveSourcemapOption(sourcemapOption)
@@ -221,22 +214,24 @@ export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgA
     }
 
   const dependencies: Dependencies = {
-    runtime: pkgRuntimeDependencies ?? null,
-    dev: pkgDevDependencies ?? null,
-    peer: pkgPeerDependencies ?? null,
+    runtime: pkgRuntimeDependencies,
+    dev: pkgDevDependencies,
+    peer: pkgPeerDependencies,
   }
 
   const cache: MaybeNull<string> = cacheOption ?? null
 
-  const isInstalled = createIsInstalled(pkgRuntimeDependencies, pkgDevDependencies)
+  const isInstalled: IsInstalled = (id) => {
+    const info = getDevPackageVersion(id)
+    if (!info) return
+    return info.version
+  }
 
   const checkInstalled = <I extends OptionalModules>(id: I): ModuleInstalled<I> | null => {
-    const installed = isInstalled(id)
-    if (!installed) return null
-    return {
-      id,
-      version: installed,
-    }
+    const info = getDevPackageVersion(id)
+    if (!info) return null
+    const { version } = info
+    return { id, version }
   }
 
   const installed: InstalledModules = {
@@ -247,12 +242,10 @@ export async function analyzePkg(cwd: string, pkg: BundlibPkgJson): Promise<PkgA
   }
 
   const checkDetected = <I extends OptionalModules>(id: I): DetectedModuleItem<I> => {
-    const installed = isInstalled(id)
+    const installed = getDevPackageVersion(id)
     if (!installed) return { id, installed: null }
-    return {
-      id,
-      installed: { version: installed },
-    }
+    const { version } = installed
+    return { id, installed: { version } }
   }
 
   const detected: DetectedModules = {

@@ -1,4 +1,4 @@
-import type { BundlibConfig } from '../types/bundlib-options'
+import type { BundlibConfig } from '../options/types/bundlib'
 
 export function defineConfig(config: BundlibConfig): BundlibConfig {
   return config

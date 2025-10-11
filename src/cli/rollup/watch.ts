@@ -1,7 +1,7 @@
 import { statSync } from 'node:fs'
 import type { RollupWatcher } from 'rollup'
 import { watch } from 'rollup'
-import type { BundlibRollupConfig } from '../../api/types/rollup'
+import type { BundlibRollupConfig } from '../../api/options/types/rollup-options'
 import type { BundlibEventEmitter } from '../actions/emitter-types'
 
 export function rollupWatchBuild(

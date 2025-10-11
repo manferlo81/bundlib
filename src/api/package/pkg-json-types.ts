@@ -1,4 +1,4 @@
-import type { BundlibConfig } from '../types/bundlib-options'
+import type { BundlibConfig } from '../options/types/bundlib'
 
 export type PkgJsonObject<K extends string, T> = Readonly<Partial<Record<K, T>>>
 

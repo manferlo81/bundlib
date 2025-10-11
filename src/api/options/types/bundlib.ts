@@ -1,7 +1,7 @@
 import type { BoolBasedSelectiveOption, ValueBasedSelectiveOption } from 'selective-option'
-import type { Dictionary, MaybeNullish } from './helper-types'
-import type { BuildType, SkippableBuildType } from './options/build-type'
-import type { RollupSupportedBrowserFormat, RollupSupportedESModuleString, RollupSupportedInteropOption, RollupSupportedSourcemapString } from './rollup'
+import type { Dictionary, MaybeNullish } from '../../types/helper-types'
+import type { BuildType, SkippableBuildType } from './build-type'
+import type { BundlibNonBooleanESModuleOption, BundlibNonBooleanInteropOption, BundlibNonBooleanSourcemapOption, BundlibOutputFormat } from './rollup'
 
 // Selective Option Types
 
@@ -16,9 +16,9 @@ export type SelectiveBoolBasedOption<K extends string, V> = BoolBasedSelectiveOp
 // Selective Options
 
 export type SelectiveStringOption = SelectiveValueBasedOption<BuildType, string>
-export type SelectiveSourcemapOption = SelectiveBoolBasedOption<BuildType, RollupSupportedSourcemapString>
-export type SelectiveEsModuleOption = SelectiveBoolBasedOption<BuildType, RollupSupportedESModuleString>
-export type SelectiveInteropOption = SelectiveBoolBasedOption<BuildType, RollupSupportedInteropOption>
+export type SelectiveSourcemapOption = SelectiveBoolBasedOption<BuildType, BundlibNonBooleanSourcemapOption>
+export type SelectiveEsModuleOption = SelectiveBoolBasedOption<BuildType, BundlibNonBooleanESModuleOption>
+export type SelectiveInteropOption = SelectiveBoolBasedOption<BuildType, BundlibNonBooleanInteropOption>
 export type SelectiveMinOption = SelectiveBoolBasedOption<BuildType, never>
 export type SelectiveSkipOption = SelectiveBoolBasedOption<SkippableBuildType, never>
 
@@ -43,7 +43,7 @@ export interface BundlibConfig {
   readonly cache?: StringOption
   readonly chunks?: MaybeNullish<Dictionary<string>>
 
-  readonly format?: MaybeNullish<RollupSupportedBrowserFormat>
+  readonly format?: MaybeNullish<BundlibOutputFormat>
   readonly name?: StringOption
   readonly id?: StringOption
   readonly extend?: BooleanOption

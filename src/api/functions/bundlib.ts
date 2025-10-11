@@ -1,9 +1,9 @@
-import { analyzePkg } from './analyze/analyze'
-import { readPkg } from './package/read-pkg'
+import { analyzePkg } from '../analyze/analyze'
+import type { BundlibRollupConfig } from '../options/types/rollup-options'
+import { readPkg } from '../package/read-pkg'
+import type { MaybeNullish } from '../types/helper-types'
+import type { BundlibAPIOptions } from '../types/types'
 import { pkgToConfigs } from './pkg-to-configs'
-import type { MaybeNullish } from './types/helper-types'
-import type { BundlibRollupConfig } from './types/rollup'
-import type { BundlibAPIOptions } from './types/types'
 
 export async function bundlib(
   cwd: string,

@@ -1,5 +1,5 @@
 import type { DirectoryItems } from 'mock-fs/lib/filesystem'
-import type { BundlibConfig } from '../src/api/types/bundlib-options'
+import type { BundlibConfig } from '../src/api/options/types/bundlib'
 import { colorizeMessage, filenameColor } from './tools/colors'
 import { expectMultiPromise } from './tools/expect-multi'
 import { mockAnalyzeWithPkg } from './tools/mock-fs'

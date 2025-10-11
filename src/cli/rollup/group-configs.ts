@@ -1,4 +1,4 @@
-import type { BundlibRollupConfig } from '../../api/types/rollup'
+import type { BundlibRollupConfig } from '../../api/options/types/rollup-options'
 
 export function groupConfigs(configs: BundlibRollupConfig[]) {
 

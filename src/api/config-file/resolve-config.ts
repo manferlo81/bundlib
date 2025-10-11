@@ -1,8 +1,8 @@
 import { error } from '../errors/error'
 import { invalidPkgFieldMessage } from '../errors/error-messages'
+import type { BundlibConfig } from '../options/types/bundlib'
 import { isStringOrNullish } from '../type-check/advanced'
 import { isDictionary } from '../type-check/basic'
-import type { BundlibConfig } from '../types/bundlib-options'
 import type { MaybeNullish } from '../types/helper-types'
 import { loadConfig } from './load-config'
 
