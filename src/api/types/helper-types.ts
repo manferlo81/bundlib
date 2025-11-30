@@ -29,7 +29,7 @@ export type Falsy<T = unknown> = unknown extends T ? FalsyTypes : T extends numb
 
 // Truthy Types
 
-type TruthyTypes = object | UnknownArray | NonArrayObject<unknown> | true | string | number
+type TruthyTypes = object | true | string | number
 type TruthyNumber<T extends number> = T extends 0 ? never : T
 export type Truthy<T = unknown> = unknown extends T ? TruthyTypes : T extends number ? TruthyNumber<T> : Exclude<T, Falsy<T>>
 

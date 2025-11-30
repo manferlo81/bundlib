@@ -15,7 +15,7 @@ export type JsonUnknownObject = IncludingReadonly<JsonUnknownMutableObject>
 // JSON Array
 
 export type JsonArray<T extends JsonValue> = T[] | readonly T[]
-export type JsonUnknownArray = JsonValue[] | readonly JsonValue[]
+export type JsonUnknownArray = readonly JsonValue[]
 
 // JSON Value
 
