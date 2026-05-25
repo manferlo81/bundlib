@@ -81,7 +81,7 @@
   },
   "devDependencies": {
     "@babel/preset-env": "^7.29.0",
-    "@stylistic/eslint-plugin": "^5.8.0",
+    "@stylistic/eslint-plugin": "^5.10.0",
     "@types/babel__core": "^7.20.5",
     "@types/jest": "^30.0.0",
     "@types/mock-fs": "^4.13.4",
@@ -91,7 +91,7 @@
     "eslint": "^9.39.2",
     "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-import": "^2.32.0",
-    "globals": "^17.3.0",
+    "globals": "^17.6.0",
     "husky": "^9.1.7",
     "jest": "^30.2.0",
     "mock-fs": "^5.5.0",
@@ -101,7 +101,7 @@
     "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.56.0"
+    "typescript-eslint": "^8.59.4"
   },
   "overrides": {
     "@rollup/plugin-eslint": {
