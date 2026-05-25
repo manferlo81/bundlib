@@ -43,7 +43,7 @@ describe(colorizeMessage('"project" option'), () => {
 
   test(colorizeMessage('Should be null if "project" option not present'), async () => {
 
-    const { main, module: moduleOutput, browser, bin } = await analyzeWithProjectOption(undefined as never)
+    const { main, module: moduleOutput, browser, bin } = await analyzeWithProjectOption(undefined)
 
     expect(main ? main.project : 0).toBeNull()
     expect(moduleOutput ? moduleOutput.project : 0).toBeNull()

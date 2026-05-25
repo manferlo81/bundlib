@@ -58,7 +58,7 @@ export function pkgToConfigs(
     installed,
   } = analyzed
 
-  const { dev, watch, onwarn } = options ?? {} as BundlibAPIOptions
+  const { dev, watch, onwarn } = options ?? {}
 
   const { runtime: runtimeDependencies, peer: peerDependencies } = dependencies
 
